@@ -30,11 +30,11 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 	uint32 hp = pkt.hp();
 	uint16 attack = pkt.attack();
 
-	cout << "ID: " << id << " HP : " << hp << " ATT : " << attack << endl;
+	//cout << "ID: " << id << " HP : " << hp << " ATT : " << attack << endl;
 
 	for (int32 i = 0; i < pkt.buffs_size(); i++)
 	{
 		const Protocol::BuffData& data = pkt.buffs(i);
-		cout << "BuffInfo : " << data.buffid() << " " << data.remaintime() << endl;
+		/*cout << "BuffInfo : " << data.buffid() << " " << data.remaintime() << endl;*/
 	}
 }

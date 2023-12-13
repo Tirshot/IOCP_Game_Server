@@ -40,6 +40,8 @@ Player::Player()
 	CameraComponent* camera = new CameraComponent();
 	AddComponent(camera);
 
+	_type = CreatureType::Player;
+
 	_stat.hp = 100;
 	_stat.maxHp = 100;
 	_stat.attack = 30;

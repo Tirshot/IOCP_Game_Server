@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DummyClient", "DummyClient\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerCore", "ServerCore\ServerCore.vcxproj", "{90065A5D-0322-426C-8417-C75621D96666}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameCoding", "Client\GameCoding.vcxproj", "{F368F6E0-D7BF-496F-95A6-68A69323BCC9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameCoding", "Client\GameCoding\GameCoding.vcxproj", "{F368F6E0-D7BF-496F-95A6-68A69323BCC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

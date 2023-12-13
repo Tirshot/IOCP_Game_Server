@@ -16,6 +16,8 @@ Monster::Monster()
 	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeft");
 	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRight");
 
+	_type = CreatureType::Monster;
+
 	_stat.hp = 50;
 	_stat.maxHp = 50;
 	_stat.attack = 10;

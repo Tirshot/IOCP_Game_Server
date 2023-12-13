@@ -56,10 +56,10 @@ void TilemapActor::Render(HDC hdc)
 	int32 rightY = ((int32)cameraPos.y + GWinSizeY / 2);
 
 	// 몇번째 칸부터 시작인가
-	int32 startX = (leftX - _pos.x) / TILE_SIZEX;
-	int32 startY = (leftY - _pos.y) / TILE_SIZEY;
-	int32 endX = (rightX - _pos.x) / TILE_SIZEX;
-	int32 endY = (rightY - _pos.y) / TILE_SIZEY;
+	int32 startX = (int32)(leftX - _pos.x) / (int32)TILE_SIZEX;
+	int32 startY = (int32)(leftY - _pos.y) / (int32)TILE_SIZEY;
+	int32 endX = (int32)(rightX - _pos.x) / (int32)TILE_SIZEX;
+	int32 endY = (int32)(rightY - _pos.y) / (int32)TILE_SIZEY;
 
 
 	for (int32 y = startY; y <= endY; y++)
@@ -77,8 +77,8 @@ void TilemapActor::Render(HDC hdc)
 			case 0:
 				// 타일맵의 좌상단이 타일맵 액터의 중심에 위치
 				::TransparentBlt(hdc,
-					_pos.x + x * TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
-					_pos.y + y * TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
+					_pos.x + x * (int32)TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
+					_pos.y + y * (int32)TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
 					TILE_SIZEX,
 					TILE_SIZEY,
 					spriteO->GetDC(),
@@ -93,8 +93,8 @@ void TilemapActor::Render(HDC hdc)
 			case 1:
 				// 타일맵의 좌상단이 타일맵 액터의 중심에 위치
 				::TransparentBlt(hdc,
-					_pos.x + x * TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
-					_pos.y + y * TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
+					_pos.x + x * (int32)TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
+					_pos.y + y * (int32)TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
 					TILE_SIZEX,
 					TILE_SIZEY,
 					spriteX->GetDC(),

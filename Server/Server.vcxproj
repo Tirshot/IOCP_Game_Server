@@ -71,7 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Binaries\$(Platform)\</OutDir>
+    <OutDir>$(SolutionDir)Server\Binaries\$(Platform)\</OutDir>
+    <IntDir>Intermediate\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Binaries\$(Platform)\</OutDir>
@@ -124,7 +125,7 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)\Common\protoc-21.12-win64\bin\GenPackets.bat"</Command>
+      <Command>call "$(SolutionDir)Common\protoc-21.12-win64\bin\GenPackets.bat"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

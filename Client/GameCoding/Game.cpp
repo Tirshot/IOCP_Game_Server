@@ -5,10 +5,10 @@
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "SoundManager.h"
+#include "NetworkMananger.h"
 
 Game::Game()
 {
-
 }
 
 Game::~Game()
@@ -32,17 +32,21 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(TimeManager)->Init();
 	GET_SINGLE(InputManager)->Init(hwnd);
 	GET_SINGLE(SceneManager)->Init();
-	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"E:\\Cpp\\practice_winapi\\GameCoding\\Resources"));
+	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources"));
 	GET_SINGLE(SoundManager)->Init(hwnd);
+
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+
+	GET_SINGLE(NetworkMananger)->Init();
 }
 
 void Game::Update()
 {
+	srand(unsigned(time(0)));
 	GET_SINGLE(TimeManager)->Update();
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
-	srand(unsigned(time(0)));
+	GET_SINGLE(NetworkMananger)->Update();
 }
 
 void Game::Render()

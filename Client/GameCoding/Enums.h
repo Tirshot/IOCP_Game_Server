@@ -5,6 +5,12 @@ enum class SceneType
 		DevScene,
 		EditScene,
 };
+enum class CreatureType
+{
+	None,
+	Player,
+	Monster,
+};
 
 // 정수 변환을 건너뛰기 위해 enum을 사용
 enum LAYER_TYPE

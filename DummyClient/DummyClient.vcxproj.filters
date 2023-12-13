@@ -35,6 +35,9 @@
     <ClCompile Include="Protocol.pb.cc">
       <Filter>소스 파일\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="ServerSession.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -51,6 +54,9 @@
     </ClInclude>
     <ClInclude Include="Enum.pb.h">
       <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSession.h">
+      <Filter>소스 파일\Main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "DevScene.h"
 #include "Creature.h"
+#include "Monster.h"
 #include "Player.h"
 #include "HitEffect.h"
 
