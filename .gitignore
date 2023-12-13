@@ -343,6 +343,40 @@ Server/Client/Intermediate/
 Server/Client/Saved/
 Server/DummyClient/Binaries/
 Server/DummyClient/Intermediate/
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
 Server/DummyClient/Saved/
 Server/Client/A1.sln
 Shared/PDL/PDL_C_Register.h
