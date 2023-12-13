@@ -217,25 +217,25 @@ void DevScene::LoadPlayer()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_BowUp", { 200, 200}, 0, 5, 5, 0.4f , false });
+		fb->SetInfo({ texture, L"FB_BowUp", { 200, 200}, 0, 5, 5, 0.3f , false });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_BowDown", { 200, 200}, 0, 5, 5, 0.4f, false });
+		fb->SetInfo({ texture, L"FB_BowDown", { 200, 200}, 0, 5, 5, 0.3f, false });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_BowLeft", { 200, 200}, 0, 5, 5, 0.4f, false });
+		fb->SetInfo({ texture, L"FB_BowLeft", { 200, 200}, 0, 5, 5, 0.3f, false });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_BowRight", { 200, 200}, 0, 5, 5, 0.4f, false });
+		fb->SetInfo({ texture, L"FB_BowRight", { 200, 200}, 0, 5, 5, 0.3f, false });
 	}
 	// 플레이어 Staff, 매개변수 끝은 loop
 	{

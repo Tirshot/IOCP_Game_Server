@@ -57,10 +57,16 @@ void Arrow::TickIdle()
 	{
 		// 앞이 비어있으면 전진, 몬스터라면 타격
 		Creature* creature = scene->GetCreatureAt(nextPos);
+		if (creature == _owner)
+		{
+			SetCellPos(nextPos);
+			SetState(ObjectState::Move);
+			return;
+		}
+
 		if (creature)
 		{
 			scene->SpawnObject<HitEffect>(nextPos);
-			// 피격 판정
 			creature->OnDamaged(_owner);
 		}
 		scene->RemoveActor(this);

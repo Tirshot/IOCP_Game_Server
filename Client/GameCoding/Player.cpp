@@ -218,7 +218,6 @@ void Player::TickSkill()
 			arrow->SetOwner(this);
 		}
 
-		// ╩Себ ╨╧╠м
 		SetState(ObjectState::Idle);
 	}
 }
