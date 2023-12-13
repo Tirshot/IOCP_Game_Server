@@ -334,15 +334,15 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 .vs/
-Server/ServerCore/Intermediate/
-Server/ServerCore/x64
-Server/Output/
-Server/Binaries/
-Server/Client/Binaries/
-Server/Client/Intermediate/
-Server/Client/Saved/
-Server/DummyClient/Binaries/
-Server/DummyClient/Intermediate/
+ServerCore/Intermediate/
+ServerCore/x64
+Output/
+Binaries/
+Client/Binaries/
+Client/Intermediate/
+Client/Saved/
+DummyClient/Binaries/
+DummyClient/Intermediate/
 
 # Prerequisites
 *.d
