@@ -6,6 +6,13 @@
 void GameSession::OnConnected()
 {
 	GSessionManager.Add(static_pointer_cast<GameSession>(shared_from_this()));
+
+	// 환영
+	Send(ServerPacketHandler::Make_S_EnterGame());
+
+	// 게임 입장
+
+
 }
 
 void GameSession::OnDisconnected()

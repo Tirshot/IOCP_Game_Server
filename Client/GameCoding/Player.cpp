@@ -141,7 +141,7 @@ void Player::TickIdle()
 			UpdateAnimation();
 	}
 	
-	// 무기 선택
+	// 무기 선택, UI 연동 필요
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
 	{
 		SetWeaponType(WeaponType::Sword);
@@ -152,6 +152,7 @@ void Player::TickIdle()
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
 	{
+		// 추후에 갈고리로 변경예정
 		SetWeaponType(WeaponType::Staff);
 	}
 

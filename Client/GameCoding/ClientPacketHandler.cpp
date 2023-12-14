@@ -14,6 +14,10 @@ void ClientPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	case S_TEST:
 		Handle_S_TEST(buffer, len);
 		break;
+
+		case S_EnterGame:
+		Handle_S_EnterGame(buffer, len);
+		break;
 	}
 }
 
@@ -37,4 +41,18 @@ void ClientPacketHandler::Handle_S_TEST(BYTE* buffer, int32 len)
 		const Protocol::BuffData& data = pkt.buffs(i);
 		/*cout << "BuffInfo : " << data.buffid() << " " << data.remaintime() << endl;*/
 	}
+}
+
+void ClientPacketHandler::Handle_S_EnterGame(BYTE* buffer, int32 len)
+{
+	// 서버의 코드와 대칭적으로 작성
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_EnterGame pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	bool success = pkt.success();
+	uint64 accountId = pkt.accountid();
 }

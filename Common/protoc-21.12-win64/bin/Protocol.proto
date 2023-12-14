@@ -11,3 +11,14 @@ message S_TEST
 	uint32 attack = 3;
 	repeated BuffData buffs = 4;
 }
+
+// S : Server -> Client, C : Client -> Server
+message S_EnterGame
+{
+	bool success = 1;
+	uint64 accountId = 2;
+}
+// C_EnterRoom
+
+
+// S_EnterRoom

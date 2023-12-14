@@ -11,6 +11,7 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	PacketHeader header;
 	br.Peek(&header);
 
+	// 클라이언트 -> 서버
 	switch (header.id)
 	{
 	default:
@@ -44,4 +45,15 @@ SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 atta
 	}
 
 	return MakeSendBuffer(pkt, S_TEST);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_EnterGame()
+{
+	Protocol::S_EnterGame pkt;
+
+	pkt.set_success(true);
+	pkt.set_accountid(0); // DB에서 가져옴
+
+	// Searialize
+	return MakeSendBuffer(pkt, S_EnterGame);
 }
