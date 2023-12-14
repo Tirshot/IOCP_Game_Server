@@ -80,8 +80,13 @@ void Player::TickIdle()
 	_keyPressed = true;
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	// 공격
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
+	{
+		SetState(ObjectState::Skill);
+	}
 
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::W))
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::W))
 	{
 		SetDir(DIR_UP);
 
@@ -150,11 +155,7 @@ void Player::TickIdle()
 		SetWeaponType(WeaponType::Staff);
 	}
 
-	// 공격
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
-	{
-		SetState(ObjectState::Skill);
-	}
+
 }
 
 void Player::TickMove()
@@ -163,7 +164,7 @@ void Player::TickMove()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);
-	if (dir.Length() < 3.f )
+	if (dir.Length() < 4.f )
 	{
 		SetState(ObjectState::Idle);
 		_pos = _destPos;

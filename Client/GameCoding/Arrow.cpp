@@ -88,16 +88,16 @@ void Arrow::TickMove()
 		switch (_dir)
 		{
 		case DIR_UP:
-			_pos.y -= 500 * deltaTime;
+			_pos.y -= 900 * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 500 * deltaTime;
+			_pos.y += 900 * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 500 * deltaTime;
+			_pos.x -= 900 * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 500 * deltaTime;
+			_pos.x += 900 * deltaTime;
 			break;
 		}
 	}
