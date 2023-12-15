@@ -15,10 +15,11 @@
 #include "SoundManager.h"
 #include "Sound.h"
 #include "Monster.h"
+#include "MyPlayer.h"
 
 DevScene::DevScene()
 {
-	printf("DevMode");
+
 }
 
 DevScene::~DevScene()
@@ -65,9 +66,8 @@ void DevScene::Init()
 	LoadEffect();
 	LoadTilemap();
 
-	SpawnObject<Player>(Vec2Int {5,5});
-	SpawnObject<Monster>(Vec2Int {7,7});
-	
+	SpawnObject<MyPlayer>(Vec2Int {5,5});
+
 	Super::Init();
 }
 

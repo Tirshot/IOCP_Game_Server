@@ -37,15 +37,8 @@ Player::Player()
 	_flipbookStaff[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffLeft");
 	_flipbookStaff[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffRight");
 
-	CameraComponent* camera = new CameraComponent();
-	AddComponent(camera);
-
+	// TO_DO : proto의 info 값으로 교체 필요
 	_type = CreatureType::Player;
-
-	_stat.hp = 100;
-	_stat.maxHp = 100;
-	_stat.attack = 30;
-	_stat.defence = 5;
 }
 
 Player::~Player()
@@ -75,97 +68,14 @@ void Player::Render(HDC hdc)
 void Player::TickIdle()
 {
 
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
-	_keyPressed = true;
-	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
-	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-	// 공격
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
-	{
-		SetState(SKILL);
-	}
-
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::W))
-	{
-		SetDir(DIR_UP);
-
-		// 다음 칸으로 이동하기
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}
-	else  if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
-	{
-		SetDir(DIR_DOWN);
-
-		// 다음 칸으로 이동하기
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
-	{
-		SetDir(DIR_LEFT);
-
-		// 다음 칸으로 이동하기
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
-	{
-		SetDir(DIR_RIGHT);
-
-		// 다음 칸으로 이동하기
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}
-	else
-	{ // 갈 수 없는 경우에는 애니메이션만 실행
-		_keyPressed = false;
-		if (info.state() == IDLE)
-			UpdateAnimation();
-	}
-	
-	// 무기 선택, UI 연동 필요
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
-	{
-		SetWeaponType(WeaponType::Sword);
-	}
-	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
-	{
-		SetWeaponType(WeaponType::Bow);
-	}
-	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
-	{
-		// 추후에 갈고리로 변경예정
-		SetWeaponType(WeaponType::Staff);
-	}
-
-
 }
 
 void Player::TickMove()
 {
-
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);
-	if (dir.Length() < 4.f )
+	if (dir.Length() < 1.f )
 	{
 		SetState(IDLE);
 		_pos = _destPos;
@@ -229,10 +139,7 @@ void Player::UpdateAnimation()
 	switch (info.state())
 	{
 	case IDLE:
-		if (_keyPressed)
-			SetFlipbook(_flipbookMove[info.dir()]);
-		else
-			SetFlipbook(_flipbookIdle[info.dir()]);
+		SetFlipbook(_flipbookIdle[info.dir()]);
 		break;
 
 	case MOVE:
