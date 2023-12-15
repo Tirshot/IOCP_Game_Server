@@ -22,7 +22,7 @@ void GameSession::OnDisconnected()
 
 void GameSession::OnRecvPacket(BYTE* buffer, int32 len)
 {
-	ServerPacketHandler::HandlePacket(buffer, len);
+	ServerPacketHandler::HandlePacket(GetSessionRef(), buffer, len);
 }
 
 void GameSession::OnSend(int32 len)
