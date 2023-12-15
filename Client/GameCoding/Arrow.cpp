@@ -45,13 +45,14 @@ void Arrow::TickIdle()
 	if (scene == nullptr)
 		return;
 
-	Vec2Int nextPos = GetFrontCellPos();
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
 
 	// 다음 위치에 갈 수 있는지 확인
 	if (CanGo(nextPos))
 	{
 		SetCellPos(nextPos);
-		SetState(ObjectState::Move);
+		SetState(MOVE);
 	}
 	else
 	{
@@ -60,7 +61,7 @@ void Arrow::TickIdle()
 		if (creature == _owner)
 		{
 			SetCellPos(nextPos);
-			SetState(ObjectState::Move);
+			SetState(MOVE);
 			return;
 		}
 
@@ -80,12 +81,12 @@ void Arrow::TickMove()
 	Vec2 dir = (_destPos - _pos);
 	if (dir.Length() < 3.f)
 	{
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 		_pos = _destPos;
 	}
 	else
 	{
-		switch (_dir)
+		switch (info.dir())
 		{
 		case DIR_UP:
 			_pos.y -= 900 * deltaTime;
@@ -105,5 +106,5 @@ void Arrow::TickMove()
 
 void Arrow::UpdateAnimation()
 {
-	SetFlipbook(_flipbookMove[_dir]);
+	SetFlipbook(_flipbookMove[info.dir()]);
 }
