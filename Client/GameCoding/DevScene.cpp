@@ -66,8 +66,6 @@ void DevScene::Init()
 	LoadEffect();
 	LoadTilemap();
 
-	SpawnObject<MyPlayer>(Vec2Int {5,5});
-
 	Super::Init();
 }
 

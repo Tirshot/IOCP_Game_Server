@@ -18,7 +18,19 @@ message S_EnterGame
 	bool success = 1;
 	uint64 accountId = 2;
 }
+
 // C_EnterRoom
+message S_MyPlayer
+{
+	ObjectInfo info = 1;
+}
 
+message S_AddObject
+{
+	repeated ObjectInfo objects = 1;
+}
 
-// S_EnterRoom
+message S_RemoveObject
+{
+	repeated uint64 ids = 1;
+}

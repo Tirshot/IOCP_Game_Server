@@ -16,4 +16,7 @@ public:
 
 	GameSessionRef GetSessionRef() { return static_pointer_cast<GameSession>(shared_from_this());}
 
+public:
+	weak_ptr<GameRoom> gameRoom;
+	weak_ptr<Player> player;
 };

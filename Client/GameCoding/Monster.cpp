@@ -1,3 +1,4 @@
+#include "Monster.h"
 #include "pch.h"
 #include "Monster.h"
 #include "ResourceManager.h"
@@ -16,18 +17,19 @@ Monster::Monster()
 	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeft");
 	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRight");
 
+	// TO-DO : type을 info로 교체
 	_type = CreatureType::Monster;
 
-	_stat.hp = 50;
-	_stat.maxHp = 50;
-	_stat.attack = 10;
-	_stat.defence = 0;
+	info.set_hp(50);
+	info.set_maxhp(50);
+	info.set_attack(10);
+	info.set_defence(0);
 }
 
 Monster::~Monster()
 {
-}
 
+}
 void Monster::BeginPlay()
 {
 	Super::BeginPlay();
