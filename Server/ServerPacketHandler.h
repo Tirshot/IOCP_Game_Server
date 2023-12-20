@@ -8,6 +8,10 @@ enum
 	S_MyPlayer = 4,
 	S_AddObject = 5,
 	S_RemoveObject = 6,
+
+	// 해킹 방지를 위하여 번호를 비연속적으로 설정가능
+	C_Move = 10,
+	S_Move = 11,
 };
 
 struct BuffData
@@ -22,7 +26,7 @@ public:
 	static void HandlePacket(GameSessionRef session, BYTE* buffer, int32 len);
 
 	// 받기
-	
+	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
 	
 	
 	// 보내기
@@ -31,6 +35,7 @@ public:
 	static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
 	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
+	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
 
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)

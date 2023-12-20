@@ -8,6 +8,10 @@ enum
 	S_MyPlayer = 4,
 	S_AddObject = 5,
 	S_RemoveObject = 6,
+
+	// 해킹 방지를 위하여 번호를 비연속적으로 설정가능
+	C_Move = 10,
+	S_Move = 11,
 };
 
 class ClientPacketHandler
@@ -21,10 +25,13 @@ public:
 	static void Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len);
 
 
 
 	// 보내기
+	static SendBufferRef Make_C_Move();
+
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
 	{

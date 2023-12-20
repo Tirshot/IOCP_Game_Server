@@ -16,6 +16,7 @@
 #include "Sound.h"
 #include "Monster.h"
 #include "MyPlayer.h"
+#include "SceneManager.h"
 
 DevScene::DevScene()
 {
@@ -351,6 +352,65 @@ void DevScene::LoadTilemap()
 		}
 }
 
+GameObject* DevScene::GetObject(uint64 id)
+{
+	for (Actor* actor : _actors[LAYER_OBJECT])
+	{
+		GameObject* gameObject = dynamic_cast<GameObject*>(actor);
+		if (gameObject && gameObject->info.objectid() == id)
+			return gameObject;
+	}
+
+	return nullptr;
+}
+
+void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
+{
+	// 자신에 대한 정보가 이미 있다면 스킵
+	uint64 myplayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
+	
+	// repeated 패킷을 순회
+	const int32 size =pkt.objects_size();
+	for (int32 i = 0; i < size; i++)
+	{
+		const Protocol::ObjectInfo& info = pkt.objects(i);
+		if (myplayerId == info.objectid())
+			continue;
+
+		if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+		{
+			Player* player = SpawnObject<Player>(Vec2Int{ info.posx(), info.posy() });
+			
+			// 애니메이션을 위해
+			player->SetDir(info.dir());
+			player->SetState(info.state());
+			player->info = info;
+		}
+		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+		{
+			Monster* monster = SpawnObject<Monster>(Vec2Int{ info.posx(), info.posy() });
+
+			// 애니메이션을 위해
+			monster->SetDir(info.dir());
+			monster->SetState(info.state());
+			monster->info = info;
+		}
+	}
+}
+
+void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
+{
+	const int32 size = pkt.ids_size();
+	for (int32 i = 0; i < size; i++)
+	{
+		int32 id = pkt.ids(i);
+
+		GameObject* object = GetObject(id);
+		if (object)
+			RemoveActor(object);
+	}
+}
+
 Player* DevScene::FindClosestPlayer(Vec2Int cellPos)
 {
 	float best = FLT_MAX;
@@ -560,6 +620,9 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 
 void DevScene::TickMonsterSpawn()
 {
+	// 더 이상 클라이언트에서 몬스터를 스폰하지 않음.
+	return;
+
 	if (_monsterCount < DESIRED_MONSTER_COUNT)
 		SpawnObjectAtRandomPos<Monster>();
 }

@@ -18,17 +18,26 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
-	// 플레이어, 몬스터 소환
+	// 몬스터 소환
 	MonsterRef monster = GameObject::CreateMonster();
 	monster->info.set_posx(8);
 	monster->info.set_posy(8);
 	AddObject(monster);
 
+	_tilemap.LoadFile(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Tilemap\\Tilemap01.txt");
 }
 
 void GameRoom::Update()
 {
+	for (auto& item : _players)
+	{
+		item.second->Update();
+	}
 
+	for (auto& item : _monsters)
+	{
+		item.second->Update();
+	}
 }
 
 void GameRoom::EnterRoom(GameSessionRef session)
@@ -79,7 +88,7 @@ void GameRoom::LeaveRoom(GameSessionRef session)
 		return;
 
 	// shared_ptr로 변환 가능한가? -> 아직 존재하는가?
-	if (session->player.lock())
+	if (session->player.lock() == nullptr)
 		return;
 
 	uint64 id = session->player.lock()->info.objectid();
@@ -174,5 +183,218 @@ void GameRoom::Broadcast(SendBufferRef& sendBuffer)
 	for (auto& item : _players)
 	{
 		item.second->session->Send(sendBuffer);
+	}
+}
+
+PlayerRef GameRoom::FindClosestPlayer(Vec2Int cellPos)
+{
+	float best = FLT_MAX;
+	PlayerRef ret = nullptr;
+
+	for (auto& item :_players)
+	{
+		PlayerRef player = item.second;
+		if (player)
+		{
+			Vec2Int dir = cellPos - player->GetCellPos();
+			float dist = dir.LengthSquared();
+			if (dist < best)
+			{
+				dist = best;
+				ret = player;
+			}
+		}
+	}
+	return ret;
+}
+
+bool GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth)
+{
+	// 맵 끝까지 찾지 못하도록 예외처리
+	int32 depth = abs(src.y - dest.y) + abs(src.x - dest.x);
+	if (depth >= maxDepth)
+		return false;
+
+	priority_queue<PQNode, vector<PQNode>, greater<PQNode>> pq;
+	map<Vec2Int, int32> best;
+	map<Vec2Int, Vec2Int> parent;
+
+	// 초기값
+	{
+		int32 cost = abs(dest.y - src.y) + abs(dest.x - src.x);
+
+		pq.push(PQNode(cost, src));
+		best[src] = cost;
+		parent[src] = src;
+	}
+
+	Vec2Int front[4] =
+	{
+		{0,-1},
+		{0,1},
+		{-1,0},
+		{1,0}
+	};
+
+	bool found = false;
+
+	while (pq.empty() == false)
+	{
+		// 제일 좋은 후보 찾기
+		PQNode node = pq.top();
+		pq.pop();
+
+		// 더 짧은 경로를 뒤늦게 찾았으면 스킵
+		if (best[node.pos] < node.cost)
+			continue;
+
+		// 목적지 도달 시 종료
+		if (node.pos == dest)
+		{
+			found = true;
+			break;
+		}
+
+		// 방문
+		for (int32 dir = 0; dir < 4; dir++)
+		{
+			// 상하좌우로 다음 좌표를 탐색
+			Vec2Int nextPos = node.pos + front[dir];
+
+			if (CanGo(nextPos) == false)
+				continue;
+
+			// 맵 끝까지 찾지 못하도록 예외처리
+			int32 depth = abs(nextPos.y - src.y) + abs(nextPos.x - src.x);
+			if (depth >= maxDepth)
+				continue;
+
+			int32 cost = abs(dest.y - nextPos.y) + abs(dest.x - nextPos.x);
+			int32 bestCost = best[nextPos];
+			if (bestCost != 0)
+			{
+				// 다른 경로에서 더 빠른 길을 찾았다면 스킵
+				if (bestCost <= cost)
+					continue;
+			}
+
+			// 예약
+			best[nextPos] = cost;
+			pq.push(PQNode(cost, nextPos));
+			parent[nextPos] = node.pos;
+		}
+	}
+	// 길이 막혀있는지 확인
+	if (found == false)
+	{
+		// 길을 찾지 못했으나 가장 가까이 이동할 수 있음
+		float bestScore = FLT_MAX;
+
+		for (auto& item : best)
+		{
+			Vec2Int pos = item.first;
+			int32 score = item.second;
+
+			// 동점이면 최초 위치에서 덜 이동하는 쪽으로
+			if (bestScore == score)
+			{
+				int32 dist1 = abs(dest.x - src.x) + abs(dest.y - src.y);
+				int32 dist2 = abs(pos.x - src.x) + abs(pos.y - src.y);
+				if (dist1 > dist2)
+					dest = pos;
+			}
+			if (bestScore > score)
+			{
+				dest = pos;
+				bestScore = score;
+			}
+		}
+	}
+	path.clear();
+	Vec2Int pos = dest;
+
+	// 도착점에서 거슬러 올라감
+	while (true)
+	{
+		path.push_back(pos);
+
+		// 시작점
+		if (pos == parent[pos])
+			break;
+
+		pos = parent[pos];
+	}
+
+	std::reverse(path.begin(), path.end());
+	return true;
+}
+
+bool GameRoom::CanGo(Vec2Int cellPos)
+{
+	Tile* tile = _tilemap.GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	// 몬스터 충돌
+	if (GetGameObjectAt(cellPos) != nullptr)
+		return false;
+
+	return tile->value != 1;
+}
+
+Vec2Int GameRoom::GetRandomEmptyCellPos()
+{
+	Vec2Int ret = { -1,-1 };
+
+	Vec2Int size = _tilemap.GetMapSize();
+
+	// 굉장히 많아지면 빠져나오도록 설정해야 함
+	while (true)
+	{
+		int32 x = rand() % size.x;
+		int32 y = rand() % size.y;
+		Vec2Int cellPos{ x, y };
+
+		if (CanGo(cellPos))
+			return cellPos;
+	}
+}
+
+GameObjectRef GameRoom::GetGameObjectAt(Vec2Int cellPos)
+{
+	for (auto& item : _players)
+	{
+		if (item.second->GetCellPos() == cellPos)
+			return item.second;
+	}
+
+	for (auto& item : _monsters)
+	{
+		if (item.second->GetCellPos() == cellPos)
+			return item.second;
+	}
+
+	return nullptr;
+}
+
+void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
+{
+	// 이동 패킷을 받았을 때 처리
+	uint64 id = pkt.info().objectid();
+	GameObjectRef gameObject = FindObject(id);
+	if (gameObject == nullptr)
+		return;
+
+	// TODO : 이동 가능한지 확인
+
+	gameObject->info.set_state(pkt.info().state());
+	gameObject->info.set_dir(pkt.info().dir());
+	gameObject->info.set_posx(pkt.info().posx());
+	gameObject->info.set_posy(pkt.info().posy());
+
+	// 클라이언트의 패킷을 브로드캐스트
+	{
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
+		Broadcast(sendBuffer);
 	}
 }

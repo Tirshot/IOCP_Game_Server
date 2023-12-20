@@ -19,6 +19,8 @@ private:
 	virtual void TickMove() override;
 	virtual void TickSkill() override;
 
+	void SyncToServer();
+
 	bool _keyPressed = false;
 };
 

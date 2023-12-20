@@ -206,15 +206,13 @@
     <ClInclude Include="ClientPacketHandler.h">
       <Filter>소스 파일\07. Network</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkMananger.h">
-      <Filter>소스 파일\01. Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>소스 파일\00. MainGame</Filter>
     </ClInclude>
     <ClInclude Include="MyPlayer.h">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
+    <ClInclude Include="NetworkManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -342,14 +340,14 @@
     <ClCompile Include="ClientPacketHandler.cpp">
       <Filter>소스 파일\07. Network</Filter>
     </ClCompile>
-    <ClCompile Include="NetworkMananger.cpp">
-      <Filter>소스 파일\01. Manager</Filter>
-    </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>소스 파일\00. MainGame</Filter>
     </ClCompile>
     <ClCompile Include="MyPlayer.cpp">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

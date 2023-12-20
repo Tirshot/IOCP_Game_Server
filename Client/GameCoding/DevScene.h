@@ -64,6 +64,13 @@ public:
 		return SpawnObject<T>(randPos);
 	}
 
+public:
+	GameObject* GetObject(uint64 id);
+
+	// 패킷 핸들
+	void Handle_S_AddObject(Protocol::S_AddObject& pkt);
+	void Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt);
+
 	Player* FindClosestPlayer(Vec2Int cellPos);
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 
@@ -75,7 +82,8 @@ private:
 	void TickMonsterSpawn();
 
 private:
-	const int32 DESIRED_MONSTER_COUNT = 20;
+	// 몬스터 스폰 숫자
+	const int32 DESIRED_MONSTER_COUNT = 1;
 	int32 _monsterCount = 0;
 	class TilemapActor* _tilemapActor = nullptr;
 };

@@ -9,7 +9,8 @@
 #include "DevScene.h"
 #include "HitEffect.h"
 #include "Arrow.h"
-
+#include "ClientPacketHandler.h"
+#include "NetworkManager.h"
 
 MyPlayer::MyPlayer()
 {
@@ -30,6 +31,8 @@ void MyPlayer::BeginPlay()
 void MyPlayer::Tick()
 {
 	Super::Tick();
+
+	SyncToServer();
 }
 
 void MyPlayer::Render(HDC hdc)
@@ -148,4 +151,15 @@ void MyPlayer::TickMove()
 void MyPlayer::TickSkill()
 {
 	Super::TickSkill();
+}
+
+void MyPlayer::SyncToServer()
+{
+	// 매 1000프레임마다 동기화하긴 불합리
+	// 언제 보낼지 잘 판단하는 것이 중요
+	if (_dirtyFlag == false)
+		return;
+
+	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 }

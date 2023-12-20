@@ -57,6 +57,8 @@ void Monster::TickIdle()
 	if (scene == nullptr)
 		return;
 
+	return;
+
 	// 주변에 있는 플레이어 찾기
 	if (_target == nullptr)
 		_target = scene->FindClosestPlayer(GetCellPos());

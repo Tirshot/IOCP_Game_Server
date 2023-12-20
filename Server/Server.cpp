@@ -10,12 +10,14 @@ using namespace std;
 #include "Listener.h"
 #include "Service.h"
 #include "GameSession.h"
+#include "GameRoom.h"
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
 
 int main()
 {
 	SocketUtils::Init();
+	GRoom->Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
@@ -25,16 +27,20 @@ int main()
 
 	assert(service->Start());
 
-	for (int32 i = 0; i < 5; i++)
-	{
-		GThreadManager->Launch([=]()
-			{
+	//for (int32 i = 0; i < 5; i++)
+	//{
+	//	GThreadManager->Launch([=]()
+	//		{
+				// 싱글 스레드로 만듬
 				while (true)
 				{
-					service->GetIocpCore()->Dispatch();
+					service->GetIocpCore()->Dispatch(0);
+					GRoom->Update();
 				}
+				/*
 			});
-	}
+	}*/
+
 
 	GThreadManager->Join();
 	
