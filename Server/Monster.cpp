@@ -93,8 +93,12 @@ void Monster::UpdateIdle()
 					// 길을 못 찾았으면 정지, 타겟 리셋
 				{
 					SetCellPos(path[0]);
-					_target.reset();
 				}
+			}
+			// 너무 멀어서 길을 찾지 못함
+			else
+			{
+				_target.reset();
 			}
 		}
 	}

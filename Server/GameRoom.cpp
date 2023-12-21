@@ -204,7 +204,7 @@ PlayerRef GameRoom::FindClosestPlayer(Vec2Int cellPos)
 			float dist = dir.LengthSquared();
 			if (dist < best)
 			{
-				dist = best;
+				best = dist;
 				ret = player;
 			}
 		}
