@@ -5,9 +5,11 @@ import "Enum.proto";
 
 message BuffData
 {
+	// 미구현, 테스트용
 	uint64 buffId = 1;
 	float remainTime = 2;
 	repeated uint64 victims = 3;
+
 }
 
 message ObjectInfo
@@ -23,4 +25,5 @@ message ObjectInfo
 	int32 defence = 9;
 	int32 posX = 10;
 	int32 posY = 11;
+	WEAPON_TYPE weaponType = 12;
 }

@@ -117,3 +117,24 @@ Vec2Int GameObject::GetFrontCellPos()
 
 	return pos;
 }
+
+void GameObject::OnDamaged(GameObject* attacker)
+{
+	if (attacker == nullptr)
+		return;
+
+	int32 damage = attacker->info.attack() - this->info.defence();
+	if (damage <= 0)
+		return;
+
+	// hp는 항상 양수
+	info.set_hp(max(0, info.hp() - damage));
+
+	if (info.hp() == 0)
+	{
+		if (room)
+		{
+			room->RemoveObject(this->info.objectid());
+		}
+	}
+}

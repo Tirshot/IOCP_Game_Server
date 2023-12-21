@@ -19,6 +19,7 @@ Monster::~Monster()
 
 void Monster::Init()
 {
+
 }
 
 void Monster::Update()

@@ -212,7 +212,9 @@
     <ClInclude Include="MyPlayer.h">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
-    <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="NetworkManager.h">
+      <Filter>소스 파일\01. Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -347,7 +349,7 @@
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClCompile>
     <ClCompile Include="NetworkManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

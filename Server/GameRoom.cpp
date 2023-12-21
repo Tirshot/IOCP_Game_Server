@@ -52,6 +52,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 	// TEMP
 	player->info.set_posx(6);
 	player->info.set_posy(6);
+	player->info.set_dir(Protocol::DIR_TYPE_DOWN);
 
 	// 입장한 클라이언트에게 정보 전송
 	{

@@ -154,10 +154,13 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 // 패킷 보내기
 SendBufferRef ClientPacketHandler::Make_C_Move()
 {
+	// 패킷 생성
 	Protocol::C_Move pkt;
 
+	// MyPlayer를 가져옴
 	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
+	// 패킷의 info를 수정해 myPlayer의 정보를 패킷에 담음
 	*pkt.mutable_info() = myPlayer->info;
 
 	return MakeSendBuffer(pkt, C_Move);
