@@ -25,7 +25,7 @@ public:
 
 	void BroadcastMove();
 
-	void OnDamaged(GameObject* attacker);
+	void OnDamaged(GameObjectRef attacker);
 
 	// ¿ÀºêÁ§Æ®¸¦ ÃÑ°ý °ü¸®
 	static PlayerRef CreatePlayer();

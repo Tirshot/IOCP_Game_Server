@@ -378,6 +378,7 @@ class ObjectInfo final :
     kPosXFieldNumber = 10,
     kPosYFieldNumber = 11,
     kWeaponTypeFieldNumber = 12,
+    kDamageFieldNumber = 13,
   };
   // string name = 5;
   void clear_name();
@@ -492,6 +493,15 @@ class ObjectInfo final :
   void _internal_set_weapontype(::Protocol::WEAPON_TYPE value);
   public:
 
+  // int32 damage = 13;
+  void clear_damage();
+  int32_t damage() const;
+  void set_damage(int32_t value);
+  private:
+  int32_t _internal_damage() const;
+  void _internal_set_damage(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -512,6 +522,7 @@ class ObjectInfo final :
     int32_t posx_;
     int32_t posy_;
     int weapontype_;
+    int32_t damage_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -887,6 +898,26 @@ inline void ObjectInfo::_internal_set_weapontype(::Protocol::WEAPON_TYPE value) 
 inline void ObjectInfo::set_weapontype(::Protocol::WEAPON_TYPE value) {
   _internal_set_weapontype(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.weaponType)
+}
+
+// int32 damage = 13;
+inline void ObjectInfo::clear_damage() {
+  _impl_.damage_ = 0;
+}
+inline int32_t ObjectInfo::_internal_damage() const {
+  return _impl_.damage_;
+}
+inline int32_t ObjectInfo::damage() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.damage)
+  return _internal_damage();
+}
+inline void ObjectInfo::_internal_set_damage(int32_t value) {
+  
+  _impl_.damage_ = value;
+}
+inline void ObjectInfo::set_damage(int32_t value) {
+  _internal_set_damage(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.damage)
 }
 
 #ifdef __GNUC__

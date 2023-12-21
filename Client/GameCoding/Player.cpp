@@ -37,8 +37,11 @@ Player::Player()
 	_flipbookStaff[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffLeft");
 	_flipbookStaff[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffRight");
 
-	// TO_DO : proto의 info 값으로 교체 필요
-	_type = CreatureType::Player;
+	//이젠 서버에서 받아옴
+	//info.set_hp(100);
+	//info.set_maxhp(100);
+	//info.set_attack(15);
+	//info.set_defence(0);
 }
 
 Player::~Player()
@@ -118,9 +121,12 @@ void Player::TickSkill()
 			Creature* creature = scene->GetCreatureAt(GetFrontCellPos());
 			if (creature)
 			{
-				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				// 데미지 피격
+				// 몬스터가 피격
 				creature->OnDamaged(this);
+
+				// 동족이 때린게 아닐 때만 출력
+  				if (creature->GetType() != this->GetType())
+					scene->SpawnObject<HitEffect>(GetFrontCellPos());
 			}
 		}
 		else if (_weaponType == WeaponType::Bow)

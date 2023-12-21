@@ -20,6 +20,7 @@ void GameRoom::Init()
 {
 	// 몬스터 소환
 	MonsterRef monster = GameObject::CreateMonster();
+	monster->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	monster->info.set_posx(8);
 	monster->info.set_posy(8);
 	AddObject(monster);
@@ -42,7 +43,9 @@ void GameRoom::Update()
 
 void GameRoom::EnterRoom(GameSessionRef session)
 {
+	// 플레이어 초기화
 	PlayerRef player = GameObject::CreatePlayer();
+	player->info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 
 	// 클라이언트 서로의 존재를 연결
 	session->gameRoom = GetRoomRef();

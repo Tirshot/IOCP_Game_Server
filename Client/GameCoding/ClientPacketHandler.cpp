@@ -165,3 +165,4 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 
 	return MakeSendBuffer(pkt, C_Move);
 }
+

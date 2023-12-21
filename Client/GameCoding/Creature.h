@@ -19,13 +19,6 @@ public:
 
 	virtual void OnDamaged(Creature* attacker);
 
-	void SetStat(Stat stat) { _stat = stat; }
-	Stat& GetStat() { return _stat; }
-
-	CreatureType& GetType() { return _type; }
-
-protected:
-	Stat _stat;
-	CreatureType _type = CreatureType::None;
+	Protocol::OBJECT_TYPE GetType() { return this->info.objecttype(); }
 };
 

@@ -6,9 +6,10 @@
 Monster::Monster()
 {
 	info.set_name("MonsterName");
+	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	info.set_hp(50);
 	info.set_maxhp(50);
-	info.set_attack(5);
+	info.set_attack(10);
 	info.set_defence(0);
 }
 
@@ -89,8 +90,11 @@ void Monster::UpdateIdle()
 					}
 				}
 				else
-					// 길을 못 찾았으면 정지
+					// 길을 못 찾았으면 정지, 타겟 리셋
+				{
 					SetCellPos(path[0]);
+					_target.reset();
+				}
 			}
 		}
 	}

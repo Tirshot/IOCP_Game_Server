@@ -39,7 +39,7 @@ int main()
 				{
 					service->GetIocpCore()->Dispatch(0);
 					// 15 프레임마다 업데이트
-					if (frameCounter % 15 == 0)
+					//if (frameCounter % 15 == 0)
 					{
 						GRoom->Update();
 						frameCounter = 0;

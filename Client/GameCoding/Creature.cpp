@@ -2,6 +2,7 @@
 #include "Creature.h"
 #include "SceneManager.h"
 #include "DevScene.h"
+#include "HitEffect.h"
 
 Creature::Creature()
 {
@@ -31,19 +32,20 @@ void Creature::OnDamaged(Creature* attacker)
 	if (attacker == nullptr)
 		return;
 
-	Stat& attackerStat = attacker->GetStat();
-	Stat& stat = GetStat();
+	// disable PvP : 동족은 공격 불가
+	if (GetType() == attacker->GetType())
+		return;
 
-	int32 damage = attackerStat.attack - stat.defence;
+	int32 damage = attacker->info.attack() - this->info.defence();
 	if (damage <= 0)
 		return;
 
 	// hp는 항상 양수
-	stat.hp = max(0, stat.hp - damage);
+	info.set_hp(max(0, info.hp() - damage));
+	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 
-	if (stat.hp == 0)
+	if (this->info.hp() == 0)
 	{
-		Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 		if (scene)
 		{
 			scene->RemoveActor(this);

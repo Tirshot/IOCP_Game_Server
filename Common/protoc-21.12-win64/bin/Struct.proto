@@ -26,4 +26,5 @@ message ObjectInfo
 	int32 posX = 10;
 	int32 posY = 11;
 	WEAPON_TYPE weaponType = 12;
+	int32 damage = 13;
 }

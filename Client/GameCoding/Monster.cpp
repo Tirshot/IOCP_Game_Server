@@ -17,13 +17,14 @@ Monster::Monster()
 	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeft");
 	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRight");
 
-	// TO-DO : type을 info로 교체
-	_type = CreatureType::Monster;
-
-	info.set_hp(50);
-	info.set_maxhp(50);
-	info.set_attack(10);
-	info.set_defence(0);
+	// type도 protobuf로 받아옴
+	// _type = CreatureType::Monster;
+	
+	// 스탯도 protobuf로 받아옴
+	//info.set_hp(50);
+	//info.set_maxhp(50);
+	//info.set_attack(10);
+	//info.set_defence(0);
 }
 
 Monster::~Monster()
@@ -53,50 +54,7 @@ void Monster::Render(HDC hdc)
 
 void Monster::TickIdle()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-	if (scene == nullptr)
-		return;
 
-	return;
-
-	// 주변에 있는 플레이어 찾기
-	if (_target == nullptr)
-		_target = scene->FindClosestPlayer(GetCellPos());
-
-	if (_target)
-	{
-		// 공격 판단
-		Vec2Int dir = _target->GetCellPos() - GetCellPos();
-		int32 dist = abs(dir.x) + abs(dir.y);
-		if (dist == 1)
-		{
-			// 공격하기
-			SetDir(GetLookAtDir(_target->GetCellPos()));
-			SetState(SKILL);
-			_waitSeconds = 0.5f;
-		}
-		else
-		{
-			// 좌표 찾기
-			vector<Vec2Int> path;
-			if (scene->FindPath(GetCellPos(), _target->GetCellPos(), OUT path))
-			{
-				if (path.size() > 1)
-				{
-					// 한 칸만 이동
-					Vec2Int nextPos = path[1];
-					if (scene->CanGo(nextPos))
-					{
-						SetCellPos(nextPos);
-						SetState(MOVE);
-					}
-				}
-				else
-					// 길을 못 찾았으면 정지
-					SetCellPos(path[0]);
-			}
-		}
-	}
 }
 
 void Monster::TickMove()
@@ -157,9 +115,12 @@ void Monster::TickSkill()
 
 	if (creature)
 	{
-		scene->SpawnObject<HitEffect>(GetFrontCellPos());
 		// 데미지 피격
 		creature->OnDamaged(this);
+
+		// 동족이 때린게 아닐 때만 출력
+		if (creature->GetType() != this->GetType())
+			scene->SpawnObject<HitEffect>(GetFrontCellPos());
 	}
 
 	SetState(IDLE);
