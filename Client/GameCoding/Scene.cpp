@@ -5,13 +5,16 @@
 #include "SceneManager.h"
 #include "TimeManager.h"
 #include "Creature.h"
+#include "Panel.h"
 
 Scene::Scene()
 {
+
 }
 
 Scene::~Scene()
 {
+
 }
 
 void Scene::Init()
@@ -47,9 +50,6 @@ void Scene::Render(HDC hdc)
 	for (const vector<Actor*>& actors : _actors)
 		for (Actor* actor : actors)
 			actor->Render(hdc);
-
-	for (UI* ui : _uis)
-		ui->Render(hdc);
 }
 
 void Scene::AddActor(Actor* actor)
@@ -69,6 +69,15 @@ void Scene::RemoveActor(Actor* actor)
 	vector<Actor*>& v = _actors[actor->GetLayer()];
 
 	v.erase(std::remove(v.begin(), v.end(), actor), v.end());
+}
+
+void Scene::AddUI(UI* ui)
+{
+
+	if (ui == nullptr)
+		return;
+
+	_uis.push_back(ui);
 }
 
 Creature* Scene::GetCreatureAt(Vec2Int cellPos)

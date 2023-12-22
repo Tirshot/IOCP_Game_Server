@@ -4,6 +4,7 @@
 class Panel : public UI
 {
 	using Super = UI;
+
 public:
 	Panel();
 	virtual ~Panel();
@@ -15,7 +16,9 @@ public:
 	void AddChild(UI* ui);
 	bool RemoveChild(UI* ui);
 
-private:
+	auto GetChildren() { return _children; }
+
+protected:
 	vector<UI*> _children;
 };
 

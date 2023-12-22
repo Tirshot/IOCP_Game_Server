@@ -389,12 +389,13 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 	if (gameObject == nullptr)
 		return;
 
-	// TODO : 이동 가능한지 확인
+	// set state, dir, pos + weaponType
 
 	gameObject->info.set_state(pkt.info().state());
 	gameObject->info.set_dir(pkt.info().dir());
 	gameObject->info.set_posx(pkt.info().posx());
 	gameObject->info.set_posy(pkt.info().posy());
+	gameObject->info.set_weapontype(pkt.info().weapontype());
 
 	// 클라이언트의 패킷을 브로드캐스트
 	{

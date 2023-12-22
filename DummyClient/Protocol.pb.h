@@ -50,12 +50,12 @@ namespace Protocol {
 class C_Move;
 struct C_MoveDefaultTypeInternal;
 extern C_MoveDefaultTypeInternal _C_Move_default_instance_;
+class C_WeaponChange;
+struct C_WeaponChangeDefaultTypeInternal;
+extern C_WeaponChangeDefaultTypeInternal _C_WeaponChange_default_instance_;
 class S_AddObject;
 struct S_AddObjectDefaultTypeInternal;
 extern S_AddObjectDefaultTypeInternal _S_AddObject_default_instance_;
-class S_Damaged;
-struct S_DamagedDefaultTypeInternal;
-extern S_DamagedDefaultTypeInternal _S_Damaged_default_instance_;
 class S_EnterGame;
 struct S_EnterGameDefaultTypeInternal;
 extern S_EnterGameDefaultTypeInternal _S_EnterGame_default_instance_;
@@ -74,8 +74,8 @@ extern S_TESTDefaultTypeInternal _S_TEST_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C_Move* Arena::CreateMaybeMessage<::Protocol::C_Move>(Arena*);
+template<> ::Protocol::C_WeaponChange* Arena::CreateMaybeMessage<::Protocol::C_WeaponChange>(Arena*);
 template<> ::Protocol::S_AddObject* Arena::CreateMaybeMessage<::Protocol::S_AddObject>(Arena*);
-template<> ::Protocol::S_Damaged* Arena::CreateMaybeMessage<::Protocol::S_Damaged>(Arena*);
 template<> ::Protocol::S_EnterGame* Arena::CreateMaybeMessage<::Protocol::S_EnterGame>(Arena*);
 template<> ::Protocol::S_Move* Arena::CreateMaybeMessage<::Protocol::S_Move>(Arena*);
 template<> ::Protocol::S_MyPlayer* Arena::CreateMaybeMessage<::Protocol::S_MyPlayer>(Arena*);
@@ -1225,24 +1225,24 @@ class S_Move final :
 };
 // -------------------------------------------------------------------
 
-class S_Damaged final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_Damaged) */ {
+class C_WeaponChange final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_WeaponChange) */ {
  public:
-  inline S_Damaged() : S_Damaged(nullptr) {}
-  ~S_Damaged() override;
-  explicit PROTOBUF_CONSTEXPR S_Damaged(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline C_WeaponChange() : C_WeaponChange(nullptr) {}
+  ~C_WeaponChange() override;
+  explicit PROTOBUF_CONSTEXPR C_WeaponChange(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  S_Damaged(const S_Damaged& from);
-  S_Damaged(S_Damaged&& from) noexcept
-    : S_Damaged() {
+  C_WeaponChange(const C_WeaponChange& from);
+  C_WeaponChange(C_WeaponChange&& from) noexcept
+    : C_WeaponChange() {
     *this = ::std::move(from);
   }
 
-  inline S_Damaged& operator=(const S_Damaged& from) {
+  inline C_WeaponChange& operator=(const C_WeaponChange& from) {
     CopyFrom(from);
     return *this;
   }
-  inline S_Damaged& operator=(S_Damaged&& from) noexcept {
+  inline C_WeaponChange& operator=(C_WeaponChange&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1265,20 +1265,20 @@ class S_Damaged final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const S_Damaged& default_instance() {
+  static const C_WeaponChange& default_instance() {
     return *internal_default_instance();
   }
-  static inline const S_Damaged* internal_default_instance() {
-    return reinterpret_cast<const S_Damaged*>(
-               &_S_Damaged_default_instance_);
+  static inline const C_WeaponChange* internal_default_instance() {
+    return reinterpret_cast<const C_WeaponChange*>(
+               &_C_WeaponChange_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     7;
 
-  friend void swap(S_Damaged& a, S_Damaged& b) {
+  friend void swap(C_WeaponChange& a, C_WeaponChange& b) {
     a.Swap(&b);
   }
-  inline void Swap(S_Damaged* other) {
+  inline void Swap(C_WeaponChange* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1291,7 +1291,7 @@ class S_Damaged final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(S_Damaged* other) {
+  void UnsafeArenaSwap(C_WeaponChange* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1299,14 +1299,14 @@ class S_Damaged final :
 
   // implements Message ----------------------------------------------
 
-  S_Damaged* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<S_Damaged>(arena);
+  C_WeaponChange* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_WeaponChange>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_Damaged& from);
+  void CopyFrom(const C_WeaponChange& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_Damaged& from) {
-    S_Damaged::MergeImpl(*this, from);
+  void MergeFrom( const C_WeaponChange& from) {
+    C_WeaponChange::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1324,15 +1324,15 @@ class S_Damaged final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(S_Damaged* other);
+  void InternalSwap(C_WeaponChange* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.S_Damaged";
+    return "Protocol.C_WeaponChange";
   }
   protected:
-  explicit S_Damaged(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit C_WeaponChange(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1366,7 +1366,7 @@ class S_Damaged final :
       ::Protocol::ObjectInfo* info);
   ::Protocol::ObjectInfo* unsafe_arena_release_info();
 
-  // @@protoc_insertion_point(class_scope:Protocol.S_Damaged)
+  // @@protoc_insertion_point(class_scope:Protocol.C_WeaponChange)
  private:
   class _Internal;
 
@@ -1893,25 +1893,25 @@ inline void S_Move::set_allocated_info(::Protocol::ObjectInfo* info) {
 
 // -------------------------------------------------------------------
 
-// S_Damaged
+// C_WeaponChange
 
 // .Protocol.ObjectInfo info = 1;
-inline bool S_Damaged::_internal_has_info() const {
+inline bool C_WeaponChange::_internal_has_info() const {
   return this != internal_default_instance() && _impl_.info_ != nullptr;
 }
-inline bool S_Damaged::has_info() const {
+inline bool C_WeaponChange::has_info() const {
   return _internal_has_info();
 }
-inline const ::Protocol::ObjectInfo& S_Damaged::_internal_info() const {
+inline const ::Protocol::ObjectInfo& C_WeaponChange::_internal_info() const {
   const ::Protocol::ObjectInfo* p = _impl_.info_;
   return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
       ::Protocol::_ObjectInfo_default_instance_);
 }
-inline const ::Protocol::ObjectInfo& S_Damaged::info() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_Damaged.info)
+inline const ::Protocol::ObjectInfo& C_WeaponChange::info() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_WeaponChange.info)
   return _internal_info();
 }
-inline void S_Damaged::unsafe_arena_set_allocated_info(
+inline void C_WeaponChange::unsafe_arena_set_allocated_info(
     ::Protocol::ObjectInfo* info) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
@@ -1922,9 +1922,9 @@ inline void S_Damaged::unsafe_arena_set_allocated_info(
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_Damaged.info)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_WeaponChange.info)
 }
-inline ::Protocol::ObjectInfo* S_Damaged::release_info() {
+inline ::Protocol::ObjectInfo* C_WeaponChange::release_info() {
   
   ::Protocol::ObjectInfo* temp = _impl_.info_;
   _impl_.info_ = nullptr;
@@ -1939,14 +1939,14 @@ inline ::Protocol::ObjectInfo* S_Damaged::release_info() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::ObjectInfo* S_Damaged::unsafe_arena_release_info() {
-  // @@protoc_insertion_point(field_release:Protocol.S_Damaged.info)
+inline ::Protocol::ObjectInfo* C_WeaponChange::unsafe_arena_release_info() {
+  // @@protoc_insertion_point(field_release:Protocol.C_WeaponChange.info)
   
   ::Protocol::ObjectInfo* temp = _impl_.info_;
   _impl_.info_ = nullptr;
   return temp;
 }
-inline ::Protocol::ObjectInfo* S_Damaged::_internal_mutable_info() {
+inline ::Protocol::ObjectInfo* C_WeaponChange::_internal_mutable_info() {
   
   if (_impl_.info_ == nullptr) {
     auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
@@ -1954,12 +1954,12 @@ inline ::Protocol::ObjectInfo* S_Damaged::_internal_mutable_info() {
   }
   return _impl_.info_;
 }
-inline ::Protocol::ObjectInfo* S_Damaged::mutable_info() {
+inline ::Protocol::ObjectInfo* C_WeaponChange::mutable_info() {
   ::Protocol::ObjectInfo* _msg = _internal_mutable_info();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_Damaged.info)
+  // @@protoc_insertion_point(field_mutable:Protocol.C_WeaponChange.info)
   return _msg;
 }
-inline void S_Damaged::set_allocated_info(::Protocol::ObjectInfo* info) {
+inline void C_WeaponChange::set_allocated_info(::Protocol::ObjectInfo* info) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
@@ -1977,7 +1977,7 @@ inline void S_Damaged::set_allocated_info(::Protocol::ObjectInfo* info) {
     
   }
   _impl_.info_ = info;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_Damaged.info)
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_WeaponChange.info)
 }
 
 #ifdef __GNUC__

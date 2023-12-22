@@ -115,7 +115,7 @@ void Player::TickSkill()
 		if (scene == nullptr)
 			return;
 
-		if (_weaponType == WeaponType::Sword)
+		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
 			Creature* creature = scene->GetCreatureAt(GetFrontCellPos());
@@ -129,7 +129,7 @@ void Player::TickSkill()
 					scene->SpawnObject<HitEffect>(GetFrontCellPos());
 			}
 		}
-		else if (_weaponType == WeaponType::Bow)
+		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{
 			Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
 			arrow->SetDir(info.dir());
@@ -153,12 +153,18 @@ void Player::UpdateAnimation()
 		break;
 
 	case SKILL:
-		if (_weaponType == WeaponType::Sword)
+		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
+		{
 			SetFlipbook(_flipbookAttack[info.dir()]);
-		else if (_weaponType == WeaponType::Bow)
+		}
+		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
+		{
 			SetFlipbook(_flipbookBow[info.dir()]);
+		}
 		else
+		{
 			SetFlipbook(_flipbookStaff[info.dir()]);
+		}
 		break;
 	}
 }

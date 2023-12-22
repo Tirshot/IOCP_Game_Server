@@ -81,7 +81,7 @@ void Button::Render(HDC hdc)
 	}
 	else
 	{
-		Utils::DrawRect(hdc, _pos, _size.x, _size.y);
+		/*Utils::DrawRect(hdc, _pos, _size.x, _size.y);*/
 	}
 
 	

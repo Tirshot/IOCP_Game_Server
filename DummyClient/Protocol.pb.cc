@@ -117,19 +117,19 @@ struct S_MoveDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_MoveDefaultTypeInternal _S_Move_default_instance_;
-PROTOBUF_CONSTEXPR S_Damaged::S_Damaged(
+PROTOBUF_CONSTEXPR C_WeaponChange::C_WeaponChange(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.info_)*/nullptr
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct S_DamagedDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR S_DamagedDefaultTypeInternal()
+struct C_WeaponChangeDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_WeaponChangeDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~S_DamagedDefaultTypeInternal() {}
+  ~C_WeaponChangeDefaultTypeInternal() {}
   union {
-    S_Damaged _instance;
+    C_WeaponChange _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_DamagedDefaultTypeInternal _S_Damaged_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_WeaponChangeDefaultTypeInternal _C_WeaponChange_default_instance_;
 }  // namespace Protocol
 static ::_pb::Metadata file_level_metadata_Protocol_2eproto[8];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
@@ -190,12 +190,12 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_Move, _impl_.info_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_Damaged, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_WeaponChange, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_Damaged, _impl_.info_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_WeaponChange, _impl_.info_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::S_TEST)},
@@ -205,7 +205,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 32, -1, -1, sizeof(::Protocol::S_RemoveObject)},
   { 39, -1, -1, sizeof(::Protocol::C_Move)},
   { 46, -1, -1, sizeof(::Protocol::S_Move)},
-  { 53, -1, -1, sizeof(::Protocol::S_Damaged)},
+  { 53, -1, -1, sizeof(::Protocol::C_WeaponChange)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -216,7 +216,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_S_RemoveObject_default_instance_._instance,
   &::Protocol::_C_Move_default_instance_._instance,
   &::Protocol::_S_Move_default_instance_._instance,
-  &::Protocol::_S_Damaged_default_instance_._instance,
+  &::Protocol::_C_WeaponChange_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -230,8 +230,8 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "l.ObjectInfo\"\035\n\016S_RemoveObject\022\013\n\003ids\030\001 "
   "\003(\004\",\n\006C_Move\022\"\n\004info\030\001 \001(\0132\024.Protocol.O"
   "bjectInfo\",\n\006S_Move\022\"\n\004info\030\001 \001(\0132\024.Prot"
-  "ocol.ObjectInfo\"/\n\tS_Damaged\022\"\n\004info\030\001 \001"
-  "(\0132\024.Protocol.ObjectInfob\006proto3"
+  "ocol.ObjectInfo\"4\n\016C_WeaponChange\022\"\n\004inf"
+  "o\030\001 \001(\0132\024.Protocol.ObjectInfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -239,7 +239,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 472, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 477, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 8,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -1717,30 +1717,30 @@ void S_Move::InternalSwap(S_Move* other) {
 
 // ===================================================================
 
-class S_Damaged::_Internal {
+class C_WeaponChange::_Internal {
  public:
-  static const ::Protocol::ObjectInfo& info(const S_Damaged* msg);
+  static const ::Protocol::ObjectInfo& info(const C_WeaponChange* msg);
 };
 
 const ::Protocol::ObjectInfo&
-S_Damaged::_Internal::info(const S_Damaged* msg) {
+C_WeaponChange::_Internal::info(const C_WeaponChange* msg) {
   return *msg->_impl_.info_;
 }
-void S_Damaged::clear_info() {
+void C_WeaponChange::clear_info() {
   if (GetArenaForAllocation() == nullptr && _impl_.info_ != nullptr) {
     delete _impl_.info_;
   }
   _impl_.info_ = nullptr;
 }
-S_Damaged::S_Damaged(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+C_WeaponChange::C_WeaponChange(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:Protocol.S_Damaged)
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_WeaponChange)
 }
-S_Damaged::S_Damaged(const S_Damaged& from)
+C_WeaponChange::C_WeaponChange(const C_WeaponChange& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  S_Damaged* const _this = this; (void)_this;
+  C_WeaponChange* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.info_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}};
@@ -1749,10 +1749,10 @@ S_Damaged::S_Damaged(const S_Damaged& from)
   if (from._internal_has_info()) {
     _this->_impl_.info_ = new ::Protocol::ObjectInfo(*from._impl_.info_);
   }
-  // @@protoc_insertion_point(copy_constructor:Protocol.S_Damaged)
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_WeaponChange)
 }
 
-inline void S_Damaged::SharedCtor(
+inline void C_WeaponChange::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
@@ -1762,8 +1762,8 @@ inline void S_Damaged::SharedCtor(
   };
 }
 
-S_Damaged::~S_Damaged() {
-  // @@protoc_insertion_point(destructor:Protocol.S_Damaged)
+C_WeaponChange::~C_WeaponChange() {
+  // @@protoc_insertion_point(destructor:Protocol.C_WeaponChange)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -1771,17 +1771,17 @@ S_Damaged::~S_Damaged() {
   SharedDtor();
 }
 
-inline void S_Damaged::SharedDtor() {
+inline void C_WeaponChange::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete _impl_.info_;
 }
 
-void S_Damaged::SetCachedSize(int size) const {
+void C_WeaponChange::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void S_Damaged::Clear() {
-// @@protoc_insertion_point(message_clear_start:Protocol.S_Damaged)
+void C_WeaponChange::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_WeaponChange)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -1793,7 +1793,7 @@ void S_Damaged::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* S_Damaged::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* C_WeaponChange::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -1830,9 +1830,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* S_Damaged::_InternalSerialize(
+uint8_t* C_WeaponChange::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_Damaged)
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_WeaponChange)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1847,12 +1847,12 @@ uint8_t* S_Damaged::_InternalSerialize(
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_Damaged)
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_WeaponChange)
   return target;
 }
 
-size_t S_Damaged::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Protocol.S_Damaged)
+size_t C_WeaponChange::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_WeaponChange)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -1869,17 +1869,17 @@ size_t S_Damaged::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_Damaged::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_WeaponChange::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    S_Damaged::MergeImpl
+    C_WeaponChange::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_Damaged::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_WeaponChange::GetClassData() const { return &_class_data_; }
 
 
-void S_Damaged::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<S_Damaged*>(&to_msg);
-  auto& from = static_cast<const S_Damaged&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_Damaged)
+void C_WeaponChange::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_WeaponChange*>(&to_msg);
+  auto& from = static_cast<const C_WeaponChange&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_WeaponChange)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -1891,24 +1891,24 @@ void S_Damaged::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void S_Damaged::CopyFrom(const S_Damaged& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_Damaged)
+void C_WeaponChange::CopyFrom(const C_WeaponChange& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_WeaponChange)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool S_Damaged::IsInitialized() const {
+bool C_WeaponChange::IsInitialized() const {
   return true;
 }
 
-void S_Damaged::InternalSwap(S_Damaged* other) {
+void C_WeaponChange::InternalSwap(C_WeaponChange* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_.info_, other->_impl_.info_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata S_Damaged::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata C_WeaponChange::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
       file_level_metadata_Protocol_2eproto[7]);
@@ -1945,9 +1945,9 @@ template<> PROTOBUF_NOINLINE ::Protocol::S_Move*
 Arena::CreateMaybeMessage< ::Protocol::S_Move >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_Move >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Protocol::S_Damaged*
-Arena::CreateMaybeMessage< ::Protocol::S_Damaged >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Protocol::S_Damaged >(arena);
+template<> PROTOBUF_NOINLINE ::Protocol::C_WeaponChange*
+Arena::CreateMaybeMessage< ::Protocol::C_WeaponChange >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_WeaponChange >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

@@ -33,7 +33,9 @@ public:
 	int64 GetObjectID() { return info.objectid(); }
 	void SetObjectID(int64 id) { info.set_objectid(id); }
 
-
+public:
+	void SetWeaponType(Protocol::WEAPON_TYPE weaponType);
+	Protocol::WEAPON_TYPE GetWeaponType() { return info.weapontype(); }
 
 protected:
 	// 변화를 추적하기 위한 플래그

@@ -77,8 +77,8 @@ void TilemapActor::Render(HDC hdc)
 			case 0:
 				// 타일맵의 좌상단이 타일맵 액터의 중심에 위치
 				::TransparentBlt(hdc,
-					_pos.x + x * (int32)TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
-					_pos.y + y * (int32)TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
+					(int32)_pos.x + x * (int32)TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
+					(int32)_pos.y + y * (int32)TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
 					TILE_SIZEX,
 					TILE_SIZEY,
 					spriteO->GetDC(),
@@ -93,8 +93,8 @@ void TilemapActor::Render(HDC hdc)
 			case 1:
 				// 타일맵의 좌상단이 타일맵 액터의 중심에 위치
 				::TransparentBlt(hdc,
-					_pos.x + x * (int32)TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
-					_pos.y + y * (int32)TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
+					(int32)_pos.x + x * (int32)TILE_SIZEX - ((int32)cameraPos.x - GWinSizeX / 2),
+					(int32)_pos.y + y * (int32)TILE_SIZEX - ((int32)cameraPos.y - GWinSizeY / 2),
 					TILE_SIZEX,
 					TILE_SIZEY,
 					spriteX->GetDC(),
@@ -114,8 +114,8 @@ void TilemapActor::TilePicking()
 {
 	// 인 게임 좌표
 	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
-	int32 screenX = cameraPos.x - GWinSizeX / 2;
-	int32 screenY = cameraPos.y - GWinSizeY / 2;
+	int32 screenX = (int32)cameraPos.x - GWinSizeX / 2;
+	int32 screenY = (int32)cameraPos.y - GWinSizeY / 2;
 
 	// 800 * 600 내에서 마우스의 좌표
 	POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();

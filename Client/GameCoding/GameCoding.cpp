@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "GameCoding.h"
 #include "Game.h"
-
+#include "TimeManager.h"
 
 #define MAX_LOADSTRING 100
 
@@ -39,9 +39,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     // 게임 초기화
     Game game;
     game.Init(g_hWnd);
-
     MSG msg = {};
-    uint64 prevTick = 0;
 
     // 기본 메시지 루프입니다:
     while (msg.message != WM_QUIT)
@@ -53,12 +51,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            uint64 now = ::GetTickCount64();
             game.Update();
             game.Render();
-
-            prevTick = now;
-
         }
     }
     return (int) msg.wParam;

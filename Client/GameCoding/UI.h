@@ -9,7 +9,7 @@ public:
 	virtual void Tick();
 	virtual void Render(HDC hdc);
 
-	void SetPos(Vec2 pos) {_pos = pos;	}
+	void SetPos(Vec2 pos) { _pos = pos; }
 	Vec2 GetPos(){ return _pos; }
 
 	void SetSize(Vec2Int size) { _size = size; }
@@ -20,8 +20,7 @@ public:
 	bool IsMouseInRect();
 
 protected:
-	Vec2	_pos = { 400, 300 };
+	Vec2	_pos = { 0, 0 };
 	Vec2Int _size = { 150, 150 };
-
 };
 

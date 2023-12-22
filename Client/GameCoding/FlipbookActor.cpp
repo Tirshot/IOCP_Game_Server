@@ -80,7 +80,6 @@ void FlipbookActor::SetFlipbook(Flipbook* flipbook)
 	if (flipbook && _flipbook == flipbook)
 		return;
 
-
 	_flipbook = flipbook;
 	Reset();
 }

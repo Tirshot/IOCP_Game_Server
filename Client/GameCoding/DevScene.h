@@ -32,14 +32,13 @@ public:
 	virtual void AddActor(Actor* actor) override;
 	virtual void RemoveActor(Actor* actor) override;
 
-	void Clear();
-
 	void LoadMap();
 	void LoadPlayer();
 	void LoadMonster();
 	void LoadProjectile();
 	void LoadEffect();
 	void LoadTilemap();
+	void LoadUI();
 
 	template<typename T>
 	T* SpawnObject(Vec2Int pos)
@@ -86,4 +85,5 @@ private:
 	const int32 DESIRED_MONSTER_COUNT = 1;
 	int32 _monsterCount = 0;
 	class TilemapActor* _tilemapActor = nullptr;
+	vector<UI*> _uis;
 };

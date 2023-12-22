@@ -79,7 +79,7 @@ bool GameObject::HasReachedDest()
 
 bool GameObject::CanGo(Vec2Int cellPos)
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
 		return false;
 
@@ -138,5 +138,13 @@ Vec2Int GameObject::GetFrontCellPos()
 	}
 
 	return GetCellPos();
+}
+
+void GameObject::SetWeaponType(Protocol::WEAPON_TYPE weaponType)
+{
+	info.set_weapontype(weaponType);
+	UpdateAnimation();
+
+	_dirtyFlag = true;
 }
 

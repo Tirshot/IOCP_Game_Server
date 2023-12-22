@@ -17,6 +17,7 @@
 #include "Monster.h"
 #include "MyPlayer.h"
 #include "SceneManager.h"
+#include "WeaponSlot.h"
 
 DevScene::DevScene()
 {
@@ -47,18 +48,32 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Snake", L"Sprite\\Monster\\Snake.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Hit", L"Sprite\\Effect\\Hit.bmp", RGB(0,0,0));
 	
+	// UI 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Edit", L"Sprite\\UI\\Edit.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Exit", L"Sprite\\UI\\Exit.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Sword", L"Sprite\\Item\\Sword.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Bow", L"Sprite\\Item\\Bow.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Staff", L"Sprite\\Item\\Staff.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Slot", L"Sprite\\UI\\Slot.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"SelectedSlot", L"Sprite\\UI\\SelectedSlot.bmp", RGB(128,128,128));
 
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
 	GET_SINGLE(ResourceManager)->CreateSprite(L"TileO", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 0, 0 ,48, 48);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"TileX", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 48, 0, 48, 48);
+	
+	// UI 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Start_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Start"), 0, 0, 150, 150);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Start_On", GET_SINGLE(ResourceManager)->GetTexture(L"Start"), 150, 0, 150, 150);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Edit_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Edit"), 0, 0, 150, 150);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Edit_On", GET_SINGLE(ResourceManager)->GetTexture(L"Edit"), 150, 0, 150, 150);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Exit_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Exit"), 0, 0, 150, 150);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Exit_On", GET_SINGLE(ResourceManager)->GetTexture(L"Exit"), 150, 0, 150, 150);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Sword", GET_SINGLE(ResourceManager)->GetTexture(L"Sword"), 12, 3, 52, 52);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Bow", GET_SINGLE(ResourceManager)->GetTexture(L"Bow"), 12, 3, 52, 52);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Staff", GET_SINGLE(ResourceManager)->GetTexture(L"Staff"), 12, 3, 52, 52);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Slot", GET_SINGLE(ResourceManager)->GetTexture(L"Slot"), 0, 0, 52, 52);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"SelectedSlot", GET_SINGLE(ResourceManager)->GetTexture(L"SelectedSlot"), 0, 0, 44, 44);
+
 
 	LoadMap();
 	LoadPlayer();
@@ -66,6 +81,7 @@ void DevScene::Init()
 	LoadProjectile();
 	LoadEffect();
 	LoadTilemap();
+	LoadUI();
 
 	Super::Init();
 }
@@ -82,6 +98,9 @@ void DevScene::Update()
 void DevScene::Render(HDC hdc)
 {
 	Super::Render(hdc);
+
+	for (auto* ui : _uis)
+		ui->Render(hdc);
 }
 
 void DevScene::AddActor(Actor* actor)
@@ -106,19 +125,6 @@ void DevScene::RemoveActor(Actor* actor)
 	}
 }
 
-void DevScene::Clear()
-{
-	for (const vector<Actor*>& actors : _actors)
-		for (Actor* actor : actors)
-			SAFE_DELETE(actor);
-
-	for (vector<Actor*>& actors : _actors)
-		actors.clear();
-
-	for (UI* ui : _uis)
-		SAFE_DELETE(ui);
-}
-
 void DevScene::LoadMap()
 {
 	// 배경
@@ -141,32 +147,32 @@ void DevScene::LoadPlayer()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 0, 0.5f });
+		fb->SetInfo({ texture, L"FB_IdleUp", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveDown", { 200, 200}, 0, 9, 0, 0.5f });
+		fb->SetInfo({ texture, L"FB_IdleDown", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveLeft", { 200, 200}, 0, 9, 0, 0.5f });
+		fb->SetInfo({ texture, L"FB_IdleLeft", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveRight", { 200, 200}, 0, 9, 0, 0.5f });
+		fb->SetInfo({ texture, L"FB_IdleRight", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	// 플레이어 Move
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 1, 0.5f });
+		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 1, 0.35f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
@@ -352,6 +358,17 @@ void DevScene::LoadTilemap()
 		}
 }
 
+void DevScene::LoadUI()
+{
+	{
+		// pivot은 중앙 하단
+		WeaponSlot* ws = new WeaponSlot();
+		ws->SetPos(Vec2{GWinSizeX / 2, GWinSizeY});
+		_uis.push_back(ws);
+	}
+
+}
+
 GameObject* DevScene::GetObject(uint64 id)
 {
 	for (Actor* actor : _actors[LAYER_OBJECT])
@@ -403,7 +420,7 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 	const int32 size = pkt.ids_size();
 	for (int32 i = 0; i < size; i++)
 	{
-		int32 id = pkt.ids(i);
+		uint64 id = pkt.ids(i);
 
 		GameObject* object = GetObject(id);
 		if (object)
@@ -531,7 +548,7 @@ bool DevScene::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 
 			if (bestScore > score)
 			{
 				dest = pos;
-				bestScore = score;
+				bestScore = (float)score;
 			}
 		}
 	}
@@ -588,8 +605,8 @@ Vec2 DevScene::ConvertPos(Vec2Int cellPos)
 	int32 size = tm->GetTileSize();
 	Vec2 pos = _tilemapActor->GetPos();
 
-	ret.x = pos.x + cellPos.x * size + (size / 2);
-	ret.y = pos.y + cellPos.y * size + (size / 2);
+	ret.x = pos.x + cellPos.x * size + (size / static_cast<float>(2));
+	ret.y = pos.y + cellPos.y * size + (size / static_cast<float>(2));
 
 	return ret;
 }

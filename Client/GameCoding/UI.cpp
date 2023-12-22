@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "UI.h"
 #include "InputManager.h"
+#include "Panel.h"
+#include "SceneManager.h"
+#include "DevScene.h"
 
 
 UI::UI()
@@ -13,14 +16,17 @@ UI::~UI()
 
 void UI::BeginPlay()
 {
+
 }
 
 void UI::Tick()
 {
+
 }
 
 void UI::Render(HDC hdc)
 {
+
 }
 
 RECT UI::GetRect()

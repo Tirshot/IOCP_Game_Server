@@ -13,6 +13,8 @@ enum
 	C_Move = 10,
 	S_Move = 11,
 
+	C_WeaponChange = 15,
+	S_WeaponChange = 16,
 };
 
 class ClientPacketHandler
@@ -48,6 +50,6 @@ public:
 		return sendBuffer;
 	}
 
-	static SendBufferRef Make_C_Damaged();
+	static SendBufferRef Make_C_WeaponChange();
 };
 

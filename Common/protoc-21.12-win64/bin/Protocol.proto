@@ -47,8 +47,7 @@ message S_Move
 	ObjectInfo info = 1;
 }
 
-message S_Damaged
+message C_WeaponChange
 {
-	// 작업 편의성을 위해 통째로 가져와 전투에 이용
 	ObjectInfo info = 1;
 }

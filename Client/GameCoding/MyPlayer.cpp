@@ -12,11 +12,12 @@
 #include "ClientPacketHandler.h"
 #include "NetworkManager.h"
 
+
 MyPlayer::MyPlayer()
 {
 	CameraComponent* camera = new CameraComponent();
 	AddComponent(camera);
-
+	
 }
 
 MyPlayer::~MyPlayer()
@@ -66,25 +67,25 @@ void MyPlayer::TickInput()
 	else
 		_keyPressed = false;
 
-	 // 공격
-	 if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
-	 {
-		 SetState(SKILL);
-	 }
-
 	// 무기 선택, UI 연동 필요
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
 	{
-		SetWeaponType(WeaponType::Sword);
+		SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
 	{
-		SetWeaponType(WeaponType::Bow);
+		SetWeaponType(Protocol::WEAPON_TYPE_BOW);
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
 	{
 		// 추후에 갈고리로 변경예정
-		SetWeaponType(WeaponType::Staff);
+		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
+	}
+
+	// 공격
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
+	{
+		SetState(SKILL);
 	}
 }
 
@@ -157,6 +158,7 @@ void MyPlayer::SyncToServer()
 {
 	// 매 1000프레임마다 동기화하긴 불합리
 	// 언제 보낼지 잘 판단하는 것이 중요
+
 	if (_dirtyFlag == false)
 		return;
 

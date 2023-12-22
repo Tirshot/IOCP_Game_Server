@@ -17,6 +17,7 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	{
 	case C_Move:
 		Handle_C_Move(session, buffer, len);
+		break;
 	default:
 		break;
 	}

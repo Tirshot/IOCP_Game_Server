@@ -185,6 +185,7 @@
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Values.h" />
+    <ClInclude Include="WeaponSlot.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
@@ -237,6 +238,7 @@
     <ClCompile Include="Types.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="WeaponSlot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico" />

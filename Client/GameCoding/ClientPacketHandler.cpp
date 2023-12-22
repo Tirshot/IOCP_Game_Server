@@ -147,6 +147,7 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 			gameObject->SetDir(info.dir());
 			gameObject->SetState(info.state());
 			gameObject->SetCellPos(Vec2Int{ info.posx(), info.posy() });
+			gameObject->SetWeaponType(info.weapontype());
 		}
 	}
 }
@@ -164,5 +165,20 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 	*pkt.mutable_info() = myPlayer->info;
 
 	return MakeSendBuffer(pkt, C_Move);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_WeaponChange()
+{
+	// 패킷 생성
+	Protocol::C_WeaponChange pkt;
+
+	// MyPlayer를 가져옴
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	// 패킷의 weapontype을 수정해 myPlayer의 정보를 패킷에 담음
+	*pkt.mutable_info() = myPlayer->info;
+
+	return MakeSendBuffer(pkt, C_WeaponChange);
+
 }
 
