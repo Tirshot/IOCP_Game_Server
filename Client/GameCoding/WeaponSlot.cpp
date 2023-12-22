@@ -46,8 +46,8 @@ void WeaponSlot::Render(HDC hdc)
 	{
 		// 무기 슬롯 배경
 		::BitBlt(hdc,
-			_pos.x + 60 * (i - (float)_slots.size() / 2),
-			_pos.y - 60,
+			(int)(_pos.x + 60.f * (i - _slots.size() / 2.f)),
+			(int)_pos.y - 60,
 			60,
 			60,
 			_woodenSlot->GetDC(),
@@ -57,8 +57,8 @@ void WeaponSlot::Render(HDC hdc)
 
 		// 무기 아이콘
 		::TransparentBlt(hdc,
-			_pos.x + 60 * (i  - (float)_slots.size() / 2) + 7,
-			_pos.y - 60 + 10,
+			(int)(_pos.x + 60 * (i  - _slots.size() / 2.f) + 7),
+			(int)_pos.y - 60 + 10,
 			iconSize - 10,
 			iconSize - 10,
 			_slots[i]->GetDC(),
@@ -71,8 +71,8 @@ void WeaponSlot::Render(HDC hdc)
 
 	// 선택된 무기 하이라이트
 	::TransparentBlt(hdc,
-		_pos.x + 60 * (HighlightSlot() - 1 - (float)_slots.size() / 2) + 6,
-		_pos.y - 60 + 7,
+		(int)(_pos.x + 60 * (HighlightSlot() - 1 - (float)_slots.size() / 2) + 6),
+		(int)_pos.y - 60 + 7,
 		44,
 		44,
 		_selectedSlot->GetDC(),

@@ -9,6 +9,7 @@
 
 Game::Game()
 {
+	
 }
 
 Game::~Game()
@@ -55,7 +56,6 @@ void Game::Render()
 
 	uint32 fps = GET_SINGLE(TimeManager)->GetFps();
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
 	{ // 마우스 위치 출력
 		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
 		wstring str = std::format(L"Mouse({0}, {1})", mousePos.x, mousePos.y);

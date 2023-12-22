@@ -12,7 +12,6 @@
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 HWND g_hWnd;
-int32 g_score = 0;
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -25,7 +24,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ int       nCmdShow)
 {
     // TODO: 여기에 코드를 입력합니다.
-
+   
     // 전역 문자열을 초기화합니다.
     MyRegisterClass(hInstance);
 

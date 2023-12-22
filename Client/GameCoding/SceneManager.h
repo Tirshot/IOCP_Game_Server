@@ -23,9 +23,9 @@ public:
 	void SetMyPlayer(MyPlayer* myplayer) { _myPlayer = myplayer; }
 
 private:
-		Scene* _scene = nullptr;
-		SceneType _sceneType = SceneType::None;
-		MyPlayer* _myPlayer = nullptr;
+	Scene* _scene = nullptr;
+	SceneType _sceneType = SceneType::None;
+	MyPlayer* _myPlayer = nullptr;
 
 public:
 	Vec2 GetCameraPos() { return _cameraPos; }

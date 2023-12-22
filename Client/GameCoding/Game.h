@@ -10,6 +10,9 @@ public:
 	void Update();
 	void Render();
 
+	HDC GetDC() { return _hdc; }
+	void PrintWelcome();
+
 private:
 	HWND _hwnd = {};
 	HDC _hdc = {};
@@ -20,4 +23,3 @@ private:
 	HBITMAP _bmpBack = {};
 
 };
-

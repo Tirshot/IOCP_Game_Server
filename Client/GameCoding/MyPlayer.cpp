@@ -11,6 +11,7 @@
 #include "Arrow.h"
 #include "ClientPacketHandler.h"
 #include "NetworkManager.h"
+#include "Chat.h"
 
 
 MyPlayer::MyPlayer()
@@ -22,6 +23,7 @@ MyPlayer::MyPlayer()
 
 MyPlayer::~MyPlayer()
 {
+
 }
 
 void MyPlayer::BeginPlay()

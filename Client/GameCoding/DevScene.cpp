@@ -18,6 +18,8 @@
 #include "MyPlayer.h"
 #include "SceneManager.h"
 #include "WeaponSlot.h"
+#include "Chat.h"
+#include "ChatManager.h"
 
 DevScene::DevScene()
 {
@@ -56,6 +58,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Staff", L"Sprite\\Item\\Staff.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Slot", L"Sprite\\UI\\Slot.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"SelectedSlot", L"Sprite\\UI\\SelectedSlot.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Chat", L"Sprite\\UI\\Chat.bmp");
 
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
 	GET_SINGLE(ResourceManager)->CreateSprite(L"TileO", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 0, 0 ,48, 48);
@@ -73,6 +76,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Staff", GET_SINGLE(ResourceManager)->GetTexture(L"Staff"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Slot", GET_SINGLE(ResourceManager)->GetTexture(L"Slot"), 0, 0, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"SelectedSlot", GET_SINGLE(ResourceManager)->GetTexture(L"SelectedSlot"), 0, 0, 44, 44);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Chat", GET_SINGLE(ResourceManager)->GetTexture(L"Chat"), 0, 0, 44, 44);
 
 
 	LoadMap();
@@ -119,6 +123,14 @@ void DevScene::RemoveActor(Actor* actor)
 	if (monster)
 	{
 		_monsterCount--;
+	}
+
+	// 사망시 메세지 출력
+	MyPlayer* player = dynamic_cast<MyPlayer*>(actor);
+	if (player)
+	{
+		Chat* chat = GET_SINGLE(ChatManager)->GetChat();
+		chat->AddText(L"캐릭터가 쓰러졌습니다.");
 	}
 }
 
@@ -362,6 +374,18 @@ void DevScene::LoadUI()
 		AddUI(ws);
 		ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
 		ws->SetVisible(true);
+	}
+	{  // 채팅 창
+		Chat* chat = new Chat(Vec2{ 10,320 });
+		GET_SINGLE(ChatManager)->SetChat(chat);
+		AddUI(chat);
+		
+		chat->SetPos(Vec2{ 10,320 });
+		chat->AddText(L"게임에 오신 것을 환영합니다.");
+		chat->AddText(L"Next Text");
+
+		//auto chat2 = GET_SINGLE(ChatManager)->GetChat();
+		//chat2->AddText(L"그 다음 테스트입니다.");
 	}
 }
 

@@ -4,6 +4,7 @@
 #include "DevScene.h"
 #include "MyPlayer.h"
 #include "SceneManager.h"
+#include "Game.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -69,6 +70,13 @@ void ClientPacketHandler::Handle_S_EnterGame(ServerSessionRef session, BYTE* buf
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
 	bool success = pkt.success();
+
+	if (success)
+	{
+		// TODO - 연결 성공 메시지 띄움
+
+	}
+
 	uint64 accountId = pkt.accountid();
 }
 

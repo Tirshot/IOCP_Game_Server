@@ -16,7 +16,7 @@ public:
 	void AddChild(UI* ui);
 	bool RemoveChild(UI* ui);
 
-	auto GetChildren() { return _children; }
+	auto& GetChildren() { return _children; }
 
 protected:
 	vector<UI*> _children;
