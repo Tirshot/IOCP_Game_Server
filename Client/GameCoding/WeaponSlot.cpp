@@ -8,16 +8,6 @@
 
 WeaponSlot::WeaponSlot()
 {
-	AddChild(this);
-	auto weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
-	auto weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
-	auto weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
-	_woodenSlot = GET_SINGLE(ResourceManager)->GetSprite(L"Slot");
-	_selectedSlot = GET_SINGLE(ResourceManager)->GetSprite(L"SelectedSlot");
-	
-	_slots.push_back(weaponSword);
-	_slots.push_back(weaponBow);
-	_slots.push_back(weaponStaff);
 
 }
 
@@ -28,7 +18,16 @@ WeaponSlot::~WeaponSlot()
 
 void WeaponSlot::BeginPlay()
 {
+	AddChild(this);
+	auto weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
+	auto weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
+	auto weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
+	_woodenSlot = GET_SINGLE(ResourceManager)->GetSprite(L"Slot");
+	_selectedSlot = GET_SINGLE(ResourceManager)->GetSprite(L"SelectedSlot");
 
+	_slots.push_back(weaponSword);
+	_slots.push_back(weaponBow);
+	_slots.push_back(weaponStaff);
 }
 
 void WeaponSlot::Tick()

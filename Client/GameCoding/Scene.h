@@ -18,6 +18,7 @@ public:
 	virtual void RemoveActor(Actor* actor);
 
 	virtual void AddUI(UI* ui);
+	virtual void RemoveUI(UI* ui);
 
 	Creature* GetCreatureAt(Vec2Int cellPos);
 

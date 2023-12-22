@@ -85,5 +85,5 @@ private:
 	const int32 DESIRED_MONSTER_COUNT = 1;
 	int32 _monsterCount = 0;
 	class TilemapActor* _tilemapActor = nullptr;
-	vector<UI*> _uis;
+	//vector<UI*> _uis;
 };

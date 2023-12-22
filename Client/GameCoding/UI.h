@@ -1,6 +1,6 @@
 #pragma once
 class UI
-{
+{ // UI들은 Scene에서 들고 있다
 public:
 	UI();
 	virtual ~UI();
@@ -15,6 +15,9 @@ public:
 	void SetSize(Vec2Int size) { _size = size; }
 	Vec2Int GetSize() { return _size; }
 
+	void SetVisible(bool visible) { _visible = visible; }
+	bool GetVisible() { return _visible; }
+
 	// UI를 사각형이라고 가정
 	RECT GetRect();
 	bool IsMouseInRect();
@@ -22,5 +25,6 @@ public:
 protected:
 	Vec2	_pos = { 0, 0 };
 	Vec2Int _size = { 150, 150 };
+	bool _visible = true;
 };
 

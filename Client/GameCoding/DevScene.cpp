@@ -98,9 +98,6 @@ void DevScene::Update()
 void DevScene::Render(HDC hdc)
 {
 	Super::Render(hdc);
-
-	for (auto* ui : _uis)
-		ui->Render(hdc);
 }
 
 void DevScene::AddActor(Actor* actor)
@@ -360,13 +357,12 @@ void DevScene::LoadTilemap()
 
 void DevScene::LoadUI()
 {
-	{
-		// pivotÀº Áß¾Ó ÇÏ´Ü
+	{	// ¹«±â ½½·Ô, pivotÀº Áß¾Ó ÇÏ´Ü
 		WeaponSlot* ws = new WeaponSlot();
-		ws->SetPos(Vec2{GWinSizeX / 2, GWinSizeY});
-		_uis.push_back(ws);
+		AddUI(ws);
+		ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
+		ws->SetVisible(true);
 	}
-
 }
 
 GameObject* DevScene::GetObject(uint64 id)

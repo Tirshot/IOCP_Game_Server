@@ -50,6 +50,6 @@ public:
 		return sendBuffer;
 	}
 
-	static SendBufferRef Make_C_WeaponChange();
+	//static SendBufferRef Make_C_WeaponChange();
 };
 

@@ -59,12 +59,12 @@ void Game::Render()
 	{ // 마우스 위치 출력
 		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
 		wstring str = std::format(L"Mouse({0}, {1})", mousePos.x, mousePos.y);
-		::TextOut(_hdcBack, 20, 10, str.c_str(), static_cast<int32>(str.size()));
+		::TextOut(_hdcBack, 680, 28, str.c_str(), static_cast<int32>(str.size()));
 	}
 
 	{ // FPS, Delta Time 출력
-		wstring str = std::format(L"FPS({0}), DT({1})", fps, static_cast<int32>(deltaTime * 1000));
-		::TextOut(_hdcBack, 650, 10, str.c_str(), static_cast<int32>(str.size()));
+		wstring str = std::format(L"FPS : {0}", fps);
+		::TextOut(_hdcBack, 680, 10, str.c_str(), static_cast<int32>(str.size()));
 	}
 
 	// 더블 버퍼링, 비트 블릿 ; 고속 복사

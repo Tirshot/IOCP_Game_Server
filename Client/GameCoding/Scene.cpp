@@ -50,6 +50,10 @@ void Scene::Render(HDC hdc)
 	for (const vector<Actor*>& actors : _actors)
 		for (Actor* actor : actors)
 			actor->Render(hdc);
+
+	for (UI* ui : _uis)
+		if (ui->GetVisible())
+			ui->Render(hdc);
 }
 
 void Scene::AddActor(Actor* actor)
@@ -73,11 +77,20 @@ void Scene::RemoveActor(Actor* actor)
 
 void Scene::AddUI(UI* ui)
 {
-
 	if (ui == nullptr)
 		return;
 
 	_uis.push_back(ui);
+}
+
+void Scene::RemoveUI(UI* ui)
+{
+	if (ui == nullptr)
+		return;
+
+	vector<UI*>& v = _uis;
+
+	v.erase(std::remove(v.begin(), v.end(), ui), v.end());
 }
 
 Creature* Scene::GetCreatureAt(Vec2Int cellPos)
