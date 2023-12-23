@@ -59,7 +59,7 @@ void Player::UpdateSkill()
 	if (this->info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 	{
 		// 내 앞에 있는 좌표
-		GameObjectRef creature = room->GetGameObjectAt(GetFrontCellPos());
+		CreatureRef creature = room->GetCreatureAt(GetFrontCellPos());
 		if (creature)
 		{
 			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)

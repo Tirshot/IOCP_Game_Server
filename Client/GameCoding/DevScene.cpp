@@ -416,9 +416,9 @@ GameObject* DevScene::GetObject(uint64 id)
 {
 	for (Actor* actor : _actors[LAYER_OBJECT])
 	{
-		GameObject* gameObject = dynamic_cast<GameObject*>(actor);
-		if (gameObject && gameObject->info.objectid() == id)
-			return gameObject;
+		GameObject* creature = dynamic_cast<GameObject*>(actor);
+		if (creature && creature->info.objectid() == id)
+			return creature;
 	}
 
 	return nullptr;
