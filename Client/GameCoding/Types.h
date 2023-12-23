@@ -101,6 +101,13 @@ struct VectorInt
 	VectorInt(int32 x, int32 y) : x(x), y(y) { }
 	VectorInt(POINT pt) : x((int32)pt.x), y((int32)pt.y) { }
 
+	VectorInt operator-()
+	{
+		VectorInt ret;
+		ret.x = -x;
+		ret.y = -y;
+		return ret;
+	}
 	VectorInt operator+(const VectorInt& other)
 	{
 		VectorInt ret;

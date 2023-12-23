@@ -226,6 +226,8 @@ void Session::ProcessConnect()
 void Session::ProcessDisconnect()
 {
 	_disconnectEvent.owner = nullptr; // RELEASE_REF
+
+	OnDisconnected();
 }
 
 void Session::ProcessRecv(int32 numOfBytes)

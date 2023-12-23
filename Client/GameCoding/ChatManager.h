@@ -11,6 +11,8 @@ public:
 	Chat* GetChat() { return _chat; }
 	void SetChat(Chat* chat) { _chat = chat; }
 
+	void AddMessage(const wstring text);
+
 private:
 	Chat* _chat;
 };

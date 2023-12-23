@@ -30,6 +30,9 @@ void Scene::Init()
 
 void Scene::Update()
 {
+	if (_isPaused)
+		return;
+
 	for (const vector<Actor*> actors : _actors)
 		for (Actor* actor : actors)
 			actor->Tick();

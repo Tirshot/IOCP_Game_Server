@@ -91,12 +91,21 @@ void Chat::Render(HDC hdc)
 		SetTextColor(hdc, RGB(230, 230, 230));
 
 		for (int i = 0; i < _texts.size(); i++)
-		{
+		{/*
 			::TextOut(hdc,
 				(int)GetPos().x,
 				(int)GetPos().y + i * 18,
 				_texts[i].c_str(),
-				_texts[i].size());
+				_texts[i].size());*/
+
+			RECT textRect;
+			textRect.left = _rect.left;
+			textRect.right = _rect.right;
+			textRect.top = _rect.top + i * 18;
+			textRect.bottom = _rect.bottom;
+
+			// DrawText 함수를 사용하여 텍스트 출력
+			DrawText(hdc, _texts[i].c_str(), -1, &textRect, DT_LEFT | DT_WORDBREAK);
 		}
 	}
 }

@@ -9,6 +9,7 @@
 #include "DevScene.h"
 #include "HitEffect.h"
 #include "Arrow.h"
+#include "Monster.h"
 
 Player::Player()
 {
@@ -119,14 +120,19 @@ void Player::TickSkill()
 		{
 			// 내 앞에 있는 좌표
 			Creature* creature = scene->GetCreatureAt(GetFrontCellPos());
+
 			if (creature)
 			{
-				// 몬스터가 피격
-				creature->OnDamaged(this);
+				if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				{
+					SetState(IDLE);
+					return;
+				}
 
-				// 동족이 때린게 아닐 때만 출력
-  				if (creature->GetType() != this->GetType())
-					scene->SpawnObject<HitEffect>(GetFrontCellPos());
+				scene->SpawnObject<HitEffect>(GetFrontCellPos());
+
+				// 몬스터가 플레이어에게 피격
+				creature->OnDamaged(this);
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)

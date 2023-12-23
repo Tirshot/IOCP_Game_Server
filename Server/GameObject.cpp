@@ -124,7 +124,7 @@ void GameObject::OnDamaged(GameObjectRef attacker)
 		return;
 
 	// disable PvP : 동족은 공격 불가
-	if (this->info.objecttype() == attacker->info.objecttype())
+	if (info.objecttype() == attacker->info.objecttype())
 		return;
 
 	int32 damage = attacker->info.attack() - this->info.defence();
@@ -134,16 +134,16 @@ void GameObject::OnDamaged(GameObjectRef attacker)
 		return;
 
 	// hp는 항상 양수
-	this->info.set_hp(max(0, this->info.hp() - damage));
+	info.set_hp(max(0, info.hp() - damage));
 
 	// 입힌 데미지를 브로드캐스트
 	BroadcastMove();
 
-	if (this->info.hp() == 0)
+	if (info.hp() == 0)
 	{
 		if (room)
 		{
-			room->RemoveObject(this->GetObjectID());
+			room->RemoveObject(GetObjectID());
 		}
 	}
 }

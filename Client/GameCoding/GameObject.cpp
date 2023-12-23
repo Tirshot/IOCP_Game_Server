@@ -106,7 +106,7 @@ void GameObject::SetCellPos(Vec2Int cellPos, bool teleport)
 	info.set_posx(cellPos.x);
 	info.set_posy(cellPos.y);
 
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
 		return;
 

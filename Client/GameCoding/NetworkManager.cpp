@@ -3,6 +3,8 @@
 #include "Service.h"
 #include "ThreadManager.h"
 #include "ServerSession.h"
+#include "ChatManager.h"
+#include "Chat.h"
 
 void NetworkManager::Init()
 {
@@ -44,4 +46,5 @@ void NetworkManager::SendPacket(SendBufferRef sendBuffer)
 {
 	if (_session)
 		_session->Send(sendBuffer);
+	
 }

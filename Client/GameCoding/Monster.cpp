@@ -17,6 +17,10 @@ Monster::Monster()
 	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeft");
 	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRight");
 
+	_flipbookHit[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeUpHit");
+	_flipbookHit[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeDownHit");
+	_flipbookHit[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeftHit");
+	_flipbookHit[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRightHit");
 	// type도 protobuf로 받아옴
 	// _type = CreatureType::Monster;
 	
@@ -48,8 +52,6 @@ void Monster::Tick()
 void Monster::Render(HDC hdc)
 {
 	Super::Render(hdc);
-
-
 }
 
 void Monster::TickIdle()
@@ -62,7 +64,7 @@ void Monster::TickMove()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);
-	if (dir.Length() < 3.f)
+	if (dir.Length() < 5.f)
 	{
 		SetState(IDLE);
 		_pos = _destPos;
@@ -79,16 +81,16 @@ void Monster::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 50 * deltaTime;
+			_pos.y -= 150 * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 50 * deltaTime;
+			_pos.y += 150 * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 50 * deltaTime;
+			_pos.x -= 150 * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 50 * deltaTime;
+			_pos.x += 150 * deltaTime;
 			break;
 		}
 	}
@@ -114,13 +116,11 @@ void Monster::TickSkill()
 	auto* creature = scene->GetCreatureAt(GetFrontCellPos());
 
 	if (creature)
-	{
-		// 데미지 피격
-		creature->OnDamaged(this);
+	{		
+		scene->SpawnObject<HitEffect>(GetFrontCellPos());
 
-		// 동족이 때린게 아닐 때만 출력
-		if (creature->GetType() != this->GetType())
-			scene->SpawnObject<HitEffect>(GetFrontCellPos());
+		// 플레이어가 몬스터에게 데미지 피격
+		creature->OnDamaged(this);
 	}
 
 	SetState(IDLE);
@@ -128,5 +128,27 @@ void Monster::TickSkill()
 
 void Monster::UpdateAnimation()
 {
-	SetFlipbook(_flipbookMove[info.dir()]);
+	switch (info.state())
+	{
+	case IDLE:
+		SetFlipbook(_flipbookMove[info.dir()]);
+		break;
+
+	case MOVE:
+		SetFlipbook(_flipbookMove[info.dir()]);
+		break;
+
+	case HIT:
+		SetFlipbook(_flipbookHit[info.dir()]);
+		break;
+	}
+}
+
+void Monster::KnockBack()
+{
+	auto dir = GetCellPos() - GetFrontCellPos();
+
+	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
+	if (CanGo(GetCellPos() + dir))
+		SetCellPos(GetCellPos() + dir, true);
 }

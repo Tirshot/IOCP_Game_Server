@@ -40,6 +40,10 @@ void Monster::Update()
 	case SKILL:
 		UpdateSkill();
 		break;
+
+	case HIT:
+		UpdateHit();
+		break;
 	}
 }
 
@@ -90,7 +94,7 @@ void Monster::UpdateIdle()
 					}
 				}
 				else
-					// 길을 못 찾았으면 정지, 타겟 리셋
+					// 길을 못 찾았으면 정지
 				{
 					SetCellPos(path[0]);
 				}
@@ -121,5 +125,24 @@ void Monster::UpdateSkill()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE);
+	SetState(IDLE, true);
+}
+
+void Monster::UpdateHit()
+{
+	uint64 now = GetTickCount64();
+
+	if (_waitUntil > now)
+		return;
+
+	SetState(IDLE, true);
+}
+
+void Monster::KnockBack()
+{
+	auto dir = GetCellPos() - GetFrontCellPos();
+
+	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
+	if (CanGo(GetCellPos() + dir))
+		SetCellPos(GetCellPos() + dir, true);
 }

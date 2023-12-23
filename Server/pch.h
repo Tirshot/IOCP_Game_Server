@@ -20,6 +20,7 @@ using Dir = Protocol::DIR_TYPE;
 #define IDLE Protocol::OBJECT_STATE_TYPE_IDLE
 #define MOVE Protocol::OBJECT_STATE_TYPE_MOVE
 #define SKILL Protocol::OBJECT_STATE_TYPE_SKILL
+#define HIT Protocol::OBJECT_STATE_TYPE_HIT
 
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 
@@ -43,6 +44,13 @@ struct VectorInt
 	VectorInt(int32 x, int32 y) : x(x), y(y) { }
 	VectorInt(POINT pt) : x((int32)pt.x), y((int32)pt.y) { }
 
+	VectorInt operator-()
+	{
+		VectorInt ret;
+		ret.x = -x;
+		ret.y = -y;
+		return ret;
+	}
 	VectorInt operator+(const VectorInt& other)
 	{
 		VectorInt ret;

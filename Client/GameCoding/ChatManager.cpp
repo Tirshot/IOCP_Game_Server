@@ -4,7 +4,7 @@
 
 void ChatManager::BeginPlay()
 {
-
+	
 }
 
 void ChatManager::Tick()
@@ -12,3 +12,7 @@ void ChatManager::Tick()
 
 }
 
+void ChatManager::AddMessage(const wstring text)
+{
+	GetChat()->AddText(text);
+}

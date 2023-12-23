@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Player.h"
+#include "Monster.h"
 #include "GameRoom.h"
 
 Player::Player()
@@ -8,7 +9,7 @@ Player::Player()
 	info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 	info.set_hp(60);
 	info.set_maxhp(60);
-	info.set_attack(15);
+	info.set_attack(20);
 	info.set_defence(0);
 }
 
@@ -61,6 +62,13 @@ void Player::UpdateSkill()
 		GameObjectRef creature = room->GetGameObjectAt(GetFrontCellPos());
 		if (creature)
 		{
+			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			{
+				SetState(IDLE);
+				return;
+			}
+
+			// 몬스터가 플레이어에게 피격
 			creature->OnDamaged(shared_from_this());
 		}
 	}

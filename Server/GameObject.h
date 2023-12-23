@@ -25,6 +25,8 @@ public:
 
 	void BroadcastMove();
 
+	Protocol::OBJECT_TYPE GetType() { return info.objecttype(); }
+
 	void OnDamaged(GameObjectRef attacker);
 
 	// ¿ÀºêÁ§Æ®¸¦ ÃÑ°ý °ü¸®

@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "DevScene.h"
 #include "HitEffect.h"
+#include "Monster.h"
 
 Creature::Creature()
 {
@@ -37,15 +38,20 @@ void Creature::OnDamaged(Creature* attacker)
 		return;
 
 	int32 damage = attacker->info.attack() - this->info.defence();
+
 	if (damage <= 0)
 		return;
 
 	// hp는 항상 양수
 	info.set_hp(max(0, info.hp() - damage));
-	Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+	
+	// 몬스터 피격 애니메이션 출력
+	if (attacker->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+		this->SetState(HIT);
 
-	if (this->info.hp() == 0)
+	if (info.hp() == 0)
 	{
+		Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 		if (scene)
 		{
 			scene->RemoveActor(this);

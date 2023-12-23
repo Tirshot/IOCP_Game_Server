@@ -65,3 +65,8 @@ uint64 SceneManager::GetMyPlayerId()
 {
 	return _myPlayer ? _myPlayer->info.objectid() : 0;
 }
+
+void SceneManager::SetPause(bool pause)
+{
+	GetDevScene()->SetPauseState(pause);
+}

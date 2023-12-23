@@ -26,6 +26,6 @@ public:
 
 	virtual void OnDisconnected() override
 	{
-		//cout << "Disconnected" << endl;
+
 	}
 };

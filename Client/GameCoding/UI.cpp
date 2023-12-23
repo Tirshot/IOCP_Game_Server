@@ -41,10 +41,10 @@ RECT UI::GetRect()
 {
 	RECT rect =
 	{
-		_pos.x - _size.x / 2,
-		_pos.y - _size.y / 2,
-		_pos.x + _size.x / 2,
-		_pos.y + _size.y / 2,
+		(int)_pos.x - (int)_size.x / 2,
+		(int)_pos.y - (int)_size.y / 2,
+		(int)_pos.x + (int)_size.x / 2,
+		(int)_pos.y + (int)_size.y / 2,
 	};
 
 	return rect;

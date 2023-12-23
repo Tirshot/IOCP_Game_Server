@@ -307,6 +307,33 @@ void DevScene::LoadMonster()
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 0, 3, 1, 0.5f });
 	}
+
+	// Snake Hit
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeUpHit");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeUp", { 100, 100}, 0, 0, 5, 0.6f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeDownHit");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeDown", { 100, 100}, 3, 1, 5, 0.6f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeLeftHit");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeLeft", { 100, 100}, 1, 1, 5, 0.6f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeRightHit");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 2, 2, 5, 0.6f });
+	}
+
 }
 
 void DevScene::LoadProjectile()
@@ -382,10 +409,6 @@ void DevScene::LoadUI()
 		
 		chat->SetPos(Vec2{ 10,320 });
 		chat->AddText(L"게임에 오신 것을 환영합니다.");
-		chat->AddText(L"Next Text");
-
-		//auto chat2 = GET_SINGLE(ChatManager)->GetChat();
-		//chat2->AddText(L"그 다음 테스트입니다.");
 	}
 }
 
