@@ -142,13 +142,13 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 		if (myPlayerId == info.objectid())
 			return;
 
-		GameObject* gameObject = scene->GetObject(info.objectid());
-		if (gameObject)
+		GameObject* creature = scene->GetObject(info.objectid());
+		if (creature)
 		{
-			gameObject->SetDir(info.dir());
-			gameObject->SetState(info.state());
-			gameObject->SetCellPos(Vec2Int{ info.posx(), info.posy() });
-			gameObject->SetWeaponType(info.weapontype());
+			creature->SetDir(info.dir());
+			creature->SetState(info.state());
+			creature->SetCellPos(Vec2Int{ info.posx(), info.posy() });
+			creature->SetWeaponType(info.weapontype());
 		}
 	}
 }

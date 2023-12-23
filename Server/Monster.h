@@ -1,9 +1,8 @@
 #pragma once
-#include "GameObject.h"
-
-class Monster : public GameObject
+#include "Creature.h"
+class Monster : public Creature
 {
-	using Super = GameObject;
+	using Super = Creature;
 
 public:
 	Monster();
