@@ -5,7 +5,7 @@
 
 Monster::Monster()
 {
-	info.set_name("MonsterName");
+	info.set_name("Snake");
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	info.set_hp(50);
 	info.set_maxhp(50);

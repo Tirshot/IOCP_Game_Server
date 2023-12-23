@@ -181,7 +181,7 @@ void DevScene::LoadPlayer()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 1, 0.35f });
+		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 1, 0.5f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
@@ -313,25 +313,25 @@ void DevScene::LoadMonster()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeUpHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeUp", { 100, 100}, 0, 0, 5, 0.6f });
+		fb->SetInfo({ texture, L"FB_SnakeUp", { 100, 100}, 0, 0, 5, 0.1f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeDownHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeDown", { 100, 100}, 3, 1, 5, 0.6f });
+		fb->SetInfo({ texture, L"FB_SnakeDown", { 100, 100}, 3, 1, 5, 0.1f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeLeftHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeLeft", { 100, 100}, 1, 1, 5, 0.6f });
+		fb->SetInfo({ texture, L"FB_SnakeLeft", { 100, 100}, 1, 1, 5, 0.1f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeRightHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 2, 2, 5, 0.6f });
+		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 2, 2, 5, 0.1f });
 	}
 
 }
@@ -408,7 +408,6 @@ void DevScene::LoadUI()
 		AddUI(chat);
 		
 		chat->SetPos(Vec2{ 10,320 });
-		chat->AddText(L"게임에 오신 것을 환영합니다.");
 	}
 }
 
@@ -442,18 +441,18 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			Player* player = SpawnObject<Player>(Vec2Int{ info.posx(), info.posy() });
 			
 			// 애니메이션을 위해
+			player->info = info;
 			player->SetDir(info.dir());
 			player->SetState(info.state());
-			player->info = info;
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
 		{
 			Monster* monster = SpawnObject<Monster>(Vec2Int{ info.posx(), info.posy() });
 
 			// 애니메이션을 위해
+			monster->info = info;
 			monster->SetDir(info.dir());
 			monster->SetState(info.state());
-			monster->info = info;
 		}
 	}
 }

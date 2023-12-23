@@ -5,7 +5,7 @@
 
 Player::Player()
 {
-	info.set_name("PlayerName");
+	info.set_name("Player");
 	info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 	info.set_hp(60);
 	info.set_maxhp(60);
@@ -56,10 +56,11 @@ void Player::UpdateSkill()
 	if (room == nullptr)
 		return;
 
-	if (this->info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
+	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 	{
 		// 내 앞에 있는 좌표
-		GameObjectRef creature = room->GetGameObjectAt(GetFrontCellPos());
+		CreatureRef creature = room->GetCreatureAt(GetFrontCellPos());
+		
 		if (creature)
 		{
 			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)

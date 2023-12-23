@@ -11,7 +11,7 @@
 #include "Arrow.h"
 #include "ClientPacketHandler.h"
 #include "NetworkManager.h"
-#include "Chat.h"
+#include "ChatManager.h"
 
 
 MyPlayer::MyPlayer()

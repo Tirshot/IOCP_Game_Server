@@ -10,6 +10,7 @@
 #include "HitEffect.h"
 #include "Arrow.h"
 #include "Monster.h"
+#include "ChatManager.h"
 
 Player::Player()
 {
@@ -89,16 +90,16 @@ void Player::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 200 * deltaTime;
+			_pos.y -= 160 * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 200 * deltaTime;
+			_pos.y += 160 * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 200 * deltaTime;
+			_pos.x -= 160 * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 200 * deltaTime;
+			_pos.x += 160 * deltaTime;
 			break;
 		}
 	}
@@ -116,20 +117,20 @@ void Player::TickSkill()
 		if (scene == nullptr)
 			return;
 
-		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
+		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
 			Creature* creature = scene->GetCreatureAt(GetFrontCellPos());
 
 			if (creature)
 			{
+				scene->SpawnObject<HitEffect>(GetFrontCellPos());
+
 				if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 				{
 					SetState(IDLE);
 					return;
 				}
-
-				scene->SpawnObject<HitEffect>(GetFrontCellPos());
 
 				// 몬스터가 플레이어에게 피격
 				creature->OnDamaged(this);

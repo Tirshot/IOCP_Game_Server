@@ -16,11 +16,6 @@ GameObject::~GameObject()
 
 }
 
-void GameObject::Update()
-{
-
-}
-
 void GameObject::BroadcastMove()
 {
 	if (room)
@@ -33,9 +28,10 @@ void GameObject::BroadcastMove()
 PlayerRef GameObject::CreatePlayer()
 {
 	PlayerRef player = make_shared<Player>();
+	auto id = player->info.objectid();
 	player->info.set_objectid(s_idGenerator++);
 	player->info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
-
+	player->info.set_name("Player");
 	return player;
 }
 
@@ -118,32 +114,3 @@ Vec2Int GameObject::GetFrontCellPos()
 	return pos;
 }
 
-void GameObject::OnDamaged(GameObjectRef attacker)
-{
-	if (attacker == nullptr)
-		return;
-
-	// disable PvP : 동족은 공격 불가
-	if (info.objecttype() == attacker->info.objecttype())
-		return;
-
-	int32 damage = attacker->info.attack() - this->info.defence();
-	attacker->info.set_damage(damage);
-
-	if (damage <= 0)
-		return;
-
-	// hp는 항상 양수
-	info.set_hp(max(0, info.hp() - damage));
-
-	// 입힌 데미지를 브로드캐스트
-	BroadcastMove();
-
-	if (info.hp() == 0)
-	{
-		if (room)
-		{
-			room->RemoveObject(GetObjectID());
-		}
-	}
-}

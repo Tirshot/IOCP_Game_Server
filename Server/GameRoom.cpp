@@ -18,14 +18,13 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
+	_tilemap.LoadFile(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Tilemap\\Tilemap01.txt");
+
 	// 몬스터 소환
 	MonsterRef monster = GameObject::CreateMonster();
-	monster->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	monster->info.set_posx(8);
 	monster->info.set_posy(8);
 	AddObject(monster);
-
-	_tilemap.LoadFile(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Tilemap\\Tilemap01.txt");
 }
 
 void GameRoom::Update()
@@ -45,7 +44,9 @@ void GameRoom::EnterRoom(GameSessionRef session)
 {
 	// 플레이어 초기화
 	PlayerRef player = GameObject::CreatePlayer();
+
 	player->info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
+	SetName(player);
 
 	// 클라이언트 서로의 존재를 연결
 	session->gameRoom = GetRoomRef();
@@ -56,7 +57,6 @@ void GameRoom::EnterRoom(GameSessionRef session)
 	player->info.set_posx(6);
 	player->info.set_posy(6);
 	player->info.set_dir(Protocol::DIR_TYPE_DOWN);
-
 	// 입장한 클라이언트에게 정보 전송
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info);
@@ -113,6 +113,13 @@ GameObjectRef GameRoom::FindObject(uint64 id)
 	}
 
 	return nullptr;
+}
+
+void GameRoom::SetName(PlayerRef& player)
+{
+	string strPlayer = "Player";
+	string str = strPlayer.append(to_string(player->GetObjectID()));
+	player->info.set_name(str);
 }
 
 void GameRoom::AddObject(GameObjectRef gameObject)
@@ -340,7 +347,7 @@ bool GameRoom::CanGo(Vec2Int cellPos)
 		return false;
 
 	// 몬스터 충돌
-	if (GetGameObjectAt(cellPos) != nullptr)
+	if (GetCreatureAt(cellPos) != nullptr)
 		return false;
 
 	return tile->value != 1;
@@ -364,7 +371,7 @@ Vec2Int GameRoom::GetRandomEmptyCellPos()
 	}
 }
 
-GameObjectRef GameRoom::GetGameObjectAt(Vec2Int cellPos)
+CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 {
 	for (auto& item : _players)
 	{

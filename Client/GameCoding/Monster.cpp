@@ -117,9 +117,8 @@ void Monster::TickSkill()
 
 	if (creature)
 	{		
-		scene->SpawnObject<HitEffect>(GetFrontCellPos());
-
 		// 플레이어가 몬스터에게 데미지 피격
+		scene->SpawnObject<HitEffect>(GetFrontCellPos());
 		creature->OnDamaged(this);
 	}
 
