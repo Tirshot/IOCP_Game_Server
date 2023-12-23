@@ -24,11 +24,11 @@ public:
 
 	void EnterRoom(GameSessionRef session);
 	void LeaveRoom(GameSessionRef session);
-	CreatureRef FindObject(uint64 id);
+	GameObjectRef FindObject(uint64 id);
 	GameRoomRef GetRoomRef() { return shared_from_this(); }
 
 public:
-	void AddObject(CreatureRef creature);
+	void AddObject(GameObjectRef gameObject);
 	void RemoveObject(uint64 id);
 	void Broadcast(SendBufferRef& sendBuffer);
 
@@ -37,7 +37,7 @@ public:
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 	bool CanGo(Vec2Int cellPos);
 	Vec2Int GetRandomEmptyCellPos();
-	CreatureRef GetCreatureAt(Vec2Int cellPos);
+	GameObjectRef GetGameObjectAt(Vec2Int cellPos);
 
 	// 화살도 작업할거라면 Creature를 살려서 플레이어와 몬스터가 상속받게 해야함.
 public:

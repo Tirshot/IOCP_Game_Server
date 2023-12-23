@@ -19,7 +19,7 @@ GameRoom::~GameRoom()
 void GameRoom::Init()
 {
 	// 몬스터 소환
-	MonsterRef monster = Creature::CreateMonster();
+	MonsterRef monster = GameObject::CreateMonster();
 	monster->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	monster->info.set_posx(8);
 	monster->info.set_posy(8);
@@ -44,7 +44,7 @@ void GameRoom::Update()
 void GameRoom::EnterRoom(GameSessionRef session)
 {
 	// 플레이어 초기화
-	PlayerRef player = Creature::CreatePlayer();
+	PlayerRef player = GameObject::CreatePlayer();
 	player->info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 
 	// 클라이언트 서로의 존재를 연결
@@ -99,7 +99,7 @@ void GameRoom::LeaveRoom(GameSessionRef session)
 	RemoveObject(id);
 }
 
-CreatureRef GameRoom::FindObject(uint64 id)
+GameObjectRef GameRoom::FindObject(uint64 id)
 {
 	{
 		auto findIt = _players.find(id);
@@ -115,34 +115,34 @@ CreatureRef GameRoom::FindObject(uint64 id)
 	return nullptr;
 }
 
-void GameRoom::AddObject(CreatureRef creature)
+void GameRoom::AddObject(GameObjectRef gameObject)
 {
-	uint64 id = creature->info.objectid();
+	uint64 id = gameObject->info.objectid();
 
-	auto objectType = creature->info.objecttype();
+	auto objectType = gameObject->info.objecttype();
 
 	switch (objectType)
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
-		_players[id] = static_pointer_cast<Player>(creature);
+		_players[id] = static_pointer_cast<Player>(gameObject);
 		break;
 
 	case Protocol::OBJECT_TYPE_MONSTER:
-		_monsters[id] = static_pointer_cast<Monster>(creature);
+		_monsters[id] = static_pointer_cast<Monster>(gameObject);
 		break;
 
 	default:
 		return;
 	}
 
-	creature->room = GetRoomRef();
+	gameObject->room = GetRoomRef();
 
 	// 신규 오브젝트 정보를 기존 접속자에게 뿌림
 	{
 		Protocol::S_AddObject pkt;
 
 		Protocol::ObjectInfo* info = pkt.add_objects();
-		*info = creature->info;
+		*info = gameObject->info;
 
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 		Broadcast(sendBuffer);
@@ -152,11 +152,11 @@ void GameRoom::AddObject(CreatureRef creature)
 
 void GameRoom::RemoveObject(uint64 id)
 {
-	CreatureRef creature = FindObject(id);
-	if (creature == nullptr)
+	GameObjectRef gameObject = FindObject(id);
+	if (gameObject == nullptr)
 		return;
 
-	switch (creature->info.objecttype())
+	switch (gameObject->info.objecttype())
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
 		_players.erase(id);
@@ -170,7 +170,7 @@ void GameRoom::RemoveObject(uint64 id)
 		return;
 	}
 
-	creature->room = nullptr;
+	gameObject->room = nullptr;
 
 	// 신규 오브젝트가 삭제 됨을 모두에게 전송
 	{
@@ -340,7 +340,7 @@ bool GameRoom::CanGo(Vec2Int cellPos)
 		return false;
 
 	// 몬스터 충돌
-	if (GetCreatureAt(cellPos) != nullptr)
+	if (GetGameObjectAt(cellPos) != nullptr)
 		return false;
 
 	return tile->value != 1;
@@ -364,7 +364,7 @@ Vec2Int GameRoom::GetRandomEmptyCellPos()
 	}
 }
 
-CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
+GameObjectRef GameRoom::GetGameObjectAt(Vec2Int cellPos)
 {
 	for (auto& item : _players)
 	{
@@ -385,17 +385,17 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 {
 	// 이동 패킷을 받았을 때 처리
 	uint64 id = pkt.info().objectid();
-	CreatureRef creature = FindObject(id);
-	if (creature == nullptr)
+	GameObjectRef gameObject = FindObject(id);
+	if (gameObject == nullptr)
 		return;
 
 	// set state, dir, pos + weaponType
 
-	creature->info.set_state(pkt.info().state());
-	creature->info.set_dir(pkt.info().dir());
-	creature->info.set_posx(pkt.info().posx());
-	creature->info.set_posy(pkt.info().posy());
-	creature->info.set_weapontype(pkt.info().weapontype());
+	gameObject->info.set_state(pkt.info().state());
+	gameObject->info.set_dir(pkt.info().dir());
+	gameObject->info.set_posx(pkt.info().posx());
+	gameObject->info.set_posy(pkt.info().posy());
+	gameObject->info.set_weapontype(pkt.info().weapontype());
 
 	// 클라이언트의 패킷을 브로드캐스트
 	{
