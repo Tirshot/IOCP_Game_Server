@@ -4,7 +4,7 @@ class Sprite;
 class WeaponSlot : public Panel
 {
 	using Super = Panel;
-
+#define MAX_SLOT 10
 public:
 	WeaponSlot();
 	virtual ~WeaponSlot();
@@ -22,10 +22,12 @@ public:
 
 	int16 HighlightSlot();
 
+	vector<Sprite*> AddSlot(Sprite* sprite) { _slots.insert({ (int)_slots.size() + 1, sprite}); }
+
 protected:
 	Vec2	_pos = { 0, 0 };
 	Vec2Int _size = { 52, 52};
-	vector<Sprite*> _slots;
+	map<int, Sprite*> _slots;
 	Sprite* _woodenSlot;
 	Sprite* _selectedSlot;
 };

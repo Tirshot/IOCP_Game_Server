@@ -19,15 +19,16 @@ WeaponSlot::~WeaponSlot()
 void WeaponSlot::BeginPlay()
 {
 	AddChild(this);
-	auto weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
-	auto weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
-	auto weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
+	Sprite* weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
+	Sprite* weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
+	Sprite* weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
 	_woodenSlot = GET_SINGLE(ResourceManager)->GetSprite(L"Slot");
 	_selectedSlot = GET_SINGLE(ResourceManager)->GetSprite(L"SelectedSlot");
 
-	_slots.push_back(weaponSword);
-	_slots.push_back(weaponBow);
-	_slots.push_back(weaponStaff);
+	// _slots에 push_back 하면 슬롯이 자동으로 증가
+	_slots.insert({ 1,weaponSword });
+	_slots.insert({ 2,weaponBow });
+	_slots.insert({ 3, weaponStaff });
 }
 
 void WeaponSlot::Tick()
@@ -42,11 +43,11 @@ void WeaponSlot::Render(HDC hdc)
 	auto sizeX = _size.x;
 	// 52 * 52
 
-	for (int i = 0; i < _slots.size(); i++)
+	for (int i = 1; i <= min(_slots.size(), MAX_SLOT); i++)
 	{
 		// 무기 슬롯 배경
 		::BitBlt(hdc,
-			(int)(_pos.x + 60.f * (i - _slots.size() / 2.f)),
+			(int)(_pos.x + 60.f * ((i - 1) - _slots.size() / 2.f)),
 			(int)_pos.y - 60,
 			60,
 			60,
@@ -57,7 +58,7 @@ void WeaponSlot::Render(HDC hdc)
 
 		// 무기 아이콘
 		::TransparentBlt(hdc,
-			(int)(_pos.x + 60 * (i  - _slots.size() / 2.f) + 7),
+			(int)(_pos.x + 60 * ((i - 1)  - _slots.size() / 2.f) + 7),
 			(int)_pos.y - 60 + 10,
 			iconSize - 10,
 			iconSize - 10,
@@ -71,7 +72,7 @@ void WeaponSlot::Render(HDC hdc)
 
 	// 선택된 무기 하이라이트
 	::TransparentBlt(hdc,
-		(int)(_pos.x + 60 * (HighlightSlot() - 1 - (float)_slots.size() / 2) + 6),
+		(int)(_pos.x + 60 * (HighlightSlot() - _slots.size() / 2.f) + 6),
 		(int)_pos.y - 60 + 7,
 		44,
 		44,
@@ -88,19 +89,7 @@ int16 WeaponSlot::HighlightSlot()
 	Player* player = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (player == nullptr)
-		return 1;
+		return 0;
 
-	auto nowWeapon = player->GetWeaponType();
-
-	switch (nowWeapon)
-	{
-	case 0: /* Sword */
-		return 1;
-
-	case 1: /* Bow */
-		return 2;
-
-	case 2: /* Staff */
-		return 3;
-	}
+	return player->GetWeaponType(); /* 0, 1, 2*/
 }
