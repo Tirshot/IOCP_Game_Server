@@ -127,6 +127,9 @@ void TilemapActor::TilePicking()
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
 	{
+		if (_showDebug == false)
+			return;
+
 		Tile* tile = _tilemap->GetTileAt({ x,y });
 		if (tile)
 			tile->value = 1;
@@ -134,6 +137,9 @@ void TilemapActor::TilePicking()
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))
 	{
+		if (_showDebug == false)
+			return;
+
 		Tile* tile = _tilemap->GetTileAt({ x,y });
 		if (tile)
 			tile->value = 0;
