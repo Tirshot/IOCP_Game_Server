@@ -78,10 +78,12 @@ void GameRoom::EnterRoom(GameSessionRef session)
 	session->player = player;
 	player->session = session;
 
-	// TEMP
-	player->info.set_posx(6);
-	player->info.set_posy(6);
+	// Player Character Spawn
+	Vec2Int randCellPos = GetRandomEmptySpawnCellPos();
+	player->info.set_posx(randCellPos.x);
+	player->info.set_posy(randCellPos.y);
 	player->info.set_dir(Protocol::DIR_TYPE_DOWN);
+
 	// 입장한 클라이언트에게 정보 전송
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info);
@@ -401,6 +403,23 @@ Vec2Int GameRoom::GetRandomEmptyCellPos()
 	Vec2Int ret = { -1,-1 };
 
 	Vec2Int size = _tilemap.GetMapSize();
+
+	// 굉장히 많아지면 빠져나오도록 설정해야 함
+	while (true)
+	{
+		int32 x = rand() % size.x;
+		int32 y = rand() % size.y;
+		Vec2Int cellPos{ x, y };
+
+		if (CanGo(cellPos))
+			return cellPos;
+	}
+}
+
+Vec2Int GameRoom::GetRandomEmptySpawnCellPos()
+{
+	Vec2Int ret = { -1,-1 };
+	Vec2Int size = Vec2Int{ 10, 13 };
 
 	// 굉장히 많아지면 빠져나오도록 설정해야 함
 	while (true)

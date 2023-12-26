@@ -39,6 +39,7 @@ public:
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 	bool CanGo(Vec2Int cellPos);
 	Vec2Int GetRandomEmptyCellPos();
+	Vec2Int GetRandomEmptySpawnCellPos();
 	CreatureRef GetCreatureAt(Vec2Int cellPos);
 
 public:
