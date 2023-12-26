@@ -3,6 +3,7 @@
 
 class Flipbook;
 
+class Arrow;
 class Player :  public Creature
 {
 	using Super = Creature;
@@ -19,6 +20,9 @@ protected:
 	virtual void TickMove() override;
 	virtual void TickSkill() override;
 	virtual void UpdateAnimation() override;
+
+public:
+	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 
 private:
 	Flipbook* _flipbookIdle[4] = {};

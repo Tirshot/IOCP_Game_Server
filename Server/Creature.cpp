@@ -31,17 +31,21 @@ void Creature::OnDamaged(CreatureRef attacker)
 	if (info.objecttype() == attacker->info.objecttype())
 		return;
 
-	int32 damage = attacker->info.attack() - this->info.defence();
-	attacker->info.set_damage(damage);
+	int32 damage = attacker->info.attack() - info.defence();
 
 	if (damage <= 0)
 		return;
 
 	// hp는 항상 양수
-	info.set_hp(max(0, info.hp() - damage));
+ 	info.set_hp(max(0, info.hp() - damage));
+	// Hit Packet
+	{
+		Protocol::S_Hit pkt;
+		pkt.add_ids(shared_from_this()->GetObjectID());
 
-	// 입힌 데미지를 브로드캐스트
-	BroadcastMove();
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(pkt);
+		room->Broadcast(sendBuffer);
+	}
 
 	if (info.hp() == 0)
 	{

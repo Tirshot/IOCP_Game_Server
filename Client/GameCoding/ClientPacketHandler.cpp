@@ -5,6 +5,10 @@
 #include "MyPlayer.h"
 #include "SceneManager.h"
 #include "Game.h"
+#include "Monster.h"
+#include "HitEffect.h"
+#include "Creature.h"
+#include "Player.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -33,6 +37,14 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 
 		case S_Move:
 			Handle_S_Move(session, buffer, len);
+			break;
+
+		case S_Fire:
+			Handle_S_Fire(session, buffer, len);
+			break;
+
+		case S_Hit:
+			Handle_S_Hit(session, buffer, len);
 			break;
 	}
 }
@@ -144,13 +156,61 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 		if (myPlayerId == info.objectid())
 			return;
 
-		GameObject* gameObject = scene->GetObject(info.objectid());
+		GameObject* gameObject = scene->GetObjects(info.objectid());
 		if (gameObject)
 		{
 			gameObject->SetDir(info.dir());
 			gameObject->SetState(info.state());
 			gameObject->SetCellPos(Vec2Int{ info.posx(), info.posy() });
 			gameObject->SetWeaponType(info.weapontype());
+		}
+	}
+}
+
+void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_Fire pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	const Protocol::ObjectInfo& info = pkt.info();
+
+	
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	// 화살의 주인 플레이어를 가져옴
+	if (scene)
+	{
+		GameObject* gameObject = scene->GetObjects(pkt.ownerid());
+		Player* player = static_cast<Player*>(gameObject);
+		if (player)
+		{
+			player->Handle_S_Fire(info, pkt.ownerid());
+		}
+	}
+}
+
+void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+	Protocol::S_Hit pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	pkt.ids();
+	//
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		GameObject* object = scene->GetObjects(pkt.ids(0));
+		if (object)
+		{
+			auto pos = object->GetCellPos();
+			scene->SpawnObject<HitEffect>(pos);
 		}
 	}
 }
@@ -166,22 +226,48 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 
 	// 패킷의 info를 수정해 myPlayer의 정보를 패킷에 담음
 	*pkt.mutable_info() = myPlayer->info;
-
+	
 	return MakeSendBuffer(pkt, C_Move);
 }
 
-//SendBufferRef ClientPacketHandler::Make_C_WeaponChange()
+SendBufferRef ClientPacketHandler::Make_C_Fire(const Protocol::ObjectInfo& info, uint64 ownerid)
+{
+	// 패킷 생성
+	Protocol::C_Fire pkt;
+
+	// MyPlayer를 가져옴
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	// 패킷의 info를 수정해 myPlayer의 정보를 패킷에 담음
+	Protocol::ObjectInfo& objectInfo = *pkt.mutable_info();
+
+	uint64 id2 = myPlayer->GetObjectID();
+
+	pkt.set_ownerid(ownerid);
+	objectInfo.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
+	objectInfo.set_dir(myPlayer->info.dir());
+	objectInfo.set_posx(myPlayer->info.posx());
+	objectInfo.set_posy(myPlayer->info.posy());
+
+
+	return MakeSendBuffer(pkt, C_Fire);
+}
+
+//SendBufferRef ClientPacketHandler::Make_C_Hit(const Protocol::C_Hit& pkt)
 //{
-//	// 패킷 생성
-//	Protocol::C_WeaponChange pkt;
-//
-//	// MyPlayer를 가져옴
-//	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-//
-//	// 패킷의 weapontype을 수정해 myPlayer의 정보를 패킷에 담음
-//	*pkt.mutable_info() = myPlayer->info;
-//
-//	return MakeSendBuffer(pkt, C_WeaponChange);
-//
+//	return MakeSendBuffer(pkt, C_Hit);
+//}
+
+//SendBufferRef ClientPacketHandler::Make_C_FireArrow()
+//{
+	// 패킷 생성
+
+	// MyPlayer를 가져옴
+	//Arrow* arrow = GET_SINGLE(SceneManager)->GetMyPlayer()->
+
+	//// 패킷의 weapontype을 수정해 myPlayer의 정보를 패킷에 담음
+	//*pkt.mutable_info() = myPlayer->info;
+
+	//return MakeSendBuffer(pkt, C_WeaponChange);
+
 //}
 

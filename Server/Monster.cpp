@@ -15,7 +15,7 @@ Monster::Monster()
 
 Monster::~Monster()
 {
-
+	cout << "~Monster" << endl;
 }
 
 void Monster::Init()
@@ -104,6 +104,7 @@ void Monster::UpdateIdle()
 			{
 				_target.reset();
 			}
+
 		}
 	}
 }
@@ -125,7 +126,7 @@ void Monster::UpdateSkill()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE, true);
+	SetState(IDLE);
 }
 
 void Monster::UpdateHit()
@@ -135,7 +136,7 @@ void Monster::UpdateHit()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE, true);
+	SetState(IDLE);
 }
 
 void Monster::KnockBack()

@@ -11,6 +11,8 @@
 #include "Arrow.h"
 #include "Monster.h"
 #include "ChatManager.h"
+#include "NetworkManager.h"
+#include "ClientPacketHandler.h"
 
 Player::Player()
 {
@@ -124,23 +126,18 @@ void Player::TickSkill()
 
 			if (creature)
 			{
-				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-
 				if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 				{
 					SetState(IDLE);
 					return;
 				}
-
 				// 몬스터가 플레이어에게 피격
 				creature->OnDamaged(this);
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{
-			Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
-			arrow->SetDir(info.dir());
-			arrow->SetOwner(this);
+			// 화살은 서버에서 관리
 		}
 
 		SetState(IDLE);
@@ -173,5 +170,16 @@ void Player::UpdateAnimation()
 			SetFlipbook(_flipbookStaff[info.dir()]);
 		}
 		break;
+	}
+}
+
+void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
+{
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	{
+		Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
+		arrow->SetDir(info.dir());
+		arrow->SetOwner(this);
+		arrow->info = info;
 	}
 }

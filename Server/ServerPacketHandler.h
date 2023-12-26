@@ -12,6 +12,12 @@ enum
 	// 해킹 방지를 위하여 번호를 비연속적으로 설정가능
 	C_Move = 10,
 	S_Move = 11,
+
+	C_Fire = 20,
+	S_Fire = 21,
+
+	C_Hit = 22,
+	S_Hit = 23,
 };
 
 struct BuffData
@@ -36,6 +42,9 @@ public:
 	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
 	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
+	static SendBufferRef Make_S_Hit(const Protocol::S_Hit& pkt);
+	// Arrow의 info를 넘김
+	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)

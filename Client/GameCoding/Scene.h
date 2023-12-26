@@ -3,6 +3,7 @@
 class Actor;
 class UI;
 class Creature;
+class Projectile;
 
 class Scene
 {

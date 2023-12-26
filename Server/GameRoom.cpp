@@ -3,6 +3,7 @@
 #include "GameSession.h"
 #include "Player.h"
 #include "Monster.h"
+#include "Arrow.h"
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
 
@@ -13,7 +14,7 @@ GameRoom::GameRoom()
 
 GameRoom::~GameRoom()
 {
-
+	cout << "~GameRoom" << endl;
 }
 
 void GameRoom::Init()
@@ -22,9 +23,15 @@ void GameRoom::Init()
 
 	// 몬스터 소환
 	MonsterRef monster = GameObject::CreateMonster();
-	monster->info.set_posx(8);
-	monster->info.set_posy(8);
+	monster->info.set_posx(11);
+	monster->info.set_posy(6);
 	AddObject(monster);
+
+	// 몬스터 소환
+	MonsterRef monster2 = GameObject::CreateMonster();
+	monster2->info.set_posx(12);
+	monster2->info.set_posy(6);
+	AddObject(monster2);
 }
 
 void GameRoom::Update()
@@ -38,6 +45,24 @@ void GameRoom::Update()
 	{
 		item.second->Update();
 	}
+
+	for (auto& item : _arrows)
+	{
+		item.second->Tick();
+
+		auto id = item.second -> GetObjectID();
+		// 어딘가에 적중시 제거
+		if (item.second->IsHit())
+		{
+			_deleteProjectiles[id] = item.second;
+		}
+	}
+
+	for (const auto& del : _deleteProjectiles)
+	{
+		_arrows.erase(del.first);
+	}
+	_deleteProjectiles.clear();
 }
 
 void GameRoom::EnterRoom(GameSessionRef session)
@@ -79,6 +104,12 @@ void GameRoom::EnterRoom(GameSessionRef session)
 			*info = item.second->info;
 		}
 
+		for (auto& item : _arrows)
+		{
+			Protocol::ObjectInfo* info = pkt.add_objects();
+			*info = item.second->info;
+		}
+
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 		session->Send(sendBuffer);
 	}
@@ -111,7 +142,11 @@ GameObjectRef GameRoom::FindObject(uint64 id)
 		if (findIt != _monsters.end())
 			return findIt->second;
 	}
-
+	{
+		auto findIt = _arrows.find(id);
+		if (findIt != _arrows.end())
+			return findIt->second;
+	}
 	return nullptr;
 }
 
@@ -137,6 +172,10 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_monsters[id] = static_pointer_cast<Monster>(gameObject);
 		break;
+
+	case Protocol::OBJECT_TYPE_PROJECTILE:
+		_arrows[id] = static_pointer_cast<Arrow>(gameObject);
+		return;
 
 	default:
 		return;
@@ -171,6 +210,10 @@ void GameRoom::RemoveObject(uint64 id)
 
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_monsters.erase(id);
+		break;
+
+	case Protocol::OBJECT_TYPE_PROJECTILE:
+		_arrows.erase(id);
 		break;
 
 	default:
@@ -387,6 +430,7 @@ CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 
 	return nullptr;
 }
+
 
 void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 {

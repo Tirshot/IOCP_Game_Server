@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Player.h"
 #include "Monster.h"
+#include "Arrow.h"
 #include "GameRoom.h"
+#include "GameSession.h"
 
 Player::Player()
 {
@@ -68,17 +70,32 @@ void Player::UpdateSkill()
 				SetState(IDLE);
 				return;
 			}
-
 			// 몬스터가 플레이어에게 피격
 			creature->OnDamaged(shared_from_this());
+			/*creature->SetState(HIT, true);*/
 		}
 	}
-	/*
-	else if (_weaponType == WeaponType::Bow)
+	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
 	{
-		Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
-		arrow->SetDir(info.dir());
-		arrow->SetOwner(this);
-	}*/
+		{
+			// 화살 발사는 서버에서 관리
+			ArrowRef arrow = CreateArrow();
+
+			arrow->SetDir(shared_from_this()->info.dir());
+			arrow->SetOwner(shared_from_this());
+
+			arrow->room = room;
+			arrow->info.set_posx(shared_from_this()->info.posx());
+			arrow->info.set_posy(shared_from_this()->info.posy());
+			arrow->SetState(IDLE);
+			// arrow에 화살 id가 들어옴, 화살 패킷 전송
+			{
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Fire(arrow->info, info.objectid());
+				session->Send(sendBuffer);
+				room->Broadcast(sendBuffer);
+			}
+			room->AddObject(arrow);
+		}
+	}
 	SetState(IDLE);
 }

@@ -4,6 +4,8 @@
 #include "BufferWriter.h"
 #include "GameSession.h"
 #include "GameRoom.h"
+#include "GameObject.h"
+#include "Player.h"
 
 void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int32 len)
 {
@@ -18,6 +20,7 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	case C_Move:
 		Handle_C_Move(session, buffer, len);
 		break;
+
 	default:
 		break;
 	}
@@ -41,7 +44,6 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
 	Protocol::S_TEST pkt;
-
 	pkt.set_id(10);
 	pkt.set_hp(100);
 	pkt.set_attack(10);
@@ -106,4 +108,21 @@ SendBufferRef ServerPacketHandler::Make_S_Move(const Protocol::ObjectInfo& info)
 	*objectInfo = info;
 
 	return MakeSendBuffer(pkt, S_Move);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_Hit(const Protocol::S_Hit& pkt)
+{
+	return MakeSendBuffer(pkt, S_Hit);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
+{
+	Protocol::S_Fire pkt;
+
+	Protocol::ObjectInfo* objectInfo = pkt.mutable_info();
+	*objectInfo = info;
+
+	pkt.set_ownerid(id);
+
+	return MakeSendBuffer(pkt, S_Fire);
 }

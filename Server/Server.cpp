@@ -39,13 +39,13 @@ int main()
 				{
 					service->GetIocpCore()->Dispatch(0);
 
-					uint64 now = ::GetTickCount64();
+					/*uint64 now = ::GetTickCount64();*/
 					
-					if (now - prev >= 5)
-					{
+					/*if (now - prev >= 5)
+					{*/
 						GRoom->Update();
-						prev = now;
-					}
+					/*	prev = now;
+					}*/
 				}
 				/*
 			});

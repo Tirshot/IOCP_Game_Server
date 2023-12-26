@@ -27,6 +27,12 @@
     <Filter Include="소스 파일\Game\Room">
       <UniqueIdentifier>{cf666381-bfd7-4058-a9a1-409cb3983252}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Object\Projectile">
+      <UniqueIdentifier>{3ba02ff3-bddc-4202-9080-b0077fd618a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Game\Object\Creature">
+      <UniqueIdentifier>{cc96d449-74c2-4930-aba3-889395ee2b50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -59,17 +65,23 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>소스 파일\Game\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Creature.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClCompile>
     <ClCompile Include="Tilemap.cpp">
       <Filter>소스 파일\Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Creature.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>소스 파일\Game\Object\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>소스 파일\Game\Object\Projectile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,17 +112,23 @@
     <ClInclude Include="GameObject.h">
       <Filter>소스 파일\Game\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Creature.h">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Monster.h">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>소스 파일\Game\Object</Filter>
-    </ClInclude>
     <ClInclude Include="Tilemap.h">
       <Filter>소스 파일\Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Creature.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>소스 파일\Game\Object\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>소스 파일\Game\Object\Projectile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

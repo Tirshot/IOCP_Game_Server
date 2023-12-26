@@ -18,7 +18,6 @@ MyPlayer::MyPlayer()
 {
 	CameraComponent* camera = new CameraComponent();
 	AddComponent(camera);
-	
 }
 
 MyPlayer::~MyPlayer()
@@ -49,6 +48,12 @@ void MyPlayer::TickInput()
 
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+	// 공격
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
+	{
+		SetState(SKILL);
+	}
 
 	 if (GET_SINGLE(InputManager)->GetButton(KeyType::W))
 	{
@@ -84,11 +89,7 @@ void MyPlayer::TickInput()
 		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
 	}
 
-	// 공격
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
-	{
-		SetState(SKILL);
-	}
+
 }
 
 void MyPlayer::TryMove()
@@ -167,3 +168,14 @@ void MyPlayer::SyncToServer()
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 }
+
+//void MyPlayer::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
+//{
+//	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+//	{
+//		Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
+//		arrow->SetDir(info.dir());
+//		arrow->SetOwner(this);
+//		this ->AddArrows(arrow, info.objectid());
+//	}
+//}

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 
 class Creature;
+class Arrow;
 class Projectile : public GameObject
 {
 	using Super = GameObject;

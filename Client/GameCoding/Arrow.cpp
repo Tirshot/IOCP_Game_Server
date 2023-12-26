@@ -21,12 +21,12 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
+
 }
 
 void Arrow::BeginPlay()
 {
 	Super::BeginPlay();
-	UpdateAnimation();
 }
 
 void Arrow::Tick()
@@ -46,6 +46,7 @@ void Arrow::TickIdle()
 		return;
 
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
 	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
 
 	// 다음 위치에 갈 수 있는지 확인
@@ -57,19 +58,14 @@ void Arrow::TickIdle()
 	else
 	{
 		// 앞이 비어있으면 전진, 몬스터라면 타격
-		Creature* creature = scene->GetCreatureAt(nextPos);
-		if (creature == _owner)
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-			return;
-		}
-
-		if (creature)
-		{
-			scene->SpawnObject<HitEffect>(nextPos);
-			creature->OnDamaged(_owner);
-		}
+		//Creature* creature = scene->GetCreatureAt(nextPos);
+		//_owner->GetFrontCellPos();
+		//if (creature == _owner)
+		//{
+		//	SetCellPos(nextPos);
+		//	SetState(MOVE);
+		//	return;
+		//}
 		scene->RemoveActor(this);
 	}
 }
@@ -89,16 +85,16 @@ void Arrow::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 900 * deltaTime;
+			_pos.y -= 800 * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 900 * deltaTime;
+			_pos.y += 800 * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 900 * deltaTime;
+			_pos.x -= 800 * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 900 * deltaTime;
+			_pos.x += 800 * deltaTime;
 			break;
 		}
 	}

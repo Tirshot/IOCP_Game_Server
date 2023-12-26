@@ -19,5 +19,8 @@ private:
 	// Get, Set 함수를 안쓰기 위해 public, 추후 수정 필요
 public:
 	GameSessionRef session;
+
+protected:
+	uint64 _waitUntil = 0;
 };
 

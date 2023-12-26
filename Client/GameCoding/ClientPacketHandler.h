@@ -13,10 +13,13 @@ enum
 	C_Move = 10,
 	S_Move = 11,
 
-	C_WeaponChange = 15,
-	S_WeaponChange = 16,
-};
+	C_Fire = 20,
+	S_Fire = 21,
 
+	C_Hit = 22,
+	S_Hit = 23,
+};
+class Creature;
 class ClientPacketHandler
 {
 public:
@@ -29,7 +32,8 @@ public:
 	static void Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len);
-
+	static void Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// º¸³»±â
 	static SendBufferRef Make_C_Move();
@@ -50,6 +54,7 @@ public:
 		return sendBuffer;
 	}
 
-	//static SendBufferRef Make_C_WeaponChange();
+	static SendBufferRef Make_C_Fire(const Protocol::ObjectInfo& info, uint64 ownerid);
+	//static SendBufferRef Make_C_Hit(const Protocol::C_Hit& pkt);
 };
 

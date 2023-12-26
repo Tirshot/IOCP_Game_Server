@@ -4,10 +4,15 @@ class GameObject
 {
 public:
 	GameObject();
-	virtual ~GameObject();
+	virtual ~GameObject ();
 
 	virtual void BeginPlay() {};
 	virtual void Tick() {};
+
+public:
+	virtual void TickIdle() {};
+	virtual void TickMove() {};
+	virtual void TickSkill() {};
 	
 public:
 	// 전투 관련 코드
@@ -28,16 +33,16 @@ public:
 	void BroadcastMove();
 
 	Protocol::OBJECT_TYPE GetType() { return info.objecttype(); }
-
 	// 오브젝트를 총괄 관리
 	static PlayerRef CreatePlayer();
 	static MonsterRef CreateMonster();
+	static ArrowRef CreateArrow();
 
 public:
 	Protocol::ObjectInfo info;
 	GameRoomRef room;
 
-private:
+protected:
 	// id 부여
 	static atomic<uint64> s_idGenerator;
 };

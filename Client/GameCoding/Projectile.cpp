@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Projectile.h"
 #include "Creature.h"
+#include "Arrow.h"
 
 Projectile::Projectile()
 {

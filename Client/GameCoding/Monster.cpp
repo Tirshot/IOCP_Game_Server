@@ -9,6 +9,7 @@
 #include "Tilemap.h"
 #include "Player.h"
 #include "HitEffect.h"
+#include "ClientPacketHandler.h"
 
 Monster::Monster()
 {
@@ -81,16 +82,16 @@ void Monster::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 150 * deltaTime;
+			_pos.y -= 50 * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 150 * deltaTime;
+			_pos.y += 50 * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 150 * deltaTime;
+			_pos.x -= 50 * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 150 * deltaTime;
+			_pos.x += 50 * deltaTime;
 			break;
 		}
 	}
@@ -118,8 +119,11 @@ void Monster::TickSkill()
 	if (creature)
 	{		
 		// 플레이어가 몬스터에게 데미지 피격
-		scene->SpawnObject<HitEffect>(GetFrontCellPos());
-		creature->OnDamaged(this);
+		// 피격 이펙트는 패킷 핸들러가 처리
+ 		creature->OnDamaged(this);
+
+		
+		//ClientPacketHandler::Make_C_Hit(pkt);
 	}
 
 	SetState(IDLE);

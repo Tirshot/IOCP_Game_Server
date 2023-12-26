@@ -61,7 +61,6 @@ void Scene::Render(HDC hdc)
 
 void Scene::AddActor(Actor* actor)
 {
-
 	if (actor == nullptr)
 		return;
 

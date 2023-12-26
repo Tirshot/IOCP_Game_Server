@@ -64,7 +64,7 @@ public:
 	}
 
 public:
-	GameObject* GetObject(uint64 id);
+	GameObject* GetObjects(uint64 id);
 
 	// 패킷 핸들
 	void Handle_S_AddObject(Protocol::S_AddObject& pkt);

@@ -20,6 +20,7 @@
 #include "WeaponSlot.h"
 #include "Chat.h"
 #include "ChatManager.h"
+#include "Arrow.h"
 
 DevScene::DevScene()
 {
@@ -411,7 +412,7 @@ void DevScene::LoadUI()
 	}
 }
 
-GameObject* DevScene::GetObject(uint64 id)
+GameObject* DevScene::GetObjects(uint64 id)
 {
 	for (Actor* actor : _actors[LAYER_OBJECT])
 	{
@@ -454,6 +455,15 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			monster->SetDir(info.dir());
 			monster->SetState(info.state());
 		}
+		//else if (info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
+		//{
+		//	Arrow* arrow = SpawnObject<Arrow>(Vec2Int{ info.posx(), info.posy() });
+
+		//	// 애니메이션을 위해
+		//	arrow->info = info;
+		//	arrow->SetDir(info.dir());
+		//	arrow->SetState(info.state());
+		//}
 	}
 }
 
@@ -464,7 +474,7 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 	{
 		uint64 id = pkt.ids(i);
 
-		GameObject* object = GetObject(id);
+		GameObject* object = GetObjects(id);
 		if (object)
 			RemoveActor(object);
 	}
