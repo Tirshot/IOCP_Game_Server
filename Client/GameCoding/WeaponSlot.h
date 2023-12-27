@@ -28,7 +28,8 @@ protected:
 	Vec2	_pos = { 0, 0 };
 	Vec2Int _size = { 52, 52};
 	map<int, Sprite*> _slots;
-	Sprite* _woodenSlot;
-	Sprite* _selectedSlot;
+	Sprite* _woodenSlot = nullptr;
+	Sprite* _selectedSlot = nullptr;
+	Sprite* _selected = nullptr;
 };
 

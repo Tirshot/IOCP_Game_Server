@@ -9,7 +9,7 @@ Monster::Monster()
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	info.set_hp(50);
 	info.set_maxhp(50);
-	info.set_attack(10);
+	info.set_attack(1);
 	info.set_defence(0);
 }
 

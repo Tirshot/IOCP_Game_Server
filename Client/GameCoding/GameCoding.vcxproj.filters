@@ -69,6 +69,12 @@
     <Filter Include="소스 파일\04. Resources\Paper2D">
       <UniqueIdentifier>{9fd55640-5235-48bc-b89b-a98559110a6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\06. UI\Base">
+      <UniqueIdentifier>{c39fc3a4-9358-427c-947e-06dd455d5bca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\06. UI\InGame">
+      <UniqueIdentifier>{56369f29-68a2-4152-a062-eff923a081ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -158,15 +164,6 @@
     <ClInclude Include="FlipBook.h">
       <Filter>소스 파일\04. Resources\Paper2D</Filter>
     </ClInclude>
-    <ClInclude Include="Panel.h">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="UI.h">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>소스 파일\99. Headers\Default</Filter>
     </ClInclude>
@@ -215,14 +212,26 @@
     <ClInclude Include="NetworkManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="WeaponSlot.h">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Chat.h">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClInclude>
     <ClInclude Include="ChatManager.h">
       <Filter>소스 파일\01. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Chat.h">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="HP.h">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponSlot.h">
+      <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -321,15 +330,6 @@
     <ClCompile Include="FlipBook.cpp">
       <Filter>소스 파일\04. Resources\Paper2D</Filter>
     </ClCompile>
-    <ClCompile Include="Panel.cpp">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="UI.cpp">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClCompile>
     <ClCompile Include="Types.cpp">
       <Filter>소스 파일\99. Headers</Filter>
     </ClCompile>
@@ -360,14 +360,26 @@
     <ClCompile Include="NetworkManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="WeaponSlot.cpp">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClCompile>
-    <ClCompile Include="Chat.cpp">
-      <Filter>소스 파일\06. UI</Filter>
-    </ClCompile>
     <ClCompile Include="ChatManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Chat.cpp">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="HP.cpp">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponSlot.cpp">
+      <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -107,6 +107,7 @@ void Player::TickMove()
 	}
 }
 
+
 void Player::TickSkill()
 {
 	if (_flipbook == nullptr)
@@ -139,7 +140,6 @@ void Player::TickSkill()
 		{
 			// 화살은 서버에서 관리
 		}
-
 		SetState(IDLE);
 	}
 }

@@ -54,20 +54,21 @@ void Arrow::TickIdle()
 	{
 		SetCellPos(nextPos);
 		SetState(MOVE);
+		return;
 	}
 	else
 	{
 		// 앞이 비어있으면 전진, 몬스터라면 타격
-		//Creature* creature = scene->GetCreatureAt(nextPos);
-		//_owner->GetFrontCellPos();
-		//if (creature == _owner)
-		//{
-		//	SetCellPos(nextPos);
-		//	SetState(MOVE);
-		//	return;
-		//}
-		scene->RemoveActor(this);
+		Creature* creature = scene->GetCreatureAt(nextPos);
+		_owner->GetFrontCellPos();
+		if (creature == _owner)
+		{
+			SetCellPos(nextPos);
+			SetState(MOVE);
+			return;
+		}
 	}
+	scene->RemoveActor(this);
 }
 
 void Arrow::TickMove()

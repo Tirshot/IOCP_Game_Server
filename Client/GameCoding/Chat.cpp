@@ -7,12 +7,11 @@
 
 Chat::Chat()
 {
-	AddChild(this);
+	
 }
 
 Chat::Chat(Vec2 rectPos)
 {
-	AddChild(this);
 	_rectPos.x = rectPos.x;
 	_rectPos.y = rectPos.y;
 }
@@ -22,8 +21,11 @@ Chat::~Chat()
 	RemoveChild(this);
 }
 
+int _alpha = 0;
+
 void Chat::BeginPlay()
 {
+	AddChild(this);
 	// size of chat
 	_rect = GetRect();
 	_rect.left = 0;
@@ -41,6 +43,13 @@ void Chat::Tick()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
+	// 창이 페이드 인
+	if (_sumTime < 3.f)
+	{
+		_alpha++;
+		_alpha = clamp(_alpha, 50, 200);
+	}
+
 	// 텍스트가 아직 있으면 창을 숨기지 않음
 	if (_texts.empty() == false)
 		_visible = true;
@@ -53,18 +62,27 @@ void Chat::Tick()
 			auto removeIt = std::remove(_texts.begin(), _texts.end(), _texts[0]);
 			_texts.erase(removeIt, _texts.end());
 		}
-		_visible = false;
-		_sumTime = 0;
+		// 창이 페이드 아웃
+		_alpha--;
+		_alpha = clamp(_alpha, 0, 200);
+
+		// 창이 충분히 어두워지면
+		if (_alpha < 10)
+		{
+			_visible = false;
+			_sumTime = 0;
+		}
 	}
 }
 
 void Chat::Render(HDC hdc)
 {
+	
 	BLENDFUNCTION bf = {};
 	bf.AlphaFormat = 0; //일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
 	bf.BlendFlags = 0;
 	bf.BlendOp = AC_SRC_OVER; //  원본과 대상 이미지를 합침
-	bf.SourceConstantAlpha = 127; // 투명도(투명 0 - 불투명 255)
+	bf.SourceConstantAlpha = _alpha; // 투명도(투명 0 - 불투명 255)
 
 	if (_visible)
 	{
@@ -99,9 +117,9 @@ void Chat::Render(HDC hdc)
 				_texts[i].size());*/
 
 			RECT textRect;
-			textRect.left = _rect.left;
+			textRect.left = _rect.left + 10;
 			textRect.right = _rect.right;
-			textRect.top = _rect.top + i * 18;
+			textRect.top = _rect.top + 10 + i * 18;
 			textRect.bottom = _rect.bottom;
 
 			// DrawText 함수를 사용하여 텍스트 출력

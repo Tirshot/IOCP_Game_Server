@@ -62,6 +62,14 @@ void Arrow::TickIdle()
 	}
 	else
 	{
+		if (_target == _owner)
+		{
+			SetCellPos(nextPos + deltaXY[info.dir()]);
+			SetState(MOVE);
+			_waitUntil = GetTickCount64() + 50; // ±â´Ù¸²
+			_hit = false;
+		}
+
 		SetState(HIT);
 	}
 }

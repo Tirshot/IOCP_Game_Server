@@ -158,6 +158,7 @@
     <ClInclude Include="GameCoding.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HitEffect.h" />
+    <ClInclude Include="HP.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MyPlayer.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="GameCoding.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HitEffect.cpp" />
+    <ClCompile Include="HP.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MyPlayer.cpp" />

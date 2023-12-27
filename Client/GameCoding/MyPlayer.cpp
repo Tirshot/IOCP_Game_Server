@@ -41,10 +41,11 @@ void MyPlayer::Render(HDC hdc)
 {
 	Super::Render(hdc);
 }
-
+float prevCount = 0;
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
+	float nowCount = GetTickCount64();
 
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
@@ -52,7 +53,12 @@ void MyPlayer::TickInput()
 	// 공격
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
 	{
-		SetState(SKILL);
+		// 500ms 마다 공격
+		if (nowCount - prevCount >= 400.f)
+		{
+			SetState(SKILL);
+			prevCount = nowCount;
+		}
 	}
 
 	 if (GET_SINGLE(InputManager)->GetButton(KeyType::W))

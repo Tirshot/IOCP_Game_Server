@@ -22,8 +22,9 @@ void WeaponSlot::BeginPlay()
 	Sprite* weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
 	Sprite* weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
 	Sprite* weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
-	_woodenSlot = GET_SINGLE(ResourceManager)->GetSprite(L"Slot");
+	_woodenSlot = GET_SINGLE(ResourceManager)->GetSprite(L"Frame");
 	_selectedSlot = GET_SINGLE(ResourceManager)->GetSprite(L"SelectedSlot");
+	_selected = GET_SINGLE(ResourceManager)->GetSprite(L"Selected");
 
 	// _slots에 push_back 하면 슬롯이 자동으로 증가
 	_slots.insert({ 1,weaponSword });
@@ -46,19 +47,21 @@ void WeaponSlot::Render(HDC hdc)
 	for (int i = 1; i <= min(_slots.size(), MAX_SLOT); i++)
 	{
 		// 무기 슬롯 배경
-		::BitBlt(hdc,
-			(int)(_pos.x + 60.f * ((i - 1) - _slots.size() / 2.f)),
-			(int)_pos.y - 60,
-			60,
-			60,
+		::TransparentBlt(hdc,
+			(int)(_pos.x + 60.f * ((i - 1) - _slots.size() / 2.f) + 1),
+			(int)_pos.y - 56,
+			52,
+			52,
 			_woodenSlot->GetDC(),
 			_woodenSlot->GetPos().x,
 			_woodenSlot->GetPos().y,
-			SRCCOPY);
+			74,
+			74,
+			RGB(128, 128, 128));
 
 		// 무기 아이콘
 		::TransparentBlt(hdc,
-			(int)(_pos.x + 60 * ((i - 1)  - _slots.size() / 2.f) + 7),
+			(int)(_pos.x + 60 * ((i - 1)  - _slots.size() / 2.f) + 5),
 			(int)_pos.y - 60 + 10,
 			iconSize - 10,
 			iconSize - 10,
@@ -71,17 +74,30 @@ void WeaponSlot::Render(HDC hdc)
 	}
 
 	// 선택된 무기 하이라이트
+	//::TransparentBlt(hdc,
+	//	(int)(_pos.x + 60 * (HighlightSlot() - _slots.size() / 2.f) + 6),
+	//	(int)_pos.y - 60 + 7,
+	//	45,
+	//	45,
+	//	_selectedSlot->GetDC(),
+	//	_selectedSlot->GetPos().x,
+	//	_selectedSlot->GetPos().y,
+	//	44,
+	//	44,
+	//	_selectedSlot->GetTransparent());
+
 	::TransparentBlt(hdc,
-		(int)(_pos.x + 60 * (HighlightSlot() - _slots.size() / 2.f) + 6),
+		(int)(_pos.x + 60 * (HighlightSlot() - _slots.size() / 2.f) + 4),
 		(int)_pos.y - 60 + 7,
-		44,
-		44,
-		_selectedSlot->GetDC(),
-		_selectedSlot->GetPos().x,
-		_selectedSlot->GetPos().y,
-		44,
-		44,
-		_selectedSlot->GetTransparent());
+		45,
+		45,
+		_selected->GetDC(),
+		_selected->GetPos().x,
+		_selected->GetPos().y,
+		80,
+		80,
+		RGB(128, 128, 128));
+
 }
 
 int16 WeaponSlot::HighlightSlot()
