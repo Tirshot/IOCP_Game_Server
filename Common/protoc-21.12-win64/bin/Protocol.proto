@@ -51,20 +51,26 @@ message C_Fire
 {
 	ObjectInfo info = 1;
 	uint64 ownerid = 2;
+	uint64 tick = 3;
 }
 
 message S_Fire
 {
 	ObjectInfo info = 1;
 	uint64 ownerid = 2;
+	uint64 tick = 3;
 }
 
 message S_Hit
 {
-	repeated uint64 ids = 1;
+	uint64 objectid = 1;
+	uint64 attackerid = 2;
+	uint64 objecttype = 3;
 }
 
 message C_Hit
 {
-	repeated uint64 ids = 1;
+	uint64 objectid = 1;
+	uint64 attackerid = 2;
+	uint64 objecttype = 3;
 }

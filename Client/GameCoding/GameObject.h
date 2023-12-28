@@ -16,6 +16,7 @@ protected:
 	virtual void TickIdle() {}
 	virtual void TickMove() {}
 	virtual void TickSkill() {}
+	virtual void TickHit() {}
 	virtual void UpdateAnimation() {}
 
 public:

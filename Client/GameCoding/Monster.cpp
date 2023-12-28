@@ -57,7 +57,7 @@ void Monster::Render(HDC hdc)
 
 void Monster::TickIdle()
 {
-
+	// 길찾기는 서버에서 수행
 }
 
 void Monster::TickMove()
@@ -110,7 +110,7 @@ void Monster::TickSkill()
 	}
 
 	// 공격 판정
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
 		return;
 
@@ -119,12 +119,17 @@ void Monster::TickSkill()
 	if (creature)
 	{		
 		// 플레이어가 몬스터에게 데미지 피격
-		// 피격 이펙트는 패킷 핸들러가 처리
  		creature->OnDamaged(this);
-
-		
-		//ClientPacketHandler::Make_C_Hit(pkt);
 	}
+
+	SetState(IDLE);
+}
+
+void Monster::TickHit()
+{
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	scene->SpawnObject<HitEffect>(GetCellPos());
+	UpdateAnimation();
 
 	SetState(IDLE);
 }

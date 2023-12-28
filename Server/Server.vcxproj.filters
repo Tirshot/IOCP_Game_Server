@@ -83,6 +83,9 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>소스 파일\Game\Object\Projectile</Filter>
     </ClCompile>
+    <ClCompile Include="Chat.cpp">
+      <Filter>소스 파일\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -129,6 +132,9 @@
     </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>소스 파일\Game\Object\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="Chat.h">
+      <Filter>소스 파일\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

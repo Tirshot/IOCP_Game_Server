@@ -138,7 +138,11 @@ void Player::TickSkill()
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{
-			// 화살은 서버에서 관리
+			// 화살 생성 패킷 전송
+			{
+				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(GetObjectID());
+				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+			}
 		}
 		SetState(IDLE);
 	}
@@ -170,6 +174,9 @@ void Player::UpdateAnimation()
 			SetFlipbook(_flipbookStaff[info.dir()]);
 		}
 		break;
+
+	default:
+		return;
 	}
 }
 

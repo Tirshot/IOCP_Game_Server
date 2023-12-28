@@ -10,6 +10,7 @@ using PlayerRef = shared_ptr<class Player>;
 using MonsterRef = shared_ptr<class Monster>;
 using ProjectileRef = shared_ptr<class Projectile>;
 using ArrowRef = shared_ptr<class Arrow>;
+using ChatRef = shared_ptr<class Chat>;
 
 #include "Enum.pb.h"
 using Dir = Protocol::DIR_TYPE;
@@ -23,6 +24,7 @@ using Dir = Protocol::DIR_TYPE;
 #define MOVE Protocol::OBJECT_STATE_TYPE_MOVE
 #define SKILL Protocol::OBJECT_STATE_TYPE_SKILL
 #define HIT Protocol::OBJECT_STATE_TYPE_HIT
+#define STOP Protocol::OBJECT_STATE_TYPE_STOP
 
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 

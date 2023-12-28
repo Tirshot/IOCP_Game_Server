@@ -21,6 +21,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Move(session, buffer, len);
 		break;
 
+	case C_Fire:
+		Handle_C_Fire(session, buffer, len);
+		break;
+
 	default:
 		break;
 	}
@@ -39,6 +43,30 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 	GameRoomRef room = session->gameRoom.lock();
 	if (room)
 		room->Handle_C_Move(pkt);
+}
+
+void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_Fire pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	GameRoomRef room = session->gameRoom.lock();
+	if (room)
+	{
+		GameObjectRef object = room->FindObject(pkt.ownerid());
+
+		if (object)
+		{
+			PlayerRef player = dynamic_pointer_cast<Player>(object);
+			// 화살발사?
+			player->MakeArrow();
+		}
+	}
+
 }
 
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)

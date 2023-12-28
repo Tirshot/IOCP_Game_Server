@@ -16,10 +16,6 @@ private:
 	virtual void UpdateIdle();
 	virtual void UpdateMove();
 	virtual void UpdateSkill();
-	virtual void UpdateHit();
-
-public:
-	virtual void KnockBack();
 
 protected:
 	uint64 _waitUntil = 0;

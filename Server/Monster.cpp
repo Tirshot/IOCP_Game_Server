@@ -9,7 +9,7 @@ Monster::Monster()
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	info.set_hp(50);
 	info.set_maxhp(50);
-	info.set_attack(1);
+	info.set_attack(0);
 	info.set_defence(0);
 }
 
@@ -39,10 +39,6 @@ void Monster::Update()
 
 	case SKILL:
 		UpdateSkill();
-		break;
-
-	case HIT:
-		UpdateHit();
 		break;
 	}
 }
@@ -104,7 +100,6 @@ void Monster::UpdateIdle()
 			{
 				_target.reset();
 			}
-
 		}
 	}
 }
@@ -116,7 +111,7 @@ void Monster::UpdateMove()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE);
+	SetState(IDLE, true);
 }
 
 void Monster::UpdateSkill()
@@ -127,23 +122,4 @@ void Monster::UpdateSkill()
 		return;
 
 	SetState(IDLE);
-}
-
-void Monster::UpdateHit()
-{
-	uint64 now = GetTickCount64();
-
-	if (_waitUntil > now)
-		return;
-
-	SetState(IDLE);
-}
-
-void Monster::KnockBack()
-{
-	auto dir = GetCellPos() - GetFrontCellPos();
-
-	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
-	if (CanGo(GetCellPos() + dir))
-		SetCellPos(GetCellPos() + dir, true);
 }

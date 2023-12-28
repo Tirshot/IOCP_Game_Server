@@ -200,17 +200,14 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	uint16 size = header->size;
 	Protocol::S_Hit pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
-	pkt.ids();
 	//
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 	{
-		GameObject* object = scene->GetObjects(pkt.ids(0));
+		GameObject* object = scene->GetObjects(pkt.objectid());
 		if (object)
 		{
-			auto pos = object->GetCellPos();
-			scene->SpawnObject<HitEffect>(pos);
+			// 화살인 경우에만 이펙트를 따로 출력???
 		}
 	}
 }
@@ -230,24 +227,12 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 	return MakeSendBuffer(pkt, C_Move);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_Fire(const Protocol::ObjectInfo& info, uint64 ownerid)
+SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
 {
 	// 패킷 생성
 	Protocol::C_Fire pkt;
 
-	// MyPlayer를 가져옴
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-	// 패킷의 info를 수정해 myPlayer의 정보를 패킷에 담음
-	Protocol::ObjectInfo& objectInfo = *pkt.mutable_info();
-
-	uint64 id2 = myPlayer->GetObjectID();
-
 	pkt.set_ownerid(ownerid);
-	objectInfo.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
-	objectInfo.set_dir(myPlayer->info.dir());
-	objectInfo.set_posx(myPlayer->info.posx());
-	objectInfo.set_posy(myPlayer->info.posy());
-
 
 	return MakeSendBuffer(pkt, C_Fire);
 }

@@ -67,6 +67,11 @@ void Arrow::TickIdle()
 			SetState(MOVE);
 			return;
 		}
+		// ÀÌÆåÆ® Ãâ·Â
+		if (creature)
+		{
+			scene->SpawnObject<HitEffect>(nextPos);
+		}
 	}
 	scene->RemoveActor(this);
 }

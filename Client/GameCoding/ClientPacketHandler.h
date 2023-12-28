@@ -54,7 +54,7 @@ public:
 		return sendBuffer;
 	}
 
-	static SendBufferRef Make_C_Fire(const Protocol::ObjectInfo& info, uint64 ownerid);
+	static SendBufferRef Make_C_Fire(uint64 ownerid);
 	//static SendBufferRef Make_C_Hit(const Protocol::C_Hit& pkt);
 };
 

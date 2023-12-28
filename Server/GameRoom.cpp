@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Monster.h"
 #include "Arrow.h"
+#include "Chat.h"
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
 
@@ -63,6 +64,8 @@ void GameRoom::Update()
 		_arrows.erase(del.first);
 	}
 	_deleteProjectiles.clear();
+
+	
 }
 
 void GameRoom::EnterRoom(GameSessionRef session)

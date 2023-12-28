@@ -40,7 +40,7 @@ void DevScene::Init()
 	// 스테이지 01
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Stage01", L"Sprite\\Map\\Stage01.bmp");
 
-	// 타일
+	// 타일, 화살, 크리쳐의 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tile", L"Sprite\\Map\\Tile.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Potion", L"Sprite\\UI\\Mp.bmp");
@@ -66,6 +66,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Selected", L"Sprite\\UI\\Selected.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Chat", L"Sprite\\UI\\Chat.bmp");
 
+	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
 	GET_SINGLE(ResourceManager)->CreateSprite(L"TileO", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 0, 0 ,48, 48);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"TileX", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 48, 0, 48, 48);
@@ -324,25 +325,25 @@ void DevScene::LoadMonster()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeUpHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeUp", { 100, 100}, 0, 0, 5, 0.1f });
+		fb->SetInfo({ texture, L"FB_SnakeUp", { 100, 100}, 0, 0, 5, 0.05f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeDownHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeDown", { 100, 100}, 3, 1, 5, 0.1f });
+		fb->SetInfo({ texture, L"FB_SnakeDown", { 100, 100}, 3, 3, 5, 0.05f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeLeftHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeLeft", { 100, 100}, 1, 1, 5, 0.1f });
+		fb->SetInfo({ texture, L"FB_SnakeLeft", { 100, 100}, 1, 1, 5, 0.05f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeRightHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 2, 2, 5, 0.1f });
+		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 2, 2, 5, 0.05f });
 	}
 
 }

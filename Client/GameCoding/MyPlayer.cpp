@@ -163,6 +163,11 @@ void MyPlayer::TickSkill()
 	Super::TickSkill();
 }
 
+void MyPlayer::TickHit()
+{
+	Super::TickHit();
+}
+
 void MyPlayer::SyncToServer()
 {
 	// 매 1000프레임마다 동기화하긴 불합리

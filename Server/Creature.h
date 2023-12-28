@@ -13,6 +13,6 @@ public:
 	virtual void Tick() override;
 
 	void OnDamaged(CreatureRef attacker);
-
+	void KnockBack();
 };
 

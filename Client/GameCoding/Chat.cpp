@@ -4,7 +4,6 @@
 #include "Sprite.h"
 #include "TimeManager.h"
 
-
 Chat::Chat()
 {
 	
@@ -116,7 +115,7 @@ void Chat::Render(HDC hdc)
 				_texts[i].c_str(),
 				_texts[i].size());*/
 
-			RECT textRect;
+			RECT textRect = {};
 			textRect.left = _rect.left + 10;
 			textRect.right = _rect.right;
 			textRect.top = _rect.top + 10 + i * 18;

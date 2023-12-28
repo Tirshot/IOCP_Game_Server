@@ -1360,6 +1360,7 @@ class C_Fire final :
   enum : int {
     kInfoFieldNumber = 1,
     kOwneridFieldNumber = 2,
+    kTickFieldNumber = 3,
   };
   // .Protocol.ObjectInfo info = 1;
   bool has_info() const;
@@ -1388,6 +1389,15 @@ class C_Fire final :
   void _internal_set_ownerid(uint64_t value);
   public:
 
+  // uint64 tick = 3;
+  void clear_tick();
+  uint64_t tick() const;
+  void set_tick(uint64_t value);
+  private:
+  uint64_t _internal_tick() const;
+  void _internal_set_tick(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_Fire)
  private:
   class _Internal;
@@ -1398,6 +1408,7 @@ class C_Fire final :
   struct Impl_ {
     ::Protocol::ObjectInfo* info_;
     uint64_t ownerid_;
+    uint64_t tick_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1528,6 +1539,7 @@ class S_Fire final :
   enum : int {
     kInfoFieldNumber = 1,
     kOwneridFieldNumber = 2,
+    kTickFieldNumber = 3,
   };
   // .Protocol.ObjectInfo info = 1;
   bool has_info() const;
@@ -1556,6 +1568,15 @@ class S_Fire final :
   void _internal_set_ownerid(uint64_t value);
   public:
 
+  // uint64 tick = 3;
+  void clear_tick();
+  uint64_t tick() const;
+  void set_tick(uint64_t value);
+  private:
+  uint64_t _internal_tick() const;
+  void _internal_set_tick(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_Fire)
  private:
   class _Internal;
@@ -1566,6 +1587,7 @@ class S_Fire final :
   struct Impl_ {
     ::Protocol::ObjectInfo* info_;
     uint64_t ownerid_;
+    uint64_t tick_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1694,29 +1716,36 @@ class S_Hit final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kIdsFieldNumber = 1,
+    kObjectidFieldNumber = 1,
+    kAttackeridFieldNumber = 2,
+    kObjecttypeFieldNumber = 3,
   };
-  // repeated uint64 ids = 1;
-  int ids_size() const;
+  // uint64 objectid = 1;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
   private:
-  int _internal_ids_size() const;
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
   public:
-  void clear_ids();
+
+  // uint64 attackerid = 2;
+  void clear_attackerid();
+  uint64_t attackerid() const;
+  void set_attackerid(uint64_t value);
   private:
-  uint64_t _internal_ids(int index) const;
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-      _internal_ids() const;
-  void _internal_add_ids(uint64_t value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-      _internal_mutable_ids();
+  uint64_t _internal_attackerid() const;
+  void _internal_set_attackerid(uint64_t value);
   public:
-  uint64_t ids(int index) const;
-  void set_ids(int index, uint64_t value);
-  void add_ids(uint64_t value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-      ids() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-      mutable_ids();
+
+  // uint64 objecttype = 3;
+  void clear_objecttype();
+  uint64_t objecttype() const;
+  void set_objecttype(uint64_t value);
+  private:
+  uint64_t _internal_objecttype() const;
+  void _internal_set_objecttype(uint64_t value);
+  public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_Hit)
  private:
@@ -1726,8 +1755,9 @@ class S_Hit final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > ids_;
-    mutable std::atomic<int> _ids_cached_byte_size_;
+    uint64_t objectid_;
+    uint64_t attackerid_;
+    uint64_t objecttype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1856,29 +1886,36 @@ class C_Hit final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kIdsFieldNumber = 1,
+    kObjectidFieldNumber = 1,
+    kAttackeridFieldNumber = 2,
+    kObjecttypeFieldNumber = 3,
   };
-  // repeated uint64 ids = 1;
-  int ids_size() const;
+  // uint64 objectid = 1;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
   private:
-  int _internal_ids_size() const;
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
   public:
-  void clear_ids();
+
+  // uint64 attackerid = 2;
+  void clear_attackerid();
+  uint64_t attackerid() const;
+  void set_attackerid(uint64_t value);
   private:
-  uint64_t _internal_ids(int index) const;
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-      _internal_ids() const;
-  void _internal_add_ids(uint64_t value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-      _internal_mutable_ids();
+  uint64_t _internal_attackerid() const;
+  void _internal_set_attackerid(uint64_t value);
   public:
-  uint64_t ids(int index) const;
-  void set_ids(int index, uint64_t value);
-  void add_ids(uint64_t value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-      ids() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-      mutable_ids();
+
+  // uint64 objecttype = 3;
+  void clear_objecttype();
+  uint64_t objecttype() const;
+  void set_objecttype(uint64_t value);
+  private:
+  uint64_t _internal_objecttype() const;
+  void _internal_set_objecttype(uint64_t value);
+  public:
 
   // @@protoc_insertion_point(class_scope:Protocol.C_Hit)
  private:
@@ -1888,8 +1925,9 @@ class C_Hit final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t > ids_;
-    mutable std::atomic<int> _ids_cached_byte_size_;
+    uint64_t objectid_;
+    uint64_t attackerid_;
+    uint64_t objecttype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2515,6 +2553,26 @@ inline void C_Fire::set_ownerid(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.C_Fire.ownerid)
 }
 
+// uint64 tick = 3;
+inline void C_Fire::clear_tick() {
+  _impl_.tick_ = uint64_t{0u};
+}
+inline uint64_t C_Fire::_internal_tick() const {
+  return _impl_.tick_;
+}
+inline uint64_t C_Fire::tick() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_Fire.tick)
+  return _internal_tick();
+}
+inline void C_Fire::_internal_set_tick(uint64_t value) {
+  
+  _impl_.tick_ = value;
+}
+inline void C_Fire::set_tick(uint64_t value) {
+  _internal_set_tick(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_Fire.tick)
+}
+
 // -------------------------------------------------------------------
 
 // S_Fire
@@ -2624,106 +2682,152 @@ inline void S_Fire::set_ownerid(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_Fire.ownerid)
 }
 
+// uint64 tick = 3;
+inline void S_Fire::clear_tick() {
+  _impl_.tick_ = uint64_t{0u};
+}
+inline uint64_t S_Fire::_internal_tick() const {
+  return _impl_.tick_;
+}
+inline uint64_t S_Fire::tick() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_Fire.tick)
+  return _internal_tick();
+}
+inline void S_Fire::_internal_set_tick(uint64_t value) {
+  
+  _impl_.tick_ = value;
+}
+inline void S_Fire::set_tick(uint64_t value) {
+  _internal_set_tick(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_Fire.tick)
+}
+
 // -------------------------------------------------------------------
 
 // S_Hit
 
-// repeated uint64 ids = 1;
-inline int S_Hit::_internal_ids_size() const {
-  return _impl_.ids_.size();
+// uint64 objectid = 1;
+inline void S_Hit::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
 }
-inline int S_Hit::ids_size() const {
-  return _internal_ids_size();
+inline uint64_t S_Hit::_internal_objectid() const {
+  return _impl_.objectid_;
 }
-inline void S_Hit::clear_ids() {
-  _impl_.ids_.Clear();
+inline uint64_t S_Hit::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_Hit.objectid)
+  return _internal_objectid();
 }
-inline uint64_t S_Hit::_internal_ids(int index) const {
-  return _impl_.ids_.Get(index);
+inline void S_Hit::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
 }
-inline uint64_t S_Hit::ids(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_Hit.ids)
-  return _internal_ids(index);
+inline void S_Hit::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_Hit.objectid)
 }
-inline void S_Hit::set_ids(int index, uint64_t value) {
-  _impl_.ids_.Set(index, value);
-  // @@protoc_insertion_point(field_set:Protocol.S_Hit.ids)
+
+// uint64 attackerid = 2;
+inline void S_Hit::clear_attackerid() {
+  _impl_.attackerid_ = uint64_t{0u};
 }
-inline void S_Hit::_internal_add_ids(uint64_t value) {
-  _impl_.ids_.Add(value);
+inline uint64_t S_Hit::_internal_attackerid() const {
+  return _impl_.attackerid_;
 }
-inline void S_Hit::add_ids(uint64_t value) {
-  _internal_add_ids(value);
-  // @@protoc_insertion_point(field_add:Protocol.S_Hit.ids)
+inline uint64_t S_Hit::attackerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_Hit.attackerid)
+  return _internal_attackerid();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-S_Hit::_internal_ids() const {
-  return _impl_.ids_;
+inline void S_Hit::_internal_set_attackerid(uint64_t value) {
+  
+  _impl_.attackerid_ = value;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-S_Hit::ids() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_Hit.ids)
-  return _internal_ids();
+inline void S_Hit::set_attackerid(uint64_t value) {
+  _internal_set_attackerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_Hit.attackerid)
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-S_Hit::_internal_mutable_ids() {
-  return &_impl_.ids_;
+
+// uint64 objecttype = 3;
+inline void S_Hit::clear_objecttype() {
+  _impl_.objecttype_ = uint64_t{0u};
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-S_Hit::mutable_ids() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_Hit.ids)
-  return _internal_mutable_ids();
+inline uint64_t S_Hit::_internal_objecttype() const {
+  return _impl_.objecttype_;
+}
+inline uint64_t S_Hit::objecttype() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_Hit.objecttype)
+  return _internal_objecttype();
+}
+inline void S_Hit::_internal_set_objecttype(uint64_t value) {
+  
+  _impl_.objecttype_ = value;
+}
+inline void S_Hit::set_objecttype(uint64_t value) {
+  _internal_set_objecttype(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_Hit.objecttype)
 }
 
 // -------------------------------------------------------------------
 
 // C_Hit
 
-// repeated uint64 ids = 1;
-inline int C_Hit::_internal_ids_size() const {
-  return _impl_.ids_.size();
+// uint64 objectid = 1;
+inline void C_Hit::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
 }
-inline int C_Hit::ids_size() const {
-  return _internal_ids_size();
+inline uint64_t C_Hit::_internal_objectid() const {
+  return _impl_.objectid_;
 }
-inline void C_Hit::clear_ids() {
-  _impl_.ids_.Clear();
+inline uint64_t C_Hit::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_Hit.objectid)
+  return _internal_objectid();
 }
-inline uint64_t C_Hit::_internal_ids(int index) const {
-  return _impl_.ids_.Get(index);
+inline void C_Hit::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
 }
-inline uint64_t C_Hit::ids(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.C_Hit.ids)
-  return _internal_ids(index);
+inline void C_Hit::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_Hit.objectid)
 }
-inline void C_Hit::set_ids(int index, uint64_t value) {
-  _impl_.ids_.Set(index, value);
-  // @@protoc_insertion_point(field_set:Protocol.C_Hit.ids)
+
+// uint64 attackerid = 2;
+inline void C_Hit::clear_attackerid() {
+  _impl_.attackerid_ = uint64_t{0u};
 }
-inline void C_Hit::_internal_add_ids(uint64_t value) {
-  _impl_.ids_.Add(value);
+inline uint64_t C_Hit::_internal_attackerid() const {
+  return _impl_.attackerid_;
 }
-inline void C_Hit::add_ids(uint64_t value) {
-  _internal_add_ids(value);
-  // @@protoc_insertion_point(field_add:Protocol.C_Hit.ids)
+inline uint64_t C_Hit::attackerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_Hit.attackerid)
+  return _internal_attackerid();
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-C_Hit::_internal_ids() const {
-  return _impl_.ids_;
+inline void C_Hit::_internal_set_attackerid(uint64_t value) {
+  
+  _impl_.attackerid_ = value;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >&
-C_Hit::ids() const {
-  // @@protoc_insertion_point(field_list:Protocol.C_Hit.ids)
-  return _internal_ids();
+inline void C_Hit::set_attackerid(uint64_t value) {
+  _internal_set_attackerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_Hit.attackerid)
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-C_Hit::_internal_mutable_ids() {
-  return &_impl_.ids_;
+
+// uint64 objecttype = 3;
+inline void C_Hit::clear_objecttype() {
+  _impl_.objecttype_ = uint64_t{0u};
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
-C_Hit::mutable_ids() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.C_Hit.ids)
-  return _internal_mutable_ids();
+inline uint64_t C_Hit::_internal_objecttype() const {
+  return _impl_.objecttype_;
+}
+inline uint64_t C_Hit::objecttype() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_Hit.objecttype)
+  return _internal_objecttype();
+}
+inline void C_Hit::_internal_set_objecttype(uint64_t value) {
+  
+  _impl_.objecttype_ = value;
+}
+inline void C_Hit::set_objecttype(uint64_t value) {
+  _internal_set_objecttype(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_Hit.objecttype)
 }
 
 #ifdef __GNUC__

@@ -18,6 +18,7 @@ public:
 	virtual void UpdateAnimation()  override {};
 
 	virtual void OnDamaged(Creature* attacker);
+	void KnockBack();
 
 	Protocol::OBJECT_TYPE GetType() { return this->info.objecttype(); }
 };

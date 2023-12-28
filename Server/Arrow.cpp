@@ -40,6 +40,7 @@ void Arrow::Tick()
 	case HIT:
 		TickHit();
 		break;
+
 	}
 }
 

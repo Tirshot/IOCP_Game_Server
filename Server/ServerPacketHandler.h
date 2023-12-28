@@ -33,6 +33,7 @@ public:
 
 	// 받기
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
 	
 	
 	// 보내기

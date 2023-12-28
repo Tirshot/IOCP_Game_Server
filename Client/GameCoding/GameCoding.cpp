@@ -32,9 +32,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     if (!InitInstance (hInstance, nCmdShow))
         return FALSE;
 
-    // 랜덤 시드 설정
-    srand((unsigned)time(0));
-    
+    // 시스템의 로케일 사용
+    setlocale(LC_ALL, "");
+
     // 게임 초기화
     Game game;
     game.Init(g_hWnd);

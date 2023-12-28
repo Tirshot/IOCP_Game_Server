@@ -17,6 +17,7 @@ public:
 	virtual void TickIdle() override;
 	virtual void TickMove()  override;
 	virtual void TickSkill()  override;
+	virtual void TickHit() override;
 	virtual void UpdateAnimation()  override;
 
 	void KnockBack();

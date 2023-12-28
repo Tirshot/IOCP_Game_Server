@@ -13,12 +13,18 @@ using namespace std;
 #include "GameRoom.h"
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
+#include "Chat.h"
 
 int main()
 {
+	// 시스템의 로케일 사용
+	setlocale(LC_ALL, "");
+
 	SocketUtils::Init();
 	GRoom->Init();
-
+	GChat->BeginPlay();
+	srand((unsigned int)time(0));
+	
 	// 연산의 프레임 제한을 위함. 싱글 스레드로 가정
 	uint64 prev = 0;
 
@@ -29,6 +35,7 @@ int main()
 		100);
 
 	assert(service->Start());
+
 
 	//for (int32 i = 0; i < 5; i++)
 	//{
@@ -44,6 +51,7 @@ int main()
 					/*if (now - prev >= 5)
 					{*/
 						GRoom->Update();
+						GChat->Tick();
 					/*	prev = now;
 					}*/
 				}

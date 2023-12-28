@@ -44,6 +44,11 @@ void GameObject::Tick()
 	case SKILL:
 		TickSkill();
 		break;
+	
+		// Projectiles only state
+	case HIT:
+		TickHit();
+		break;
 	}
 }
 
