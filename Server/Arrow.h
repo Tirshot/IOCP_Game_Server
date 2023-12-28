@@ -18,10 +18,12 @@ public:
 public:
 	MonsterRef& GetTarget() { return _target; }
 	bool IsHit() { return _hit; }
+
 protected:
 	uint64 _waitUntil = 0;
 	MonsterRef _target;
-	// 적중했는가
+
+	// 삭제를 위한 적중 여부
 	bool _hit = false;
 };
 

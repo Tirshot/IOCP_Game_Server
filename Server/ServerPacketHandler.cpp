@@ -21,6 +21,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Move(session, buffer, len);
 		break;
 
+	case C_Hit:
+		Handle_C_Hit(session, buffer, len);
+		break;
+
 	case C_Fire:
 		Handle_C_Fire(session, buffer, len);
 		break;
@@ -45,6 +49,32 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 		room->Handle_C_Move(pkt);
 }
 
+void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_Hit pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	uint64 objectId = pkt.objectid();
+	uint64 attackerId = pkt.attackerid();
+
+	// OnDamaged 함수는 피격자가 주체
+	GameRoomRef room = session->gameRoom.lock();
+	if (room)
+	{
+		GameObjectRef gameObject = room->FindObject(objectId);
+		CreatureRef creature = dynamic_pointer_cast<Creature>(gameObject);
+
+		GameObjectRef attackerObject = room->FindObject(attackerId);
+		CreatureRef attacker = dynamic_pointer_cast<Creature>(attackerObject);
+
+		creature->OnDamaged(attacker);
+	}
+}
+
 void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
@@ -61,7 +91,7 @@ void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, in
 
 		if (object)
 		{
-			PlayerRef player = dynamic_pointer_cast<Player>(object);
+			PlayerRef player = static_pointer_cast<Player>(object);
 			// 화살발사?
 			player->MakeArrow();
 		}
@@ -138,10 +168,15 @@ SendBufferRef ServerPacketHandler::Make_S_Move(const Protocol::ObjectInfo& info)
 	return MakeSendBuffer(pkt, S_Move);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_Hit(const Protocol::S_Hit& pkt)
-{
-	return MakeSendBuffer(pkt, S_Hit);
-}
+//SendBufferRef ServerPacketHandler::Make_S_Hit(uint64 objectId, uint64 attackerId)
+//{
+//	Protocol::S_Hit pkt;
+//
+//	pkt.set_objectid(objectId);
+//	pkt.set_attackerid(attackerId);
+//
+//	return MakeSendBuffer(pkt, S_Hit);
+//}
 
 SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 {

@@ -85,7 +85,7 @@ void Player::UpdateSkill()
 
 void Player::MakeArrow()
 {
-	// 화살 발사는 서버에서 관리
+	// 클라이언트에게서 화살 생성 패킷 받음
 	ArrowRef arrow = CreateArrow();
 
 	arrow->SetDir(shared_from_this()->info.dir());
@@ -95,7 +95,8 @@ void Player::MakeArrow()
 	arrow->info.set_posx(shared_from_this()->info.posx());
 	arrow->info.set_posy(shared_from_this()->info.posy());
 	arrow->SetState(IDLE);
-	// arrow에 화살 id가 들어옴, 화살 패킷 전송
+
+	// 클라이언트로 화살 생성 패킷 전송
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Fire(arrow->info, info.objectid());
 		session->Send(sendBuffer);

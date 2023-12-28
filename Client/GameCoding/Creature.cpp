@@ -38,17 +38,16 @@ void Creature::OnDamaged(Creature* attacker)
 	if (GetType() == attacker->GetType())
 		return;
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
 	int32 damage = attacker->info.attack() - info.defence();
 
-	//if (damage <= 0)
-	//	return;
-	scene->SpawnObject<HitEffect>(GetCellPos());
+	if (damage <= 0)
+		return;
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	// hp는 항상 양수
 	info.set_hp(max(0, info.hp() - damage));
-	
+
 	if (info.hp() == 0)
 	{
 		if (scene)

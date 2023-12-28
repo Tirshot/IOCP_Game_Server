@@ -2,6 +2,7 @@
 #include "Monster.h"
 #include "GameRoom.h"
 #include "Player.h"
+#include "GameSession.h"
 
 Monster::Monster()
 {
@@ -9,7 +10,7 @@ Monster::Monster()
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	info.set_hp(50);
 	info.set_maxhp(50);
-	info.set_attack(0);
+	info.set_attack(1);
 	info.set_defence(0);
 }
 
@@ -69,6 +70,13 @@ void Monster::UpdateIdle()
 			// 공격하기
 			SetDir(GetLookAtDir(target->GetCellPos()));
 
+			// 몬스터가 공격한 패킷 전송
+			//{
+			//	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(target->GetObjectID(), GetObjectID());
+			//	target->session->Send(sendBuffer);
+			//	room->Broadcast(sendBuffer);
+			//}
+
 			// 주변의 클라이언트에 알림
 			SetState(SKILL, true);
 			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
@@ -115,7 +123,7 @@ void Monster::UpdateMove()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE, true);
+	SetState(IDLE);
 }
 
 void Monster::UpdateSkill()
@@ -130,10 +138,6 @@ void Monster::UpdateSkill()
 
 void Monster::UpdateHit()
 {
-	uint64 now = GetTickCount64();
-
-	if (now > _waitHit)
-		return;
 
 	SetState(IDLE);
 }

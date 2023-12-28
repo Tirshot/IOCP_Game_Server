@@ -18,6 +18,9 @@ private:
 	virtual void UpdateSkill();
 	virtual void UpdateHit();
 
+public:
+	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
+
 protected:
 	uint64 _waitUntil = 0;
 	uint64 _waitHit = 0;

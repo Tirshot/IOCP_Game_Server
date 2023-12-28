@@ -42,16 +42,13 @@ void Chat::Tick()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
-	// 창이 페이드 인
-	if (_sumTime < 3.f)
+	// 텍스트가 아직 있으면 창을 숨기지 않음
+	if (_texts.empty() == false)
 	{
+		_visible = true;
 		_alpha++;
 		_alpha = clamp(_alpha, 50, 200);
 	}
-
-	// 텍스트가 아직 있으면 창을 숨기지 않음
-	if (_texts.empty() == false)
-		_visible = true;
 
 	// 3초 후 텍스트를 제거하고 창을 숨김
 	if (_sumTime >= 3.f)
@@ -60,17 +57,18 @@ void Chat::Tick()
 		{
 			auto removeIt = std::remove(_texts.begin(), _texts.end(), _texts[0]);
 			_texts.erase(removeIt, _texts.end());
+			_sumTime = 0;
 		}
 		// 창이 페이드 아웃
 		_alpha--;
 		_alpha = clamp(_alpha, 0, 200);
+	}
 
-		// 창이 충분히 어두워지면
-		if (_alpha < 10)
-		{
-			_visible = false;
-			_sumTime = 0;
-		}
+	// 창이 충분히 어두워지면
+	if (_alpha < 10)
+	{
+		_visible = false;
+		_sumTime = 0;
 	}
 }
 

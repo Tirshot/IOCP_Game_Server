@@ -115,12 +115,8 @@ void Monster::TickSkill()
 		return;
 
 	auto* creature = scene->GetCreatureAt(GetFrontCellPos());
-
 	if (creature)
-	{		
-		// 플레이어가 몬스터에게 데미지 피격
- 		creature->OnDamaged(this);
-	}
+		creature->OnDamaged(this);
 
 	SetState(IDLE);
 }

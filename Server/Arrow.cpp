@@ -40,7 +40,6 @@ void Arrow::Tick()
 	case HIT:
 		TickHit();
 		break;
-
 	}
 }
 
@@ -50,7 +49,6 @@ void Arrow::TickIdle()
 		return;
 
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-	/*Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];*/
 	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
 
 	// 다음 위치에 갈 수 있는지 확인
@@ -58,8 +56,7 @@ void Arrow::TickIdle()
 	{
 		SetCellPos(nextPos);
 		SetState(MOVE);
-		_waitUntil = GetTickCount64() + 50; // 기다림
-		_hit = false;
+		_waitUntil = GetTickCount64() + 50; // 클라이언트의 화살 속도와 동기화
 	}
 	else
 	{
@@ -67,12 +64,12 @@ void Arrow::TickIdle()
 		{
 			SetCellPos(nextPos + deltaXY[info.dir()]);
 			SetState(MOVE);
-			_waitUntil = GetTickCount64() + 50; // 기다림
-			_hit = false;
+			_waitUntil = GetTickCount64() + 50; // 클라이언트의 화살 속도와 동기화
 		}
 
 		SetState(HIT);
 	}
+	_hit = false;
 }
 
 void Arrow::TickMove()
@@ -88,7 +85,6 @@ void Arrow::TickMove()
 void Arrow::TickHit()
 {
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-	/*Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];*/
 	Vec2Int pos = Vec2Int{ info.posx(), info.posy() };
 	Vec2Int nextPos = pos + deltaXY[info.dir()];
 
@@ -96,7 +92,16 @@ void Arrow::TickHit()
 	_target = static_pointer_cast<Monster>(room->GetCreatureAt(nextPos));
 	if (_target)
 	{
+		// 서버에서 적중한 신호 보냄
+		//{
+		//	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(_target->GetObjectID(), _owner->GetObjectID());
+		//	PlayerRef player = dynamic_pointer_cast<Player>(_owner);
+		//	player->session->Send(sendBuffer);
+		//	room->Broadcast(sendBuffer);
+		//}
 		_target->OnDamaged(_owner);
+		//_target->SetWait(0);
+		//_target->SetState(HIT);
 		cout << "몬스터에게 적중" << endl;
 	}
 	else

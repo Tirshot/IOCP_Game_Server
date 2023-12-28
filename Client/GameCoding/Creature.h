@@ -18,6 +18,7 @@ public:
 	virtual void UpdateAnimation()  override {};
 
 	virtual void OnDamaged(Creature* attacker);
+	
 	void KnockBack();
 	float SetWait(float time) { return _wait = GetTickCount64() + time; }
 

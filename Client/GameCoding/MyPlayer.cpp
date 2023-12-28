@@ -179,14 +179,3 @@ void MyPlayer::SyncToServer()
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 }
-
-//void MyPlayer::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
-//{
-//	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-//	{
-//		Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
-//		arrow->SetDir(info.dir());
-//		arrow->SetOwner(this);
-//		this ->AddArrows(arrow, info.objectid());
-//	}
-//}

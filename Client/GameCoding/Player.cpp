@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Player.h"
+#include "MyPlayer.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
 #include "Flipbook.h"
@@ -132,15 +133,22 @@ void Player::TickSkill()
 					SetState(IDLE);
 					return;
 				}
-				// 몬스터가 플레이어에게 피격
-				creature->OnDamaged(this);
+
+				// 몬스터에 피격 이펙트 출력
+				scene->SpawnObject<HitEffect>(GetFrontCellPos());
 				creature->SetState(HIT);
+
+				// 몬스터 피격 스프라이트 출력 및 스턴 시간
 				creature->SetWait(300);
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{
 			// 화살 생성 패킷 전송
+			MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
+
+			// 화살 버그 수정 - 패킷 생성시 플레이어 수 만큼 나감 주의!!
+			if (myPlayer)
 			{
 				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(GetObjectID());
 				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
@@ -182,13 +190,13 @@ void Player::UpdateAnimation()
 	}
 }
 
+
 void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 {
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	{
 		Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
-		arrow->SetDir(info.dir());
-		arrow->SetOwner(this);
 		arrow->info = info;
+		arrow->SetOwner(this);
 	}
 }

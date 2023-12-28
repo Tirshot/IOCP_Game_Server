@@ -43,9 +43,9 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 			Handle_S_Fire(session, buffer, len);
 			break;
 
-		case S_Hit:
-			Handle_S_Hit(session, buffer, len);
-			break;
+		//case S_Hit:
+		//	Handle_S_Hit(session, buffer, len);
+		//	break;
 	}
 }
 
@@ -193,24 +193,31 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 	}
 }
 
-void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len)
-{
-	PacketHeader* header = (PacketHeader*)buffer;
-	//uint16 id = header->id;
-	uint16 size = header->size;
-	Protocol::S_Hit pkt;
-	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-	//
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (scene)
-	{
-		GameObject* object = scene->GetObjects(pkt.objectid());
-		if (object)
-		{
-			// 화살인 경우에만 이펙트를 따로 출력???
-		}
-	}
-}
+//void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len)
+//{
+//	PacketHeader* header = (PacketHeader*)buffer;
+//	//uint16 id = header->id;
+//	uint16 size = header->size;
+//	Protocol::S_Hit pkt;
+//	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+//	//
+//	uint64 objectId = pkt.objectid();
+//	uint64 attackerId = pkt.attackerid();
+//
+//	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+//
+//	if (scene)
+//	{
+//		GameObject* object = scene->GetObjects(objectId);
+//		GameObject* attackerObject = scene->GetObjects(attackerId);
+//
+//		Creature* creature = dynamic_cast<Creature*>(object);
+//		Creature* attacker = dynamic_cast<Creature*>(attackerObject);
+//
+//		creature->Handle_S_Hit(attacker);
+//		
+//	}
+//}
 
 // 패킷 보내기
 SendBufferRef ClientPacketHandler::Make_C_Move()
@@ -237,10 +244,16 @@ SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
 	return MakeSendBuffer(pkt, C_Fire);
 }
 
-//SendBufferRef ClientPacketHandler::Make_C_Hit(const Protocol::C_Hit& pkt)
-//{
-//	return MakeSendBuffer(pkt, C_Hit);
-//}
+SendBufferRef ClientPacketHandler::Make_C_Hit(uint64 objectid, uint64 attackerid)
+{
+	// 패킷 생성
+	Protocol::C_Hit pkt;
+
+	pkt.set_objectid(objectid);
+	pkt.set_attackerid(attackerid);
+
+	return MakeSendBuffer(pkt, C_Hit);
+}
 
 //SendBufferRef ClientPacketHandler::Make_C_FireArrow()
 //{
