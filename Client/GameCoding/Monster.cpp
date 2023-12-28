@@ -102,12 +102,12 @@ void Monster::TickSkill()
 	if (_flipbook == nullptr)
 		return;
 
-	if (_waitSeconds > 0)
-	{
-		float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-		_waitSeconds = max(0, _waitSeconds - deltaTime);
-		return;
-	}
+	//if (_waitSeconds > 0)
+	//{
+	//	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	//	_waitSeconds = max(0, _waitSeconds - deltaTime);
+	//	return;
+	//}
 
 	// 공격 판정
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
@@ -128,10 +128,10 @@ void Monster::TickSkill()
 void Monster::TickHit()
 {
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	scene->SpawnObject<HitEffect>(GetCellPos());
-	UpdateAnimation();
+	_now = GetTickCount64();
 
-	SetState(IDLE);
+	if (_now > _wait)
+		SetState(IDLE);
 }
 
 void Monster::UpdateAnimation()

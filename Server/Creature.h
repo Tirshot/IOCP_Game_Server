@@ -14,5 +14,10 @@ public:
 
 	void OnDamaged(CreatureRef attacker);
 	void KnockBack();
+	uint64 SetWait(float time) { return _waitHit = GetTickCount64() + time; }
+
+protected:
+	uint64 _waitUntil = 0;
+	uint64 _waitHit = 0;
 };
 

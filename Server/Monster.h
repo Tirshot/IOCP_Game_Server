@@ -16,9 +16,11 @@ private:
 	virtual void UpdateIdle();
 	virtual void UpdateMove();
 	virtual void UpdateSkill();
+	virtual void UpdateHit();
 
 protected:
 	uint64 _waitUntil = 0;
+	uint64 _waitHit = 0;
 	weak_ptr<Player> _target;
 };
 

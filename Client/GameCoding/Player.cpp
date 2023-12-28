@@ -134,6 +134,8 @@ void Player::TickSkill()
 				}
 				// 몬스터가 플레이어에게 피격
 				creature->OnDamaged(this);
+				creature->SetState(HIT);
+				creature->SetWait(300);
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)

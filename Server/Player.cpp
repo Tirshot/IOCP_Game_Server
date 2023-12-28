@@ -72,6 +72,8 @@ void Player::UpdateSkill()
 			}
 			// 몬스터가 플레이어에게 피격
 			creature->OnDamaged(shared_from_this());
+			creature->SetState(HIT);
+			creature->SetWait(300);
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)

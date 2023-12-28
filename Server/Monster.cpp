@@ -40,6 +40,10 @@ void Monster::Update()
 	case SKILL:
 		UpdateSkill();
 		break;
+
+	case HIT:
+		UpdateHit();
+		break;
 	}
 }
 
@@ -119,6 +123,16 @@ void Monster::UpdateSkill()
 	uint64 now = GetTickCount64();
 
 	if (_waitUntil > now)
+		return;
+
+	SetState(IDLE);
+}
+
+void Monster::UpdateHit()
+{
+	uint64 now = GetTickCount64();
+
+	if (now > _waitHit)
 		return;
 
 	SetState(IDLE);
