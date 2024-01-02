@@ -1886,18 +1886,26 @@ class C_Hit final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectidFieldNumber = 1,
+    kInfoFieldNumber = 1,
     kAttackeridFieldNumber = 2,
-    kObjecttypeFieldNumber = 3,
   };
-  // uint64 objectid = 1;
-  void clear_objectid();
-  uint64_t objectid() const;
-  void set_objectid(uint64_t value);
+  // .Protocol.ObjectInfo info = 1;
+  bool has_info() const;
   private:
-  uint64_t _internal_objectid() const;
-  void _internal_set_objectid(uint64_t value);
+  bool _internal_has_info() const;
   public:
+  void clear_info();
+  const ::Protocol::ObjectInfo& info() const;
+  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_info();
+  ::Protocol::ObjectInfo* mutable_info();
+  void set_allocated_info(::Protocol::ObjectInfo* info);
+  private:
+  const ::Protocol::ObjectInfo& _internal_info() const;
+  ::Protocol::ObjectInfo* _internal_mutable_info();
+  public:
+  void unsafe_arena_set_allocated_info(
+      ::Protocol::ObjectInfo* info);
+  ::Protocol::ObjectInfo* unsafe_arena_release_info();
 
   // uint64 attackerid = 2;
   void clear_attackerid();
@@ -1908,15 +1916,6 @@ class C_Hit final :
   void _internal_set_attackerid(uint64_t value);
   public:
 
-  // uint64 objecttype = 3;
-  void clear_objecttype();
-  uint64_t objecttype() const;
-  void set_objecttype(uint64_t value);
-  private:
-  uint64_t _internal_objecttype() const;
-  void _internal_set_objecttype(uint64_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.C_Hit)
  private:
   class _Internal;
@@ -1925,9 +1924,8 @@ class C_Hit final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t objectid_;
+    ::Protocol::ObjectInfo* info_;
     uint64_t attackerid_;
-    uint64_t objecttype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2770,24 +2768,89 @@ inline void S_Hit::set_objecttype(uint64_t value) {
 
 // C_Hit
 
-// uint64 objectid = 1;
-inline void C_Hit::clear_objectid() {
-  _impl_.objectid_ = uint64_t{0u};
+// .Protocol.ObjectInfo info = 1;
+inline bool C_Hit::_internal_has_info() const {
+  return this != internal_default_instance() && _impl_.info_ != nullptr;
 }
-inline uint64_t C_Hit::_internal_objectid() const {
-  return _impl_.objectid_;
+inline bool C_Hit::has_info() const {
+  return _internal_has_info();
 }
-inline uint64_t C_Hit::objectid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_Hit.objectid)
-  return _internal_objectid();
+inline const ::Protocol::ObjectInfo& C_Hit::_internal_info() const {
+  const ::Protocol::ObjectInfo* p = _impl_.info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
+      ::Protocol::_ObjectInfo_default_instance_);
 }
-inline void C_Hit::_internal_set_objectid(uint64_t value) {
+inline const ::Protocol::ObjectInfo& C_Hit::info() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_Hit.info)
+  return _internal_info();
+}
+inline void C_Hit::unsafe_arena_set_allocated_info(
+    ::Protocol::ObjectInfo* info) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
+  }
+  _impl_.info_ = info;
+  if (info) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_Hit.info)
+}
+inline ::Protocol::ObjectInfo* C_Hit::release_info() {
   
-  _impl_.objectid_ = value;
+  ::Protocol::ObjectInfo* temp = _impl_.info_;
+  _impl_.info_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
 }
-inline void C_Hit::set_objectid(uint64_t value) {
-  _internal_set_objectid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_Hit.objectid)
+inline ::Protocol::ObjectInfo* C_Hit::unsafe_arena_release_info() {
+  // @@protoc_insertion_point(field_release:Protocol.C_Hit.info)
+  
+  ::Protocol::ObjectInfo* temp = _impl_.info_;
+  _impl_.info_ = nullptr;
+  return temp;
+}
+inline ::Protocol::ObjectInfo* C_Hit::_internal_mutable_info() {
+  
+  if (_impl_.info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
+    _impl_.info_ = p;
+  }
+  return _impl_.info_;
+}
+inline ::Protocol::ObjectInfo* C_Hit::mutable_info() {
+  ::Protocol::ObjectInfo* _msg = _internal_mutable_info();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_Hit.info)
+  return _msg;
+}
+inline void C_Hit::set_allocated_info(::Protocol::ObjectInfo* info) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
+  }
+  if (info) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(info));
+    if (message_arena != submessage_arena) {
+      info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, info, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.info_ = info;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_Hit.info)
 }
 
 // uint64 attackerid = 2;
@@ -2808,26 +2871,6 @@ inline void C_Hit::_internal_set_attackerid(uint64_t value) {
 inline void C_Hit::set_attackerid(uint64_t value) {
   _internal_set_attackerid(value);
   // @@protoc_insertion_point(field_set:Protocol.C_Hit.attackerid)
-}
-
-// uint64 objecttype = 3;
-inline void C_Hit::clear_objecttype() {
-  _impl_.objecttype_ = uint64_t{0u};
-}
-inline uint64_t C_Hit::_internal_objecttype() const {
-  return _impl_.objecttype_;
-}
-inline uint64_t C_Hit::objecttype() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_Hit.objecttype)
-  return _internal_objecttype();
-}
-inline void C_Hit::_internal_set_objecttype(uint64_t value) {
-  
-  _impl_.objecttype_ = value;
-}
-inline void C_Hit::set_objecttype(uint64_t value) {
-  _internal_set_objecttype(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_Hit.objecttype)
 }
 
 #ifdef __GNUC__

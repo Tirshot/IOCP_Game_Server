@@ -10,7 +10,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
-	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 
 private:
 	void TickInput();

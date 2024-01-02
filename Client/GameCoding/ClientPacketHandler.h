@@ -54,6 +54,6 @@ public:
 	}
 
 	static SendBufferRef Make_C_Fire(uint64 ownerid);
-	static SendBufferRef Make_C_Hit(uint64 objectid, uint64 attackerid);
+	static SendBufferRef Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId);
 };
 

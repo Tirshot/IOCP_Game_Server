@@ -9,6 +9,7 @@
 #include "Monster.h"
 #include "Player.h"
 #include "HitEffect.h"
+#include "ChatManager.h"
 
 Arrow::Arrow()
 {
@@ -16,7 +17,6 @@ Arrow::Arrow()
 	_flipbookMove[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_ArrowDown");
 	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_ArrowLeft");
 	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_ArrowRight");
-
 }
 
 Arrow::~Arrow()
@@ -71,6 +71,7 @@ void Arrow::TickIdle()
 		if (creature)
 		{
 			scene->SpawnObject<HitEffect>(nextPos);
+			creature->OnDamaged(_owner);
 			//creature->SetWait(0);
 			//creature->SetState(HIT);
 		}

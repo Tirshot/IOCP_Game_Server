@@ -70,7 +70,6 @@ message S_Hit
 
 message C_Hit
 {
-	uint64 objectid = 1;
+	ObjectInfo info = 1;
 	uint64 attackerid = 2;
-	uint64 objecttype = 3;
 }

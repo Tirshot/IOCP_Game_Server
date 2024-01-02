@@ -244,13 +244,12 @@ SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
 	return MakeSendBuffer(pkt, C_Fire);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_Hit(uint64 objectid, uint64 attackerid)
+SendBufferRef ClientPacketHandler::Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId)
 {
 	// 패킷 생성
 	Protocol::C_Hit pkt;
-
-	pkt.set_objectid(objectid);
-	pkt.set_attackerid(attackerid);
+	*pkt.mutable_info() = objectInfo;
+	pkt.set_attackerid(attackerId);
 
 	return MakeSendBuffer(pkt, C_Hit);
 }

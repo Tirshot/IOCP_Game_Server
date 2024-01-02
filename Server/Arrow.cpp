@@ -6,20 +6,21 @@
 #include "Player.h"
 #include "ServerPacketHandler.h"
 #include "GameSession.h"
+#include "Chat.h"
 
 Arrow::Arrow()
 {
-	cout << "Arrow" << endl;
+	
 }
 
 Arrow::~Arrow()
 {
-	cout << "~Arrow" << endl;
+
 }
 
 void Arrow::BeginPlay()
 {
-
+	
 }
 
 void Arrow::Tick()
@@ -99,14 +100,14 @@ void Arrow::TickHit()
 		//	player->session->Send(sendBuffer);
 		//	room->Broadcast(sendBuffer);
 		//}
-		_target->OnDamaged(_owner);
+		//_target->OnDamaged(_owner);
 		//_target->SetWait(0);
 		//_target->SetState(HIT);
-		cout << "몬스터에게 적중" << endl;
+		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
 	}
 	else
 	{
-		cout << "벽에 적중" << endl;
+		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 벽에 맞음", _owner->GetObjectID()));
 	}
 	_hit = true;
 }

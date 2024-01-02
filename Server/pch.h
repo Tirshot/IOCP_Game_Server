@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CorePch.h"
-
 using GameSessionRef = shared_ptr<class GameSession>;
 using GameObjectRef = shared_ptr<class GameObject>;
 using CreatureRef = shared_ptr<class Creature>;

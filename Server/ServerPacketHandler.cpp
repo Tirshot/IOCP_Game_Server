@@ -51,14 +51,14 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 
 void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
 {
-	PacketHeader* header = (PacketHeader*)buffer;
+ 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
 
 	Protocol::C_Hit pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	uint64 objectId = pkt.objectid();
+	uint64 objectId = pkt.info().objectid();
 	uint64 attackerId = pkt.attackerid();
 
 	// OnDamaged 함수는 피격자가 주체
@@ -71,7 +71,11 @@ void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int
 		GameObjectRef attackerObject = room->FindObject(attackerId);
 		CreatureRef attacker = dynamic_pointer_cast<Creature>(attackerObject);
 
-		creature->OnDamaged(attacker);
+		if (creature && attacker)
+		{
+			creature->info.set_hp(pkt.info().hp());
+			creature->OnDamaged(attacker);
+		}
 	}
 }
 

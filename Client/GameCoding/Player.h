@@ -22,7 +22,7 @@ protected:
 	virtual void UpdateAnimation() override;
 
 public:
-	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
+	virtual void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 
 private:
 	Flipbook* _flipbookIdle[4] = {};
@@ -32,5 +32,9 @@ private:
 	Flipbook* _flipbookStaff[4] = {};
 
 	bool _keyPressed = false;
+
+protected:
+	uint64 _now = 0;
+	uint64 _prev = 0;
 };
 

@@ -41,6 +41,7 @@ void MyPlayer::Render(HDC hdc)
 {
 	Super::Render(hdc);
 }
+
 float prevCount = 0;
 void MyPlayer::TickInput()
 {

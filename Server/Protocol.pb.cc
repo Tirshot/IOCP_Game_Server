@@ -164,9 +164,8 @@ struct S_HitDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_HitDefaultTypeInternal _S_Hit_default_instance_;
 PROTOBUF_CONSTEXPR C_Hit::C_Hit(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.objectid_)*/uint64_t{0u}
+    /*decltype(_impl_.info_)*/nullptr
   , /*decltype(_impl_.attackerid_)*/uint64_t{0u}
-  , /*decltype(_impl_.objecttype_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_HitDefaultTypeInternal {
   PROTOBUF_CONSTEXPR C_HitDefaultTypeInternal()
@@ -269,9 +268,8 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_Hit, _impl_.objectid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_Hit, _impl_.info_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_Hit, _impl_.attackerid_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_Hit, _impl_.objecttype_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::S_TEST)},
@@ -317,9 +315,9 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\n\004tick\030\003 \001(\004\"K\n\006S_Fire\022\"\n\004info\030\001 \001(\0132\024.P"
   "rotocol.ObjectInfo\022\017\n\007ownerid\030\002 \001(\004\022\014\n\004t"
   "ick\030\003 \001(\004\"A\n\005S_Hit\022\020\n\010objectid\030\001 \001(\004\022\022\n\n"
-  "attackerid\030\002 \001(\004\022\022\n\nobjecttype\030\003 \001(\004\"A\n\005"
-  "C_Hit\022\020\n\010objectid\030\001 \001(\004\022\022\n\nattackerid\030\002 "
-  "\001(\004\022\022\n\nobjecttype\030\003 \001(\004b\006proto3"
+  "attackerid\030\002 \001(\004\022\022\n\nobjecttype\030\003 \001(\004\"\?\n\005"
+  "C_Hit\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInf"
+  "o\022\022\n\nattackerid\030\002 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -327,7 +325,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 711, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 709, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 11,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -2558,8 +2556,19 @@ void S_Hit::InternalSwap(S_Hit* other) {
 
 class C_Hit::_Internal {
  public:
+  static const ::Protocol::ObjectInfo& info(const C_Hit* msg);
 };
 
+const ::Protocol::ObjectInfo&
+C_Hit::_Internal::info(const C_Hit* msg) {
+  return *msg->_impl_.info_;
+}
+void C_Hit::clear_info() {
+  if (GetArenaForAllocation() == nullptr && _impl_.info_ != nullptr) {
+    delete _impl_.info_;
+  }
+  _impl_.info_ = nullptr;
+}
 C_Hit::C_Hit(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -2570,15 +2579,15 @@ C_Hit::C_Hit(const C_Hit& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   C_Hit* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.objectid_){}
+      decltype(_impl_.info_){nullptr}
     , decltype(_impl_.attackerid_){}
-    , decltype(_impl_.objecttype_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.objecttype_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.objecttype_));
+  if (from._internal_has_info()) {
+    _this->_impl_.info_ = new ::Protocol::ObjectInfo(*from._impl_.info_);
+  }
+  _this->_impl_.attackerid_ = from._impl_.attackerid_;
   // @@protoc_insertion_point(copy_constructor:Protocol.C_Hit)
 }
 
@@ -2587,9 +2596,8 @@ inline void C_Hit::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.objectid_){uint64_t{0u}}
+      decltype(_impl_.info_){nullptr}
     , decltype(_impl_.attackerid_){uint64_t{0u}}
-    , decltype(_impl_.objecttype_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -2605,6 +2613,7 @@ C_Hit::~C_Hit() {
 
 inline void C_Hit::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete _impl_.info_;
 }
 
 void C_Hit::SetCachedSize(int size) const {
@@ -2617,9 +2626,11 @@ void C_Hit::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.objecttype_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.objecttype_));
+  if (GetArenaForAllocation() == nullptr && _impl_.info_ != nullptr) {
+    delete _impl_.info_;
+  }
+  _impl_.info_ = nullptr;
+  _impl_.attackerid_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2629,10 +2640,10 @@ const char* C_Hit::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint64 objectid = 1;
+      // .Protocol.ObjectInfo info = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.objectid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_info(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2641,14 +2652,6 @@ const char* C_Hit::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.attackerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 objecttype = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.objecttype_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2682,22 +2685,17 @@ uint8_t* C_Hit::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint64 objectid = 1;
-  if (this->_internal_objectid() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_objectid(), target);
+  // .Protocol.ObjectInfo info = 1;
+  if (this->_internal_has_info()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, _Internal::info(this),
+        _Internal::info(this).GetCachedSize(), target, stream);
   }
 
   // uint64 attackerid = 2;
   if (this->_internal_attackerid() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_attackerid(), target);
-  }
-
-  // uint64 objecttype = 3;
-  if (this->_internal_objecttype() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_objecttype(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -2716,19 +2714,16 @@ size_t C_Hit::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // uint64 objectid = 1;
-  if (this->_internal_objectid() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objectid());
+  // .Protocol.ObjectInfo info = 1;
+  if (this->_internal_has_info()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.info_);
   }
 
   // uint64 attackerid = 2;
   if (this->_internal_attackerid() != 0) {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_attackerid());
-  }
-
-  // uint64 objecttype = 3;
-  if (this->_internal_objecttype() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objecttype());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2749,14 +2744,12 @@ void C_Hit::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_objectid() != 0) {
-    _this->_internal_set_objectid(from._internal_objectid());
+  if (from._internal_has_info()) {
+    _this->_internal_mutable_info()->::Protocol::ObjectInfo::MergeFrom(
+        from._internal_info());
   }
   if (from._internal_attackerid() != 0) {
     _this->_internal_set_attackerid(from._internal_attackerid());
-  }
-  if (from._internal_objecttype() != 0) {
-    _this->_internal_set_objecttype(from._internal_objecttype());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2776,11 +2769,11 @@ void C_Hit::InternalSwap(C_Hit* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(C_Hit, _impl_.objecttype_)
-      + sizeof(C_Hit::_impl_.objecttype_)
-      - PROTOBUF_FIELD_OFFSET(C_Hit, _impl_.objectid_)>(
-          reinterpret_cast<char*>(&_impl_.objectid_),
-          reinterpret_cast<char*>(&other->_impl_.objectid_));
+      PROTOBUF_FIELD_OFFSET(C_Hit, _impl_.attackerid_)
+      + sizeof(C_Hit::_impl_.attackerid_)
+      - PROTOBUF_FIELD_OFFSET(C_Hit, _impl_.info_)>(
+          reinterpret_cast<char*>(&_impl_.info_),
+          reinterpret_cast<char*>(&other->_impl_.info_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata C_Hit::GetMetadata() const {

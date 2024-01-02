@@ -136,7 +136,7 @@ void Player::TickSkill()
 
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				creature->SetState(HIT);
+				creature->OnDamaged(this);
 
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
 				creature->SetWait(300);
@@ -190,13 +190,17 @@ void Player::UpdateAnimation()
 	}
 }
 
-
 void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 {
+	// 화살 BroadCast로 인해 2발씩 생성되는 버그 수정, 서버에서는 50ms 이후 화살 생성
+	_now = GetTickCount64();
+
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (_now - _prev >= 50)
 	{
-		Arrow* arrow = scene->SpawnObject<Arrow>(GetCellPos());
+		Arrow* arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
 		arrow->info = info;
 		arrow->SetOwner(this);
 	}
+	_prev = _now;
 }

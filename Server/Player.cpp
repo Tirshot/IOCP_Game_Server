@@ -4,6 +4,7 @@
 #include "Arrow.h"
 #include "GameRoom.h"
 #include "GameSession.h"
+#include "Chat.h"
 
 Player::Player()
 {
@@ -71,9 +72,9 @@ void Player::UpdateSkill()
 				return;
 			}
 			// 몬스터가 플레이어에게 피격
-			creature->OnDamaged(shared_from_this());
-			creature->SetState(HIT);
-			creature->SetWait(300);
+			creature->SetState(HIT); // 서버 사이드의 상태 변경이 필요한가? 이미 클라에서 변경되었음
+			GChat->AddText(info.objectid(), format(L"몬스터{0}를 검으로 타격", creature->GetObjectID()));
+			//creature->OnDamaged(shared_from_this());
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
@@ -95,7 +96,6 @@ void Player::MakeArrow()
 	arrow->info.set_posx(shared_from_this()->info.posx());
 	arrow->info.set_posy(shared_from_this()->info.posy());
 	arrow->SetState(IDLE);
-
 	// 클라이언트로 화살 생성 패킷 전송
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Fire(arrow->info, info.objectid());
@@ -103,4 +103,5 @@ void Player::MakeArrow()
 		room->Broadcast(sendBuffer);
 	}
 	room->AddObject(arrow);
+	uint64 ownerid = arrow->GetOwner()->GetObjectID();
 }

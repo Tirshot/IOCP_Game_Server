@@ -5,6 +5,7 @@
 #include "HitEffect.h"
 #include "Monster.h"
 #include "ClientPacketHandler.h"
+#include "NetworkManager.h"
 
 Creature::Creature()
 {
@@ -43,11 +44,15 @@ void Creature::OnDamaged(Creature* attacker)
 	if (damage <= 0)
 		return;
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
 	// hp는 항상 양수
 	info.set_hp(max(0, info.hp() - damage));
 
+	{	// 피격 패킷 전송
+		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Hit(info, attacker->info.objectid());
+		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+	}
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (info.hp() == 0)
 	{
 		if (scene)

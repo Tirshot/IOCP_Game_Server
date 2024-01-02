@@ -67,9 +67,9 @@ void Chat::PrintText()
 			const wstring str = text.second;
 
 			if (objectId == 0)
-				wcout << "[" << time << "]" << " System : " << str << endl;
+				wcout<< format(L"[{0}] System : {1}", time, str) << endl;
 			else
-				wcout << "[" << time << "]" << " Player " << objectId << " : " << str << endl;
+				wcout << format(L"[{0}] Player {1} : {2}", time, objectId, str) << endl;
 		}
 		// 출력된 텍스트를 삭제
 		it = _texts.erase(it);

@@ -27,5 +27,6 @@ protected:
 	Flipbook* _flipbookHit[4] = {};
 
 	Player* _target = nullptr; // 임시!!!!!, 스마트 포인터 사용하기 or id 발급하기
+	float _waitSeconds = 0.f;
 };
 

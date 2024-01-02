@@ -16,7 +16,7 @@ Monster::Monster()
 
 Monster::~Monster()
 {
-	cout << "~Monster" << endl;
+
 }
 
 void Monster::Init()
@@ -138,6 +138,10 @@ void Monster::UpdateSkill()
 
 void Monster::UpdateHit()
 {
+	uint64 now = GetTickCount64();
+
+	if (_waitUntil > now)
+		return;
 
 	SetState(IDLE);
 }
