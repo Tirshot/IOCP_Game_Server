@@ -13,6 +13,11 @@ public:
 
 	void AddMessage(const wstring text);
 
+	string WStrToString(wstring wstr);
+	wstring StringToWStr(string str);
+
+	wstring ChangeTimeFormat(time_t now);
+
 private:
 	Chat* _chat;
 };

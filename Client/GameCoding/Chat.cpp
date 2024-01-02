@@ -50,13 +50,12 @@ void Chat::Tick()
 		_alpha = clamp(_alpha, 50, 200);
 	}
 
-	// 3초 후 텍스트를 제거하고 창을 숨김
-	if (_sumTime >= 3.f)
+	// 1.5초 후 텍스트를 제거하고 창을 숨김
+	if (_sumTime >= 1.5f)
 	{
 		if (_texts.empty() == false)
 		{
-			auto removeIt = std::remove(_texts.begin(), _texts.end(), _texts[0]);
-			_texts.erase(removeIt, _texts.end());
+			_texts.erase(_texts.begin());
 			_sumTime = 0;
 		}
 		// 창이 페이드 아웃
@@ -104,19 +103,21 @@ void Chat::Render(HDC hdc)
 
 		SetBkMode(hdc, TRANSPARENT);
 		SetTextColor(hdc, RGB(230, 230, 230));
+		int maxLineWidth = _rect.right - _rect.left - 20;
 
+		// 1 line per 19 korean spells
 		for (int i = 0; i < _texts.size(); i++)
-		{/*
-			::TextOut(hdc,
-				(int)GetPos().x,
-				(int)GetPos().y + i * 18,
-				_texts[i].c_str(),
-				_texts[i].size());*/
+		{
+			// 문자열이 특정 길이를 넘어가면 줄바꿈 추가
+			for (size_t pos = maxLineWidth; pos < _texts[i].length(); pos += maxLineWidth)
+			{
+				_texts[i].insert(pos, L"\n");
+			}
 
 			RECT textRect = {};
 			textRect.left = _rect.left + 10;
-			textRect.right = _rect.right;
-			textRect.top = _rect.top + 10 + i * 18;
+			textRect.right = _rect.right - 10;
+			textRect.top = _rect.top + 10 + i * 36;
 			textRect.bottom = _rect.bottom;
 
 			// DrawText 함수를 사용하여 텍스트 출력

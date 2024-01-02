@@ -73,3 +73,8 @@ message C_Hit
 	ObjectInfo info = 1;
 	uint64 attackerid = 2;
 }
+
+message S_SendChat
+{
+	Text texts = 1;
+}

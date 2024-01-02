@@ -9,6 +9,8 @@
 #include "HitEffect.h"
 #include "Creature.h"
 #include "Player.h"
+#include "ChatManager.h"
+#include "Chat.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -43,9 +45,9 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 			Handle_S_Fire(session, buffer, len);
 			break;
 
-		//case S_Hit:
-		//	Handle_S_Hit(session, buffer, len);
-		//	break;
+		case S_SendChat:
+			Handle_S_SendChat(session, buffer, len);
+			break;
 	}
 }
 
@@ -191,6 +193,34 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 			player->Handle_S_Fire(info, pkt.ownerid());
 		}
 	}
+}
+
+void ClientPacketHandler::Handle_S_SendChat(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_SendChat pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	const Protocol::Text& texts = pkt.texts();
+	uint64 objectId = texts.objectid();
+
+	time_t now = texts.time();
+	wstring nowTime = GET_SINGLE(ChatManager)->ChangeTimeFormat(now);
+
+	string str = texts.str();
+	wstring str2 = GET_SINGLE(ChatManager)->StringToWStr(str);
+
+	// 본인은 본인의 메세지만 볼 수 있음
+	if (GET_SINGLE(SceneManager)->GetMyPlayerId() != texts.objectid())
+		return;
+
+	Chat* chat = GET_SINGLE(ChatManager)->GetChat();
+
+	chat->AddText(format(L"[{0}] {1}", nowTime, str2));
 }
 
 //void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len)

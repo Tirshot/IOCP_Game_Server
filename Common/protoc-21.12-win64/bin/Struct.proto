@@ -27,3 +27,10 @@ message ObjectInfo
 	int32 damage = 12;
 	WEAPON_TYPE weaponType = 13;
 }
+
+message Text
+{
+	uint64 objectId = 1;
+	uint64 time = 2;
+	string str = 3;
+}

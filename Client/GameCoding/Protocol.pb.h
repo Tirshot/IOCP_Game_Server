@@ -77,6 +77,9 @@ extern S_MyPlayerDefaultTypeInternal _S_MyPlayer_default_instance_;
 class S_RemoveObject;
 struct S_RemoveObjectDefaultTypeInternal;
 extern S_RemoveObjectDefaultTypeInternal _S_RemoveObject_default_instance_;
+class S_SendChat;
+struct S_SendChatDefaultTypeInternal;
+extern S_SendChatDefaultTypeInternal _S_SendChat_default_instance_;
 class S_TEST;
 struct S_TESTDefaultTypeInternal;
 extern S_TESTDefaultTypeInternal _S_TEST_default_instance_;
@@ -92,6 +95,7 @@ template<> ::Protocol::S_Hit* Arena::CreateMaybeMessage<::Protocol::S_Hit>(Arena
 template<> ::Protocol::S_Move* Arena::CreateMaybeMessage<::Protocol::S_Move>(Arena*);
 template<> ::Protocol::S_MyPlayer* Arena::CreateMaybeMessage<::Protocol::S_MyPlayer>(Arena*);
 template<> ::Protocol::S_RemoveObject* Arena::CreateMaybeMessage<::Protocol::S_RemoveObject>(Arena*);
+template<> ::Protocol::S_SendChat* Arena::CreateMaybeMessage<::Protocol::S_SendChat>(Arena*);
 template<> ::Protocol::S_TEST* Arena::CreateMaybeMessage<::Protocol::S_TEST>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
@@ -1931,6 +1935,163 @@ class C_Hit final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class S_SendChat final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_SendChat) */ {
+ public:
+  inline S_SendChat() : S_SendChat(nullptr) {}
+  ~S_SendChat() override;
+  explicit PROTOBUF_CONSTEXPR S_SendChat(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_SendChat(const S_SendChat& from);
+  S_SendChat(S_SendChat&& from) noexcept
+    : S_SendChat() {
+    *this = ::std::move(from);
+  }
+
+  inline S_SendChat& operator=(const S_SendChat& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_SendChat& operator=(S_SendChat&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_SendChat& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_SendChat* internal_default_instance() {
+    return reinterpret_cast<const S_SendChat*>(
+               &_S_SendChat_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(S_SendChat& a, S_SendChat& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_SendChat* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_SendChat* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_SendChat* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_SendChat>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_SendChat& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_SendChat& from) {
+    S_SendChat::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_SendChat* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_SendChat";
+  }
+  protected:
+  explicit S_SendChat(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kTextsFieldNumber = 1,
+  };
+  // .Protocol.Text texts = 1;
+  bool has_texts() const;
+  private:
+  bool _internal_has_texts() const;
+  public:
+  void clear_texts();
+  const ::Protocol::Text& texts() const;
+  PROTOBUF_NODISCARD ::Protocol::Text* release_texts();
+  ::Protocol::Text* mutable_texts();
+  void set_allocated_texts(::Protocol::Text* texts);
+  private:
+  const ::Protocol::Text& _internal_texts() const;
+  ::Protocol::Text* _internal_mutable_texts();
+  public:
+  void unsafe_arena_set_allocated_texts(
+      ::Protocol::Text* texts);
+  ::Protocol::Text* unsafe_arena_release_texts();
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_SendChat)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::Protocol::Text* texts_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -2873,9 +3034,100 @@ inline void C_Hit::set_attackerid(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.C_Hit.attackerid)
 }
 
+// -------------------------------------------------------------------
+
+// S_SendChat
+
+// .Protocol.Text texts = 1;
+inline bool S_SendChat::_internal_has_texts() const {
+  return this != internal_default_instance() && _impl_.texts_ != nullptr;
+}
+inline bool S_SendChat::has_texts() const {
+  return _internal_has_texts();
+}
+inline const ::Protocol::Text& S_SendChat::_internal_texts() const {
+  const ::Protocol::Text* p = _impl_.texts_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Text&>(
+      ::Protocol::_Text_default_instance_);
+}
+inline const ::Protocol::Text& S_SendChat::texts() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_SendChat.texts)
+  return _internal_texts();
+}
+inline void S_SendChat::unsafe_arena_set_allocated_texts(
+    ::Protocol::Text* texts) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.texts_);
+  }
+  _impl_.texts_ = texts;
+  if (texts) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_SendChat.texts)
+}
+inline ::Protocol::Text* S_SendChat::release_texts() {
+  
+  ::Protocol::Text* temp = _impl_.texts_;
+  _impl_.texts_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::Text* S_SendChat::unsafe_arena_release_texts() {
+  // @@protoc_insertion_point(field_release:Protocol.S_SendChat.texts)
+  
+  ::Protocol::Text* temp = _impl_.texts_;
+  _impl_.texts_ = nullptr;
+  return temp;
+}
+inline ::Protocol::Text* S_SendChat::_internal_mutable_texts() {
+  
+  if (_impl_.texts_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::Text>(GetArenaForAllocation());
+    _impl_.texts_ = p;
+  }
+  return _impl_.texts_;
+}
+inline ::Protocol::Text* S_SendChat::mutable_texts() {
+  ::Protocol::Text* _msg = _internal_mutable_texts();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_SendChat.texts)
+  return _msg;
+}
+inline void S_SendChat::set_allocated_texts(::Protocol::Text* texts) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.texts_);
+  }
+  if (texts) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(texts));
+    if (message_arena != submessage_arena) {
+      texts = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, texts, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.texts_ = texts;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_SendChat.texts)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

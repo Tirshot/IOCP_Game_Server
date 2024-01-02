@@ -1,4 +1,5 @@
 ﻿  pch.cpp
+D:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\format(43): warning STL4038: The contents of <format> are available only with C++20 or later.
   ClientPacketHandler.cpp
   DummyClient.cpp
   ServerSession.cpp

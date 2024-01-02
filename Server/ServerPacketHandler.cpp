@@ -172,6 +172,17 @@ SendBufferRef ServerPacketHandler::Make_S_Move(const Protocol::ObjectInfo& info)
 	return MakeSendBuffer(pkt, S_Move);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_SendChat(uint64 objectId, uint64 time, string str)
+{
+	Protocol::S_SendChat pkt;
+	auto* texts = pkt.mutable_texts();
+	texts->set_objectid(objectId);
+	texts->set_time(time);
+	texts->set_str(str);
+
+	return MakeSendBuffer(pkt, S_SendChat);
+}
+
 //SendBufferRef ServerPacketHandler::Make_S_Hit(uint64 objectId, uint64 attackerId)
 //{
 //	Protocol::S_Hit pkt;

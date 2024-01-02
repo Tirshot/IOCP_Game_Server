@@ -12,6 +12,9 @@ public:
 	// 텍스트 관련
 	void AddText(int objectId, const wstring str);
 	void AddText(const wstring str);
+
+	void SendToClient(int objectId);
+
 	void PrintText();
 	list<pair<time_t, wstring>>& GetTextList(int objectId){ return _texts[objectId]; }
 

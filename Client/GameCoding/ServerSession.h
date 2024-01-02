@@ -13,7 +13,7 @@ public:
 
 	virtual void OnConnected() override
 	{
-		GET_SINGLE(ChatManager)->AddMessage(L"서버와 연결되었습니다.");
+		GET_SINGLE(ChatManager)->AddMessage(L"서버에 연결되었습니다.");
 		GET_SINGLE(SceneManager)->SetPause(false);
 	}
 
@@ -29,7 +29,7 @@ public:
 
 	virtual void OnDisconnected() override
 	{
-		GET_SINGLE(ChatManager)->AddMessage(L"서버와의 연결이 끊어졌습니다.\n5초 후 서버에 연결을 시도합니다.");
+		GET_SINGLE(ChatManager)->AddMessage(L"서버와의 연결이 끊어졌습니다. 5초 후 서버에 연결을 시도합니다.");
 		GET_SINGLE(SceneManager)->SetPause(false);
 	}
 };

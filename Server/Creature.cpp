@@ -66,6 +66,11 @@ void Creature::OnDamaged(CreatureRef attacker)
 			GetObjectID(),
 			damage));
 
+		GChat->AddText(attacker->GetObjectID(), format(L"{0} {1}에게 {2}의 피해를 입힘",
+			objectType,
+			GetObjectID(),
+			damage));
+
 		if (info.hp() == 0)
 		{
 			if (room)
@@ -76,6 +81,10 @@ void Creature::OnDamaged(CreatureRef attacker)
 					GetObjectID(),
 					attackerType,
 					attacker->GetObjectID()));
+
+				GChat->AddText(attacker->GetObjectID(), format(L"{0} {1}이(가) 쓰러짐",
+					objectType,
+					GetObjectID()));
 			}
 		}
 	}
