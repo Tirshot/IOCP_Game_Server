@@ -12,6 +12,7 @@
 #include "ClientPacketHandler.h"
 #include "NetworkManager.h"
 #include "ChatManager.h"
+#include "Chat.h"
 
 
 MyPlayer::MyPlayer()
@@ -43,16 +44,23 @@ void MyPlayer::Render(HDC hdc)
 }
 
 float prevCount = 0;
+float nowCount = 0;
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
-	float nowCount = GetTickCount64();
+	nowCount = GetTickCount64();
 
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
+	// 채팅 입력창
+	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
+	{	
+		SetState(CHAT);
+	}
+	
 	// 공격
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
+	 if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
 	{
 		// 500ms 마다 공격
 		if (nowCount - prevCount >= 400.f)
@@ -66,7 +74,7 @@ void MyPlayer::TickInput()
 	{
 		SetDir(DIR_UP);
 	}
-	else  if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
 	{
 		SetDir(DIR_DOWN);
 	}
@@ -95,8 +103,6 @@ void MyPlayer::TickInput()
 		// 추후에 갈고리로 변경예정
 		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
 	}
-
-
 }
 
 void MyPlayer::TryMove()
@@ -167,6 +173,11 @@ void MyPlayer::TickSkill()
 void MyPlayer::TickHit()
 {
 	Super::TickHit();
+}
+
+void MyPlayer::TickChat()
+{
+	GET_SINGLE(ChatManager)->ChatInput();
 }
 
 void MyPlayer::SyncToServer()

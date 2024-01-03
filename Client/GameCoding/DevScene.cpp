@@ -108,7 +108,7 @@ void DevScene::Update()
 
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	TickMonsterSpawn();
+	// TickMonsterSpawn(); // 몬스터 소환은 서버에서 관리
 }
 
 void DevScene::Render(HDC hdc)

@@ -19,6 +19,7 @@ private:
 	virtual void TickMove() override;
 	virtual void TickSkill() override;
 	virtual void TickHit() override;
+	virtual void TickChat() override;
 
 	void SyncToServer();
 

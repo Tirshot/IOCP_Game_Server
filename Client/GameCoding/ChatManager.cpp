@@ -1,6 +1,9 @@
 #include "pch.h"
-#include "ChatManager.h"
 #include "Chat.h"
+#include "MyPlayer.h"
+#include "ChatManager.h"
+#include "SceneManager.h"
+#include "InputManager.h"
 
 void ChatManager::BeginPlay()
 {
@@ -9,7 +12,10 @@ void ChatManager::BeginPlay()
 
 void ChatManager::Tick()
 {
+	if (_myPlayer)
+		return;
 
+	_myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 }
 
 void ChatManager::AddMessage(const wstring text)
@@ -38,6 +44,63 @@ wstring ChatManager::StringToWStr(string str)
 
 	return str2;
 }
+
+void ChatManager::ChatInput()
+{
+	if (_myPlayer == nullptr)
+		return;
+
+	// Enter 입력된 상태, 채팅창을 활성화 함
+	_chat->SetVisibleChat();
+
+	if (_chatSended)
+	{
+		_myPlayer->SetState(IDLE);
+		_chatSended = false;
+		return;
+	}
+
+	// 엔터 키가 눌리면 입력 종료
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::Enter))
+	{
+		// str을 패킷으로 전송
+		{
+			GET_SINGLE(ChatManager)->AddMessage(_str);
+		}
+		_str.clear();
+		_chatSended = true;
+		_myPlayer->SetState(IDLE);
+	}
+
+	// 키 입력 받기
+	for (int i = 0; i <= 255; ++i) // 'A'부터 'Z'까지
+	{
+		KeyType key = static_cast<KeyType>(i);
+
+		// Shift를 누른 채로 특수문자 키 확인
+		if (GET_SINGLE(InputManager)->GetButton(KeyType::RightShift)
+			&& GET_SINGLE(InputManager)->GetButtonDown(key)
+			|| GET_SINGLE(InputManager)->GetButton(KeyType::LeftShift)
+			&& GET_SINGLE(InputManager)->GetButtonDown(key))
+		{
+			auto ret = GET_SINGLE(InputManager)->ProcessSpecialShiftKeys(i);
+			_str.push_back(static_cast<wchar_t>(ret));
+		}
+
+		// 특수문자 키 확인
+		else if (GET_SINGLE(InputManager)->GetButtonDown(key)) // 키가 눌렸는지 확인
+		{
+			auto ret = GET_SINGLE(InputManager)->ProcessSpecialKeys(i);
+
+			// 이상한 입력을 받으면 ret가 음수로 나옴
+			if (ret < 0)
+				return;
+
+			_str.push_back(static_cast<wchar_t>(ret));
+		}
+	}
+}
+
 
 wstring ChatManager::ChangeTimeFormat(time_t now)
 {

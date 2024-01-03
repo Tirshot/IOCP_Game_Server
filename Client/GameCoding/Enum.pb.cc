@@ -35,19 +35,20 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "ARCHER\020\003*p\n\013OBJECT_TYPE\022\024\n\020OBJECT_TYPE_N"
   "ONE\020\000\022\026\n\022OBJECT_TYPE_PLAYER\020\001\022\027\n\023OBJECT_"
   "TYPE_MONSTER\020\002\022\032\n\026OBJECT_TYPE_PROJECTILE"
-  "\020\003*\237\001\n\021OBJECT_STATE_TYPE\022\032\n\026OBJECT_STATE"
+  "\020\003*\273\001\n\021OBJECT_STATE_TYPE\022\032\n\026OBJECT_STATE"
   "_TYPE_IDLE\020\000\022\032\n\026OBJECT_STATE_TYPE_MOVE\020\001"
   "\022\033\n\027OBJECT_STATE_TYPE_SKILL\020\002\022\031\n\025OBJECT_"
   "STATE_TYPE_HIT\020\003\022\032\n\026OBJECT_STATE_TYPE_ST"
-  "OP\020\004*U\n\010DIR_TYPE\022\017\n\013DIR_TYPE_UP\020\000\022\021\n\rDIR"
-  "_TYPE_DOWN\020\001\022\021\n\rDIR_TYPE_LEFT\020\002\022\022\n\016DIR_T"
-  "YPE_RIGHT\020\003*P\n\013WEAPON_TYPE\022\025\n\021WEAPON_TYP"
-  "E_SWORD\020\000\022\023\n\017WEAPON_TYPE_BOW\020\001\022\025\n\021WEAPON"
-  "_TYPE_STAFF\020\002b\006proto3"
+  "OP\020\004\022\032\n\026OBJECT_STATE_TYPE_CHAT\020\005*U\n\010DIR_"
+  "TYPE\022\017\n\013DIR_TYPE_UP\020\000\022\021\n\rDIR_TYPE_DOWN\020\001"
+  "\022\021\n\rDIR_TYPE_LEFT\020\002\022\022\n\016DIR_TYPE_RIGHT\020\003*"
+  "P\n\013WEAPON_TYPE\022\025\n\021WEAPON_TYPE_SWORD\020\000\022\023\n"
+  "\017WEAPON_TYPE_BOW\020\001\022\025\n\021WEAPON_TYPE_STAFF\020"
+  "\002b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 581, descriptor_table_protodef_Enum_2eproto,
+    false, false, 609, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -104,6 +105,7 @@ bool OBJECT_STATE_TYPE_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
       return true;
     default:
       return false;

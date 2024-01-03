@@ -6,6 +6,7 @@
 #include "GameCoding.h"
 #include "Game.h"
 #include "TimeManager.h"
+#include "ThreadManager.h"
 
 #define MAX_LOADSTRING 100
 
@@ -19,17 +20,17 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPWSTR    lpCmdLine,
+    _In_ int       nCmdShow)
 {
     // TODO: 여기에 코드를 입력합니다.
-   
+
     // 전역 문자열을 초기화합니다.
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance(hInstance, nCmdShow))
         return FALSE;
 
     // 시스템의 로케일 사용
@@ -39,6 +40,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Game game;
     game.Init(g_hWnd);
     MSG msg = {};
+
 
     // 기본 메시지 루프입니다:
     while (msg.message != WM_QUIT)
@@ -50,13 +52,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            game.Update();
-            game.Render();
+           game.Update();
+           game.Render();
         }
     }
-    return (int) msg.wParam;
+    return (int)msg.wParam;
 }
-
 
 
 //

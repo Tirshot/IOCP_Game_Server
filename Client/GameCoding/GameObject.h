@@ -17,6 +17,7 @@ protected:
 	virtual void TickMove() {}
 	virtual void TickSkill() {}
 	virtual void TickHit() {}
+	virtual void TickChat() {}
 	virtual void UpdateAnimation() {}
 
 public:

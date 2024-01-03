@@ -11,7 +11,6 @@ public:
 	void Render();
 
 	HDC GetDC() { return _hdc; }
-	void PrintWelcome();
 
 private:
 	HWND _hwnd = {};

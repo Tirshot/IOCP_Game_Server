@@ -49,6 +49,11 @@ void GameObject::Tick()
 	case HIT:
 		TickHit();
 		break;
+
+		// MyPlayer only state
+	case CHAT:
+		TickChat();
+		break;
 	}
 }
 

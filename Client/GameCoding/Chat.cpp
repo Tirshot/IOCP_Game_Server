@@ -20,8 +20,6 @@ Chat::~Chat()
 	RemoveChild(this);
 }
 
-int _alpha = 0;
-
 void Chat::BeginPlay()
 {
 	AddChild(this);
@@ -39,36 +37,8 @@ void Chat::BeginPlay()
 
 void Chat::Tick()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-	_sumTime += deltaTime;
-
-	// 텍스트가 아직 있으면 창을 숨기지 않음
-	if (_texts.empty() == false)
-	{
-		_visible = true;
-		_alpha++;
-		_alpha = clamp(_alpha, 50, 200);
-	}
-
-	// 1.5초 후 텍스트를 제거하고 창을 숨김
-	if (_sumTime >= 1.5f)
-	{
-		if (_texts.empty() == false)
-		{
-			_texts.erase(_texts.begin());
-			_sumTime = 0;
-		}
-		// 창이 페이드 아웃
-		_alpha--;
-		_alpha = clamp(_alpha, 0, 200);
-	}
-
-	// 창이 충분히 어두워지면
-	if (_alpha < 10)
-	{
-		_visible = false;
-		_sumTime = 0;
-	}
+	// 등장할 때 페이드 인, 사라질 때 페이드 아웃
+	ChatBoxFade();
 }
 
 void Chat::Render(HDC hdc)
@@ -140,3 +110,43 @@ void Chat::AddText(const wstring str)
 	// next line
 }
 
+void Chat::ChatBoxFade()
+{
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	_sumTime += deltaTime;
+
+	// 텍스트가 아직 있으면 창을 숨기지 않음
+	if (_texts.empty() == false)
+	{
+		_visible = true;
+		_alpha++;
+		_alpha = clamp(_alpha, 50, 200);
+	}
+
+	// 1.5초 후 텍스트를 제거하고 창을 숨김
+	if (_sumTime >= 1.5f)
+	{
+		if (_texts.empty() == false)
+		{
+			_texts.erase(_texts.begin());
+			_sumTime = 0;
+		}
+		// 창이 페이드 아웃
+		_alpha--;
+		_alpha = clamp(_alpha, 0, 200);
+	}
+
+	// 창이 충분히 어두워지면
+	if (_alpha < 10)
+	{
+		_visible = false;
+		_sumTime = 0;
+	}
+}
+
+void Chat::SetVisibleChat()
+{
+	SetVisible(true);
+	SetAlpha(200);
+	SetSumTime(0);
+}

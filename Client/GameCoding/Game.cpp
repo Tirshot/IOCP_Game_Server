@@ -6,6 +6,7 @@
 #include "ResourceManager.h"
 #include "SoundManager.h"
 #include "NetworkManager.h"
+#include "ChatManager.h"
 
 Game::Game()
 {
@@ -48,6 +49,7 @@ void Game::Update()
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(NetworkManager)->Update();
+	GET_SINGLE(ChatManager)->Tick();
 }
 
 void Game::Render()

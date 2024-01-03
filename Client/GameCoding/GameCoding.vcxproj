@@ -142,6 +142,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Chat.h" />
+    <ClInclude Include="ChatInput.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="ClientPacketHandler.h" />
     <ClInclude Include="CollisionManager.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Chat.cpp" />
+    <ClCompile Include="ChatInput.cpp" />
     <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="ClientPacketHandler.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
