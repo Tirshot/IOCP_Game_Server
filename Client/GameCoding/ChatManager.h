@@ -17,15 +17,15 @@ public:
 	string WStrToString(wstring wstr);
 	wstring StringToWStr(string str);
 
-	void ChatInput();
-
 	wstring ChangeTimeFormat(time_t now);
 
-private:
-	Chat* _chat;
-	MyPlayer* _myPlayer;
-	wstring _str = L"";
+	void SetVisibleChat();
 
-	bool _chatSended = false;
+	void SendMessageToServer(const wstring text);
+
+private:
+	Chat* _chat = nullptr;
+	wstring _str = L"";
+	wchar_t _strCombine[256];
 };
 

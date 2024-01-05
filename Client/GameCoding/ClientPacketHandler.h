@@ -19,7 +19,8 @@ enum
 	C_Hit = 22,
 	S_Hit = 23,
 
-	S_SendChat = 31,
+	C_SendMessage = 30,
+	S_SendMessage = 31,
 };
 class Creature;
 class ClientPacketHandler
@@ -35,7 +36,7 @@ public:
 	static void Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len);
-	static void Handle_S_SendChat(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// º¸³»±â
 	static SendBufferRef Make_C_Move();
@@ -58,5 +59,6 @@ public:
 
 	static SendBufferRef Make_C_Fire(uint64 ownerid);
 	static SendBufferRef Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId);
+	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
 };
 

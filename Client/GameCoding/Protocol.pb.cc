@@ -176,21 +176,34 @@ struct C_HitDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_HitDefaultTypeInternal _C_Hit_default_instance_;
-PROTOBUF_CONSTEXPR S_SendChat::S_SendChat(
+PROTOBUF_CONSTEXPR C_SendMessage::C_SendMessage(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.texts_)*/nullptr
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct S_SendChatDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR S_SendChatDefaultTypeInternal()
+struct C_SendMessageDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_SendMessageDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~S_SendChatDefaultTypeInternal() {}
+  ~C_SendMessageDefaultTypeInternal() {}
   union {
-    S_SendChat _instance;
+    C_SendMessage _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_SendChatDefaultTypeInternal _S_SendChat_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_SendMessageDefaultTypeInternal _C_SendMessage_default_instance_;
+PROTOBUF_CONSTEXPR S_SendMessage::S_SendMessage(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.texts_)*/nullptr
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct S_SendMessageDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR S_SendMessageDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~S_SendMessageDefaultTypeInternal() {}
+  union {
+    S_SendMessage _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_SendMessageDefaultTypeInternal _S_SendMessage_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[12];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[13];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -284,12 +297,19 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::C_Hit, _impl_.info_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_Hit, _impl_.attackerid_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_SendChat, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_SendMessage, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_SendChat, _impl_.texts_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_SendMessage, _impl_.texts_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_SendMessage, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_SendMessage, _impl_.texts_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::S_TEST)},
@@ -303,7 +323,8 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 62, -1, -1, sizeof(::Protocol::S_Fire)},
   { 71, -1, -1, sizeof(::Protocol::S_Hit)},
   { 80, -1, -1, sizeof(::Protocol::C_Hit)},
-  { 88, -1, -1, sizeof(::Protocol::S_SendChat)},
+  { 88, -1, -1, sizeof(::Protocol::C_SendMessage)},
+  { 95, -1, -1, sizeof(::Protocol::S_SendMessage)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -318,7 +339,8 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_S_Fire_default_instance_._instance,
   &::Protocol::_S_Hit_default_instance_._instance,
   &::Protocol::_C_Hit_default_instance_._instance,
-  &::Protocol::_S_SendChat_default_instance_._instance,
+  &::Protocol::_C_SendMessage_default_instance_._instance,
+  &::Protocol::_S_SendMessage_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -339,8 +361,10 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "ick\030\003 \001(\004\"A\n\005S_Hit\022\020\n\010objectid\030\001 \001(\004\022\022\n\n"
   "attackerid\030\002 \001(\004\022\022\n\nobjecttype\030\003 \001(\004\"\?\n\005"
   "C_Hit\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInf"
-  "o\022\022\n\nattackerid\030\002 \001(\004\"+\n\nS_SendChat\022\035\n\005t"
-  "exts\030\001 \001(\0132\016.Protocol.Textb\006proto3"
+  "o\022\022\n\nattackerid\030\002 \001(\004\".\n\rC_SendMessage\022\035"
+  "\n\005texts\030\001 \001(\0132\016.Protocol.Text\".\n\rS_SendM"
+  "essage\022\035\n\005texts\030\001 \001(\0132\016.Protocol.Textb\006p"
+  "roto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -348,9 +372,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 754, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 805, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 12,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 13,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -2807,30 +2831,30 @@ void C_Hit::InternalSwap(C_Hit* other) {
 
 // ===================================================================
 
-class S_SendChat::_Internal {
+class C_SendMessage::_Internal {
  public:
-  static const ::Protocol::Text& texts(const S_SendChat* msg);
+  static const ::Protocol::Text& texts(const C_SendMessage* msg);
 };
 
 const ::Protocol::Text&
-S_SendChat::_Internal::texts(const S_SendChat* msg) {
+C_SendMessage::_Internal::texts(const C_SendMessage* msg) {
   return *msg->_impl_.texts_;
 }
-void S_SendChat::clear_texts() {
+void C_SendMessage::clear_texts() {
   if (GetArenaForAllocation() == nullptr && _impl_.texts_ != nullptr) {
     delete _impl_.texts_;
   }
   _impl_.texts_ = nullptr;
 }
-S_SendChat::S_SendChat(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+C_SendMessage::C_SendMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:Protocol.S_SendChat)
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_SendMessage)
 }
-S_SendChat::S_SendChat(const S_SendChat& from)
+C_SendMessage::C_SendMessage(const C_SendMessage& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  S_SendChat* const _this = this; (void)_this;
+  C_SendMessage* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.texts_){nullptr}
     , /*decltype(_impl_._cached_size_)*/{}};
@@ -2839,10 +2863,10 @@ S_SendChat::S_SendChat(const S_SendChat& from)
   if (from._internal_has_texts()) {
     _this->_impl_.texts_ = new ::Protocol::Text(*from._impl_.texts_);
   }
-  // @@protoc_insertion_point(copy_constructor:Protocol.S_SendChat)
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_SendMessage)
 }
 
-inline void S_SendChat::SharedCtor(
+inline void C_SendMessage::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
@@ -2852,8 +2876,8 @@ inline void S_SendChat::SharedCtor(
   };
 }
 
-S_SendChat::~S_SendChat() {
-  // @@protoc_insertion_point(destructor:Protocol.S_SendChat)
+C_SendMessage::~C_SendMessage() {
+  // @@protoc_insertion_point(destructor:Protocol.C_SendMessage)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -2861,17 +2885,17 @@ S_SendChat::~S_SendChat() {
   SharedDtor();
 }
 
-inline void S_SendChat::SharedDtor() {
+inline void C_SendMessage::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete _impl_.texts_;
 }
 
-void S_SendChat::SetCachedSize(int size) const {
+void C_SendMessage::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void S_SendChat::Clear() {
-// @@protoc_insertion_point(message_clear_start:Protocol.S_SendChat)
+void C_SendMessage::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_SendMessage)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2883,7 +2907,7 @@ void S_SendChat::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* S_SendChat::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* C_SendMessage::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -2920,9 +2944,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* S_SendChat::_InternalSerialize(
+uint8_t* C_SendMessage::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_SendChat)
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_SendMessage)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2937,12 +2961,12 @@ uint8_t* S_SendChat::_InternalSerialize(
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_SendChat)
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_SendMessage)
   return target;
 }
 
-size_t S_SendChat::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Protocol.S_SendChat)
+size_t C_SendMessage::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_SendMessage)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -2959,17 +2983,17 @@ size_t S_SendChat::ByteSizeLong() const {
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_SendChat::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_SendMessage::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    S_SendChat::MergeImpl
+    C_SendMessage::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_SendChat::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_SendMessage::GetClassData() const { return &_class_data_; }
 
 
-void S_SendChat::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<S_SendChat*>(&to_msg);
-  auto& from = static_cast<const S_SendChat&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_SendChat)
+void C_SendMessage::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_SendMessage*>(&to_msg);
+  auto& from = static_cast<const C_SendMessage&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_SendMessage)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
@@ -2981,27 +3005,226 @@ void S_SendChat::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void S_SendChat::CopyFrom(const S_SendChat& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_SendChat)
+void C_SendMessage::CopyFrom(const C_SendMessage& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_SendMessage)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool S_SendChat::IsInitialized() const {
+bool C_SendMessage::IsInitialized() const {
   return true;
 }
 
-void S_SendChat::InternalSwap(S_SendChat* other) {
+void C_SendMessage::InternalSwap(C_SendMessage* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_.texts_, other->_impl_.texts_);
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata S_SendChat::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata C_SendMessage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
       file_level_metadata_Protocol_2eproto[11]);
+}
+
+// ===================================================================
+
+class S_SendMessage::_Internal {
+ public:
+  static const ::Protocol::Text& texts(const S_SendMessage* msg);
+};
+
+const ::Protocol::Text&
+S_SendMessage::_Internal::texts(const S_SendMessage* msg) {
+  return *msg->_impl_.texts_;
+}
+void S_SendMessage::clear_texts() {
+  if (GetArenaForAllocation() == nullptr && _impl_.texts_ != nullptr) {
+    delete _impl_.texts_;
+  }
+  _impl_.texts_ = nullptr;
+}
+S_SendMessage::S_SendMessage(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.S_SendMessage)
+}
+S_SendMessage::S_SendMessage(const S_SendMessage& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  S_SendMessage* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.texts_){nullptr}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_texts()) {
+    _this->_impl_.texts_ = new ::Protocol::Text(*from._impl_.texts_);
+  }
+  // @@protoc_insertion_point(copy_constructor:Protocol.S_SendMessage)
+}
+
+inline void S_SendMessage::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.texts_){nullptr}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+S_SendMessage::~S_SendMessage() {
+  // @@protoc_insertion_point(destructor:Protocol.S_SendMessage)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void S_SendMessage::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete _impl_.texts_;
+}
+
+void S_SendMessage::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void S_SendMessage::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.S_SendMessage)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaForAllocation() == nullptr && _impl_.texts_ != nullptr) {
+    delete _impl_.texts_;
+  }
+  _impl_.texts_ = nullptr;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* S_SendMessage::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // .Protocol.Text texts = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_texts(), ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* S_SendMessage::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.S_SendMessage)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .Protocol.Text texts = 1;
+  if (this->_internal_has_texts()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, _Internal::texts(this),
+        _Internal::texts(this).GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.S_SendMessage)
+  return target;
+}
+
+size_t S_SendMessage::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.S_SendMessage)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .Protocol.Text texts = 1;
+  if (this->_internal_has_texts()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.texts_);
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData S_SendMessage::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    S_SendMessage::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*S_SendMessage::GetClassData() const { return &_class_data_; }
+
+
+void S_SendMessage::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<S_SendMessage*>(&to_msg);
+  auto& from = static_cast<const S_SendMessage&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.S_SendMessage)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_has_texts()) {
+    _this->_internal_mutable_texts()->::Protocol::Text::MergeFrom(
+        from._internal_texts());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void S_SendMessage::CopyFrom(const S_SendMessage& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.S_SendMessage)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool S_SendMessage::IsInitialized() const {
+  return true;
+}
+
+void S_SendMessage::InternalSwap(S_SendMessage* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.texts_, other->_impl_.texts_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata S_SendMessage::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[12]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -3051,9 +3274,13 @@ template<> PROTOBUF_NOINLINE ::Protocol::C_Hit*
 Arena::CreateMaybeMessage< ::Protocol::C_Hit >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::C_Hit >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Protocol::S_SendChat*
-Arena::CreateMaybeMessage< ::Protocol::S_SendChat >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Protocol::S_SendChat >(arena);
+template<> PROTOBUF_NOINLINE ::Protocol::C_SendMessage*
+Arena::CreateMaybeMessage< ::Protocol::C_SendMessage >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_SendMessage >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::S_SendMessage*
+Arena::CreateMaybeMessage< ::Protocol::S_SendMessage >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::S_SendMessage >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

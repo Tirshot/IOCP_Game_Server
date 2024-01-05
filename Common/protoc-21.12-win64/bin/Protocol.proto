@@ -74,7 +74,12 @@ message C_Hit
 	uint64 attackerid = 2;
 }
 
-message S_SendChat
+message C_SendMessage
+{
+	Text texts = 1;
+}
+
+message S_SendMessage
 {
 	Text texts = 1;
 }

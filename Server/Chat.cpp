@@ -54,7 +54,7 @@ void Chat::AddText(int objectId, const wstring str)
 		WideCharToMultiByte(CP_UTF8, 0, str.c_str(), -1, &str2[0], bufferSize, nullptr, nullptr);
 
 		// 해당 유저에게만 보이는 내용 전송
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendChat(objectId, now, str2);
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendMessage(objectId, now, str2);
 		PlayerRef player = dynamic_pointer_cast<Player>(GRoom->FindObject(objectId));
 		player->session->Send(sendBuffer);
 	}
@@ -75,7 +75,7 @@ void Chat::AddText(const wstring str)
 	// text 내용을 전달하는 패킷 작성
 	{
 		// 서버 알림 전송
-		//SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendChat();
+		//SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendMessage();
 		//GRoom->Broadcast(sendBuffer);
 	}
 }

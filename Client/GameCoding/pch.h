@@ -19,6 +19,10 @@ namespace fs = std::filesystem;
 
 #pragma comment (lib, "msimg32.lib")
 
+// IME
+#include <Imm.h>
+#pragma comment(lib, "Imm32.lib")
+
 // »ç¿îµå
 #include <mmsystem.h>
 #include <dsound.h>

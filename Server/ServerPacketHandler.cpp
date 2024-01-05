@@ -29,6 +29,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Fire(session, buffer, len);
 		break;
 
+	case C_SendMessage:
+		Handle_C_SendMessage(session, buffer, len);
+		break;
+
 	default:
 		break;
 	}
@@ -103,6 +107,29 @@ void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, in
 
 }
 
+void ServerPacketHandler::Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_SendMessage pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	Protocol::Text texts = *pkt.mutable_texts();
+
+	uint64 objectId = texts.objectid();
+	time_t now = texts.time();
+	string str = texts.str();
+
+	GameRoomRef room = session->gameRoom.lock();
+	if (room)
+	{
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendMessage(objectId, now, str);
+		room->Broadcast(sendBuffer);
+	}
+}
+
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
 	Protocol::S_TEST pkt;
@@ -172,26 +199,16 @@ SendBufferRef ServerPacketHandler::Make_S_Move(const Protocol::ObjectInfo& info)
 	return MakeSendBuffer(pkt, S_Move);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_SendChat(uint64 objectId, uint64 time, string str)
+SendBufferRef ServerPacketHandler::Make_S_SendMessage(uint64 objectId, uint64 time, string str)
 {
-	Protocol::S_SendChat pkt;
+	Protocol::S_SendMessage pkt;
 	auto* texts = pkt.mutable_texts();
 	texts->set_objectid(objectId);
 	texts->set_time(time);
 	texts->set_str(str);
 
-	return MakeSendBuffer(pkt, S_SendChat);
+	return MakeSendBuffer(pkt, S_SendMessage);
 }
-
-//SendBufferRef ServerPacketHandler::Make_S_Hit(uint64 objectId, uint64 attackerId)
-//{
-//	Protocol::S_Hit pkt;
-//
-//	pkt.set_objectid(objectId);
-//	pkt.set_attackerid(attackerId);
-//
-//	return MakeSendBuffer(pkt, S_Hit);
-//}
 
 SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 {

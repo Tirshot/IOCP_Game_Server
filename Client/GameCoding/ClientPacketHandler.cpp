@@ -45,8 +45,8 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 			Handle_S_Fire(session, buffer, len);
 			break;
 
-		case S_SendChat:
-			Handle_S_SendChat(session, buffer, len);
+		case S_SendMessage:
+			Handle_S_SendMessage(session, buffer, len);
 			break;
 	}
 }
@@ -195,59 +195,31 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 	}
 }
 
-void ClientPacketHandler::Handle_S_SendChat(ServerSessionRef session, BYTE* buffer, int32 len)
+void ClientPacketHandler::Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
 
-	Protocol::S_SendChat pkt;
+	Protocol::S_SendMessage pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
 	//
 	const Protocol::Text& texts = pkt.texts();
 	uint64 objectId = texts.objectid();
+	string name = GET_SINGLE(SceneManager)->GetMyPlayer()->info.name();
+	wstring wname = GET_SINGLE(ChatManager)->StringToWStr(name);
 
 	time_t now = texts.time();
 	wstring nowTime = GET_SINGLE(ChatManager)->ChangeTimeFormat(now);
 
 	string str = texts.str();
-	wstring str2 = GET_SINGLE(ChatManager)->StringToWStr(str);
-
-	// 본인은 본인의 메세지만 볼 수 있음
-	if (GET_SINGLE(SceneManager)->GetMyPlayerId() != texts.objectid())
-		return;
+	wstring wstr = GET_SINGLE(ChatManager)->StringToWStr(str);
 
 	Chat* chat = GET_SINGLE(ChatManager)->GetChat();
 
-	chat->AddText(format(L"[{0}] {1}", nowTime, str2));
+	chat->AddText(format(L"[{0}] {1} :{2}", nowTime, wname.c_str(), wstr));
 }
-
-//void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len)
-//{
-//	PacketHeader* header = (PacketHeader*)buffer;
-//	//uint16 id = header->id;
-//	uint16 size = header->size;
-//	Protocol::S_Hit pkt;
-//	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-//	//
-//	uint64 objectId = pkt.objectid();
-//	uint64 attackerId = pkt.attackerid();
-//
-//	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-//
-//	if (scene)
-//	{
-//		GameObject* object = scene->GetObjects(objectId);
-//		GameObject* attackerObject = scene->GetObjects(attackerId);
-//
-//		Creature* creature = dynamic_cast<Creature*>(object);
-//		Creature* attacker = dynamic_cast<Creature*>(attackerObject);
-//
-//		creature->Handle_S_Hit(attacker);
-//		
-//	}
-//}
 
 // 패킷 보내기
 SendBufferRef ClientPacketHandler::Make_C_Move()
@@ -278,23 +250,21 @@ SendBufferRef ClientPacketHandler::Make_C_Hit(Protocol::ObjectInfo& objectInfo, 
 {
 	// 패킷 생성
 	Protocol::C_Hit pkt;
+
 	*pkt.mutable_info() = objectInfo;
 	pkt.set_attackerid(attackerId);
 
 	return MakeSendBuffer(pkt, C_Hit);
 }
 
-//SendBufferRef ClientPacketHandler::Make_C_FireArrow()
-//{
-	// 패킷 생성
+SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t time, string str)
+{
+	Protocol::C_SendMessage pkt;
 
-	// MyPlayer를 가져옴
-	//Arrow* arrow = GET_SINGLE(SceneManager)->GetMyPlayer()->
+	auto* texts = pkt.mutable_texts();
+	texts->set_objectid(objectId);
+	texts->set_time(time);
+	texts->set_str(str);
 
-	//// 패킷의 weapontype을 수정해 myPlayer의 정보를 패킷에 담음
-	//*pkt.mutable_info() = myPlayer->info;
-
-	//return MakeSendBuffer(pkt, C_WeaponChange);
-
-//}
-
+	return MakeSendBuffer(pkt, C_SendMessage);
+}

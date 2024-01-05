@@ -3,6 +3,9 @@
 #include "ResourceManager.h"
 #include "Sprite.h"
 #include "TimeManager.h"
+#include "ChatManager.h"
+#include "SceneManager.h"
+#include "DevScene.h"
 
 Chat::Chat()
 {
@@ -43,7 +46,6 @@ void Chat::Tick()
 
 void Chat::Render(HDC hdc)
 {
-	
 	BLENDFUNCTION bf = {};
 	bf.AlphaFormat = 0; //일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
 	bf.BlendFlags = 0;
@@ -73,21 +75,14 @@ void Chat::Render(HDC hdc)
 
 		SetBkMode(hdc, TRANSPARENT);
 		SetTextColor(hdc, RGB(230, 230, 230));
-		int maxLineWidth = _rect.right - _rect.left - 20;
 
-		// 1 line per 19 korean spells
+		// 라인 당 한글 문자 19개
 		for (int i = 0; i < _texts.size(); i++)
 		{
-			// 문자열이 특정 길이를 넘어가면 줄바꿈 추가
-			for (size_t pos = maxLineWidth; pos < _texts[i].length(); pos += maxLineWidth)
-			{
-				_texts[i].insert(pos, L"\n");
-			}
-
 			RECT textRect = {};
 			textRect.left = _rect.left + 10;
 			textRect.right = _rect.right - 10;
-			textRect.top = _rect.top + 10 + i * 36;
+			textRect.top = _rect.top + 10 + GetLineHeight(i);
 			textRect.bottom = _rect.bottom;
 
 			// DrawText 함수를 사용하여 텍스트 출력
@@ -107,7 +102,11 @@ void Chat::SetRectPos(int posX, int posY)
 void Chat::AddText(const wstring str)
 {
 	_texts.push_back(str);
-	// next line
+
+	// 개행하기 위한 계산
+	RECT textRect = { 0,0,_rect.right - _rect.left - 20,0 };
+	int height = DrawText(_chatSprite->GetDC(), str.c_str(), -1, &textRect, DT_LEFT | DT_WORDBREAK | DT_CALCRECT);
+	_height.push_back(height);
 }
 
 void Chat::ChatBoxFade()
@@ -129,6 +128,7 @@ void Chat::ChatBoxFade()
 		if (_texts.empty() == false)
 		{
 			_texts.erase(_texts.begin());
+			_height.erase(_height.begin());
 			_sumTime = 0;
 		}
 		// 창이 페이드 아웃
@@ -144,9 +144,13 @@ void Chat::ChatBoxFade()
 	}
 }
 
-void Chat::SetVisibleChat()
+int Chat::GetLineHeight(int idx)
 {
-	SetVisible(true);
-	SetAlpha(200);
-	SetSumTime(0);
+	int height = 0;
+	for (int i = 0; i < idx; i++)
+	{
+		height += _height[i];
+	}
+
+	return height;
 }

@@ -19,7 +19,8 @@ enum
 	C_Hit = 22,
 	S_Hit = 23,
 
-	S_SendChat = 31,
+	C_SendMessage = 30,
+	S_SendMessage = 31,
 };
 
 struct BuffData
@@ -37,6 +38,7 @@ public:
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len);
 	
 	
 	// 보내기
@@ -47,7 +49,7 @@ public:
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
 	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
 	static SendBufferRef Make_S_Hit(uint64 objectId, uint64 attackerId);
-	static SendBufferRef Make_S_SendChat(uint64 objectId, uint64 time, string str);
+	static SendBufferRef Make_S_SendMessage(uint64 objectId, uint64 time, string str);
 
 	// Arrow의 info를 넘김
 	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id);

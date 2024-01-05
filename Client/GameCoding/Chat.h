@@ -20,10 +20,10 @@ public:
 	vector<wstring>& GetTexts() { return _texts; }
 	void ChatBoxFade();
 
-	void SetVisibleChat();
-
 	int SetAlpha(int alpha) { return _alpha = alpha; }
 	float SetSumTime(float time) { return _sumTime = time; }
+
+	int GetLineHeight(int idx);
 
 private:
 	Sprite* _chatSprite = nullptr;
@@ -32,7 +32,9 @@ private:
 
 	vector<wstring> _texts;
 	int _alpha = 0;
-
 	float _sumTime = 0;
+
+public:
+	vector<int> _height;
 };
 

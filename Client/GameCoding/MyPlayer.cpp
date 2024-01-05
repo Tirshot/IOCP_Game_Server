@@ -43,8 +43,8 @@ void MyPlayer::Render(HDC hdc)
 	Super::Render(hdc);
 }
 
-float prevCount = 0;
-float nowCount = 0;
+uint64 prevCount = 0;
+uint64 nowCount = 0;
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
@@ -177,7 +177,10 @@ void MyPlayer::TickHit()
 
 void MyPlayer::TickChat()
 {
-	GET_SINGLE(ChatManager)->ChatInput();
+	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
+	{
+		SetState(IDLE);
+	}
 }
 
 void MyPlayer::SyncToServer()

@@ -7,6 +7,9 @@
 #include "Game.h"
 #include "TimeManager.h"
 #include "ThreadManager.h"
+#include "ChatManager.h"
+#include "SceneManager.h"
+#include "MyPlayer.h"
 
 #define MAX_LOADSTRING 100
 
@@ -126,12 +129,40 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_COMMAND  - 애플리케이션 메뉴를 처리합니다.
 //  WM_PAINT    - 주 창을 그립니다.
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
-//
-//
+bool isChatting = false;
+static WCHAR str1[256];
+int len = 0;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
+    case WM_KEYDOWN:
+        // 엔터 키를 누르면 채팅 입력 시작 또는 종료
+        if (wParam == VK_RETURN)
+            isChatting = !isChatting;
+        break;
+
+    case WM_CHAR:
+        if (isChatting == true)
+        {
+            len = (int)wcslen(str1);
+            str1[len] = static_cast<WCHAR>(wParam);
+            str1[len + 1] = 0;
+            InvalidateRect(hWnd, NULL, FALSE);
+            GET_SINGLE(ChatManager)->SetVisibleChat();
+        }
+        else if (isChatting == false)
+        {
+            MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+            if (myPlayer && myPlayer->info.state() == CHAT)
+            {
+                str1[0] = ' ';
+                GET_SINGLE(ChatManager)->SendMessageToServer(str1);
+                memset(str1, 0, sizeof(str1));
+            }
+        }
+    break;
+    
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
@@ -152,7 +183,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         PAINTSTRUCT ps;
 
         HDC hdc = BeginPaint(hWnd, &ps);
-
         EndPaint(hWnd, &ps);
     }
     break;
