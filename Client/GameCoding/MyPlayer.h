@@ -20,9 +20,12 @@ private:
 	virtual void TickSkill() override;
 	virtual void TickHit() override;
 	virtual void TickChat() override;
+	virtual void TickSpin() override;
+	virtual void TickSpinReady() override;
 
 	void SyncToServer();
 
 	bool _keyPressed = false;
+	bool _isSpinning = false;
 };
 

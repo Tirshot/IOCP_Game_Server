@@ -42,6 +42,16 @@ Player::Player()
 	_flipbookStaff[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffLeft");
 	_flipbookStaff[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffRight");
 
+	_flipbookSpin[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinUp");
+	_flipbookSpin[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinDown");
+	_flipbookSpin[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinLeft");
+	_flipbookSpin[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinRight");
+
+	_flipbookSpinReady[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinReadyUp");
+	_flipbookSpinReady[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinReadyDown");
+	_flipbookSpinReady[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinReadyLeft");
+	_flipbookSpinReady[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SpinReadyRight");
+
 	//이젠 서버에서 받아옴
 	//info.set_hp(100);
 	//info.set_maxhp(100);
@@ -158,6 +168,82 @@ void Player::TickSkill()
 	}
 }
 
+void Player::TickSpin()
+{
+	if (_flipbook == nullptr)
+		return;
+
+	if (IsAnimationEnded())
+	{
+		// 공격 판정
+		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		if (scene == nullptr)
+			return;
+
+		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
+		{
+			// 내 앞에 있는 좌표
+			Creature* creature = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 }); // up
+			Creature* creature2 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 }); // right
+			Creature* creature3 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 }); // down
+			Creature* creature4 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 }); // left
+
+			if (creature)
+			{
+				if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				{
+					SetState(IDLE);
+					return;
+				}
+
+				// 몬스터에 피격 이펙트 출력
+				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,-1 });
+				creature->OnDamaged(this);
+			}
+
+			if (creature2)
+			{
+				if (creature2->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				{
+					SetState(IDLE);
+					return;
+				}
+
+				// 몬스터에 피격 이펙트 출력
+				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 1,0 });
+				creature2->OnDamaged(this);
+			}
+
+			if (creature3)
+			{
+				if (creature3->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				{
+					SetState(IDLE);
+					return;
+				}
+
+				// 몬스터에 피격 이펙트 출력
+				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,1 });
+				creature3->OnDamaged(this);
+			}
+
+			if (creature4)
+			{
+				if (creature4->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				{
+					SetState(IDLE);
+					return;
+				}
+
+				// 몬스터에 피격 이펙트 출력
+				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ -1,0 });
+				creature4->OnDamaged(this);
+			}
+		}
+		SetState(IDLE);
+	}
+}
+
 void Player::UpdateAnimation()
 {
 	switch (info.state())
@@ -182,6 +268,20 @@ void Player::UpdateAnimation()
 		else
 		{
 			SetFlipbook(_flipbookStaff[info.dir()]);
+		}
+		break;
+
+	case SPIN_READY:
+		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
+		{
+			SetFlipbook(_flipbookSpinReady[info.dir()]);
+		}
+		break;
+
+	case SPIN:
+		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
+		{
+			SetFlipbook(_flipbookSpin[info.dir()]);
 		}
 		break;
 

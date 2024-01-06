@@ -19,6 +19,7 @@ protected:
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
 	virtual void TickSkill() override;
+	virtual void TickSpin() override;
 	virtual void UpdateAnimation() override;
 
 public:
@@ -28,6 +29,8 @@ private:
 	Flipbook* _flipbookIdle[4] = {};
 	Flipbook* _flipbookMove[4] = {};
 	Flipbook* _flipbookAttack[4] = {};
+	Flipbook* _flipbookSpin[4] = {};
+	Flipbook* _flipbookSpinReady[4] = {};
 	Flipbook* _flipbookBow[4] = {};
 	Flipbook* _flipbookStaff[4] = {};
 

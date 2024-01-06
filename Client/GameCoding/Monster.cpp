@@ -82,16 +82,16 @@ void Monster::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 50 * deltaTime;
+			_pos.y -= 100 * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 50 * deltaTime;
+			_pos.y += 100 * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 50 * deltaTime;
+			_pos.x -= 100 * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 50 * deltaTime;
+			_pos.x += 100 * deltaTime;
 			break;
 		}
 	}

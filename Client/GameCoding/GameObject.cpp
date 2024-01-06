@@ -54,6 +54,14 @@ void GameObject::Tick()
 	case CHAT:
 		TickChat();
 		break;
+
+	case SPIN_READY:
+		TickSpinReady();
+		break;
+
+	case SPIN:
+		TickSpin();
+		break;
 	}
 }
 

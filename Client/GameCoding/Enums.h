@@ -48,6 +48,8 @@ using Dir = Protocol::DIR_TYPE;
 #define SKILL Protocol::OBJECT_STATE_TYPE_SKILL
 #define HIT Protocol::OBJECT_STATE_TYPE_HIT
 #define CHAT Protocol::OBJECT_STATE_TYPE_CHAT
+#define SPIN_READY Protocol::OBJECT_STATE_TYPE_SPIN_READY
+#define SPIN Protocol::OBJECT_STATE_TYPE_SPIN
 
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 

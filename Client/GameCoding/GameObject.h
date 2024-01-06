@@ -18,6 +18,8 @@ protected:
 	virtual void TickSkill() {}
 	virtual void TickHit() {}
 	virtual void TickChat() {}
+	virtual void TickSpin() {}
+	virtual void TickSpinReady() {}
 	virtual void UpdateAnimation() {}
 
 public:

@@ -24,6 +24,7 @@ using Dir = Protocol::DIR_TYPE;
 #define SKILL Protocol::OBJECT_STATE_TYPE_SKILL
 #define HIT Protocol::OBJECT_STATE_TYPE_HIT
 #define STOP Protocol::OBJECT_STATE_TYPE_STOP
+#define SPIN Protocol::OBJECT_STATE_TYPE_SPIN
 
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 

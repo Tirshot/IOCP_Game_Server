@@ -45,6 +45,7 @@ void MyPlayer::Render(HDC hdc)
 
 uint64 prevCount = 0;
 uint64 nowCount = 0;
+uint64 spinStart = 0;
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
@@ -60,13 +61,40 @@ void MyPlayer::TickInput()
 	}
 	
 	// 공격
-	 if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
-		// 500ms 마다 공격
-		if (nowCount - prevCount >= 400.f)
+		// 500ms
+		if (nowCount - prevCount >= 500.f)
 		{
 			SetState(SKILL);
 			prevCount = nowCount;
+			spinStart = GetTickCount64();
+			_isSpinning = false;
+		}
+	}
+
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar) && GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
+	{
+		// 경과 시간 측정
+		float elapsedTime = static_cast<float>(GetTickCount64() - spinStart);
+
+		// 1500ms 이상 경과 시간이 지나면 스핀 공격 시작
+		if (elapsedTime >= 1500.f && _isSpinning == false)
+		{
+			_isSpinning = true;
+			spinStart = GetTickCount64();
+			SetState(IDLE);
+			// 스핀 공격 시작에 대한 추가 처리
+			// 예: 애니메이션 변경, 효과 발동 등
+		}
+		else if (_isSpinning)
+		{
+			_isSpinning = false;
+			spinStart = GetTickCount64();
+			SetState(SPIN_READY);
+			// 빛나는 애니메이션 출력
+			// 스페이스 바를 누르고 있는 동안의 일반 공격 처리
+			// 예: 공격 애니메이션, 이동 등
 		}
 	}
 
@@ -180,6 +208,19 @@ void MyPlayer::TickChat()
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
 	{
 		SetState(IDLE);
+	}
+}
+
+void MyPlayer::TickSpin()
+{
+	Super::TickSpin();
+}
+
+void MyPlayer::TickSpinReady()
+{
+	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::SpaceBar))
+	{
+		SetState(SPIN);
 	}
 }
 
