@@ -122,8 +122,8 @@ void Chat::ChatBoxFade()
 		_alpha = clamp(_alpha, 50, 200);
 	}
 
-	// 1.5초 후 텍스트를 제거하고 창을 숨김
-	if (_sumTime >= 1.5f)
+	// 2초 후 텍스트를 제거하고 창을 숨김
+	if (_sumTime >= 2.f)
 	{
 		if (_texts.empty() == false)
 		{
@@ -131,6 +131,10 @@ void Chat::ChatBoxFade()
 			_height.erase(_height.begin());
 			_sumTime = 0;
 		}
+	}
+
+	if (_texts.empty() == true && _chatState == false)
+	{
 		// 창이 페이드 아웃
 		_alpha--;
 		_alpha = clamp(_alpha, 0, 200);

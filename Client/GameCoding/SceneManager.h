@@ -1,5 +1,6 @@
 #pragma once
 class Scene;
+class Player;
 class MyPlayer;
 class SceneManager
 {
@@ -22,6 +23,7 @@ public:
 	MyPlayer* GetMyPlayer() { return _myPlayer; }
 	uint64 GetMyPlayerId();
 	void SetMyPlayer(MyPlayer* myplayer) { _myPlayer = myplayer; }
+	Player* GetPlayerByID(uint64 objectId);
 
 private:
 	Scene* _scene = nullptr;

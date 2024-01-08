@@ -23,6 +23,9 @@ public:
 	int SetAlpha(int alpha) { return _alpha = alpha; }
 	float SetSumTime(float time) { return _sumTime = time; }
 
+	bool GetChatState() { return _chatState; }
+	void SetChatState(bool state) { _chatState = state; }
+
 	int GetLineHeight(int idx);
 
 private:
@@ -33,6 +36,7 @@ private:
 	vector<wstring> _texts;
 	int _alpha = 0;
 	float _sumTime = 0;
+	bool _chatState = false;
 
 public:
 	vector<int> _height;

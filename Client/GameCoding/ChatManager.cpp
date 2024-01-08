@@ -69,6 +69,7 @@ void ChatManager::SetVisibleChat()
 	_chat->SetVisible(true);
 	_chat->SetAlpha(200);
 	_chat->SetSumTime(0);
+	_chat->SetChatState(true);
 }
 
 void ChatManager::SendMessageToServer(const wstring text)

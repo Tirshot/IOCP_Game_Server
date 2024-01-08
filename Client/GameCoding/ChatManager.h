@@ -26,6 +26,5 @@ public:
 private:
 	Chat* _chat = nullptr;
 	wstring _str = L"";
-	wchar_t _strCombine[256];
 };
 

@@ -4,6 +4,7 @@ class Actor;
 class UI;
 class Creature;
 class Projectile;
+class Player;
 
 class Scene
 {
@@ -25,6 +26,7 @@ public:
 	void SetPauseState(bool pause) { _isPaused = pause; }
 
 	Creature* GetCreatureAt(Vec2Int cellPos);
+	Player* GetPlayerByID(uint64 objectId);
 
 public:
 	vector<Actor*> _actors[LAYER_MAXCOUNT];

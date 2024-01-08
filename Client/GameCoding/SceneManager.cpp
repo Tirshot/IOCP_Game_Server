@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "DevScene.h"
+#include "Player.h"
 #include "MyPlayer.h"
 
 void SceneManager::Init()
@@ -64,6 +65,16 @@ class DevScene* SceneManager::GetDevScene()
 uint64 SceneManager::GetMyPlayerId()
 {
 	return _myPlayer ? _myPlayer->info.objectid() : 0;
+}
+
+Player* SceneManager::GetPlayerByID(uint64 objectId)
+{
+	if (!_scene)
+		return nullptr;
+
+	Player* player = _scene->GetPlayerByID(objectId);
+
+	return player ? player : nullptr;
 }
 
 void SceneManager::SetPause(bool pause)

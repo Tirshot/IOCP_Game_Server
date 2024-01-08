@@ -57,7 +57,7 @@ void MyPlayer::TickInput()
 	// 채팅 입력창
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
 	{	
-		SetState(CHAT);
+		SetState(CHAT); // _chatState는 SetVisible 안에서 수정됨
 	}
 	
 	// 공격
@@ -208,6 +208,7 @@ void MyPlayer::TickChat()
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
 	{
 		SetState(IDLE);
+		GET_SINGLE(ChatManager)->GetChat()->SetChatState(false);
 	}
 }
 

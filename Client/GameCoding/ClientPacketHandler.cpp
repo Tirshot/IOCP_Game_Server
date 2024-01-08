@@ -207,7 +207,7 @@ void ClientPacketHandler::Handle_S_SendMessage(ServerSessionRef session, BYTE* b
 	//
 	const Protocol::Text& texts = pkt.texts();
 	uint64 objectId = texts.objectid();
-	string name = GET_SINGLE(SceneManager)->GetMyPlayer()->info.name();
+	string name = GET_SINGLE(SceneManager)->GetPlayerByID(objectId)->info.name();
 	wstring wname = GET_SINGLE(ChatManager)->StringToWStr(name);
 
 	time_t now = texts.time();

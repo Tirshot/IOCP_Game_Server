@@ -115,9 +115,13 @@ void Monster::TickSkill()
 		return;
 
 	auto* creature = scene->GetCreatureAt(GetFrontCellPos());
+	
+	// Player에 피격 이펙트 출력
 	if (creature)
+	{
 		creature->OnDamaged(this);
-
+	}
+	scene->SpawnObject<HitEffect>(GetFrontCellPos());
 	SetState(IDLE);
 }
 

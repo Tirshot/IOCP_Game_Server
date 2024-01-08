@@ -6,6 +6,7 @@
 #include "TimeManager.h"
 #include "Creature.h"
 #include "Panel.h"
+#include "Player.h"
 
 Scene::Scene()
 {
@@ -105,4 +106,21 @@ Creature* Scene::GetCreatureAt(Vec2Int cellPos)
 	}
 
 	return nullptr;
+}
+
+Player* Scene::GetPlayerByID(uint64 objectId)
+{
+	for (auto& actor : _actors)
+	{
+		for (auto& creature : actor)
+		{
+			Player* player = dynamic_cast<Player*>(creature);
+
+			if (!player)
+				continue;
+
+			if (player->info.objectid() == objectId)
+				return player ? player : 0;
+		}
+	}
 }
