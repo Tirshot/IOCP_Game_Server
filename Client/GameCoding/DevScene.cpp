@@ -465,21 +465,24 @@ void DevScene::LoadUI()
 {
 	{	// 무기 슬롯, pivot은 중앙 하단
 		WeaponSlot* ws = new WeaponSlot();
-		AddUI(ws);
 		ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
 		ws->SetVisible(true);
+		AddUI(ws);
 	}
 	{  // 채팅 창
 		Chat* chat = new Chat(Vec2{ 10,320 });
+		chat->SetPos(Vec2{ 10,320 });
 		GET_SINGLE(ChatManager)->SetChat(chat);
 		AddUI(chat);
-		
-		chat->SetPos(Vec2{ 10,320 });
 	}
-	{ // HP
+	{	// HP
 		HP* hp = new HP();
-		AddUI(hp);
 		hp->SetVisible(true);
+		AddUI(hp);
+	}
+	{	// Game Over
+
+
 	}
 }
 

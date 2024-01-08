@@ -20,13 +20,11 @@ Chat::Chat(Vec2 rectPos)
 
 Chat::~Chat()
 {
-	RemoveChild(this);
+
 }
 
 void Chat::BeginPlay()
 {
-	AddChild(this);
-	// size of chat
 	_rect = GetRect();
 	_rect.left = 0;
 	_rect.right = 300;

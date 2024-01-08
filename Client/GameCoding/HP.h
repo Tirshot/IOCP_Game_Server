@@ -1,8 +1,8 @@
 #pragma once
-#include "Panel.h"
+#include "UI.h"
 class Sprite;
 class MyPlayer;
-class HP : public Panel
+class HP : public UI
 {
 	using Super = UI;
 
@@ -13,7 +13,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
-
 
 protected:
 	Vec2	_pos = { 0, 0 };

@@ -233,7 +233,7 @@
     <ClInclude Include="WeaponSlot.h">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
-    <ClInclude Include="ChatInput.h">
+    <ClInclude Include="GameOver.h">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
   </ItemGroup>
@@ -384,7 +384,7 @@
     <ClCompile Include="WeaponSlot.cpp">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
-    <ClCompile Include="ChatInput.cpp">
+    <ClCompile Include="GameOver.cpp">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
   </ItemGroup>

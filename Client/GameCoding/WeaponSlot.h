@@ -1,9 +1,9 @@
 #pragma once
-#include "Panel.h"
+#include "UI.h"
 class Sprite;
-class WeaponSlot : public Panel
+class WeaponSlot : public UI
 {
-	using Super = Panel;
+	using Super = UI;
 #define MAX_SLOT 10
 public:
 	WeaponSlot();

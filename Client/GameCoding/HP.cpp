@@ -14,12 +14,11 @@ HP::HP()
 
 HP::~HP()
 {
-	RemoveChild(this);
+
 }
 
 void HP::BeginPlay()
 {
-	AddChild(this);
 	_hp = 5;
 	_maxHp = 5;
 }
@@ -50,8 +49,6 @@ void HP::Render(HDC hdc)
 			25,
 			21,
 			_blackHeart->GetTransparent());
-
-		
 	}
 
 	for (int i = 0; i < _hp; i++)

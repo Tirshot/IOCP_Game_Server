@@ -66,7 +66,8 @@ void MyPlayer::TickInput()
 		prevCount = nowCount;
 	}
 
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
+	else if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
+		&& GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 	{
 		if (nowCount - prevCount >= 1500.f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
 		{

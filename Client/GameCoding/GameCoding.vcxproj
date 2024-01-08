@@ -142,7 +142,6 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Chat.h" />
-    <ClInclude Include="ChatInput.h" />
     <ClInclude Include="ChatManager.h" />
     <ClInclude Include="ClientPacketHandler.h" />
     <ClInclude Include="CollisionManager.h" />
@@ -158,6 +157,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCoding.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HP.h" />
     <ClInclude Include="InputManager.h" />
@@ -197,7 +197,6 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Chat.cpp" />
-    <ClCompile Include="ChatInput.cpp" />
     <ClCompile Include="ChatManager.cpp" />
     <ClCompile Include="ClientPacketHandler.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
@@ -212,6 +211,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCoding.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HP.cpp" />
     <ClCompile Include="InputManager.cpp" />

@@ -13,12 +13,11 @@ WeaponSlot::WeaponSlot()
 
 WeaponSlot::~WeaponSlot()
 {
-	RemoveChild(this);
+
 }
 
 void WeaponSlot::BeginPlay()
 {
-	AddChild(this);
 	Sprite* weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
 	Sprite* weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
 	Sprite* weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
@@ -27,8 +26,8 @@ void WeaponSlot::BeginPlay()
 	_selected = GET_SINGLE(ResourceManager)->GetSprite(L"Selected");
 
 	// _slots에 push_back 하면 슬롯이 자동으로 증가
-	_slots.insert({ 1,weaponSword });
-	_slots.insert({ 2,weaponBow });
+	_slots.insert({ 1, weaponSword });
+	_slots.insert({ 2, weaponBow });
 	_slots.insert({ 3, weaponStaff });
 }
 
@@ -73,19 +72,6 @@ void WeaponSlot::Render(HDC hdc)
 			_slots[i]->GetTransparent());
 	}
 
-	// 선택된 무기 하이라이트
-	//::TransparentBlt(hdc,
-	//	(int)(_pos.x + 60 * (HighlightSlot() - _slots.size() / 2.f) + 6),
-	//	(int)_pos.y - 60 + 7,
-	//	45,
-	//	45,
-	//	_selectedSlot->GetDC(),
-	//	_selectedSlot->GetPos().x,
-	//	_selectedSlot->GetPos().y,
-	//	44,
-	//	44,
-	//	_selectedSlot->GetTransparent());
-
 	::TransparentBlt(hdc,
 		(int)(_pos.x + 60 * (HighlightSlot() - _slots.size() / 2.f) + 4),
 		(int)_pos.y - 60 + 7,
@@ -97,15 +83,11 @@ void WeaponSlot::Render(HDC hdc)
 		80,
 		80,
 		RGB(128, 128, 128));
-
 }
 
 int16 WeaponSlot::HighlightSlot()
 {
 	Player* player = GET_SINGLE(SceneManager)->GetMyPlayer();
 
-	if (player == nullptr)
-		return 0;
-
-	return player->GetWeaponType(); /* 0, 1, 2*/
+	return player ? player->GetWeaponType() : 0; /* 0, 1, 2*/
 }

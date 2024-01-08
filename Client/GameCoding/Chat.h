@@ -1,9 +1,10 @@
 #pragma once
-#include "Panel.h"
+#include "UI.h"
 
 class Sprite;
-class Chat :  public Panel
+class Chat :  public UI
 {
+	using Super = UI;
 public:
 	Chat();
 	Chat(Vec2 rectPos);
