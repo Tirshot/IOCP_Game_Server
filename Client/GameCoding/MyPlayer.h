@@ -26,6 +26,5 @@ private:
 	void SyncToServer();
 
 	bool _keyPressed = false;
-	bool _isSpinning = false;
 };
 

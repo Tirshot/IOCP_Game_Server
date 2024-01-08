@@ -24,6 +24,7 @@ protected:
 
 public:
 	void SetState(ObjectState state);
+	Protocol::OBJECT_STATE_TYPE GetState() { return info.state(); }
 	void SetDir(Dir dir);
 
 	bool HasReachedDest();
