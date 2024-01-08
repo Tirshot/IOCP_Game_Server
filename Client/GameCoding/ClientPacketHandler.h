@@ -21,6 +21,9 @@ enum
 
 	C_SendMessage = 30,
 	S_SendMessage = 31,
+
+	C_Revive = 32,
+
 };
 class Creature;
 class ClientPacketHandler
@@ -60,5 +63,6 @@ public:
 	static SendBufferRef Make_C_Fire(uint64 ownerid);
 	static SendBufferRef Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId);
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
+	static SendBufferRef Make_C_Revive();
 };
 

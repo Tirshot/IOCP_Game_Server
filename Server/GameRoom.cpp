@@ -422,7 +422,7 @@ Vec2Int GameRoom::GetRandomEmptyCellPos()
 Vec2Int GameRoom::GetRandomEmptySpawnCellPos()
 {
 	Vec2Int ret = { -1,-1 };
-	Vec2Int size = Vec2Int{ 10, 13 };
+	Vec2Int size = Vec2Int{ 8, 8 };
 
 	// 굉장히 많아지면 빠져나오도록 설정해야 함
 	while (true)

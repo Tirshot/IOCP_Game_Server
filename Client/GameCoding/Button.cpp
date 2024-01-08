@@ -14,8 +14,6 @@ Button::~Button()
 
 void Button::BeginPlay()
 {
-	Super::BeginPlay();
-
 	SetButtonState(BS_Default);
 }
 
@@ -36,11 +34,12 @@ void Button::Tick()
 
 	if (IsMouseInRect())
 	{
+		SetCurrentSprite(_sprites[BS_Hovered]);
+
 		// 눌림
 		if (GET_SINGLE(InputManager)->GetButton(KeyType::LeftMouse))
 		{
 			SetButtonState(BS_Pressed);
-			// OnPressed
 		}
 		else
 		// 뗌
@@ -64,26 +63,27 @@ void Button::Tick()
 
 void Button::Render(HDC hdc)
 {
-	// 버튼에 스프라이트가 적용되어 있다면 그리기
-	if (_currentSprite)
-	{
-		::TransparentBlt(hdc,
-			(int32)_pos.x - _size.x/2,
-			(int32)_pos.y - _size.y/2,
-			_size.x,
-			_size.y,
-			_currentSprite->GetDC(),
-			_currentSprite->GetPos().x,
-			_currentSprite->GetPos().y,
-			_currentSprite->GetSize().x,
-			_currentSprite->GetSize().y,
-			_currentSprite->GetTransparent());
+	if (_visible == true)
+	{// 버튼에 스프라이트가 적용되어 있다면 그리기
+		if (_currentSprite)
+		{
+			::TransparentBlt(hdc,
+				(int32)_pos.x - _size.x / 2,
+				(int32)_pos.y - _size.y / 2,
+				_size.x,
+				_size.y,
+				_currentSprite->GetDC(),
+				_currentSprite->GetPos().x,
+				_currentSprite->GetPos().y,
+				_currentSprite->GetSize().x,
+				_currentSprite->GetSize().y,
+				RGB(128,128,128));
+		}
+		else
+		{
+			/*Utils::DrawRect(hdc, _pos, _size.x, _size.y);*/
+		}
 	}
-	else
-	{
-		/*Utils::DrawRect(hdc, _pos, _size.x, _size.y);*/
-	}
-
 	
 }
 

@@ -38,6 +38,9 @@ public:
 	static MonsterRef CreateMonster();
 	static ArrowRef CreateArrow();
 
+	void PlusIDGen() { s_idGenerator++; }
+	void MinusIDGen() { s_idGenerator--; }
+
 public:
 	Protocol::ObjectInfo info;
 	GameRoomRef room;

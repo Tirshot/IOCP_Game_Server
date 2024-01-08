@@ -29,8 +29,8 @@ void SceneManager::Clear()
 void SceneManager::ChangeScene(SceneType sceneType)
 {
 	// 변경하려는 Scene과 현재 Scene이 일치하면 종료
-	if (_sceneType == sceneType)
-		return;
+	//if (_sceneType == sceneType)
+	//	return;
 
 	// 변경하려는 Scene을 newScene이라 명명
 	Scene* newScene = nullptr;

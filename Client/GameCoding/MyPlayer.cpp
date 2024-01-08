@@ -13,6 +13,7 @@
 #include "NetworkManager.h"
 #include "ChatManager.h"
 #include "Chat.h"
+#include "GameOver.h"
 
 
 MyPlayer::MyPlayer()

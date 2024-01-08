@@ -33,6 +33,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_SendMessage(session, buffer, len);
 		break;
 
+	case C_Revive:
+		Handle_C_Revive(session, buffer, len);
+		break;
+
 	default:
 		break;
 	}
@@ -127,6 +131,20 @@ void ServerPacketHandler::Handle_C_SendMessage(GameSessionRef session, BYTE* buf
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendMessage(objectId, now, str);
 		room->Broadcast(sendBuffer);
+	}
+}
+
+void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	GameRoomRef room = session->gameRoom.lock();
+	if (room)
+	{
+		room->LeaveRoom(session);
+		room->EnterRoom(session);
 	}
 }
 

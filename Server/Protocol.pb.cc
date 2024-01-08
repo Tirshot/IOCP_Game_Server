@@ -202,8 +202,19 @@ struct S_SendMessageDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_SendMessageDefaultTypeInternal _S_SendMessage_default_instance_;
+PROTOBUF_CONSTEXPR C_Revive::C_Revive(
+    ::_pbi::ConstantInitialized) {}
+struct C_ReviveDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_ReviveDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_ReviveDefaultTypeInternal() {}
+  union {
+    C_Revive _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_ReviveDefaultTypeInternal _C_Revive_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[13];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[14];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -310,6 +321,12 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_SendMessage, _impl_.texts_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_Revive, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::S_TEST)},
@@ -325,6 +342,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 80, -1, -1, sizeof(::Protocol::C_Hit)},
   { 88, -1, -1, sizeof(::Protocol::C_SendMessage)},
   { 95, -1, -1, sizeof(::Protocol::S_SendMessage)},
+  { 102, -1, -1, sizeof(::Protocol::C_Revive)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -341,6 +359,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_C_Hit_default_instance_._instance,
   &::Protocol::_C_SendMessage_default_instance_._instance,
   &::Protocol::_S_SendMessage_default_instance_._instance,
+  &::Protocol::_C_Revive_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -363,8 +382,8 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "C_Hit\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInf"
   "o\022\022\n\nattackerid\030\002 \001(\004\".\n\rC_SendMessage\022\035"
   "\n\005texts\030\001 \001(\0132\016.Protocol.Text\".\n\rS_SendM"
-  "essage\022\035\n\005texts\030\001 \001(\0132\016.Protocol.Textb\006p"
-  "roto3"
+  "essage\022\035\n\005texts\030\001 \001(\0132\016.Protocol.Text\"\n\n"
+  "\010C_Reviveb\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -372,9 +391,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 805, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 817, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 13,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 14,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -3227,6 +3246,46 @@ void S_SendMessage::InternalSwap(S_SendMessage* other) {
       file_level_metadata_Protocol_2eproto[12]);
 }
 
+// ===================================================================
+
+class C_Revive::_Internal {
+ public:
+};
+
+C_Revive::C_Revive(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase(arena, is_message_owned) {
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_Revive)
+}
+C_Revive::C_Revive(const C_Revive& from)
+  : ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase() {
+  C_Revive* const _this = this; (void)_this;
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_Revive)
+}
+
+
+
+
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_Revive::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl,
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl,
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_Revive::GetClassData() const { return &_class_data_; }
+
+
+
+
+
+
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_Revive::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[13]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
@@ -3281,6 +3340,10 @@ Arena::CreateMaybeMessage< ::Protocol::C_SendMessage >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::S_SendMessage*
 Arena::CreateMaybeMessage< ::Protocol::S_SendMessage >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_SendMessage >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_Revive*
+Arena::CreateMaybeMessage< ::Protocol::C_Revive >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_Revive >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

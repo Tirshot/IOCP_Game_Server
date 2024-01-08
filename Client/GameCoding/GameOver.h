@@ -1,17 +1,28 @@
 #pragma once
-#include "UI.h"
-class GameOver : public UI
+#include "Panel.h"
+class Sprite;
+class GameOver : public Panel
 {
+	using Super = Panel;
+
 public:
 	GameOver();
 	virtual ~GameOver();
 
-	virtual void BeginPlay();
-	virtual void Tick();
+	virtual void BeginPlay() override;
+	virtual void Tick() override;
 	virtual void Render(HDC hdc);
 
-protected:
-	Vec2	_pos = { 0, 0 };
-	Vec2Int _size = { 800, 600 };
+	void FadeIn();
+
+	void OnClickReviveButton();
+	void OnClickExitButton();
+
+private:
+	RECT _rect = {};
+	Sprite* _background = nullptr;
+	Sprite* _gameOver = nullptr;
+	int _alpha = 0;
+	float _sumTime = 0.f;
 };
 
