@@ -13,7 +13,7 @@ Chat::Chat()
 }
 
 Chat::Chat(Vec2 rectPos)
-{
+{	// Texts
 	_rectPos.x = rectPos.x;
 	_rectPos.y = rectPos.y;
 }

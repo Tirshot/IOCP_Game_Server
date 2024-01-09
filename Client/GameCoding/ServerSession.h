@@ -2,6 +2,7 @@
 #include "ClientPacketHandler.h"
 #include "ChatManager.h"
 #include "SceneManager.h"
+#include "NetworkManager.h"
 
 class ServerSession : public PacketSession
 {
@@ -30,6 +31,7 @@ public:
 	virtual void OnDisconnected() override
 	{
 		GET_SINGLE(ChatManager)->AddMessage(L"서버와의 연결이 끊어졌습니다.");
+		Sleep(500);
 		GET_SINGLE(SceneManager)->SetPause(true);
 	}
 };

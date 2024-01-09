@@ -11,6 +11,7 @@ public:
 	void Render();
 
 	HDC GetDC() { return _hdc; }
+	HDC GetBackDC() { return _hdcBack; }
 
 private:
 	HWND _hwnd = {};

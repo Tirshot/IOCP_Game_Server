@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Chat.h"
+#include "ChatInput.h"
 #include "MyPlayer.h"
 #include "ChatManager.h"
 #include "SceneManager.h"
@@ -11,7 +12,7 @@
 
 void ChatManager::BeginPlay()
 {
-	
+
 }
 
 void ChatManager::Tick()
@@ -70,6 +71,16 @@ void ChatManager::SetVisibleChat()
 	_chat->SetAlpha(200);
 	_chat->SetSumTime(0);
 	_chat->SetChatState(true);
+}
+
+void ChatManager::SetVisibleChatInput(bool visible)
+{
+	_chatInput->SetVisible(visible);
+
+	if (visible == false)
+	{
+		_chatInput->ClearTextBox();
+	}
 }
 
 void ChatManager::SendMessageToServer(const wstring text)

@@ -19,6 +19,7 @@
 #include "SceneManager.h"
 #include "WeaponSlot.h"
 #include "Chat.h"
+#include "ChatInput.h"
 #include "ChatManager.h"
 #include "Arrow.h"
 #include "HP.h"
@@ -65,6 +66,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"SelectedSlot", L"Sprite\\UI\\SelectedSlot.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Selected", L"Sprite\\UI\\Selected.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Chat", L"Sprite\\UI\\Chat.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"ChatInput", L"Sprite\\UI\\Chat.bmp");
 
 	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
@@ -90,6 +92,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"SelectedSlot", GET_SINGLE(ResourceManager)->GetTexture(L"SelectedSlot"), 0, 0, 44, 44);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Selected", GET_SINGLE(ResourceManager)->GetTexture(L"Selected"), 0, 0, 88, 88);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Chat", GET_SINGLE(ResourceManager)->GetTexture(L"Chat"), 0, 0, 130, 28);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"ChatInput", GET_SINGLE(ResourceManager)->GetTexture(L"ChatInput"), 0, 0, 400, 28);
 
 
 	LoadMap();
@@ -478,10 +481,18 @@ void DevScene::LoadUI()
 		AddUI(ws);
 	}
 	{  // 채팅 창
-		Chat* chat = new Chat(Vec2{ 10,320 });
+		Chat* chat = new Chat(Vec2{ 10,320 } /*Texts*/);
+
+		// background
 		chat->SetPos(Vec2{ 10,320 });
 		GET_SINGLE(ChatManager)->SetChat(chat);
 		AddUI(chat);
+	}
+	{	// Chatting input
+		ChatInput* chatInput = new ChatInput();
+		/*chatInput->SetSize(Vec2Int{ 300,20 });*/
+		GET_SINGLE(ChatManager)->SetChatInput(chatInput);
+		AddUI(chatInput);
 	}
 	{	// HP
 		HP* hp = new HP();

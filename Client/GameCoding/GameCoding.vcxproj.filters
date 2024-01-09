@@ -236,6 +236,9 @@
     <ClInclude Include="GameOver.h">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
+    <ClInclude Include="ChatInput.h">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -385,6 +388,9 @@
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
     <ClCompile Include="GameOver.cpp">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatInput.cpp">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
   </ItemGroup>
