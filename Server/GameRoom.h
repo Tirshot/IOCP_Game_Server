@@ -52,6 +52,7 @@ private:
 	// ID를 발급받아 활용
 	map<uint64, PlayerRef> _players;
 	map<uint64, MonsterRef> _monsters;
+	map<uint64, NPCRef> _npcs;
 	map<uint64, ArrowRef> _arrows;
 	map <uint64, ProjectileRef> _deleteProjectiles;
 };

@@ -75,6 +75,12 @@
     <Filter Include="소스 파일\06. UI\InGame">
       <UniqueIdentifier>{56369f29-68a2-4152-a062-eff923a081ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\03. Objects\Game\NPC">
+      <UniqueIdentifier>{6b6be553-eea0-4cef-83bb-11be7bc8a100}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03. Objects\Game\Trigger">
+      <UniqueIdentifier>{106728ea-1fb1-4f7e-8401-69e7b9494061}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -239,6 +245,21 @@
     <ClInclude Include="ChatInput.h">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>소스 파일\03. Objects\Game\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Sign.h">
+      <Filter>소스 파일\03. Objects\Game\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerActor.h">
+      <Filter>소스 파일\03. Objects\Unreal</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="TutorialTrigger.h">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -392,6 +413,21 @@
     </ClCompile>
     <ClCompile Include="ChatInput.cpp">
       <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>소스 파일\03. Objects\Game\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Sign.cpp">
+      <Filter>소스 파일\03. Objects\Game\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerActor.cpp">
+      <Filter>소스 파일\03. Objects\Unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="TutorialTrigger.cpp">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

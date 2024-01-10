@@ -36,6 +36,8 @@ public:
 	// ¿ÀºêÁ§Æ®¸¦ ÃÑ°ý °ü¸®
 	static PlayerRef CreatePlayer();
 	static MonsterRef CreateMonster();
+	static NPCRef CreateNPC();
+	static SignRef CreateSign();
 	static ArrowRef CreateArrow();
 
 	void PlusIDGen() { s_idGenerator++; }

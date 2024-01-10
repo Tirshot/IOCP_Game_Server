@@ -8,7 +8,11 @@
 #include "Sprite.h"
 #include "SpriteActor.h"
 #include "Flipbook.h"
+#include "Tutorial.h"
 #include "Player.h"
+#include "HitEffect.h"
+#include "Sign.h"
+#include "TutorialTrigger.h"
 #include "UI.h"
 #include "TilemapActor.h"
 #include "Tilemap.h"
@@ -54,6 +58,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Buttons", L"Sprite\\UI\\Buttons.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Snake", L"Sprite\\Monster\\Snake.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Hit", L"Sprite\\Effect\\Hit.bmp", RGB(0,0,0));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Sign", L"Sprite\\NPC\\Sign.bmp", RGB(128, 128, 128));
 	
 	// UI 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"GameOver", L"Sprite\\UI\\GameOver.bmp", RGB(128, 128, 128));
@@ -67,6 +72,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Selected", L"Sprite\\UI\\Selected.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Chat", L"Sprite\\UI\\Chat.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ChatInput", L"Sprite\\UI\\Chat.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Tutorial", L"Sprite\\UI\\Tutorial.bmp");
 
 	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
@@ -93,11 +99,13 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Selected", GET_SINGLE(ResourceManager)->GetTexture(L"Selected"), 0, 0, 88, 88);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Chat", GET_SINGLE(ResourceManager)->GetTexture(L"Chat"), 0, 0, 130, 28);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"ChatInput", GET_SINGLE(ResourceManager)->GetTexture(L"ChatInput"), 0, 0, 400, 28);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Tutorial", GET_SINGLE(ResourceManager)->GetTexture(L"Tutorial"), 0, 0, 400, 300);
 
 
 	LoadMap();
 	LoadPlayer();
 	LoadMonster();
+	LoadNPC();
 	LoadProjectile();
 	LoadEffect();
 	LoadTilemap();
@@ -109,9 +117,6 @@ void DevScene::Init()
 void DevScene::Update()
 {
 	Super::Update();
-
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
 	// TickMonsterSpawn(); // 몬스터 소환은 서버에서 관리
 }
 
@@ -414,6 +419,29 @@ void DevScene::LoadMonster()
 
 }
 
+void DevScene::LoadNPC()
+{
+	// 표지판
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Sign");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SignIdle");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SignIdle", { 48, 96}, 0, 0, 0, 0 });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Sign");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SignMove");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SignMove", { 48, 96}, 1, 3, 0, 3.f });
+	}
+	{	// 이름 변경 트리거 배치
+		TutorialTrigger* nc = new TutorialTrigger();
+		nc->info.set_posx(4);
+		nc->info.set_posy(4);
+		SpawnObject<TutorialTrigger>(nc->GetCellPos());
+	}
+}
+
 void DevScene::LoadProjectile()
 {
 	// Arrow Move
@@ -549,15 +577,22 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			monster->SetDir(info.dir());
 			monster->SetState(info.state());
 		}
-		//else if (info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
-		//{
-		//	Arrow* arrow = SpawnObject<Arrow>(Vec2Int{ info.posx(), info.posy() });
-
-		//	// 애니메이션을 위해
-		//	arrow->info = info;
-		//	arrow->SetDir(info.dir());
-		//	arrow->SetState(info.state());
-		//}
+		else if (info.objecttype() == Protocol::OBJECT_TYPE_NPC)
+		{
+			NPC* npc = SpawnObject<NPC>(Vec2Int{ info.posx(), info.posy() });
+			// 애니메이션을 위해
+			npc->info = info;
+			npc->SetDir(DIR_DOWN);
+			npc->SetState(info.state());
+		}
+		else if (info.objecttype() == Protocol::OBJECT_TYPE_NPC_SIGN)
+		{
+			Sign* npc = SpawnObject<Sign>(Vec2Int{ info.posx(), info.posy() });
+			// 애니메이션을 위해
+			npc->info = info;
+			npc->SetDir(DIR_DOWN);
+			npc->SetState(info.state());
+		}
 	}
 }
 

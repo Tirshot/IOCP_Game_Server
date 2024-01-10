@@ -27,7 +27,7 @@ protected:
 	RECT _rect = {};
 	HDC _hdc = nullptr;
 
-	Vec2Int _size = { 300, 20 };
+	Vec2Int _size = { 500, 20 };
 
 	WCHAR _text[256];
 };

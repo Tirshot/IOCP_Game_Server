@@ -3,6 +3,8 @@
 #include "GameSession.h"
 #include "Player.h"
 #include "Monster.h"
+#include "NPC.h"
+#include "Sign.h"
 #include "Arrow.h"
 #include "Chat.h"
 
@@ -33,6 +35,15 @@ void GameRoom::Init()
 	monster2->info.set_posx(12);
 	monster2->info.set_posy(6);
 	AddObject(monster2);
+
+	// Sign
+	SignRef npc1 = GameObject::CreateSign();
+	npc1->info.set_posx(4);
+	npc1->info.set_posy(3);
+	npc1->info.set_defence(9999);
+	npc1->info.set_name("Sign");
+	AddObject(npc1);
+
 }
 
 void GameRoom::Update()
@@ -45,6 +56,11 @@ void GameRoom::Update()
 	for (auto& item : _monsters)
 	{
 		item.second->Update();
+	}
+
+	for (auto& item : _npcs)
+	{
+		item.second->Tick();
 	}
 
 	for (auto& item : _arrows)
@@ -109,6 +125,12 @@ void GameRoom::EnterRoom(GameSessionRef session)
 			*info = item.second->info;
 		}
 
+		for (auto& item : _npcs)
+		{
+			Protocol::ObjectInfo* info = pkt.add_objects();
+			*info = item.second->info;
+		}
+
 		for (auto& item : _arrows)
 		{
 			Protocol::ObjectInfo* info = pkt.add_objects();
@@ -148,6 +170,11 @@ GameObjectRef GameRoom::FindObject(uint64 id)
 			return findIt->second;
 	}
 	{
+		auto findIt = _npcs.find(id);
+		if (findIt != _npcs.end())
+			return findIt->second;
+	}
+	{
 		auto findIt = _arrows.find(id);
 		if (findIt != _arrows.end())
 			return findIt->second;
@@ -176,6 +203,14 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_monsters[id] = static_pointer_cast<Monster>(gameObject);
+		break;
+
+	case Protocol::OBJECT_TYPE_NPC:
+		_npcs[id] = static_pointer_cast<NPC>(gameObject);
+		break;
+
+	case Protocol::OBJECT_TYPE_NPC_SIGN:
+		_npcs[id] = static_pointer_cast<NPC>(gameObject);
 		break;
 
 	case Protocol::OBJECT_TYPE_PROJECTILE:
@@ -215,6 +250,10 @@ void GameRoom::RemoveObject(uint64 id)
 
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_monsters.erase(id);
+		break;
+
+	case Protocol::OBJECT_TYPE_NPC:
+		_npcs.erase(id);
 		break;
 
 	case Protocol::OBJECT_TYPE_PROJECTILE:
@@ -450,6 +489,11 @@ CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 			return item.second;
 	}
 
+	for (auto& item : _npcs)
+	{
+		if (item.second->GetCellPos() == cellPos)
+			return item.second;
+	}
 	return nullptr;
 }
 

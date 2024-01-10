@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "Player.h"
 #include "Monster.h"
+#include "NPC.h"
+#include "Sign.h"
 #include "GameRoom.h"
 #include "Arrow.h"
 
@@ -42,6 +44,24 @@ MonsterRef GameObject::CreateMonster()
 	monster->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	 
 	return monster;
+}
+
+NPCRef GameObject::CreateNPC()
+{
+	NPCRef npc = make_shared<NPC>();
+	npc->info.set_objectid(s_idGenerator++);
+	npc->info.set_objecttype(Protocol::OBJECT_TYPE_NPC);
+	 
+	return npc;
+}
+
+SignRef GameObject::CreateSign()
+{
+	SignRef sign = make_shared<Sign>();
+	sign->info.set_objectid(s_idGenerator++);
+	sign->info.set_objecttype(Protocol::OBJECT_TYPE_NPC_SIGN);
+
+	return sign;
 }
 
 ArrowRef GameObject::CreateArrow()

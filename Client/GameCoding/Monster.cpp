@@ -47,7 +47,6 @@ void Monster::BeginPlay()
 void Monster::Tick()
 {
 	Super::Tick();
-
 }
 
 void Monster::Render(HDC hdc)
@@ -114,12 +113,12 @@ void Monster::TickSkill()
 	if (scene == nullptr)
 		return;
 
-	auto* creature = scene->GetCreatureAt(GetFrontCellPos());
+	Player* player = dynamic_cast<Player*>(scene->GetCreatureAt(GetFrontCellPos()));
 	
 	// Player에 피격 이펙트 출력
-	if (creature)
+	if (player)
 	{
-		creature->OnDamaged(this);
+		player->OnDamaged(this);
 	}
 	scene->SpawnObject<HitEffect>(GetFrontCellPos());
 	SetState(IDLE);

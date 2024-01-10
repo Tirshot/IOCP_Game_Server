@@ -90,20 +90,10 @@ void Arrow::TickHit()
 	Vec2Int nextPos = pos + deltaXY[info.dir()];
 
 	// 앞이 비어있으면 전진, 몬스터라면 타격
-	_target = static_pointer_cast<Monster>(room->GetCreatureAt(nextPos));
+	_target = dynamic_pointer_cast<Monster>(room->GetCreatureAt(nextPos));
 	if (_target)
 	{
-		// 서버에서 적중한 신호 보냄
-		//{
-		//	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(_target->GetObjectID(), _owner->GetObjectID());
-		//	PlayerRef player = dynamic_pointer_cast<Player>(_owner);
-		//	player->session->Send(sendBuffer);
-		//	room->Broadcast(sendBuffer);
-		//}
-		//_target->OnDamaged(_owner);
-		//_target->SetWait(0);
-		//_target->SetState(HIT);
-		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
+ 		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
 	}
 	else
 	{

@@ -35,6 +35,7 @@ public:
 	void LoadMap();
 	void LoadPlayer();
 	void LoadMonster();
+	void LoadNPC();
 	void LoadProjectile();
 	void LoadEffect();
 	void LoadTilemap();

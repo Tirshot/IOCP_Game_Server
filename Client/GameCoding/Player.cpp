@@ -134,22 +134,16 @@ void Player::TickSkill()
 		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
-			Creature* creature = scene->GetCreatureAt(GetFrontCellPos());
+			Monster* monster = dynamic_cast<Monster*>(scene->GetCreatureAt(GetFrontCellPos()));
 
-			if (creature)
+ 			if (monster)
 			{
-				if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
-				{
-					SetState(IDLE);
-					return;
-				}
-
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				creature->OnDamaged(this);
+				monster->OnDamaged(this);
 
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
-				creature->SetWait(300);
+				monster->SetWait(300);
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
@@ -240,7 +234,7 @@ void Player::TickSpin()
 				creature4->OnDamaged(this);
 			}
 		}
-		SetState(IDLE);
+		SetState(MOVE);
 	}
 }
 

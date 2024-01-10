@@ -41,7 +41,7 @@ void ChatInput::Render(HDC hdc)
 	{
 		{// 백그라운드
 			::BitBlt(hdc,
-				(int)_pos.x,
+				(int)_pos.x + 15,
 				(int)_pos.y,
 				_size.x,
 				_size.y,
@@ -79,7 +79,7 @@ void ChatInput::ClearTextBox()
 	FillRect(_sprite->GetDC(), &_rect, brush);
 	DeleteObject(brush);
 
-	// _text를 초기화하거나 공백으로 설정
+	// _text 초기화
 	memset(_text, 0, 255);
 }
 

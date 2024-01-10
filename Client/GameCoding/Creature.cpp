@@ -39,6 +39,10 @@ void Creature::OnDamaged(Creature* attacker)
 	if (GetType() == attacker->GetType())
 		return;
 
+	// NPC 공격 불가
+	if (info.objecttype() == Protocol::OBJECT_TYPE_NPC || info.objecttype() == Protocol::OBJECT_TYPE_NPC_SIGN)
+		return;
+
 	int32 damage = attacker->info.attack() - info.defence();
 
 	if (damage <= 0)

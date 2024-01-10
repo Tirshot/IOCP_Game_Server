@@ -164,7 +164,9 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MyPlayer.h" />
+    <ClInclude Include="TutorialTrigger.h" />
     <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="NPC.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
@@ -176,6 +178,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ServerSession.h" />
+    <ClInclude Include="Sign.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite.h" />
@@ -186,6 +189,8 @@
     <ClInclude Include="Tilemap.h" />
     <ClInclude Include="TilemapActor.h" />
     <ClInclude Include="TimeManager.h" />
+    <ClInclude Include="TriggerActor.h" />
+    <ClInclude Include="Tutorial.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utils.h" />
@@ -219,7 +224,9 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
+    <ClCompile Include="TutorialTrigger.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="NPC.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -234,6 +241,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ServerSession.cpp" />
+    <ClCompile Include="Sign.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
@@ -245,6 +253,8 @@
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="TilemapActor.cpp" />
     <ClCompile Include="TimeManager.cpp" />
+    <ClCompile Include="TriggerActor.cpp" />
+    <ClCompile Include="Tutorial.cpp" />
     <ClCompile Include="Types.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Utils.cpp" />
