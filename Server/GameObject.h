@@ -38,6 +38,7 @@ public:
 	static MonsterRef CreateMonster();
 	static NPCRef CreateNPC();
 	static SignRef CreateSign();
+	static ItemRef CreateItem();
 	static ArrowRef CreateArrow();
 
 	void PlusIDGen() { s_idGenerator++; }

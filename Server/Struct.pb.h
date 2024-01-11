@@ -382,7 +382,9 @@ class ObjectInfo final :
     kPosXFieldNumber = 10,
     kPosYFieldNumber = 11,
     kDamageFieldNumber = 12,
+    kGoldFieldNumber = 14,
     kWeaponTypeFieldNumber = 13,
+    kItemTypeFieldNumber = 15,
   };
   // string name = 5;
   void clear_name();
@@ -497,6 +499,15 @@ class ObjectInfo final :
   void _internal_set_damage(int32_t value);
   public:
 
+  // uint64 gold = 14;
+  void clear_gold();
+  uint64_t gold() const;
+  void set_gold(uint64_t value);
+  private:
+  uint64_t _internal_gold() const;
+  void _internal_set_gold(uint64_t value);
+  public:
+
   // .Protocol.WEAPON_TYPE weaponType = 13;
   void clear_weapontype();
   ::Protocol::WEAPON_TYPE weapontype() const;
@@ -504,6 +515,15 @@ class ObjectInfo final :
   private:
   ::Protocol::WEAPON_TYPE _internal_weapontype() const;
   void _internal_set_weapontype(::Protocol::WEAPON_TYPE value);
+  public:
+
+  // .Protocol.ITEM_TYPE itemType = 15;
+  void clear_itemtype();
+  ::Protocol::ITEM_TYPE itemtype() const;
+  void set_itemtype(::Protocol::ITEM_TYPE value);
+  private:
+  ::Protocol::ITEM_TYPE _internal_itemtype() const;
+  void _internal_set_itemtype(::Protocol::ITEM_TYPE value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
@@ -526,7 +546,9 @@ class ObjectInfo final :
     int32_t posx_;
     int32_t posy_;
     int32_t damage_;
+    uint64_t gold_;
     int weapontype_;
+    int itemtype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1097,6 +1119,46 @@ inline void ObjectInfo::_internal_set_weapontype(::Protocol::WEAPON_TYPE value) 
 inline void ObjectInfo::set_weapontype(::Protocol::WEAPON_TYPE value) {
   _internal_set_weapontype(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.weaponType)
+}
+
+// uint64 gold = 14;
+inline void ObjectInfo::clear_gold() {
+  _impl_.gold_ = uint64_t{0u};
+}
+inline uint64_t ObjectInfo::_internal_gold() const {
+  return _impl_.gold_;
+}
+inline uint64_t ObjectInfo::gold() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.gold)
+  return _internal_gold();
+}
+inline void ObjectInfo::_internal_set_gold(uint64_t value) {
+  
+  _impl_.gold_ = value;
+}
+inline void ObjectInfo::set_gold(uint64_t value) {
+  _internal_set_gold(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.gold)
+}
+
+// .Protocol.ITEM_TYPE itemType = 15;
+inline void ObjectInfo::clear_itemtype() {
+  _impl_.itemtype_ = 0;
+}
+inline ::Protocol::ITEM_TYPE ObjectInfo::_internal_itemtype() const {
+  return static_cast< ::Protocol::ITEM_TYPE >(_impl_.itemtype_);
+}
+inline ::Protocol::ITEM_TYPE ObjectInfo::itemtype() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.itemType)
+  return _internal_itemtype();
+}
+inline void ObjectInfo::_internal_set_itemtype(::Protocol::ITEM_TYPE value) {
+  
+  _impl_.itemtype_ = value;
+}
+inline void ObjectInfo::set_itemtype(::Protocol::ITEM_TYPE value) {
+  _internal_set_itemtype(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.itemType)
 }
 
 // -------------------------------------------------------------------

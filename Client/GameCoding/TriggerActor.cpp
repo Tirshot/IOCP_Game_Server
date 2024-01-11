@@ -108,9 +108,9 @@ bool TriggerActor::IsTouched()
 	// myPlayer가 트리거 위에 있으면 활성화
 	if (myPlayer)
 	{
-		_visiblity = true;
-		GET_SINGLE(ChatManager)->AddMessage(L"접촉 트리거 발생!");
 		return true;
 	}
+
+	return false;
 }
 

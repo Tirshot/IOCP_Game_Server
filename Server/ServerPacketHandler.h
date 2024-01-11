@@ -51,7 +51,6 @@ public:
 	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
 	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
-	static SendBufferRef Make_S_Hit(uint64 objectId, uint64 attackerId);
 	static SendBufferRef Make_S_SendMessage(uint64 objectId, uint64 time, string str);
 
 	// Arrow¿« info∏¶ ≥—±Ë

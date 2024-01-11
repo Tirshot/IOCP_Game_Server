@@ -20,6 +20,8 @@
 #include "Sound.h"
 #include "Monster.h"
 #include "MyPlayer.h"
+#include "Item.h"
+#include "HeartItem.h"
 #include "SceneManager.h"
 #include "WeaponSlot.h"
 #include "Chat.h"
@@ -106,6 +108,7 @@ void DevScene::Init()
 	LoadPlayer();
 	LoadMonster();
 	LoadNPC();
+	LoadItem();
 	LoadProjectile();
 	LoadEffect();
 	LoadTilemap();
@@ -147,7 +150,7 @@ void DevScene::RemoveActor(Actor* actor)
 		return;
 	}
 
-	// 사망시 메세지 출력
+	// 사망시 메세지 및 UI 출력
 	MyPlayer* player = dynamic_cast<MyPlayer*>(actor);
 	if (player)
 	{
@@ -442,6 +445,16 @@ void DevScene::LoadNPC()
 	}
 }
 
+void DevScene::LoadItem()
+{
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Heart");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_HeartItem");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"HeartItem", { 25, 21}, 1, 1, 0, 0, false });
+	}
+}
+
 void DevScene::LoadProjectile()
 {
 	// Arrow Move
@@ -592,6 +605,29 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			npc->info = info;
 			npc->SetDir(DIR_DOWN);
 			npc->SetState(info.state());
+		}
+		else if (info.objecttype() == Protocol::OBJECT_TYPE_ITEM)
+		{
+			switch (info.itemtype())
+			{
+			case Protocol::ITEM_TYPE_HEART:
+			{
+				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
+				// 애니메이션을 위해
+				item->info = info;
+				item->SetDir(DIR_DOWN);
+				item->SetState(IDLE);
+			}
+				break;
+
+			//case Protocol::ITEM_TYPE_GOLD:
+
+			//	break;
+
+			default:
+				return;
+			}
+
 		}
 	}
 }

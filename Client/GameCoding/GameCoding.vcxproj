@@ -159,9 +159,11 @@
     <ClInclude Include="GameCoding.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameOver.h" />
+    <ClInclude Include="HeartItem.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HP.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="TutorialTrigger.h" />
@@ -219,9 +221,11 @@
     <ClCompile Include="GameCoding.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameOver.cpp" />
+    <ClCompile Include="HeartItem.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HP.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="TutorialTrigger.cpp" />

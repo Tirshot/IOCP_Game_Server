@@ -33,6 +33,12 @@
     <Filter Include="소스 파일\Game\Object\Creature">
       <UniqueIdentifier>{cc96d449-74c2-4930-aba3-889395ee2b50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Object\Item">
+      <UniqueIdentifier>{46100ead-6418-484f-877c-e8fda92d91e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Game\Object\NPC">
+      <UniqueIdentifier>{96028c03-e317-42bf-9eed-2f0a85c07ba4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -83,14 +89,17 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>소스 파일\Game\Object\Projectile</Filter>
     </ClCompile>
-    <ClCompile Include="Chat.cpp">
-      <Filter>소스 파일\Game</Filter>
-    </ClCompile>
     <ClCompile Include="NPC.cpp">
-      <Filter>소스 파일\Game\Object\Creature</Filter>
+      <Filter>소스 파일\Game\Object\NPC</Filter>
     </ClCompile>
     <ClCompile Include="Sign.cpp">
-      <Filter>소스 파일\Game\Object\Creature</Filter>
+      <Filter>소스 파일\Game\Object\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Chat.cpp">
+      <Filter>소스 파일\Game\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일\Game\Object\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -139,14 +148,17 @@
     <ClInclude Include="Projectile.h">
       <Filter>소스 파일\Game\Object\Projectile</Filter>
     </ClInclude>
-    <ClInclude Include="Chat.h">
-      <Filter>소스 파일\Game</Filter>
-    </ClInclude>
     <ClInclude Include="NPC.h">
-      <Filter>소스 파일\Game\Object\Creature</Filter>
+      <Filter>소스 파일\Game\Object\NPC</Filter>
     </ClInclude>
     <ClInclude Include="Sign.h">
-      <Filter>소스 파일\Game\Object\Creature</Filter>
+      <Filter>소스 파일\Game\Object\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Chat.h">
+      <Filter>소스 파일\Game\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>소스 파일\Game\Object\Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -26,6 +26,8 @@ message ObjectInfo
 	int32 posY = 11;
 	int32 damage = 12;
 	WEAPON_TYPE weaponType = 13;
+	uint64 gold = 14;
+	ITEM_TYPE itemType = 15;
 }
 
 message Text

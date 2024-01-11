@@ -9,6 +9,7 @@ using PlayerRef = shared_ptr<class Player>;
 using MonsterRef = shared_ptr<class Monster>;
 using NPCRef = shared_ptr<class NPC>;
 using SignRef = shared_ptr<class Sign>;
+using ItemRef = shared_ptr<class Item>;
 using NameChangerRef = shared_ptr<class NameChanger>;
 using ProjectileRef = shared_ptr<class Projectile>;
 using ArrowRef = shared_ptr<class Arrow>;

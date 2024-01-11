@@ -15,7 +15,7 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
-
+	cout << "~Arrow" << endl;
 }
 
 void Arrow::BeginPlay()

@@ -81,6 +81,9 @@
     <Filter Include="소스 파일\03. Objects\Game\Trigger">
       <UniqueIdentifier>{106728ea-1fb1-4f7e-8401-69e7b9494061}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\03. Objects\Game\Item">
+      <UniqueIdentifier>{dbdf3fa7-88e2-4a54-800c-b57cbd0424ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -260,6 +263,12 @@
     <ClInclude Include="TutorialTrigger.h">
       <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
     </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>소스 파일\03. Objects\Game\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="HeartItem.h">
+      <Filter>소스 파일\03. Objects\Game\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -428,6 +437,12 @@
     </ClCompile>
     <ClCompile Include="TutorialTrigger.cpp">
       <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일\03. Objects\Game\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="HeartItem.cpp">
+      <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

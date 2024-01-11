@@ -54,7 +54,8 @@ private:
 	map<uint64, MonsterRef> _monsters;
 	map<uint64, NPCRef> _npcs;
 	map<uint64, ArrowRef> _arrows;
-	map <uint64, ProjectileRef> _deleteProjectiles;
+	map<uint64, ItemRef> _items;
+	map <uint64, GameObjectRef> _deleteObjects;
 };
 
 // 규모가 커지면 매니저 클래스를 파서 사용

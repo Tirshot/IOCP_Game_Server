@@ -5,6 +5,7 @@
 #include "Monster.h"
 #include "NPC.h"
 #include "Sign.h"
+#include "Item.h"
 #include "Arrow.h"
 #include "Chat.h"
 
@@ -25,25 +26,39 @@ void GameRoom::Init()
 	_tilemap.LoadFile(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Tilemap\\Tilemap01.txt");
 
 	// 몬스터 소환
-	MonsterRef monster = GameObject::CreateMonster();
-	monster->info.set_posx(11);
-	monster->info.set_posy(6);
-	AddObject(monster);
+	{
+		MonsterRef monster = GameObject::CreateMonster();
+		monster->info.set_posx(11);
+		monster->info.set_posy(6);
+		AddObject(monster);
+	}
 
 	// 몬스터 소환
-	MonsterRef monster2 = GameObject::CreateMonster();
-	monster2->info.set_posx(12);
-	monster2->info.set_posy(6);
-	AddObject(monster2);
-
+	{
+		MonsterRef monster2 = GameObject::CreateMonster();
+		monster2->info.set_posx(12);
+		monster2->info.set_posy(6);
+		AddObject(monster2);
+	}
 	// Sign
-	SignRef npc1 = GameObject::CreateSign();
-	npc1->info.set_posx(4);
-	npc1->info.set_posy(3);
-	npc1->info.set_defence(9999);
-	npc1->info.set_name("Sign");
-	AddObject(npc1);
-
+	{
+		SignRef npc1 = GameObject::CreateSign();
+		npc1->info.set_posx(4);
+		npc1->info.set_posy(3);
+		npc1->info.set_defence(9999);
+		npc1->info.set_name("Sign");
+		AddObject(npc1);
+	}
+	// Heart
+	{
+		ItemRef item1 = GameObject::CreateItem();
+		item1->info.set_posx(5);
+		item1->info.set_posy(5);
+		item1->info.set_defence(9999);
+		item1->info.set_name("HeartItem");
+		item1->info.set_itemtype(Protocol::ITEM_TYPE_HEART);
+		AddObject(item1);
+	}
 }
 
 void GameRoom::Update()
@@ -63,6 +78,18 @@ void GameRoom::Update()
 		item.second->Tick();
 	}
 
+	for (auto& item : _items)
+	{
+		item.second->Tick();
+
+		auto id = item.second->GetObjectID();
+		// 어딘가에 적중시 제거
+		if (item.second->IsHit())
+		{
+			_deleteObjects[id] = item.second;
+		}
+	}
+
 	for (auto& item : _arrows)
 	{
 		item.second->Tick();
@@ -71,17 +98,19 @@ void GameRoom::Update()
 		// 어딘가에 적중시 제거
 		if (item.second->IsHit())
 		{
-			_deleteProjectiles[id] = item.second;
+			_deleteObjects[id] = item.second;
 		}
 	}
 
-	for (const auto& del : _deleteProjectiles)
+	for (const auto& del : _deleteObjects)
 	{
-		_arrows.erase(del.first);
-	}
-	_deleteProjectiles.clear();
+		if (del.second->GetType() == Protocol::OBJECT_TYPE_PROJECTILE)
+			_arrows.erase(del.first);
 
-	
+		if (del.second->GetType() == Protocol::OBJECT_TYPE_ITEM)
+			_items.erase(del.first);
+	}
+	_deleteObjects.clear();
 }
 
 void GameRoom::EnterRoom(GameSessionRef session)
@@ -137,6 +166,12 @@ void GameRoom::EnterRoom(GameSessionRef session)
 			*info = item.second->info;
 		}
 
+		for (auto& item : _items)
+		{
+			Protocol::ObjectInfo* info = pkt.add_objects();
+			*info = item.second->info;
+		}
+
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 		session->Send(sendBuffer);
 	}
@@ -179,6 +214,11 @@ GameObjectRef GameRoom::FindObject(uint64 id)
 		if (findIt != _arrows.end())
 			return findIt->second;
 	}
+	{
+		auto findIt = _items.find(id);
+		if (findIt != _items.end())
+			return findIt->second;
+	}
 	return nullptr;
 }
 
@@ -215,6 +255,10 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 
 	case Protocol::OBJECT_TYPE_PROJECTILE:
 		_arrows[id] = static_pointer_cast<Arrow>(gameObject);
+		return;
+
+	case Protocol::OBJECT_TYPE_ITEM:
+		_items[id] = static_pointer_cast<Item>(gameObject);
 		return;
 
 	default:
@@ -258,6 +302,10 @@ void GameRoom::RemoveObject(uint64 id)
 
 	case Protocol::OBJECT_TYPE_PROJECTILE:
 		_arrows.erase(id);
+		break;
+
+	case Protocol::OBJECT_TYPE_ITEM:
+		_items.erase(id);
 		break;
 
 	default:

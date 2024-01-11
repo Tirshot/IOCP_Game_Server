@@ -29,7 +29,7 @@ void HP::Tick()
 	// MyPlayer의 체력에 따라 아이콘이 달라짐 -> 플립북을 사용해야 할 수도 있음
 	if (_myPlayer)
 	{
-		_hp = _myPlayer->info.hp();
+		_hp = clamp(_myPlayer->info.hp(), 0, _myPlayer->info.maxhp());
 		_maxHp = _myPlayer->info.maxhp();
 	}
 }

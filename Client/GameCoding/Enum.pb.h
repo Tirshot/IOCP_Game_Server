@@ -81,12 +81,13 @@ enum OBJECT_TYPE : int {
   OBJECT_TYPE_PROJECTILE = 3,
   OBJECT_TYPE_NPC = 4,
   OBJECT_TYPE_NPC_SIGN = 5,
+  OBJECT_TYPE_ITEM = 6,
   OBJECT_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   OBJECT_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool OBJECT_TYPE_IsValid(int value);
 constexpr OBJECT_TYPE OBJECT_TYPE_MIN = OBJECT_TYPE_NONE;
-constexpr OBJECT_TYPE OBJECT_TYPE_MAX = OBJECT_TYPE_NPC_SIGN;
+constexpr OBJECT_TYPE OBJECT_TYPE_MAX = OBJECT_TYPE_ITEM;
 constexpr int OBJECT_TYPE_ARRAYSIZE = OBJECT_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* OBJECT_TYPE_descriptor();
@@ -187,6 +188,32 @@ inline bool WEAPON_TYPE_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<WEAPON_TYPE>(
     WEAPON_TYPE_descriptor(), name, value);
 }
+enum ITEM_TYPE : int {
+  ITEM_TYPE_NONE = 0,
+  ITEM_TYPE_HEART = 1,
+  ITEM_TYPE_GOLD = 2,
+  ITEM_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  ITEM_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool ITEM_TYPE_IsValid(int value);
+constexpr ITEM_TYPE ITEM_TYPE_MIN = ITEM_TYPE_NONE;
+constexpr ITEM_TYPE ITEM_TYPE_MAX = ITEM_TYPE_GOLD;
+constexpr int ITEM_TYPE_ARRAYSIZE = ITEM_TYPE_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ITEM_TYPE_descriptor();
+template<typename T>
+inline const std::string& ITEM_TYPE_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ITEM_TYPE>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function ITEM_TYPE_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    ITEM_TYPE_descriptor(), enum_t_value);
+}
+inline bool ITEM_TYPE_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ITEM_TYPE* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ITEM_TYPE>(
+    ITEM_TYPE_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -233,6 +260,11 @@ template <> struct is_proto_enum< ::Protocol::WEAPON_TYPE> : ::std::true_type {}
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::WEAPON_TYPE>() {
   return ::Protocol::WEAPON_TYPE_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::ITEM_TYPE> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::ITEM_TYPE>() {
+  return ::Protocol::ITEM_TYPE_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE
