@@ -11,9 +11,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 
-private:
+protected:
 	Tutorial* _tutorial = nullptr;
-	bool _visiblity = false;
-	float _sumTime = 0.f;
 };
 
