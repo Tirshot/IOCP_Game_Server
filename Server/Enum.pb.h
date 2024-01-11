@@ -191,13 +191,14 @@ inline bool WEAPON_TYPE_Parse(
 enum ITEM_TYPE : int {
   ITEM_TYPE_NONE = 0,
   ITEM_TYPE_HEART = 1,
-  ITEM_TYPE_GOLD = 2,
+  ITEM_TYPE_FULLHEART = 2,
+  ITEM_TYPE_MAXHEART = 3,
   ITEM_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ITEM_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ITEM_TYPE_IsValid(int value);
 constexpr ITEM_TYPE ITEM_TYPE_MIN = ITEM_TYPE_NONE;
-constexpr ITEM_TYPE ITEM_TYPE_MAX = ITEM_TYPE_GOLD;
+constexpr ITEM_TYPE ITEM_TYPE_MAX = ITEM_TYPE_MAXHEART;
 constexpr int ITEM_TYPE_ARRAYSIZE = ITEM_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ITEM_TYPE_descriptor();

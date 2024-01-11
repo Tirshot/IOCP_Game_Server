@@ -269,6 +269,15 @@ SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t ti
 	return MakeSendBuffer(pkt, C_SendMessage);
 }
 
+SendBufferRef ClientPacketHandler::Make_C_RemoveObject(uint64 objectId)
+{
+	Protocol::C_RemoveObject pkt;
+
+	pkt.set_id(objectId);
+
+	return MakeSendBuffer(pkt, C_RemoveObject);
+}
+
 SendBufferRef ClientPacketHandler::Make_C_Revive()
 {
 	Protocol::C_Revive pkt;

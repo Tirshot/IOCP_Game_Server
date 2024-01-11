@@ -47,13 +47,14 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "_TYPE_DOWN\020\001\022\021\n\rDIR_TYPE_LEFT\020\002\022\022\n\016DIR_T"
   "YPE_RIGHT\020\003*P\n\013WEAPON_TYPE\022\025\n\021WEAPON_TYP"
   "E_SWORD\020\000\022\023\n\017WEAPON_TYPE_BOW\020\001\022\025\n\021WEAPON"
-  "_TYPE_STAFF\020\002*H\n\tITEM_TYPE\022\022\n\016ITEM_TYPE_"
-  "NONE\020\000\022\023\n\017ITEM_TYPE_HEART\020\001\022\022\n\016ITEM_TYPE"
-  "_GOLD\020\002b\006proto3"
+  "_TYPE_STAFF\020\002*e\n\tITEM_TYPE\022\022\n\016ITEM_TYPE_"
+  "NONE\020\000\022\023\n\017ITEM_TYPE_HEART\020\001\022\027\n\023ITEM_TYPE"
+  "_FULLHEART\020\002\022\026\n\022ITEM_TYPE_MAXHEART\020\003b\006pr"
+  "oto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 815, descriptor_table_protodef_Enum_2eproto,
+    false, false, 844, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -162,6 +163,7 @@ bool ITEM_TYPE_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
       return true;
     default:
       return false;

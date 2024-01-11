@@ -91,6 +91,19 @@ struct S_RemoveObjectDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_RemoveObjectDefaultTypeInternal _S_RemoveObject_default_instance_;
+PROTOBUF_CONSTEXPR C_RemoveObject::C_RemoveObject(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.id_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct C_RemoveObjectDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_RemoveObjectDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_RemoveObjectDefaultTypeInternal() {}
+  union {
+    C_RemoveObject _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_RemoveObjectDefaultTypeInternal _C_RemoveObject_default_instance_;
 PROTOBUF_CONSTEXPR C_Move::C_Move(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.info_)*/nullptr
@@ -214,7 +227,7 @@ struct C_ReviveDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_ReviveDefaultTypeInternal _C_Revive_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[14];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[15];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -258,6 +271,13 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_RemoveObject, _impl_.ids_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_RemoveObject, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_RemoveObject, _impl_.id_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_Move, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -334,15 +354,16 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 18, -1, -1, sizeof(::Protocol::S_MyPlayer)},
   { 25, -1, -1, sizeof(::Protocol::S_AddObject)},
   { 32, -1, -1, sizeof(::Protocol::S_RemoveObject)},
-  { 39, -1, -1, sizeof(::Protocol::C_Move)},
-  { 46, -1, -1, sizeof(::Protocol::S_Move)},
-  { 53, -1, -1, sizeof(::Protocol::C_Fire)},
-  { 62, -1, -1, sizeof(::Protocol::S_Fire)},
-  { 71, -1, -1, sizeof(::Protocol::S_Hit)},
-  { 80, -1, -1, sizeof(::Protocol::C_Hit)},
-  { 88, -1, -1, sizeof(::Protocol::C_SendMessage)},
-  { 95, -1, -1, sizeof(::Protocol::S_SendMessage)},
-  { 102, -1, -1, sizeof(::Protocol::C_Revive)},
+  { 39, -1, -1, sizeof(::Protocol::C_RemoveObject)},
+  { 46, -1, -1, sizeof(::Protocol::C_Move)},
+  { 53, -1, -1, sizeof(::Protocol::S_Move)},
+  { 60, -1, -1, sizeof(::Protocol::C_Fire)},
+  { 69, -1, -1, sizeof(::Protocol::S_Fire)},
+  { 78, -1, -1, sizeof(::Protocol::S_Hit)},
+  { 87, -1, -1, sizeof(::Protocol::C_Hit)},
+  { 95, -1, -1, sizeof(::Protocol::C_SendMessage)},
+  { 102, -1, -1, sizeof(::Protocol::S_SendMessage)},
+  { 109, -1, -1, sizeof(::Protocol::C_Revive)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -351,6 +372,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_S_MyPlayer_default_instance_._instance,
   &::Protocol::_S_AddObject_default_instance_._instance,
   &::Protocol::_S_RemoveObject_default_instance_._instance,
+  &::Protocol::_C_RemoveObject_default_instance_._instance,
   &::Protocol::_C_Move_default_instance_._instance,
   &::Protocol::_S_Move_default_instance_._instance,
   &::Protocol::_C_Fire_default_instance_._instance,
@@ -371,19 +393,20 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "er\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInfo\"4"
   "\n\013S_AddObject\022%\n\007objects\030\001 \003(\0132\024.Protoco"
   "l.ObjectInfo\"\035\n\016S_RemoveObject\022\013\n\003ids\030\001 "
-  "\003(\004\",\n\006C_Move\022\"\n\004info\030\001 \001(\0132\024.Protocol.O"
-  "bjectInfo\",\n\006S_Move\022\"\n\004info\030\001 \001(\0132\024.Prot"
-  "ocol.ObjectInfo\"K\n\006C_Fire\022\"\n\004info\030\001 \001(\0132"
-  "\024.Protocol.ObjectInfo\022\017\n\007ownerid\030\002 \001(\004\022\014"
-  "\n\004tick\030\003 \001(\004\"K\n\006S_Fire\022\"\n\004info\030\001 \001(\0132\024.P"
-  "rotocol.ObjectInfo\022\017\n\007ownerid\030\002 \001(\004\022\014\n\004t"
-  "ick\030\003 \001(\004\"A\n\005S_Hit\022\020\n\010objectid\030\001 \001(\004\022\022\n\n"
-  "attackerid\030\002 \001(\004\022\022\n\nobjecttype\030\003 \001(\004\"\?\n\005"
-  "C_Hit\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInf"
-  "o\022\022\n\nattackerid\030\002 \001(\004\".\n\rC_SendMessage\022\035"
-  "\n\005texts\030\001 \001(\0132\016.Protocol.Text\".\n\rS_SendM"
-  "essage\022\035\n\005texts\030\001 \001(\0132\016.Protocol.Text\"\n\n"
-  "\010C_Reviveb\006proto3"
+  "\003(\004\"\034\n\016C_RemoveObject\022\n\n\002id\030\001 \001(\004\",\n\006C_M"
+  "ove\022\"\n\004info\030\001 \001(\0132\024.Protocol.ObjectInfo\""
+  ",\n\006S_Move\022\"\n\004info\030\001 \001(\0132\024.Protocol.Objec"
+  "tInfo\"K\n\006C_Fire\022\"\n\004info\030\001 \001(\0132\024.Protocol"
+  ".ObjectInfo\022\017\n\007ownerid\030\002 \001(\004\022\014\n\004tick\030\003 \001"
+  "(\004\"K\n\006S_Fire\022\"\n\004info\030\001 \001(\0132\024.Protocol.Ob"
+  "jectInfo\022\017\n\007ownerid\030\002 \001(\004\022\014\n\004tick\030\003 \001(\004\""
+  "A\n\005S_Hit\022\020\n\010objectid\030\001 \001(\004\022\022\n\nattackerid"
+  "\030\002 \001(\004\022\022\n\nobjecttype\030\003 \001(\004\"\?\n\005C_Hit\022\"\n\004i"
+  "nfo\030\001 \001(\0132\024.Protocol.ObjectInfo\022\022\n\nattac"
+  "kerid\030\002 \001(\004\".\n\rC_SendMessage\022\035\n\005texts\030\001 "
+  "\001(\0132\016.Protocol.Text\".\n\rS_SendMessage\022\035\n\005"
+  "texts\030\001 \001(\0132\016.Protocol.Text\"\n\n\010C_Reviveb"
+  "\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -391,9 +414,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 817, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 847, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 14,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 15,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -1471,6 +1494,184 @@ void S_RemoveObject::InternalSwap(S_RemoveObject* other) {
 
 // ===================================================================
 
+class C_RemoveObject::_Internal {
+ public:
+};
+
+C_RemoveObject::C_RemoveObject(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_RemoveObject)
+}
+C_RemoveObject::C_RemoveObject(const C_RemoveObject& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C_RemoveObject* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.id_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _this->_impl_.id_ = from._impl_.id_;
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_RemoveObject)
+}
+
+inline void C_RemoveObject::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.id_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+C_RemoveObject::~C_RemoveObject() {
+  // @@protoc_insertion_point(destructor:Protocol.C_RemoveObject)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C_RemoveObject::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_RemoveObject::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C_RemoveObject::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_RemoveObject)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.id_ = uint64_t{0u};
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_RemoveObject::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C_RemoveObject::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_RemoveObject)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 id = 1;
+  if (this->_internal_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_id(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_RemoveObject)
+  return target;
+}
+
+size_t C_RemoveObject::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_RemoveObject)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 id = 1;
+  if (this->_internal_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_id());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_RemoveObject::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C_RemoveObject::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_RemoveObject::GetClassData() const { return &_class_data_; }
+
+
+void C_RemoveObject::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_RemoveObject*>(&to_msg);
+  auto& from = static_cast<const C_RemoveObject&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_RemoveObject)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_id() != 0) {
+    _this->_internal_set_id(from._internal_id());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C_RemoveObject::CopyFrom(const C_RemoveObject& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_RemoveObject)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_RemoveObject::IsInitialized() const {
+  return true;
+}
+
+void C_RemoveObject::InternalSwap(C_RemoveObject* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  swap(_impl_.id_, other->_impl_.id_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_RemoveObject::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[5]);
+}
+
+// ===================================================================
+
 class C_Move::_Internal {
  public:
   static const ::Protocol::ObjectInfo& info(const C_Move* msg);
@@ -1665,7 +1866,7 @@ void C_Move::InternalSwap(C_Move* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_Move::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[5]);
+      file_level_metadata_Protocol_2eproto[6]);
 }
 
 // ===================================================================
@@ -1864,7 +2065,7 @@ void S_Move::InternalSwap(S_Move* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_Move::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[6]);
+      file_level_metadata_Protocol_2eproto[7]);
 }
 
 // ===================================================================
@@ -2122,7 +2323,7 @@ void C_Fire::InternalSwap(C_Fire* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_Fire::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[7]);
+      file_level_metadata_Protocol_2eproto[8]);
 }
 
 // ===================================================================
@@ -2380,7 +2581,7 @@ void S_Fire::InternalSwap(S_Fire* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_Fire::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[8]);
+      file_level_metadata_Protocol_2eproto[9]);
 }
 
 // ===================================================================
@@ -2615,7 +2816,7 @@ void S_Hit::InternalSwap(S_Hit* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_Hit::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[9]);
+      file_level_metadata_Protocol_2eproto[10]);
 }
 
 // ===================================================================
@@ -2845,7 +3046,7 @@ void C_Hit::InternalSwap(C_Hit* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_Hit::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[10]);
+      file_level_metadata_Protocol_2eproto[11]);
 }
 
 // ===================================================================
@@ -3044,7 +3245,7 @@ void C_SendMessage::InternalSwap(C_SendMessage* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_SendMessage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[11]);
+      file_level_metadata_Protocol_2eproto[12]);
 }
 
 // ===================================================================
@@ -3243,7 +3444,7 @@ void S_SendMessage::InternalSwap(S_SendMessage* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_SendMessage::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[12]);
+      file_level_metadata_Protocol_2eproto[13]);
 }
 
 // ===================================================================
@@ -3283,7 +3484,7 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_Revive::GetClassData() const
 ::PROTOBUF_NAMESPACE_ID::Metadata C_Revive::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[13]);
+      file_level_metadata_Protocol_2eproto[14]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -3308,6 +3509,10 @@ Arena::CreateMaybeMessage< ::Protocol::S_AddObject >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::S_RemoveObject*
 Arena::CreateMaybeMessage< ::Protocol::S_RemoveObject >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_RemoveObject >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_RemoveObject*
+Arena::CreateMaybeMessage< ::Protocol::C_RemoveObject >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_RemoveObject >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Protocol::C_Move*
 Arena::CreateMaybeMessage< ::Protocol::C_Move >(Arena* arena) {

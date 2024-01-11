@@ -35,6 +35,11 @@ message S_RemoveObject
 	repeated uint64 ids = 1;
 }
 
+message C_RemoveObject
+{
+	uint64 id = 1;
+}
+
 message C_Move
 {
 	// 작업 편의성을 위해 통째로 가져와 이동부분만 이용함

@@ -57,6 +57,9 @@ extern C_HitDefaultTypeInternal _C_Hit_default_instance_;
 class C_Move;
 struct C_MoveDefaultTypeInternal;
 extern C_MoveDefaultTypeInternal _C_Move_default_instance_;
+class C_RemoveObject;
+struct C_RemoveObjectDefaultTypeInternal;
+extern C_RemoveObjectDefaultTypeInternal _C_RemoveObject_default_instance_;
 class C_Revive;
 struct C_ReviveDefaultTypeInternal;
 extern C_ReviveDefaultTypeInternal _C_Revive_default_instance_;
@@ -95,6 +98,7 @@ PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C_Fire* Arena::CreateMaybeMessage<::Protocol::C_Fire>(Arena*);
 template<> ::Protocol::C_Hit* Arena::CreateMaybeMessage<::Protocol::C_Hit>(Arena*);
 template<> ::Protocol::C_Move* Arena::CreateMaybeMessage<::Protocol::C_Move>(Arena*);
+template<> ::Protocol::C_RemoveObject* Arena::CreateMaybeMessage<::Protocol::C_RemoveObject>(Arena*);
 template<> ::Protocol::C_Revive* Arena::CreateMaybeMessage<::Protocol::C_Revive>(Arena*);
 template<> ::Protocol::C_SendMessage* Arena::CreateMaybeMessage<::Protocol::C_SendMessage>(Arena*);
 template<> ::Protocol::S_AddObject* Arena::CreateMaybeMessage<::Protocol::S_AddObject>(Arena*);
@@ -936,6 +940,154 @@ class S_RemoveObject final :
 };
 // -------------------------------------------------------------------
 
+class C_RemoveObject final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_RemoveObject) */ {
+ public:
+  inline C_RemoveObject() : C_RemoveObject(nullptr) {}
+  ~C_RemoveObject() override;
+  explicit PROTOBUF_CONSTEXPR C_RemoveObject(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_RemoveObject(const C_RemoveObject& from);
+  C_RemoveObject(C_RemoveObject&& from) noexcept
+    : C_RemoveObject() {
+    *this = ::std::move(from);
+  }
+
+  inline C_RemoveObject& operator=(const C_RemoveObject& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_RemoveObject& operator=(C_RemoveObject&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_RemoveObject& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_RemoveObject* internal_default_instance() {
+    return reinterpret_cast<const C_RemoveObject*>(
+               &_C_RemoveObject_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(C_RemoveObject& a, C_RemoveObject& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_RemoveObject* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_RemoveObject* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_RemoveObject* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_RemoveObject>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_RemoveObject& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_RemoveObject& from) {
+    C_RemoveObject::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_RemoveObject* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_RemoveObject";
+  }
+  protected:
+  explicit C_RemoveObject(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kIdFieldNumber = 1,
+  };
+  // uint64 id = 1;
+  void clear_id();
+  uint64_t id() const;
+  void set_id(uint64_t value);
+  private:
+  uint64_t _internal_id() const;
+  void _internal_set_id(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_RemoveObject)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t id_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class C_Move final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_Move) */ {
  public:
@@ -984,7 +1136,7 @@ class C_Move final :
                &_C_Move_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   friend void swap(C_Move& a, C_Move& b) {
     a.Swap(&b);
@@ -1141,7 +1293,7 @@ class S_Move final :
                &_S_Move_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
   friend void swap(S_Move& a, S_Move& b) {
     a.Swap(&b);
@@ -1298,7 +1450,7 @@ class C_Fire final :
                &_C_Fire_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(C_Fire& a, C_Fire& b) {
     a.Swap(&b);
@@ -1477,7 +1629,7 @@ class S_Fire final :
                &_S_Fire_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(S_Fire& a, S_Fire& b) {
     a.Swap(&b);
@@ -1656,7 +1808,7 @@ class S_Hit final :
                &_S_Hit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(S_Hit& a, S_Hit& b) {
     a.Swap(&b);
@@ -1826,7 +1978,7 @@ class C_Hit final :
                &_C_Hit_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(C_Hit& a, C_Hit& b) {
     a.Swap(&b);
@@ -1994,7 +2146,7 @@ class C_SendMessage final :
                &_C_SendMessage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   friend void swap(C_SendMessage& a, C_SendMessage& b) {
     a.Swap(&b);
@@ -2151,7 +2303,7 @@ class S_SendMessage final :
                &_S_SendMessage_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    13;
 
   friend void swap(S_SendMessage& a, S_SendMessage& b) {
     a.Swap(&b);
@@ -2307,7 +2459,7 @@ class C_Revive final :
                &_C_Revive_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    14;
 
   friend void swap(C_Revive& a, C_Revive& b) {
     a.Swap(&b);
@@ -2707,6 +2859,30 @@ inline ::PROTOBUF_NAMESPACE_ID::RepeatedField< uint64_t >*
 S_RemoveObject::mutable_ids() {
   // @@protoc_insertion_point(field_mutable_list:Protocol.S_RemoveObject.ids)
   return _internal_mutable_ids();
+}
+
+// -------------------------------------------------------------------
+
+// C_RemoveObject
+
+// uint64 id = 1;
+inline void C_RemoveObject::clear_id() {
+  _impl_.id_ = uint64_t{0u};
+}
+inline uint64_t C_RemoveObject::_internal_id() const {
+  return _impl_.id_;
+}
+inline uint64_t C_RemoveObject::id() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_RemoveObject.id)
+  return _internal_id();
+}
+inline void C_RemoveObject::_internal_set_id(uint64_t value) {
+  
+  _impl_.id_ = value;
+}
+inline void C_RemoveObject::set_id(uint64_t value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_RemoveObject.id)
 }
 
 // -------------------------------------------------------------------
@@ -3503,6 +3679,8 @@ inline void S_SendMessage::set_allocated_texts(::Protocol::Text* texts) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

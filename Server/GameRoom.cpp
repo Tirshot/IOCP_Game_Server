@@ -35,10 +35,25 @@ void GameRoom::Init()
 
 	// 몬스터 소환
 	{
-		MonsterRef monster2 = GameObject::CreateMonster();
-		monster2->info.set_posx(12);
-		monster2->info.set_posy(6);
-		AddObject(monster2);
+		MonsterRef monster = GameObject::CreateMonster();
+		monster->info.set_posx(12);
+		monster->info.set_posy(6);
+		AddObject(monster);
+	}
+	// 몬스터 소환
+	{
+		MonsterRef monster = GameObject::CreateMonster();
+		monster->info.set_posx(13);
+		monster->info.set_posy(6);
+		AddObject(monster);
+	}
+
+	// 몬스터 소환
+	{
+		MonsterRef monster = GameObject::CreateMonster();
+		monster->info.set_posx(9);
+		monster->info.set_posy(6);
+		AddObject(monster);
 	}
 	// Sign
 	{
@@ -49,20 +64,11 @@ void GameRoom::Init()
 		npc1->info.set_name("Sign");
 		AddObject(npc1);
 	}
-	// Heart
-	{
-		ItemRef item1 = GameObject::CreateItem();
-		item1->info.set_posx(5);
-		item1->info.set_posy(5);
-		item1->info.set_defence(9999);
-		item1->info.set_name("HeartItem");
-		item1->info.set_itemtype(Protocol::ITEM_TYPE_HEART);
-		AddObject(item1);
-	}
 }
 
 void GameRoom::Update()
 {
+	srand(time(0));
 	for (auto& item : _players)
 	{
 		item.second->Update();
@@ -83,8 +89,8 @@ void GameRoom::Update()
 		item.second->Tick();
 
 		auto id = item.second->GetObjectID();
-		// 어딘가에 적중시 제거
-		if (item.second->IsHit())
+		// 습득시 제거
+		if (item.second->IsGet())
 		{
 			_deleteObjects[id] = item.second;
 		}
@@ -102,6 +108,7 @@ void GameRoom::Update()
 		}
 	}
 
+	// 투사체 및 아이템 제거
 	for (const auto& del : _deleteObjects)
 	{
 		if (del.second->GetType() == Protocol::OBJECT_TYPE_PROJECTILE)
@@ -166,11 +173,11 @@ void GameRoom::EnterRoom(GameSessionRef session)
 			*info = item.second->info;
 		}
 
-		for (auto& item : _items)
-		{
-			Protocol::ObjectInfo* info = pkt.add_objects();
-			*info = item.second->info;
-		}
+		//for (auto& item : _items)
+		//{
+		//	Protocol::ObjectInfo* info = pkt.add_objects();
+		//	*info = item.second->info;
+		//}
 
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 		session->Send(sendBuffer);
@@ -275,6 +282,11 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 		*info = gameObject->info;
 
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+
+		// 아이템은 개별 드랍
+		if (info->objecttype() == Protocol::OBJECT_TYPE_ITEM)
+			return;
+
 		Broadcast(sendBuffer);
 	}
 

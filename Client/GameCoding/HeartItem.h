@@ -18,6 +18,8 @@ protected:
 
 private:
 	TriggerActor* _trigger = nullptr;
-	Flipbook* _flipbookIdle[4] = {};
+	Flipbook* _flipbookHeart = nullptr;
+	Flipbook* _flipbookFull = nullptr;
+	Flipbook* _flipbookMax = nullptr;
 };
 

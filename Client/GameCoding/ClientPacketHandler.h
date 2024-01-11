@@ -9,6 +9,7 @@ enum
 	S_AddObject = 5,
 	S_RemoveObject = 6,
 
+	C_RemoveObject = 7,
 	// 해킹 방지를 위하여 번호를 비연속적으로 설정가능
 	C_Move = 10,
 	S_Move = 11,
@@ -63,6 +64,7 @@ public:
 	static SendBufferRef Make_C_Fire(uint64 ownerid);
 	static SendBufferRef Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId);
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
+	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive();
 };
 

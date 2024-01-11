@@ -68,7 +68,7 @@ void Arrow::TickIdle()
 			return;
 		}
 		 // ÀÌÆåÆ® Ãâ·Â
-		if (creature)
+		if (creature && creature->GetType() == Protocol::OBJECT_TYPE_MONSTER)
 		{
 			scene->SpawnObject<HitEffect>(nextPos);
 			creature->OnDamaged(_owner);

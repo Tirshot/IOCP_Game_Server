@@ -53,6 +53,9 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Potion", L"Sprite\\UI\\Mp.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Heart", L"Sprite\\UI\\Heart.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"HeartItem", L"Sprite\\Item\\HeartItem.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"FullHeartItem", L"Sprite\\Item\\FullHeartItem.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MaxHeartItem", L"Sprite\\Item\\MaxHeartItem.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerUp", L"Sprite\\Player\\PlayerUp.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerLeft", L"Sprite\\Player\\PlayerLeft.bmp", RGB(128, 128, 128));
@@ -447,11 +450,23 @@ void DevScene::LoadNPC()
 
 void DevScene::LoadItem()
 {
-	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Heart");
+	{ // Heart 아이템
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"HeartItem");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_HeartItem");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"HeartItem", { 25, 21}, 1, 1, 0, 0, false });
+		fb->SetInfo({ texture, L"HeartItem", { 25, 21}, 0, 4, 0, 0.8f, true });
+	}
+	{ // Full Heart 아이템
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"FullHeartItem");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_FullHeartItem");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FullHeartItem", { 25, 21}, 0, 4, 0, 0.8f, true });
+	}
+	{ // Max Heart 아이템
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"MaxHeartItem");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MaxHeartItem");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"MaxHeartItem", { 50, 21}, 0, 4, 0, 0.8f, true });
 	}
 }
 
@@ -620,9 +635,25 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			}
 				break;
 
-			//case Protocol::ITEM_TYPE_GOLD:
+			case Protocol::ITEM_TYPE_FULLHEART:
+			{
+				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
+				// 애니메이션을 위해
+				item->info = info;
+				item->SetDir(DIR_DOWN);
+				item->SetState(IDLE);
+			}
+				break;
 
-			//	break;
+			case Protocol::ITEM_TYPE_MAXHEART:
+			{
+				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
+				// 애니메이션을 위해
+				item->info = info;
+				item->SetDir(DIR_DOWN);
+				item->SetState(IDLE);
+			}
+			break;
 
 			default:
 				return;
