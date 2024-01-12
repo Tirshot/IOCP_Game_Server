@@ -28,6 +28,10 @@ message ObjectInfo
 	WEAPON_TYPE weaponType = 13;
 	uint64 gold = 14;
 	ITEM_TYPE itemType = 15;
+	int32 arrows = 16;
+	int32 mp = 17;
+	int32 maxMp = 18;
+
 }
 
 message Text

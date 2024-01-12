@@ -91,5 +91,17 @@ message S_SendMessage
 
 message C_Revive
 {
+	ObjectInfo info = 1;
+}
 
+message C_Teleport
+{
+	uint64 objectId = 1;
+}
+
+message S_Teleport
+{
+	uint64 objectId = 1;
+	int32 posX = 2;
+	int32 posY = 3;
 }

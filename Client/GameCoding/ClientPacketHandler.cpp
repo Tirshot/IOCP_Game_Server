@@ -9,6 +9,7 @@
 #include "HitEffect.h"
 #include "Creature.h"
 #include "Player.h"
+#include "MyPlayer.h"
 #include "ChatManager.h"
 #include "Chat.h"
 
@@ -47,6 +48,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 
 		case S_SendMessage:
 			Handle_S_SendMessage(session, buffer, len);
+			break;
+
+		case S_Teleport:
+			Handle_S_Teleport(session, buffer, len);
 			break;
 	}
 }
@@ -221,6 +226,24 @@ void ClientPacketHandler::Handle_S_SendMessage(ServerSessionRef session, BYTE* b
 	chat->AddText(format(L"[{0}] {1} :{2}", nowTime, wname.c_str(), wstr));
 }
 
+void ClientPacketHandler::Handle_S_Teleport(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_Teleport pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	if (player)
+	{
+		player->SetCellPos(Vec2Int {pkt.posx(), pkt.posy()}, true);
+	}
+}
+
 // 패킷 보내기
 SendBufferRef ClientPacketHandler::Make_C_Move()
 {
@@ -278,8 +301,21 @@ SendBufferRef ClientPacketHandler::Make_C_RemoveObject(uint64 objectId)
 	return MakeSendBuffer(pkt, C_RemoveObject);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_Revive()
+SendBufferRef ClientPacketHandler::Make_C_Revive(Protocol::ObjectInfo& objectInfo)
 {
 	Protocol::C_Revive pkt;
+
+	*pkt.mutable_info() = objectInfo;
+
 	return MakeSendBuffer(pkt, C_Revive);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_Teleport(uint64 objectId)
+{
+	// 패킷 생성
+	Protocol::C_Teleport pkt;
+
+	pkt.set_objectid(objectId);
+
+	return MakeSendBuffer(pkt, C_Teleport);
 }

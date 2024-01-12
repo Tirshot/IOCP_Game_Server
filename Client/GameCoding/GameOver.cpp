@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "Button.h"
 #include "DevScene.h"
+#include "MyPlayer.h"
 #include "ResourceManager.h"
 #include "TimeManager.h"
 #include "SceneManager.h"
@@ -138,9 +139,14 @@ void GameOver::OnClickReviveButton()
 		if (scene == nullptr)
 			return;
 
+		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+		if (myPlayer == nullptr)
+			return;
+
 		// 부활 패킷 전송
 		{
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Revive();
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Revive(myPlayer->info);
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 

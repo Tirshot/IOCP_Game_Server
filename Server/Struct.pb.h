@@ -385,6 +385,9 @@ class ObjectInfo final :
     kGoldFieldNumber = 14,
     kWeaponTypeFieldNumber = 13,
     kItemTypeFieldNumber = 15,
+    kArrowsFieldNumber = 16,
+    kMpFieldNumber = 17,
+    kMaxMpFieldNumber = 18,
   };
   // string name = 5;
   void clear_name();
@@ -526,6 +529,33 @@ class ObjectInfo final :
   void _internal_set_itemtype(::Protocol::ITEM_TYPE value);
   public:
 
+  // int32 arrows = 16;
+  void clear_arrows();
+  int32_t arrows() const;
+  void set_arrows(int32_t value);
+  private:
+  int32_t _internal_arrows() const;
+  void _internal_set_arrows(int32_t value);
+  public:
+
+  // int32 mp = 17;
+  void clear_mp();
+  int32_t mp() const;
+  void set_mp(int32_t value);
+  private:
+  int32_t _internal_mp() const;
+  void _internal_set_mp(int32_t value);
+  public:
+
+  // int32 maxMp = 18;
+  void clear_maxmp();
+  int32_t maxmp() const;
+  void set_maxmp(int32_t value);
+  private:
+  int32_t _internal_maxmp() const;
+  void _internal_set_maxmp(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -549,6 +579,9 @@ class ObjectInfo final :
     uint64_t gold_;
     int weapontype_;
     int itemtype_;
+    int32_t arrows_;
+    int32_t mp_;
+    int32_t maxmp_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1159,6 +1192,66 @@ inline void ObjectInfo::_internal_set_itemtype(::Protocol::ITEM_TYPE value) {
 inline void ObjectInfo::set_itemtype(::Protocol::ITEM_TYPE value) {
   _internal_set_itemtype(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.itemType)
+}
+
+// int32 arrows = 16;
+inline void ObjectInfo::clear_arrows() {
+  _impl_.arrows_ = 0;
+}
+inline int32_t ObjectInfo::_internal_arrows() const {
+  return _impl_.arrows_;
+}
+inline int32_t ObjectInfo::arrows() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.arrows)
+  return _internal_arrows();
+}
+inline void ObjectInfo::_internal_set_arrows(int32_t value) {
+  
+  _impl_.arrows_ = value;
+}
+inline void ObjectInfo::set_arrows(int32_t value) {
+  _internal_set_arrows(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.arrows)
+}
+
+// int32 mp = 17;
+inline void ObjectInfo::clear_mp() {
+  _impl_.mp_ = 0;
+}
+inline int32_t ObjectInfo::_internal_mp() const {
+  return _impl_.mp_;
+}
+inline int32_t ObjectInfo::mp() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.mp)
+  return _internal_mp();
+}
+inline void ObjectInfo::_internal_set_mp(int32_t value) {
+  
+  _impl_.mp_ = value;
+}
+inline void ObjectInfo::set_mp(int32_t value) {
+  _internal_set_mp(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.mp)
+}
+
+// int32 maxMp = 18;
+inline void ObjectInfo::clear_maxmp() {
+  _impl_.maxmp_ = 0;
+}
+inline int32_t ObjectInfo::_internal_maxmp() const {
+  return _impl_.maxmp_;
+}
+inline int32_t ObjectInfo::maxmp() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.maxMp)
+  return _internal_maxmp();
+}
+inline void ObjectInfo::_internal_set_maxmp(int32_t value) {
+  
+  _impl_.maxmp_ = value;
+}
+inline void ObjectInfo::set_maxmp(int32_t value) {
+  _internal_set_maxmp(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.maxMp)
 }
 
 // -------------------------------------------------------------------

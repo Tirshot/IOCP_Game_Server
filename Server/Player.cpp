@@ -46,7 +46,8 @@ void Player::Update()
 
 void Player::UpdateIdle()
 {
-
+	SetState(MOVE);
+	SetState(IDLE);
 }
 
 void Player::UpdateMove()
@@ -80,6 +81,10 @@ void Player::UpdateSkill()
 	{
 		
 	}
+	else if (info.weapontype() == Protocol::WEAPON_TYPE_STAFF)
+	{
+
+	}
 	SetState(IDLE);
 }
 
@@ -103,4 +108,81 @@ void Player::MakeArrow()
 	}
 	room->AddObject(arrow);
 	uint64 ownerid = arrow->GetOwner()->GetObjectID();
+}
+
+void Player::Teleport()
+{
+	// 바라보는 방향 4칸 앞으로 이동 가능한지 체크(3칸 건너뛰기)
+	Vec2Int fiveAfterCellPos = {};
+
+	switch (info.dir())
+	{
+	case Protocol::DIR_TYPE_UP:
+		fiveAfterCellPos = GetFrontCellPos() + Vec2Int{ 0, -4 };
+		break;
+
+	case Protocol::DIR_TYPE_DOWN:
+		fiveAfterCellPos = GetFrontCellPos() + Vec2Int{ 0, 4 };
+		break;
+
+	case  Protocol::DIR_TYPE_LEFT:
+		fiveAfterCellPos = GetFrontCellPos() + Vec2Int{ -4, 0 };
+		break;
+
+	case  Protocol::DIR_TYPE_RIGHT:
+		fiveAfterCellPos = GetFrontCellPos() + Vec2Int{ 4, 0 };
+		break;
+
+	default:
+		return;
+	}
+
+	if (CanGo(fiveAfterCellPos))
+	{
+		SetCellPos(fiveAfterCellPos);
+
+		{ // 패킷 전송
+			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Teleport(GetObjectID(), fiveAfterCellPos.x, fiveAfterCellPos.y);
+			session->Send(sendBuffer);
+		}
+	}
+	else
+	{
+		while (!CanGo(fiveAfterCellPos))
+		{	// 계산한 값에서 한칸씩 빼면서 이동가능한지 확인
+			switch (info.dir())
+			{
+			case Protocol::DIR_TYPE_UP:
+				fiveAfterCellPos += Vec2Int{ 0, 1 };
+				break;
+
+			case Protocol::DIR_TYPE_DOWN:
+				fiveAfterCellPos += Vec2Int{ 0, -1 };
+				break;
+
+			case Protocol::DIR_TYPE_LEFT:
+				fiveAfterCellPos += Vec2Int{ 1, 0 };
+				break;
+
+			case Protocol::DIR_TYPE_RIGHT:
+				fiveAfterCellPos += Vec2Int{ -1, 0 };
+				break;
+
+			default:
+				return;
+			}
+			if (fiveAfterCellPos == GetCellPos())
+			{
+				SetState(IDLE);
+				return;
+			}
+		}
+		// 이동
+		SetCellPos(fiveAfterCellPos);
+
+		{ // 패킷 전송
+			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Teleport(info.objectid(), fiveAfterCellPos.x, fiveAfterCellPos.y);
+			session->Send(sendBuffer);
+		}
+	}
 }

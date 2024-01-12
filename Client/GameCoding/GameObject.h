@@ -34,6 +34,7 @@ public:
 	void SetCellPos(Vec2Int cellPos, bool teleport = false);
 	Vec2Int GetCellPos();
 	Vec2Int GetFrontCellPos();
+	Vec2Int GetBehindCellPos();
 
 	int64 GetObjectID() { return info.objectid(); }
 	void SetObjectID(int64 id) { info.set_objectid(id); }

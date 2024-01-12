@@ -158,6 +158,23 @@ Vec2Int GameObject::GetFrontCellPos()
 	return GetCellPos();
 }
 
+Vec2Int GameObject::GetBehindCellPos()
+{
+	switch (info.dir())
+	{
+	case DIR_DOWN:
+		return GetCellPos() + Vec2Int{ 0,-1 };
+	case DIR_LEFT:
+		return GetCellPos() + Vec2Int{ 1,0 };
+	case DIR_RIGHT:
+		return GetCellPos() + Vec2Int{ -1,0 };
+	case DIR_UP:
+		return GetCellPos() + Vec2Int{ 0,1 };
+	}
+
+	return GetCellPos();
+}
+
 void GameObject::SetWeaponType(Protocol::WEAPON_TYPE weaponType)
 {
 	info.set_weapontype(weaponType);

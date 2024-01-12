@@ -75,7 +75,6 @@ void Player::BeginPlay()
 void Player::Tick()
 {
 	Super::Tick();
-
 }
 
 void Player::Render(HDC hdc)
@@ -131,12 +130,12 @@ void Player::TickSkill()
 		if (scene == nullptr)
 			return;
 
-		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
+		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
 			Monster* monster = dynamic_cast<Monster*>(scene->GetCreatureAt(GetFrontCellPos()));
 
- 			if (monster)
+			if (monster)
 			{
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetFrontCellPos());
@@ -155,6 +154,17 @@ void Player::TickSkill()
 			if (myPlayer)
 			{
 				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(GetObjectID());
+				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+			}
+		}
+		else if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
+		{
+			MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
+
+			// 
+			if (myPlayer)
+			{
+				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Teleport(myPlayer->GetObjectID());
 				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 			}
 		}

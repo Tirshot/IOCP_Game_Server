@@ -229,6 +229,15 @@ GameObjectRef GameRoom::FindObject(uint64 id)
 	return nullptr;
 }
 
+PlayerRef GameRoom::FindObjectInTemp(uint64 id)
+{
+	auto findIt = _temps.find(id);
+	if (findIt != _temps.end())
+		return findIt->second;
+
+	return nullptr;
+}
+
 void GameRoom::SetName(PlayerRef& player)
 {
 	string strPlayer = "Player";
@@ -301,6 +310,7 @@ void GameRoom::RemoveObject(uint64 id)
 	switch (gameObject->info.objecttype())
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
+		_temps[id] = _players[id];
 		_players.erase(id);
 		break;
 
@@ -334,6 +344,15 @@ void GameRoom::RemoveObject(uint64 id)
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
 		Broadcast(sendBuffer);
 	}
+}
+
+void GameRoom::RemoveTemp(uint64 id)
+{
+	GameObjectRef gameObject = FindObject(id);
+	if (gameObject == nullptr)
+		return;
+
+	_temps.erase(id);
 }
 
 void GameRoom::Broadcast(SendBufferRef& sendBuffer)
@@ -568,15 +587,23 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 
 	// set state, dir, pos + weaponType
 
-	gameObject->info.set_state(pkt.info().state());
-	gameObject->info.set_dir(pkt.info().dir());
-	gameObject->info.set_posx(pkt.info().posx());
-	gameObject->info.set_posy(pkt.info().posy());
-	gameObject->info.set_weapontype(pkt.info().weapontype());
+ 	gameObject->info = pkt.info();
 
 	// 클라이언트의 패킷을 브로드캐스트
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
 		Broadcast(sendBuffer);
 	}
+}
+
+void GameRoom::Handle_C_Teleport(uint64 objectId)
+{
+	// 이동 패킷을 받았을 때 처리
+	uint64 id = objectId;
+	PlayerRef player = static_pointer_cast<Player>(FindObject(id));
+
+	if (player == nullptr)
+		return;
+
+	player->Teleport();
 }

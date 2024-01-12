@@ -24,6 +24,8 @@ enum
 	S_SendMessage = 31,
 
 	C_Revive = 32,
+	C_Teleport = 33,
+	S_Teleport = 34,
 
 };
 class Creature;
@@ -41,6 +43,7 @@ public:
 	static void Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Teleport(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// º¸³»±â
 	static SendBufferRef Make_C_Move();
@@ -65,6 +68,7 @@ public:
 	static SendBufferRef Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId);
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
 	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
-	static SendBufferRef Make_C_Revive();
+	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
+	static SendBufferRef Make_C_Teleport(uint64 objectId);
 };
 

@@ -26,12 +26,14 @@ public:
 	void EnterRoom(GameSessionRef session);
 	void LeaveRoom(GameSessionRef session);
 	GameObjectRef FindObject(uint64 id);
+	PlayerRef FindObjectInTemp(uint64 id);
 	GameRoomRef GetRoomRef() { return shared_from_this(); }
 
 public:
 	void SetName(PlayerRef& player);
 	void AddObject(GameObjectRef gameObject);
 	void RemoveObject(uint64 id);
+	void RemoveTemp(uint64 id);
 	void Broadcast(SendBufferRef& sendBuffer);
 
 public:
@@ -44,13 +46,22 @@ public:
 
 public:
 	void Handle_C_Move(Protocol::C_Move& pkt);
+	void Handle_C_Teleport(uint64 objectId);
 
 private:
 	Tilemap _tilemap;
 
+public:
+	map<uint64, PlayerRef> GetPlayers() { return _players; }
+	map<uint64, PlayerRef> GetTemps() { return _temps; }
+	map<uint64, MonsterRef> GetMonsters() { return _monsters; }
+	map<uint64, NPCRef> GetNPCs() { return _npcs; }
+	map<uint64, ArrowRef> GetArrows() { return _arrows; }
+
 private:
 	// ID를 발급받아 활용
 	map<uint64, PlayerRef> _players;
+	map<uint64, PlayerRef> _temps;
 	map<uint64, MonsterRef> _monsters;
 	map<uint64, NPCRef> _npcs;
 	map<uint64, ArrowRef> _arrows;
