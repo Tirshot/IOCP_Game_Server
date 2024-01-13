@@ -50,6 +50,7 @@ using Dir = Protocol::DIR_TYPE;
 #define CHAT Protocol::OBJECT_STATE_TYPE_CHAT
 #define SPIN_READY Protocol::OBJECT_STATE_TYPE_SPIN_READY
 #define SPIN Protocol::OBJECT_STATE_TYPE_SPIN
+#define TELEPORT Protocol::OBJECT_STATE_TYPE_TELEPORT
 
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 

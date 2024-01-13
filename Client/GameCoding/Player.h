@@ -20,10 +20,13 @@ protected:
 	virtual void TickMove() override;
 	virtual void TickSkill() override;
 	virtual void TickSpin() override;
+	virtual void TickTeleport() override;
 	virtual void UpdateAnimation() override;
 
 public:
 	virtual void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
+	void Teleport(Vec2Int cellPos);
+	void SyncToServer();
 
 private:
 	Flipbook* _flipbookIdle[4] = {};

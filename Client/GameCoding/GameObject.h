@@ -20,6 +20,7 @@ protected:
 	virtual void TickChat() {}
 	virtual void TickSpin() {}
 	virtual void TickSpinReady() {}
+	virtual void TickTeleport() {}
 	virtual void UpdateAnimation() {}
 
 public:

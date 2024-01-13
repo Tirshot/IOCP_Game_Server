@@ -25,6 +25,7 @@ private:
 	virtual void TickChat() override;
 	virtual void TickSpin() override;
 	virtual void TickSpinReady() override;
+	virtual void TickTeleport() override;
 
 	void SyncToServer();
 

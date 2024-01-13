@@ -159,10 +159,8 @@ void Player::TickSkill()
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
 		{
-			{
-				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Teleport(GetObjectID());
-				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-			}
+			SetState(TELEPORT);
+			return;
 		}
 		SetState(IDLE);
 	}
@@ -244,6 +242,11 @@ void Player::TickSpin()
 	}
 }
 
+void Player::TickTeleport()
+{
+	SetState(IDLE);
+}
+
 void Player::UpdateAnimation()
 {
 	switch (info.state())
@@ -285,6 +288,9 @@ void Player::UpdateAnimation()
 		}
 		break;
 
+	case TELEPORT:
+		break;
+
 	default:
 		return;
 	}
@@ -303,4 +309,17 @@ void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 		arrow->SetOwner(this);
 	}
 	_prev = _now;
+}
+
+void Player::Teleport(Vec2Int cellPos)
+{
+	SetCellPos(cellPos, true);
+
+	SyncToServer();
+}
+
+void Player::SyncToServer()
+{
+	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 }

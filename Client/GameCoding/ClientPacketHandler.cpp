@@ -312,12 +312,3 @@ SendBufferRef ClientPacketHandler::Make_C_Revive(Protocol::ObjectInfo& objectInf
 
 	return MakeSendBuffer(pkt, C_Revive);
 }
-
-SendBufferRef ClientPacketHandler::Make_C_Teleport(uint64 objectId)
-{
-	Protocol::C_Teleport pkt;
-
-	pkt.set_objectid(objectId);
-
-	return MakeSendBuffer(pkt, C_Teleport);
-}

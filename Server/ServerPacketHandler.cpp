@@ -215,31 +215,6 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 	}
 }
 
-void ServerPacketHandler::Handle_C_Teleport(GameSessionRef session, BYTE* buffer, int32 len)
-{
-	PacketHeader* header = (PacketHeader*)buffer;
-	//uint16 id = header->id;
-	uint16 size = header->size;
-
-	Protocol::C_Teleport pkt;
-	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
-	//
-	uint64 objectId = pkt.objectid();
-
-	GameRoomRef room = session->gameRoom.lock();
-
-	if (room)
-	{
-		PlayerRef player = static_pointer_cast<Player>(room->FindObject(objectId));
-
-		if (player)
-		{
-			player->Teleport();
-		}
-	}
-}
-
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
 	Protocol::S_TEST pkt;

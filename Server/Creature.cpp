@@ -80,9 +80,9 @@ void Creature::OnDamaged(CreatureRef attacker)
 			{	// 아이템 드랍, 1 ~ 99
 				auto randValueItem = (rand() % 99) + 1;
 
-				if (randValueItem <= 20)
+				if (randValueItem <= 10)
 				{
-					// 20%, HP 전체 회복
+					// 10%, HP 전체 회복
 					if (room)
 					{
 						ItemRef item1 = GameObject::CreateItem();
@@ -109,7 +109,7 @@ void Creature::OnDamaged(CreatureRef attacker)
 						}
 					}
 				}
-				else if (randValueItem > 20 && randValueItem <= 60)
+				else if (randValueItem > 10 && randValueItem <= 50)
 				{
 					// 40%, HP ++
 					if (room)
@@ -138,9 +138,9 @@ void Creature::OnDamaged(CreatureRef attacker)
 						}
 					}
 				}
-				else if (randValueItem > 60 && randValueItem <= 70)
+				else if (randValueItem > 50 && randValueItem <= 55)
 				{
-					// 10%, maxHP ++
+					// 5%, maxHP ++
 					if (room)
 					{
 						ItemRef item1 = GameObject::CreateItem();

@@ -29,6 +29,7 @@ using Dir = Protocol::DIR_TYPE;
 #define HIT Protocol::OBJECT_STATE_TYPE_HIT
 #define STOP Protocol::OBJECT_STATE_TYPE_STOP
 #define SPIN Protocol::OBJECT_STATE_TYPE_SPIN
+#define TELEPORT Protocol::OBJECT_STATE_TYPE_TELEPORT
 
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 
@@ -71,6 +72,13 @@ struct VectorInt
 		VectorInt ret;
 		ret.x = x - other.x;
 		ret.y = y - other.y;
+		return ret;
+	}
+	VectorInt operator*(int other)
+	{
+		VectorInt ret;
+		ret.x = x * other;
+		ret.y = y * other;
 		return ret;
 	}
 
@@ -117,6 +125,13 @@ struct VectorInt
 	{
 		// 제곱근을 계산
 		return sqrt(LengthSquared());
+	}
+	VectorInt Dot(VectorInt& vec, int other)
+	{
+		VectorInt ret;
+		ret.x = vec.x * other;
+		ret.y = vec.y * other;
+		return ret;
 	}
 
 	int32 x = (int32)0.f;

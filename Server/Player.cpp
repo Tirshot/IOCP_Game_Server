@@ -41,12 +41,15 @@ void Player::Update()
 	case SKILL:
 		UpdateSkill();
 		break;
+
+	case TELEPORT:
+		UpdateTeleport();
+		break;
 	}
 }
 
 void Player::UpdateIdle()
 {
-
 }
 
 void Player::UpdateMove()
@@ -82,11 +85,14 @@ void Player::UpdateSkill()
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_STAFF)
 	{
-		if (_teleport)
-			Teleport();
-
-		_teleport = false;
+		SetState(TELEPORT);
 	}
+	SetState(IDLE);
+}
+
+void Player::UpdateTeleport()
+{
+	Teleport();
 	SetState(IDLE);
 }
 
@@ -116,40 +122,41 @@ void Player::Teleport()
 {
 	// 바라보는 방향 4칸 앞으로 이동 가능한지 체크(3칸 건너뛰기)
 	Vec2Int fourAfterCellPos = { };
+	Vec2Int _dir = {};
 
-	for (int i = 4; i >= 1; i--)
+	switch (info.dir())
 	{
-		switch (info.dir())
-		{
-		case DIR_UP:
-			fourAfterCellPos = GetCellPos() + Vec2Int{ 0, -i };
-			break;
+	case DIR_UP:
+		_dir = { 0, -1 };
+		break;
 
-		case DIR_DOWN:
-			fourAfterCellPos = GetCellPos() + Vec2Int{ 0, i };
-			break;
+	case DIR_DOWN:
+		_dir = { 0, 1 };
+		break;
 
-		case DIR_LEFT:
-			fourAfterCellPos = GetCellPos() + Vec2Int{ -i, 0 };
-			break;
+	case DIR_LEFT:
+		_dir = { -1, 0 };
+		break;
 
-		case DIR_RIGHT:
-			fourAfterCellPos = GetCellPos() + Vec2Int{ i, 0 };
-			break;
-		}
-
+	case DIR_RIGHT:
+		_dir = { 1, 0 };
+		break;
+	}
+	
+	for (int i = 4; i >= 0; i--)
+	{
+		fourAfterCellPos = GetCellPos() + _dir * i;
+		
 		if (CanGo(fourAfterCellPos))
-		{
-			SetCellPos(fourAfterCellPos, true);
 			break;
-		}
+		else if (i == 0)
+			return;
 	}
 
-	{ // 패킷 전송
+	SetCellPos(fourAfterCellPos);
+	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Teleport(GetObjectID(), GetCellPos().x, GetCellPos().y);
 		session->Send(sendBuffer);
 		room->Broadcast(sendBuffer);
 	}
-
-	SetState(IDLE);
 }

@@ -62,6 +62,10 @@ void GameObject::Tick()
 	case SPIN:
 		TickSpin();
 		break;
+
+	case TELEPORT:
+		TickTeleport();
+		break;
 	}
 }
 

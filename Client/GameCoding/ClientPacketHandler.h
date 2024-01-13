@@ -69,6 +69,5 @@ public:
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
 	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
-	static SendBufferRef Make_C_Teleport(uint64 objectId);
 };
 

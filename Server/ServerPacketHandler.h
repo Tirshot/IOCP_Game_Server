@@ -44,7 +44,6 @@ public:
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Revive(GameSessionRef session, BYTE* buffer, int32 len);
-	static void Handle_C_Teleport(GameSessionRef session, BYTE* buffer, int32 len);
 	
 	
 	// º¸³»±â
