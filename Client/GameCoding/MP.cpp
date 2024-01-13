@@ -39,9 +39,9 @@ void MP::Tick()
 	_sumTime += _deltaTime;
 
 	// MP Recover
-	if (_sumTime >= 5.f)
+	if (_sumTime >= 2.f)
 	{
-		_myPlayer->info.set_mp(clamp(_myPlayer->info.mp() + 10, 0, _myPlayer->info.maxmp()));
+		_myPlayer->info.set_mp(clamp(_myPlayer->info.mp() + 4, 0, _myPlayer->info.maxmp()));
 		_sumTime = 0.f;
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+class Texture;
 class MyPlayer :  public Player
 {
 	using Super = Player;
@@ -30,5 +31,6 @@ private:
 	void SyncToServer();
 
 	bool _keyPressed = false;
+	Texture* _plum = nullptr;
 };
 

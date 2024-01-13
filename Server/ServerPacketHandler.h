@@ -25,6 +25,8 @@ enum
 	C_Revive = 32,
 	C_Teleport = 33,
 	S_Teleport = 34,
+
+	S_Gold = 36,
 };
 
 struct BuffData
@@ -55,6 +57,7 @@ public:
 	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
 	static SendBufferRef Make_S_SendMessage(uint64 objectId, uint64 time, string str);
 	static SendBufferRef Make_S_Teleport(uint64 objectId, int32 cellPosX, int32 cellPosY);
+	static SendBufferRef Make_S_Gold(uint64 objectId, int32 gold);
 
 	// Arrow¿« info∏¶ ≥—±Ë
 	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id);

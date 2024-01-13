@@ -55,6 +55,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 		case S_Teleport:
 			Handle_S_Teleport(session, buffer, len);
 			break;
+
+		case S_Gold:
+			Handle_S_Gold(session, buffer, len);
+			break;
 	}
 }
 
@@ -174,6 +178,7 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 			gameObject->SetWeaponType(info.weapontype());
 			gameObject->info.set_arrows(info.arrows());
 			gameObject->info.set_mp(info.mp());
+			gameObject->info.set_gold(info.gold());
 		}
 	}
 }
@@ -250,6 +255,29 @@ void ClientPacketHandler::Handle_S_Teleport(ServerSessionRef session, BYTE* buff
 
 		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 		scene->SpawnObject<TeleportEffect>(Vec2Int{ pkt.posx(), pkt.posy() });
+	}
+}
+
+void ClientPacketHandler::Handle_S_Gold(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_Gold pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	uint64 objectId = pkt.objectid();
+	int32 gold = pkt.gold();
+
+	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+
+	if (player)
+	{
+		MyPlayer* myPlayer = static_cast<MyPlayer*>(player);
+		myPlayer->info.set_gold(myPlayer->info.gold() + gold);
+		GET_SINGLE(ChatManager)->AddMessage(format(L"{0} °ñµå È¹µæ", gold));
 	}
 }
 

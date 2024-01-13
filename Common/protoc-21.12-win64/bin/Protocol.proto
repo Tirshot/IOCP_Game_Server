@@ -105,3 +105,9 @@ message S_Teleport
 	int32 posX = 2;
 	int32 posY = 3;
 }
+
+message S_Gold
+{
+	uint64 objectId = 1;
+	int32 gold = 2;
+}

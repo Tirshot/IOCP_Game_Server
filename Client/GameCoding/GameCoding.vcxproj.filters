@@ -275,6 +275,9 @@
     <ClInclude Include="TeleportEffect.h">
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Gold.h">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -455,6 +458,9 @@
     </ClCompile>
     <ClCompile Include="TeleportEffect.cpp">
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Gold.cpp">
+      <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -245,15 +245,7 @@ void Player::TickSpin()
 
 void Player::TickTeleport()
 {
-	if (info.mp() >= 25)
-	{
-		info.set_mp(clamp(info.mp() - 25, 0, info.maxmp()));
-	}
-	else
-	{
-		GET_SINGLE(ChatManager)->AddMessage(L"마나가 부족합니다.");
-	}
-	SetState(IDLE);
+
 }
 
 void Player::UpdateAnimation()

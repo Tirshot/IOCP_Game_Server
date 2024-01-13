@@ -27,6 +27,7 @@ enum
 	C_Teleport = 33,
 	S_Teleport = 34,
 
+	S_Gold = 36,
 };
 class Creature;
 class ClientPacketHandler
@@ -44,6 +45,7 @@ public:
 	static void Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Teleport(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Gold(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// º¸³»±â
 	static SendBufferRef Make_C_Move();

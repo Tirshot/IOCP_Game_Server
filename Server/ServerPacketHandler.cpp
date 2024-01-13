@@ -303,6 +303,17 @@ SendBufferRef ServerPacketHandler::Make_S_Teleport(uint64 objectId, int32 cellPo
 	return MakeSendBuffer(pkt, S_Teleport);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_Gold(uint64 objectId, int32 gold)
+{
+	// 패킷 생성
+	Protocol::S_Gold pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_gold(gold);
+
+	return MakeSendBuffer(pkt, S_Gold);
+}
+
 SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 {
 	Protocol::S_Fire pkt;

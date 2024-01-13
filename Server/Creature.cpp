@@ -103,9 +103,10 @@ void Creature::OnDamaged(CreatureRef attacker)
 							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
 
 							if (player)
+							{
 								player->session->Send(sendBuffer);
-
-							GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 FullHeart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
+								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 FullHeart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
+							}
 						}
 					}
 				}
@@ -132,9 +133,10 @@ void Creature::OnDamaged(CreatureRef attacker)
 							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
 
 							if (player)
+							{
 								player->session->Send(sendBuffer);
-
-							GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 Heart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
+								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 Heart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
+							}
 						}
 					}
 				}
@@ -161,16 +163,26 @@ void Creature::OnDamaged(CreatureRef attacker)
 							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
 
 							if (player)
+							{
 								player->session->Send(sendBuffer);
-
-							GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 MaxHeart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
+								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 MaxHeart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
+							}
 						}
 					}
 				}
 				// 골드 드랍, 1~10
 				auto randValueGold = (rand() % 10) + 1;
-				attacker->info.set_gold(attacker->info.gold() + randValueGold);
-				GChat->AddText(attacker->GetObjectID(), format(L"{0} 골드 획득.", randValueGold));
+				{
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Gold(attacker->info.objectid(), randValueGold);
+					PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
+
+					if (player)
+					{
+						player->session->Send(sendBuffer);
+						GChat->AddText(format(L"Player {0}가 {1}골드 획득.", player->info.objectid(), randValueGold));
+					}
+				}
+				
 			}
 			if (room)
 			{

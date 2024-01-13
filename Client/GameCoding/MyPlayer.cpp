@@ -3,6 +3,7 @@
 #include "InputManager.h"
 #include "ResourceManager.h"
 #include "Flipbook.h"
+#include "Texture.h"
 #include "TimeManager.h"
 #include "CameraComponent.h"
 #include "SceneManager.h"
@@ -21,6 +22,8 @@ MyPlayer::MyPlayer()
 {
 	CameraComponent* camera = new CameraComponent();
 	AddComponent(camera);
+
+	_plum = GET_SINGLE(ResourceManager)->GetTexture(L"Crown");
 }
 
 MyPlayer::~MyPlayer()
@@ -43,6 +46,20 @@ void MyPlayer::Tick()
 void MyPlayer::Render(HDC hdc)
 {
 	Super::Render(hdc);
+
+	// Plum
+	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
+	::TransparentBlt(hdc,
+		(int32)_pos.x - 10 - ((int32)cameraPos.x - GWinSizeX / 2),
+		(int32)_pos.y - 70 - ((int32)cameraPos.y - GWinSizeY / 2),
+		21,
+		20,
+		_plum->GetDC(),
+		0,
+		0,
+		21,
+		20,
+		_plum->GetTransparent());
 }
 
 void MyPlayer::Teleport(Vec2Int cellPos)
@@ -213,7 +230,16 @@ void MyPlayer::TickSpinReady()
 }
 void MyPlayer::TickTeleport()
 {
-	Super::TickTeleport();
+	/*Super::TickTeleport();*/
+	if (info.mp() >= 25)
+	{
+		info.set_mp(clamp(info.mp() - 25, 0, info.maxmp()));
+	}
+	else
+	{
+		GET_SINGLE(ChatManager)->AddMessage(L"마나가 부족합니다.");
+	}
+	SetState(IDLE);
 }
 void MyPlayer::SyncToServer()
 {

@@ -26,6 +26,7 @@
 #include "WeaponSlot.h"
 #include "Chat.h"
 #include "ChatInput.h"
+#include "Gold.h"
 #include "ChatManager.h"
 #include "Arrow.h"
 #include "HP.h"
@@ -77,10 +78,11 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Frame", L"Sprite\\UI\\Frame.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MainFrame", L"Sprite\\UI\\MainFrame.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Slot", L"Sprite\\UI\\Slot.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"SelectedSlot", L"Sprite\\UI\\SelectedSlot.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Selected", L"Sprite\\UI\\Selected.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Chat", L"Sprite\\UI\\Chat.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ChatInput", L"Sprite\\UI\\Chat.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Gold", L"Sprite\\UI\\Gold.bmp", RGB(255,0,255));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Crown", L"Sprite\\UI\\Crown.bmp", RGB(255,0,255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tutorial", L"Sprite\\UI\\Tutorial.bmp");
 
 	// 맵 스프라이트
@@ -108,6 +110,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Selected", GET_SINGLE(ResourceManager)->GetTexture(L"Selected"), 0, 0, 88, 88);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Chat", GET_SINGLE(ResourceManager)->GetTexture(L"Chat"), 0, 0, 130, 28);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"ChatInput", GET_SINGLE(ResourceManager)->GetTexture(L"ChatInput"), 0, 0, 400, 28);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Gold", GET_SINGLE(ResourceManager)->GetTexture(L"Gold"), 23, 24, 23, 24);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tutorial", GET_SINGLE(ResourceManager)->GetTexture(L"Tutorial"), 0, 0, 400, 300);
 
 
@@ -570,6 +573,12 @@ void DevScene::LoadUI()
 		MP* mp = new MP();
 		mp->SetVisible(true);
 		AddUI(mp);
+	}
+	
+	{	// Gold
+		Gold* gold = new Gold();
+		gold->SetVisible(true);
+		AddUI(gold);
 	}
 	{	// Game Over
 		GameOver* go = new GameOver();

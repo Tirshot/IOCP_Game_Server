@@ -159,6 +159,7 @@
     <ClInclude Include="GameCoding.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameOver.h" />
+    <ClInclude Include="Gold.h" />
     <ClInclude Include="HeartItem.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HP.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="GameCoding.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameOver.cpp" />
+    <ClCompile Include="Gold.cpp" />
     <ClCompile Include="HeartItem.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HP.cpp" />

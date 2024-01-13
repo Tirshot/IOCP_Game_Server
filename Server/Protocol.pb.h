@@ -77,6 +77,9 @@ extern S_EnterGameDefaultTypeInternal _S_EnterGame_default_instance_;
 class S_Fire;
 struct S_FireDefaultTypeInternal;
 extern S_FireDefaultTypeInternal _S_Fire_default_instance_;
+class S_Gold;
+struct S_GoldDefaultTypeInternal;
+extern S_GoldDefaultTypeInternal _S_Gold_default_instance_;
 class S_Hit;
 struct S_HitDefaultTypeInternal;
 extern S_HitDefaultTypeInternal _S_Hit_default_instance_;
@@ -110,6 +113,7 @@ template<> ::Protocol::C_Teleport* Arena::CreateMaybeMessage<::Protocol::C_Telep
 template<> ::Protocol::S_AddObject* Arena::CreateMaybeMessage<::Protocol::S_AddObject>(Arena*);
 template<> ::Protocol::S_EnterGame* Arena::CreateMaybeMessage<::Protocol::S_EnterGame>(Arena*);
 template<> ::Protocol::S_Fire* Arena::CreateMaybeMessage<::Protocol::S_Fire>(Arena*);
+template<> ::Protocol::S_Gold* Arena::CreateMaybeMessage<::Protocol::S_Gold>(Arena*);
 template<> ::Protocol::S_Hit* Arena::CreateMaybeMessage<::Protocol::S_Hit>(Arena*);
 template<> ::Protocol::S_Move* Arena::CreateMaybeMessage<::Protocol::S_Move>(Arena*);
 template<> ::Protocol::S_MyPlayer* Arena::CreateMaybeMessage<::Protocol::S_MyPlayer>(Arena*);
@@ -2892,6 +2896,165 @@ class S_Teleport final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class S_Gold final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_Gold) */ {
+ public:
+  inline S_Gold() : S_Gold(nullptr) {}
+  ~S_Gold() override;
+  explicit PROTOBUF_CONSTEXPR S_Gold(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_Gold(const S_Gold& from);
+  S_Gold(S_Gold&& from) noexcept
+    : S_Gold() {
+    *this = ::std::move(from);
+  }
+
+  inline S_Gold& operator=(const S_Gold& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_Gold& operator=(S_Gold&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_Gold& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_Gold* internal_default_instance() {
+    return reinterpret_cast<const S_Gold*>(
+               &_S_Gold_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    17;
+
+  friend void swap(S_Gold& a, S_Gold& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_Gold* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_Gold* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_Gold* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_Gold>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_Gold& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_Gold& from) {
+    S_Gold::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_Gold* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_Gold";
+  }
+  protected:
+  explicit S_Gold(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+    kGoldFieldNumber = 2,
+  };
+  // uint64 objectId = 1;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
+  private:
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
+  public:
+
+  // int32 gold = 2;
+  void clear_gold();
+  int32_t gold() const;
+  void set_gold(int32_t value);
+  private:
+  int32_t _internal_gold() const;
+  void _internal_set_gold(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_Gold)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t objectid_;
+    int32_t gold_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -4213,9 +4376,55 @@ inline void S_Teleport::set_posy(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_Teleport.posY)
 }
 
+// -------------------------------------------------------------------
+
+// S_Gold
+
+// uint64 objectId = 1;
+inline void S_Gold::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
+}
+inline uint64_t S_Gold::_internal_objectid() const {
+  return _impl_.objectid_;
+}
+inline uint64_t S_Gold::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_Gold.objectId)
+  return _internal_objectid();
+}
+inline void S_Gold::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
+}
+inline void S_Gold::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_Gold.objectId)
+}
+
+// int32 gold = 2;
+inline void S_Gold::clear_gold() {
+  _impl_.gold_ = 0;
+}
+inline int32_t S_Gold::_internal_gold() const {
+  return _impl_.gold_;
+}
+inline int32_t S_Gold::gold() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_Gold.gold)
+  return _internal_gold();
+}
+inline void S_Gold::_internal_set_gold(int32_t value) {
+  
+  _impl_.gold_ = value;
+}
+inline void S_Gold::set_gold(int32_t value) {
+  _internal_set_gold(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_Gold.gold)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
