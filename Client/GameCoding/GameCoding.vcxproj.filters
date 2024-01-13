@@ -269,6 +269,12 @@
     <ClInclude Include="HeartItem.h">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClInclude>
+    <ClInclude Include="MP.h">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="TeleportEffect.h">
+      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -443,6 +449,12 @@
     </ClCompile>
     <ClCompile Include="HeartItem.cpp">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="MP.cpp">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="TeleportEffect.cpp">
+      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

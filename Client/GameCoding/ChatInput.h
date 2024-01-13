@@ -22,12 +22,9 @@ public:
 	RECT GetRect() { return _rect; }
 
 protected:
-	Vec2	_pos = { 10, 520 };
 	Sprite* _sprite = nullptr;
 	RECT _rect = {};
 	HDC _hdc = nullptr;
-
-	Vec2Int _size = { 500, 20 };
 
 	WCHAR _text[256];
 };

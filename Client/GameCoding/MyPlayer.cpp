@@ -8,6 +8,7 @@
 #include "SceneManager.h"
 #include "DevScene.h"
 #include "HitEffect.h"
+#include "TeleportEffect.h"
 #include "Arrow.h"
 #include "ClientPacketHandler.h"
 #include "NetworkManager.h"

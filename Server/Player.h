@@ -23,5 +23,10 @@ public:
 	// Get, Set 함수를 안쓰기 위해 public, 추후 수정 필요
 public:
 	GameSessionRef session;
+
+private:
+	// 초당 마나 회복 계산
+	uint64 _now = 0;
+	uint64 _prev = 0;
 };
 

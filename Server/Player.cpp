@@ -11,9 +11,12 @@ Player::Player()
 	info.set_name("Player");
 	info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 	info.set_hp(5);
+	info.set_mp(50);
 	info.set_maxhp(5);
+	info.set_maxmp(50);
 	info.set_attack(20);
 	info.set_defence(0);
+	info.set_arrows(10);
 }
 
 Player::~Player()
@@ -28,6 +31,8 @@ void Player::Init()
 
 void Player::Update()
 {
+	_now = GetTickCount64();
+
 	switch (info.state())
 	{
 	case IDLE:
@@ -45,6 +50,13 @@ void Player::Update()
 	case TELEPORT:
 		UpdateTeleport();
 		break;
+	}
+
+	// 매 5초마다 플레이어의 mp를 회복시킴
+	if (_now - _prev >= 5000)
+	{
+		info.set_mp(clamp(info.mp() + 5, 0, info.maxmp()));
+		_prev = _now;
 	}
 }
 
@@ -66,7 +78,7 @@ void Player::UpdateSkill()
 	{
 		// 내 앞에 있는 좌표
 		CreatureRef creature = room->GetCreatureAt(GetFrontCellPos());
-		
+
 		if (creature)
 		{
 			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
@@ -81,18 +93,21 @@ void Player::UpdateSkill()
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
 	{
-		
+
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_STAFF)
 	{
-		SetState(TELEPORT);
+		
 	}
-	SetState(IDLE);
 }
 
 void Player::UpdateTeleport()
 {
-	Teleport();
+	if (info.mp() >= 25)
+	{
+		Teleport();
+		info.set_mp(clamp(info.mp() - 25, 0, info.maxmp()));
+	}
 	SetState(IDLE);
 }
 

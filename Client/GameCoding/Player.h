@@ -25,7 +25,6 @@ protected:
 
 public:
 	virtual void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
-	void Teleport(Vec2Int cellPos);
 	void SyncToServer();
 
 private:

@@ -1,14 +1,14 @@
 #pragma once
 #include "UI.h"
-class Sprite;
+class Texture;
 class MyPlayer;
-class HP : public UI
+class MP : public UI
 {
 	using Super = UI;
 
 public:
-	HP();
-	virtual ~HP();
+	MP();
+	virtual ~MP();
 
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
@@ -17,9 +17,11 @@ public:
 protected:
 	Vec2Int _size = { 52, 52 };
 	MyPlayer* _myPlayer = nullptr;
-	int _hp = 0;
-	int _maxHp = 0;
-	Sprite* _blackHeart = nullptr;
-	Sprite* _heart = nullptr;
+	int _mp = 0;
+	int _maxMp = 0;
+	Texture* _blackMp = nullptr;
+	Texture* _blueMp = nullptr;
+	float _sumTime = 0.f;
+	float _deltaTime = 0.f;
 };
 

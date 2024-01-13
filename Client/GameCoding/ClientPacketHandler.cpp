@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Monster.h"
 #include "HitEffect.h"
+#include "TeleportEffect.h"
 #include "Creature.h"
 #include "Player.h"
 #include "MyPlayer.h"
@@ -171,6 +172,8 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 			gameObject->SetState(info.state());
 			gameObject->SetCellPos(Vec2Int{ info.posx(), info.posy() });
 			gameObject->SetWeaponType(info.weapontype());
+			gameObject->info.set_arrows(info.arrows());
+			gameObject->info.set_mp(info.mp());
 		}
 	}
 }
@@ -244,6 +247,9 @@ void ClientPacketHandler::Handle_S_Teleport(ServerSessionRef session, BYTE* buff
 	{
 		MyPlayer* myPlayer = static_cast<MyPlayer*>(player);
 		myPlayer->Teleport(Vec2Int {pkt.posx(), pkt.posy()});
+
+		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		scene->SpawnObject<TeleportEffect>(Vec2Int{ pkt.posx(), pkt.posy() });
 	}
 }
 

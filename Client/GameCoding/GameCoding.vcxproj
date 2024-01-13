@@ -165,7 +165,9 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
+    <ClInclude Include="TeleportEffect.h" />
     <ClInclude Include="TutorialTrigger.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="NPC.h" />
@@ -227,7 +229,9 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
+    <ClCompile Include="TeleportEffect.cpp" />
     <ClCompile Include="TutorialTrigger.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="NPC.cpp" />

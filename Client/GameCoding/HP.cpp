@@ -10,6 +10,7 @@ HP::HP()
 {
 	_blackHeart = GET_SINGLE(ResourceManager)->GetSprite(L"BlackHeart");
 	_heart = GET_SINGLE(ResourceManager)->GetSprite(L"Heart");
+	_pos = { 10, 10 };
 }
 
 HP::~HP()
@@ -39,8 +40,8 @@ void HP::Render(HDC hdc)
 	for (int i = 0; i < _maxHp; i++)
 	{	// Black Heart
 		TransparentBlt(hdc,
-			10 + 25 * i,
-			10,
+			_pos.x + 25 * i,
+			_pos.y,
 			25,
 			21,
 			_blackHeart->GetDC(),
@@ -55,8 +56,8 @@ void HP::Render(HDC hdc)
 	{
 		// Heart
 		TransparentBlt(hdc,
-			10 + 25 * i,
-			10,
+			_pos.x + 25 * i,
+			_pos.y,
 			25,
 			21,
 			_heart->GetDC(),

@@ -9,6 +9,7 @@
 #include "SceneManager.h"
 #include "DevScene.h"
 #include "HitEffect.h"
+#include "TeleportEffect.h"
 #include "Arrow.h"
 #include "Monster.h"
 #include "ChatManager.h"
@@ -180,7 +181,7 @@ void Player::TickSpin()
 
 		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 		{
-			// 내 앞에 있는 좌표
+			// 내 십자에 있는 좌표
 			Creature* creature = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 }); // up
 			Creature* creature2 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 }); // right
 			Creature* creature3 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 }); // down
@@ -244,6 +245,14 @@ void Player::TickSpin()
 
 void Player::TickTeleport()
 {
+	if (info.mp() >= 25)
+	{
+		info.set_mp(clamp(info.mp() - 25, 0, info.maxmp()));
+	}
+	else
+	{
+		GET_SINGLE(ChatManager)->AddMessage(L"마나가 부족합니다.");
+	}
 	SetState(IDLE);
 }
 
@@ -309,13 +318,6 @@ void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 		arrow->SetOwner(this);
 	}
 	_prev = _now;
-}
-
-void Player::Teleport(Vec2Int cellPos)
-{
-	SetCellPos(cellPos, true);
-
-	SyncToServer();
 }
 
 void Player::SyncToServer()

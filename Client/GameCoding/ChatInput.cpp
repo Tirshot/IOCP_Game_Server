@@ -8,13 +8,15 @@ ChatInput::ChatInput()
 {
 	_rect = GetRect();
 	_rect.left = 0;
-	_rect.right = 300;
+	_rect.right = 500;
 	_rect.top = -13;
 	_rect.bottom = 20;
 
 	_sprite = GET_SINGLE(ResourceManager)->GetSprite(L"ChatInput");
 
 	_visible = false;
+	_pos = { 10,520 };
+	_size = { 500, 20 };
 }
 
 ChatInput::~ChatInput()

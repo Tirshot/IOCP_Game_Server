@@ -8,7 +8,12 @@
 
 WeaponSlot::WeaponSlot()
 {
-
+	_woodenSlot = GET_SINGLE(ResourceManager)->GetSprite(L"Frame");
+	_selectedSlot = GET_SINGLE(ResourceManager)->GetSprite(L"SelectedSlot");
+	_selected = GET_SINGLE(ResourceManager)->GetSprite(L"Selected");
+	_weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
+	_weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
+	_weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
 }
 
 WeaponSlot::~WeaponSlot()
@@ -18,22 +23,15 @@ WeaponSlot::~WeaponSlot()
 
 void WeaponSlot::BeginPlay()
 {
-	Sprite* weaponSword = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
-	Sprite* weaponBow = GET_SINGLE(ResourceManager)->GetSprite(L"Bow");
-	Sprite* weaponStaff = GET_SINGLE(ResourceManager)->GetSprite(L"Staff");
-	_woodenSlot = GET_SINGLE(ResourceManager)->GetSprite(L"Frame");
-	_selectedSlot = GET_SINGLE(ResourceManager)->GetSprite(L"SelectedSlot");
-	_selected = GET_SINGLE(ResourceManager)->GetSprite(L"Selected");
-
 	// _slots에 push_back 하면 슬롯이 자동으로 증가
-	_slots.insert({ 1, weaponSword });
-	_slots.insert({ 2, weaponBow });
-	_slots.insert({ 3, weaponStaff });
+	_slots.insert({ 1, _weaponSword });
+	_slots.insert({ 2, _weaponBow });
+	_slots.insert({ 3, _weaponStaff });
 }
 
 void WeaponSlot::Tick()
 {
-
+	_num = (int)_slots.size();
 }
 
 void WeaponSlot::Render(HDC hdc)
@@ -43,11 +41,11 @@ void WeaponSlot::Render(HDC hdc)
 	auto sizeX = _size.x;
 	// 52 * 52
 
-	for (int i = 1; i <= min(_slots.size(), MAX_SLOT); i++)
+	for (int i = 1; i <= min(_num, MAX_SLOT); i++)
 	{
 		// 무기 슬롯 배경
 		::TransparentBlt(hdc,
-			(int)(_pos.x + 60.f * ((i - 1) - _slots.size() / 2.f) + 1),
+			(int)(_pos.x + 60.f * ((i - 1) - _num / 2.f) + 1),
 			(int)_pos.y - 56,
 			52,
 			52,
@@ -60,7 +58,7 @@ void WeaponSlot::Render(HDC hdc)
 
 		// 무기 아이콘
 		::TransparentBlt(hdc,
-			(int)(_pos.x + 60 * ((i - 1)  - _slots.size() / 2.f) + 5),
+			(int)(_pos.x + 60 * ((i - 1)  - _num / 2.f) + 5),
 			(int)_pos.y - 60 + 10,
 			iconSize - 10,
 			iconSize - 10,
@@ -73,7 +71,7 @@ void WeaponSlot::Render(HDC hdc)
 	}
 
 	::TransparentBlt(hdc,
-		(int)(_pos.x + 60 * (HighlightSlot() - _slots.size() / 2.f) + 4),
+		(int)(_pos.x + 60 * (HighlightSlot() - _num / 2.f) + 4),
 		(int)_pos.y - 60 + 7,
 		45,
 		45,
