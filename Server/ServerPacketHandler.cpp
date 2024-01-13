@@ -40,10 +40,6 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Revive(session, buffer, len);
 		break;
 
-	case C_Teleport:
-		Handle_C_Teleport(session, buffer, len);
-		break;
-
 	default:
 		break;
 	}

@@ -175,7 +175,7 @@ void Creature::OnDamaged(CreatureRef attacker)
 			if (room)
 			{
 				room->RemoveObject(GetObjectID());
-
+			
 				// 채팅 출력
 				GChat->AddText(format(L"{0} {1}이(가) {2} {3}에 의해 쓰러짐",
 					objectType,

@@ -229,13 +229,13 @@ GameObjectRef GameRoom::FindObject(uint64 id)
 	return nullptr;
 }
 
-PlayerRef GameRoom::FindObjectInTemp(uint64 id)
+weak_ptr<Player> GameRoom::FindObjectInTemp(uint64 id)
 {
 	auto findIt = _temps.find(id);
 	if (findIt != _temps.end())
 		return findIt->second;
 
-	return nullptr;
+	return {};
 }
 
 void GameRoom::SetName(PlayerRef& player)

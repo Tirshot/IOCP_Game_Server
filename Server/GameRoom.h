@@ -26,7 +26,7 @@ public:
 	void EnterRoom(GameSessionRef session);
 	void LeaveRoom(GameSessionRef session);
 	GameObjectRef FindObject(uint64 id);
-	PlayerRef FindObjectInTemp(uint64 id);
+	weak_ptr<Player> FindObjectInTemp(uint64 id);
 	GameRoomRef GetRoomRef() { return shared_from_this(); }
 
 public:
@@ -53,7 +53,7 @@ private:
 
 public:
 	map<uint64, PlayerRef> GetPlayers() { return _players; }
-	map<uint64, PlayerRef> GetTemps() { return _temps; }
+	map<uint64, weak_ptr<Player>> GetTemps() { return _temps; }
 	map<uint64, MonsterRef> GetMonsters() { return _monsters; }
 	map<uint64, NPCRef> GetNPCs() { return _npcs; }
 	map<uint64, ArrowRef> GetArrows() { return _arrows; }
@@ -61,7 +61,7 @@ public:
 private:
 	// ID를 발급받아 활용
 	map<uint64, PlayerRef> _players;
-	map<uint64, PlayerRef> _temps;
+	map<uint64, weak_ptr<Player>> _temps;
 	map<uint64, MonsterRef> _monsters;
 	map<uint64, NPCRef> _npcs;
 	map<uint64, ArrowRef> _arrows;
