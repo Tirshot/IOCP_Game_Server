@@ -159,12 +159,8 @@ void Player::TickSkill()
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
 		{
-			MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
-
-			// 
-			if (myPlayer)
 			{
-				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Teleport(myPlayer->GetObjectID());
+				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Teleport(GetObjectID());
 				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 			}
 		}

@@ -11,6 +11,9 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
+public:
+	void Teleport(Vec2Int cellPos);
+
 private:
 	void TickInput();
 	void TryMove();

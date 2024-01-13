@@ -44,6 +44,13 @@ void MyPlayer::Render(HDC hdc)
 	Super::Render(hdc);
 }
 
+void MyPlayer::Teleport(Vec2Int cellPos)
+{
+	SetCellPos(cellPos, true);
+
+	SyncToServer();
+}
+
 uint64 prevCount = 0;
 uint64 nowCount = 0;
 void MyPlayer::TickInput()

@@ -19,8 +19,12 @@ private:
 public:
 	void MakeArrow();
 	void Teleport();
+	void SetTeleport(bool teleport) { _teleport = teleport; }
 	// Get, Set 함수를 안쓰기 위해 public, 추후 수정 필요
 public:
 	GameSessionRef session;
+
+private:
+	bool _teleport = false;
 };
 

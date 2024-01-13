@@ -224,10 +224,20 @@ void ServerPacketHandler::Handle_C_Teleport(GameSessionRef session, BYTE* buffer
 	Protocol::C_Teleport pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	// session->gameRoom
+	//
+	uint64 objectId = pkt.objectid();
+
 	GameRoomRef room = session->gameRoom.lock();
+
 	if (room)
-		room->Handle_C_Teleport(pkt.objectid());
+	{
+		PlayerRef player = static_pointer_cast<Player>(room->FindObject(objectId));
+
+		if (player)
+		{
+			player->Teleport();
+		}
+	}
 }
 
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)

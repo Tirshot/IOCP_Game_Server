@@ -11,6 +11,7 @@
 #include "Player.h"
 #include "MyPlayer.h"
 #include "ChatManager.h"
+#include "NetworkManager.h"
 #include "Chat.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
@@ -236,11 +237,13 @@ void ClientPacketHandler::Handle_S_Teleport(ServerSessionRef session, BYTE* buff
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
 	//
-	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	uint64 objectId = pkt.objectid();
+	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
 
 	if (player)
 	{
-		player->SetCellPos(Vec2Int {pkt.posx(), pkt.posy()}, true);
+		MyPlayer* myPlayer = static_cast<MyPlayer*>(player);
+		myPlayer->Teleport(Vec2Int {pkt.posx(), pkt.posy()});
 	}
 }
 
@@ -312,7 +315,6 @@ SendBufferRef ClientPacketHandler::Make_C_Revive(Protocol::ObjectInfo& objectInf
 
 SendBufferRef ClientPacketHandler::Make_C_Teleport(uint64 objectId)
 {
-	// 패킷 생성
 	Protocol::C_Teleport pkt;
 
 	pkt.set_objectid(objectId);

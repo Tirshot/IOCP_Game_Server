@@ -595,15 +595,3 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 		Broadcast(sendBuffer);
 	}
 }
-
-void GameRoom::Handle_C_Teleport(uint64 objectId)
-{
-	// 이동 패킷을 받았을 때 처리
-	uint64 id = objectId;
-	PlayerRef player = static_pointer_cast<Player>(FindObject(id));
-
-	if (player == nullptr)
-		return;
-
-	player->Teleport();
-}
