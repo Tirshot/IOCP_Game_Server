@@ -170,9 +170,9 @@ void Creature::OnDamaged(CreatureRef attacker)
 						}
 					}
 				}
-				else if (randValueItem > 55 && randValueItem <= 90)
+				else if (randValueItem > 55 && randValueItem <= 80)
 				{
-					// 35%, Arrow ++
+					// 25%, Arrow ++
 					if (room)
 					{
 						ItemRef item1 = GameObject::CreateItem();

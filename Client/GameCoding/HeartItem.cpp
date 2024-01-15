@@ -6,6 +6,7 @@
 #include "DevScene.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "ChatManager.h"
 #include "NetworkManager.h"
 #include "ClientPacketHandler.h"
 
@@ -61,8 +62,10 @@ void HeartItem::TickIdle()
 			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + 999, 0, myPlayer->info.maxhp()));
 
 		else if (info.itemtype() == Protocol::ITEM_TYPE_MAXHEART)
+		{
 			myPlayer->info.set_maxhp(myPlayer->info.maxhp() + 1);
-
+			GET_SINGLE(ChatManager)->AddMessage(L"최대 체력이 1 증가했습니다.");
+		}
 		scene->RemoveActor(this);
 		
 		// 오브젝트 제거 패킷 전송

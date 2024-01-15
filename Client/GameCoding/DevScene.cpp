@@ -883,6 +883,7 @@ bool DevScene::CanGo(Vec2Int cellPos)
 	if (GetCreatureAt(cellPos) != nullptr)
 		return false;
 
+	// 1이면 갈 수 없는 지형
 	return tile->value != 1;
 }
 

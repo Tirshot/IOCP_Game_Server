@@ -34,15 +34,15 @@ void MP::Tick()
 	{
 		_mp = clamp(_myPlayer->info.mp(), 0, _myPlayer->info.maxmp());
 		_maxMp = _myPlayer->info.maxmp();
-	}
 
-	_sumTime += _deltaTime;
+		_sumTime += _deltaTime;
 
-	// MP Recover
-	if (_sumTime >= 2.f)
-	{
-		_myPlayer->info.set_mp(clamp(_myPlayer->info.mp() + 4, 0, _myPlayer->info.maxmp()));
-		_sumTime = 0.f;
+		// MP Recover
+		if (_sumTime >= 2.f)
+		{
+			_myPlayer->info.set_mp(clamp(_myPlayer->info.mp() + 4, 0, _myPlayer->info.maxmp()));
+			_sumTime = 0.f;
+		}
 	}
 }
 
