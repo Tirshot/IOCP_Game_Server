@@ -76,6 +76,7 @@ public:
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 
 	bool CanGo(Vec2Int cellPos);
+	bool MonsterCanGo(Vec2Int cellPos);
 	Vec2 ConvertPos(Vec2Int cellPos);
 	Vec2Int GetRandomEmptyCellPos();
 

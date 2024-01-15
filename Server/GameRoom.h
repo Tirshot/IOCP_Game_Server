@@ -40,13 +40,20 @@ public:
 	PlayerRef FindClosestPlayer(Vec2Int cellPos);
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 	bool CanGo(Vec2Int cellPos);
+	bool MonsterCanGo(Vec2Int cellPos);
 	Vec2Int GetRandomEmptyCellPos();
 	Vec2Int GetRandomEmptySpawnCellPos();
 	CreatureRef GetCreatureAt(Vec2Int cellPos);
 
+	void RandomMonsterSpawn();
+
+private:
+	// 몬스터 스폰 숫자
+	const int32 DESIRED_MONSTER_COUNT = 15;
+	int32 _monsterCount = 0;
+
 public:
 	void Handle_C_Move(Protocol::C_Move& pkt);
-	void Handle_C_Teleport(uint64 objectId);
 
 private:
 	Tilemap _tilemap;
@@ -57,6 +64,7 @@ public:
 	map<uint64, MonsterRef> GetMonsters() { return _monsters; }
 	map<uint64, NPCRef> GetNPCs() { return _npcs; }
 	map<uint64, ArrowRef> GetArrows() { return _arrows; }
+
 
 private:
 	// ID를 발급받아 활용

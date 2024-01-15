@@ -84,7 +84,7 @@ void Monster::UpdateIdle()
 				{
 					// ÇÑ Ä­¸¸ ÀÌµ¿
 					Vec2Int nextPos = path[1];
-					if (room->CanGo(nextPos))
+					if (room->MonsterCanGo(nextPos))
 					{
 						SetDir(GetLookAtDir(nextPos));
 						SetCellPos(nextPos);
@@ -115,7 +115,7 @@ void Monster::UpdateIdle()
 					case DIR_UP:
 						nextPos = GetCellPos() + Vec2Int{ 0, -1 };
 
-						if (room->CanGo(nextPos))
+						if (room->MonsterCanGo(nextPos))
 						{
 							SetDir(GetLookAtDir(nextPos));
 							SetCellPos(nextPos);
@@ -129,7 +129,7 @@ void Monster::UpdateIdle()
 					case DIR_DOWN:
 						nextPos = GetCellPos() + Vec2Int{ 0, 1 };
 
-						if (room->CanGo(nextPos))
+						if (room->MonsterCanGo(nextPos))
 						{
 							SetDir(GetLookAtDir(nextPos));
 							SetCellPos(nextPos);
@@ -143,7 +143,7 @@ void Monster::UpdateIdle()
 					case DIR_LEFT:
 						nextPos = GetCellPos() + Vec2Int{ -1, 0 };
 
-						if (room->CanGo(nextPos))
+						if (room->MonsterCanGo(nextPos))
 						{
 							SetDir(GetLookAtDir(nextPos));
 							SetCellPos(nextPos);
@@ -157,7 +157,7 @@ void Monster::UpdateIdle()
 					case DIR_RIGHT:
 						nextPos = GetCellPos() + Vec2Int{ 1, 0 };
 
-						if (room->CanGo(nextPos))
+						if (room->MonsterCanGo(nextPos))
 						{
 							SetDir(GetLookAtDir(nextPos));
 							SetCellPos(nextPos);

@@ -25,36 +25,6 @@ void GameRoom::Init()
 {
 	_tilemap.LoadFile(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Tilemap\\Tilemap01.txt");
 
-	// 몬스터 소환
-	{
-		MonsterRef monster = GameObject::CreateMonster();
-		monster->info.set_posx(11);
-		monster->info.set_posy(6);
-		AddObject(monster);
-	}
-
-	// 몬스터 소환
-	{
-		MonsterRef monster = GameObject::CreateMonster();
-		monster->info.set_posx(12);
-		monster->info.set_posy(6);
-		AddObject(monster);
-	}
-	// 몬스터 소환
-	{
-		MonsterRef monster = GameObject::CreateMonster();
-		monster->info.set_posx(13);
-		monster->info.set_posy(6);
-		AddObject(monster);
-	}
-
-	// 몬스터 소환
-	{
-		MonsterRef monster = GameObject::CreateMonster();
-		monster->info.set_posx(9);
-		monster->info.set_posy(6);
-		AddObject(monster);
-	}
 	// Sign
 	{
 		SignRef npc1 = GameObject::CreateSign();
@@ -69,6 +39,9 @@ void GameRoom::Init()
 void GameRoom::Update()
 {
 	srand(time(0));
+
+	RandomMonsterSpawn();
+
 	for (auto& item : _players)
 	{
 		item.second->Update();
@@ -521,6 +494,22 @@ bool GameRoom::CanGo(Vec2Int cellPos)
 	return tile->value != 1;
 }
 
+bool GameRoom::MonsterCanGo(Vec2Int cellPos)
+{
+	Tile* tile = _tilemap.GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	// 몬스터 충돌
+	if (GetCreatureAt(cellPos) != nullptr)
+		return false;
+
+	if (tile->value == 2)
+		return false;
+
+	return tile->value == 0;
+}
+
 Vec2Int GameRoom::GetRandomEmptyCellPos()
 {
 	Vec2Int ret = { -1,-1 };
@@ -576,6 +565,22 @@ CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 			return item.second;
 	}
 	return nullptr;
+}
+
+void GameRoom::RandomMonsterSpawn()
+{
+	// 정해진 숫자 만큼만 스폰
+	if (_monsterCount > DESIRED_MONSTER_COUNT)
+		return;
+
+	Vec2Int randPos = GetRandomEmptyCellPos();
+	//
+	{
+		MonsterRef monster = GameObject::CreateMonster();
+		monster->SetCellPos(randPos, true);
+		AddObject(monster);
+		_monsterCount++;
+	}
 }
 
 

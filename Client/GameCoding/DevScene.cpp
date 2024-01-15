@@ -887,6 +887,30 @@ bool DevScene::CanGo(Vec2Int cellPos)
 	return tile->value != 1;
 }
 
+bool DevScene::MonsterCanGo(Vec2Int cellPos)
+{
+	if (_tilemapActor == nullptr)
+		return false;
+
+	Tilemap* tm = _tilemapActor->GetTilemap();
+	if (tm == nullptr)
+		return false;
+
+	Tile* tile = tm->GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	// 몬스터 충돌
+	if (GetCreatureAt(cellPos) != nullptr)
+		return false;
+
+	if (tile->value == 2)
+		return false;
+
+	// 1이면 갈 수 없는 지형
+	return tile->value == 0;
+}
+
 Vec2 DevScene::ConvertPos(Vec2Int cellPos)
 {
 	Vec2 ret = {};

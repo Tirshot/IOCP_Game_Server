@@ -108,6 +108,8 @@ bool GameObject::CanGo(Vec2Int cellPos)
 		return false;
 
 	// 몬스터와 충돌
+	if (this->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+		return room->MonsterCanGo(cellPos);
 
 	return room->CanGo(cellPos);
 }
