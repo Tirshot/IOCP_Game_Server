@@ -27,6 +27,7 @@
 #include "Chat.h"
 #include "ChatInput.h"
 #include "Gold.h"
+#include "ArrowUI.h"
 #include "ChatManager.h"
 #include "Arrow.h"
 #include "HP.h"
@@ -83,6 +84,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ChatInput", L"Sprite\\UI\\Chat.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Gold", L"Sprite\\UI\\Gold.bmp", RGB(255,0,255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Crown", L"Sprite\\UI\\Crown.bmp", RGB(255,0,255));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowUI", L"Sprite\\UI\\ArrowUI.bmp", RGB(0, 255, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tutorial", L"Sprite\\UI\\Tutorial.bmp");
 
 	// 맵 스프라이트
@@ -111,6 +113,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Chat", GET_SINGLE(ResourceManager)->GetTexture(L"Chat"), 0, 0, 130, 28);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"ChatInput", GET_SINGLE(ResourceManager)->GetTexture(L"ChatInput"), 0, 0, 400, 28);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Gold", GET_SINGLE(ResourceManager)->GetTexture(L"Gold"), 23, 24, 23, 24);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"ArrowUI", GET_SINGLE(ResourceManager)->GetTexture(L"ArrowUI"), 0, 0, 24, 23);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tutorial", GET_SINGLE(ResourceManager)->GetTexture(L"Tutorial"), 0, 0, 400, 300);
 
 
@@ -579,6 +582,11 @@ void DevScene::LoadUI()
 		Gold* gold = new Gold();
 		gold->SetVisible(true);
 		AddUI(gold);
+	}
+	{	// Gold
+		ArrowUI* arrowUI = new ArrowUI();
+		arrowUI->SetVisible(true);
+		AddUI(arrowUI);
 	}
 	{	// Game Over
 		GameOver* go = new GameOver();

@@ -32,5 +32,6 @@ private:
 
 	bool _keyPressed = false;
 	Texture* _plum = nullptr;
+	float _sumTime = 0.f;
 };
 

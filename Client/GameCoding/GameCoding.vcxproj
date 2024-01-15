@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Arrow.h" />
+    <ClInclude Include="ArrowUI.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="Chat.h" />
@@ -205,6 +206,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="ArrowUI.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Chat.cpp" />

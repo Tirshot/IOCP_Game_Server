@@ -1,56 +1,56 @@
 #include "pch.h"
-#include "Gold.h"
+#include "ArrowUI.h"
 #include "DevScene.h"
 #include "MyPlayer.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "Sprite.h"
 
-Gold::Gold()
+ArrowUI::ArrowUI()
 {
-	_pos = { 10, 60 };
-	_golds = GET_SINGLE(ResourceManager)->GetSprite(L"Gold");
+	_pos = { 90, 60 };
+	_size = { 24, 23 };
+	_arrows = GET_SINGLE(ResourceManager)->GetSprite(L"ArrowUI");
 	_rect.left = _pos.x + _size.x + 3;
 	_rect.right = _pos.x + 100;
 	_rect.top = 65;
 	_rect.bottom = 80;
 }
 
-Gold::~Gold()
+ArrowUI::~ArrowUI()
 {
-
 }
 
-void Gold::BeginPlay()
+void ArrowUI::BeginPlay()
 {
-
+	_arrowsCount = 10;
 }
 
-void Gold::Tick()
+void ArrowUI::Tick()
 {
 	_myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (_myPlayer)
-		_gold = _myPlayer->info.gold();
+		_arrowsCount = _myPlayer->info.arrows();
 }
 
-void Gold::Render(HDC hdc)
+void ArrowUI::Render(HDC hdc)
 {
-	// 골드 스프라이트
+	// 화살 스프라이트
 	::TransparentBlt(hdc,
 		_pos.x,
 		_pos.y,
-		23,
 		24,
-		_golds->GetDC(),
+		23,
+		_arrows->GetDC(),
 		0,
 		0,
-		23,
 		24,
-		_golds->GetTransparent());
+		23,
+		_arrows->GetTransparent());
 
 	// 골드 갯수 텍스트
 	SetTextColor(hdc, RGB(0, 0, 0));
-	wstring str = std::format(L"{0}", _gold);
+	wstring str = std::format(L"{0}", _arrowsCount);
 	::DrawTextW(hdc, str.c_str(), -1, &_rect, DT_LEFT);
 }

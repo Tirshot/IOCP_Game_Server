@@ -113,6 +113,9 @@ void Player::UpdateTeleport()
 
 void Player::MakeArrow()
 {
+	if (info.arrows() <= 0)
+		return;
+
 	// 클라이언트에게서 화살 생성 패킷 받음
 	ArrowRef arrow = CreateArrow();
 
@@ -131,6 +134,8 @@ void Player::MakeArrow()
 	}
 	room->AddObject(arrow);
 	uint64 ownerid = arrow->GetOwner()->GetObjectID();
+
+	info.set_arrows(info.arrows() - 1);
 }
 
 void Player::Teleport()

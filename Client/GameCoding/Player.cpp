@@ -143,7 +143,7 @@ void Player::TickSkill()
 				monster->OnDamaged(this);
 
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
-				monster->SetWait(300);
+				monster->SetWait(150);
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
@@ -305,9 +305,13 @@ void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (_now - _prev >= 50)
 	{
+		if (this->info.arrows() <= 0)
+			return;
+
 		Arrow* arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
 		arrow->info = info;
 		arrow->SetOwner(this);
+		this->info.set_arrows(this->info.arrows() - 1);
 	}
 	_prev = _now;
 }

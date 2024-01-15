@@ -69,12 +69,12 @@ void MyPlayer::Teleport(Vec2Int cellPos)
 	SyncToServer();
 }
 
-uint64 prevCount = 0;
-uint64 nowCount = 0;
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
-	nowCount = GetTickCount64();
+
+	float _deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	_sumTime += _deltaTime;
 
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
@@ -89,16 +89,16 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
 		SetState(SKILL);
-		prevCount = nowCount;
+		_sumTime = 0;
 	}
 
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
+	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
 		&& GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 	{
-		if (nowCount - prevCount >= 1500.f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
+		if (_sumTime >= 1.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
 		{
 			SetState(SPIN_READY);
-			prevCount = nowCount;
+			_sumTime = 0;
 		}
 	}
 

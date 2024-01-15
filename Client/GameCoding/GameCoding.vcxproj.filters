@@ -278,6 +278,9 @@
     <ClInclude Include="Gold.h">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
+    <ClInclude Include="ArrowUI.h">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -460,6 +463,9 @@
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Gold.cpp">
+      <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowUI.cpp">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
   </ItemGroup>
