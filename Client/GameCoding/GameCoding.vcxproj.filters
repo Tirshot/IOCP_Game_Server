@@ -281,6 +281,9 @@
     <ClInclude Include="ArrowUI.h">
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
+    <ClInclude Include="ArrowItem.h">
+      <Filter>소스 파일\03. Objects\Game\Item</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -467,6 +470,9 @@
     </ClCompile>
     <ClCompile Include="ArrowUI.cpp">
       <Filter>소스 파일\06. UI\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowItem.cpp">
+      <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

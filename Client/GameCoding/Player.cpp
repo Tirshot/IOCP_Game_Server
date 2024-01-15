@@ -143,6 +143,9 @@ void Player::TickSkill()
 				monster->OnDamaged(this);
 
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
+				if (monster->info.hp() <=0)
+					return;
+
 				monster->SetWait(50);
 				monster->SetState(HIT);
 				monster->KnockBack(this);
@@ -200,6 +203,10 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,-1 });
 				creature->OnDamaged(this);
+
+				if (creature->info.hp() <= 0)
+					return;
+
 				creature->SetWait(50);
 				creature->SetState(HIT);
 				creature->KnockBack(this);
@@ -216,6 +223,10 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 1,0 });
 				creature2->OnDamaged(this);
+
+				if (creature2->info.hp() <= 0)
+					return;
+
 				creature2->SetWait(50);
 				creature2->SetState(HIT);
 				creature2->KnockBack(this);
@@ -232,6 +243,10 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,1 });
 				creature3->OnDamaged(this);
+
+				if (creature3->info.hp() <= 0)
+					return;
+
 				creature3->SetWait(50);
 				creature3->SetState(HIT);
 				creature3->KnockBack(this);
@@ -248,6 +263,10 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ -1,0 });
 				creature4->OnDamaged(this);
+
+				if (creature4->info.hp() <= 0)
+					return;
+
 				creature4->SetWait(50);
 				creature4->SetState(HIT);
 				creature4->KnockBack(this);

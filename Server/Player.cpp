@@ -87,6 +87,12 @@ void Player::UpdateSkill()
 				return;
 			}
 			// 몬스터가 플레이어에게 피격
+
+			creature->info.set_hp(creature->info.hp() + creature->info.defence() - shared_from_this()->info.attack());
+
+			if (creature->info.hp() <= 0)
+				return;
+
 			creature->SetWait(50);
 			creature->KnockBack(shared_from_this());
 		}

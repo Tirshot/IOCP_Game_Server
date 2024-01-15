@@ -30,6 +30,7 @@
 #include "ArrowUI.h"
 #include "ChatManager.h"
 #include "Arrow.h"
+#include "ArrowItem.h"
 #include "HP.h"
 #include "MP.h"
 #include "GameOver.h"
@@ -59,6 +60,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"HeartItem", L"Sprite\\Item\\HeartItem.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"FullHeartItem", L"Sprite\\Item\\FullHeartItem.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MaxHeartItem", L"Sprite\\Item\\MaxHeartItem.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowItem", L"Sprite\\Item\\ArrowItem.bmp", RGB(255,0,255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"BlackMp", L"Sprite\\UI\\BlackMp.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MP", L"Sprite\\UI\\MP.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
@@ -478,6 +480,12 @@ void DevScene::LoadItem()
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"MaxHeartItem", { 50, 21}, 0, 4, 0, 0.8f, true });
 	}
+	{ // Arrow 아이템
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"ArrowItem");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowItem");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"ArrowItem", { 24, 23}, 0, 4, 0, 0.8f, true });
+	}
 }
 
 void DevScene::LoadProjectile()
@@ -663,7 +671,6 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
 				// 애니메이션을 위해
 				item->info = info;
-				item->SetDir(DIR_DOWN);
 				item->SetState(IDLE);
 			}
 				break;
@@ -673,7 +680,6 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
 				// 애니메이션을 위해
 				item->info = info;
-				item->SetDir(DIR_DOWN);
 				item->SetState(IDLE);
 			}
 				break;
@@ -683,7 +689,15 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
 				// 애니메이션을 위해
 				item->info = info;
-				item->SetDir(DIR_DOWN);
+				item->SetState(IDLE);
+			}
+			break;
+
+			case Protocol::ITEM_TYPE_ARROW:
+			{
+				ArrowItem* item = SpawnObject<ArrowItem>(Vec2Int{ info.posx(), info.posy() });
+				// 애니메이션을 위해
+				item->info = info;
 				item->SetState(IDLE);
 			}
 			break;

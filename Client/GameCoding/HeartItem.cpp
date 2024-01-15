@@ -51,6 +51,9 @@ void HeartItem::TickIdle()
 		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
+		if (scene == nullptr || myPlayer == nullptr)
+			return;
+
 		if (info.itemtype() == Protocol::ITEM_TYPE_HEART)
 			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + 1, 0, myPlayer->info.maxhp()));
 

@@ -10,7 +10,7 @@
 
 Arrow::Arrow()
 {
-	
+	info.set_attack(20);
 }
 
 Arrow::~Arrow()
@@ -93,6 +93,7 @@ void Arrow::TickHit()
 	_target = dynamic_pointer_cast<Monster>(room->GetCreatureAt(nextPos));
 	if (_target)
 	{
+		_target->info.set_hp(_target->info.hp() + _target->info.defence() - shared_from_this()->info.attack());
  		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
 	}
 	else

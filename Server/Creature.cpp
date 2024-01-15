@@ -170,6 +170,36 @@ void Creature::OnDamaged(CreatureRef attacker)
 						}
 					}
 				}
+				else if (randValueItem > 55 && randValueItem <= 90)
+				{
+					// 35%, Arrow ++
+					if (room)
+					{
+						ItemRef item1 = GameObject::CreateItem();
+						item1->info.set_posx(shared_from_this()->info.posx());
+						item1->info.set_posy(shared_from_this()->info.posy());
+						item1->info.set_defence(9999);
+						item1->info.set_name("ArrowItem");
+						item1->info.set_itemtype(Protocol::ITEM_TYPE_ARROW);
+						item1->SetOwner(attacker->GetObjectID());
+						room->AddObject(item1);
+						{
+							Protocol::S_AddObject pkt;
+
+							Protocol::ObjectInfo* info = pkt.add_objects();
+							*info = item1->info;
+
+							SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
+
+							if (player)
+							{
+								player->session->Send(sendBuffer);
+								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 Arrow 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
+							}
+						}
+					}
+				}
 				// 골드 드랍, 1~10
 				auto randValueGold = (rand() % 10) + 1;
 				{
