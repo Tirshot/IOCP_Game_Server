@@ -16,7 +16,14 @@ public:
 	void SendToClient(int objectId);
 
 	void PrintText();
+
+	void AddChatToLog(uint64 objectId, time_t time, wstring str);
 	list<pair<time_t, wstring>>& GetTextList(int objectId){ return _texts[objectId]; }
+
+	string WStrToString(wstring wstr);
+	wstring StringToWStr(string str);
+
+	void SaveLogFile();
 
 private:
 	float _now = 0;

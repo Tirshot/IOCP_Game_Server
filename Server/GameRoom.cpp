@@ -197,6 +197,8 @@ void GameRoom::LeaveRoom(GameSessionRef session)
 
 	uint64 id = session->player.lock()->info.objectid();
 	RemoveObject(id);
+
+	GChat->SaveLogFile();
 }
 
 GameObjectRef GameRoom::FindObject(uint64 id)

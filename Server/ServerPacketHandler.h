@@ -4,6 +4,7 @@ enum
 {
 	S_TEST = 1,
 	S_EnterGame = 2,
+	C_LeaveGame=3,
 
 	S_MyPlayer = 4,
 	S_AddObject = 5,

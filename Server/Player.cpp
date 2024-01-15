@@ -14,7 +14,7 @@ Player::Player()
 	info.set_mp(50);
 	info.set_maxhp(5);
 	info.set_maxmp(50);
-	info.set_attack(20);
+	info.set_attack(1);
 	info.set_defence(0);
 	info.set_arrows(10);
 }
@@ -45,6 +45,10 @@ void Player::Update()
 
 	case SKILL:
 		UpdateSkill();
+		break;
+
+	case SPIN:
+		UpdateSpin();
 		break;
 
 	case TELEPORT:
@@ -104,6 +108,86 @@ void Player::UpdateSkill()
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_STAFF)
 	{
 		
+	}
+}
+
+void Player::UpdateSpin()
+{
+	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
+	{
+		// 내 십자에 있는 좌표
+		CreatureRef creature = room->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 }); // up
+		CreatureRef creature2 = room->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 }); // right
+		CreatureRef creature3 = room->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 }); // down
+		CreatureRef creature4 = room->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 }); // left
+
+		if (creature)
+		{
+			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			{
+				SetState(IDLE);
+				return;
+			}
+
+			creature->info.set_hp(creature->info.hp() + creature->info.defence() - shared_from_this()->info.attack());
+
+			if (creature->info.hp() <= 0)
+				return;
+
+			creature->SetWait(50);
+			creature->KnockBack(shared_from_this());
+		}
+
+		if (creature2)
+		{
+			if (creature2->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			{
+				SetState(IDLE);
+				return;
+			}
+
+			if (creature2->info.hp() <= 0)
+				return;
+
+			creature2->info.set_hp(creature2->info.hp() + creature2->info.defence() - shared_from_this()->info.attack());
+
+			creature2->SetWait(50);
+			creature2->KnockBack(shared_from_this());
+		}
+
+		if (creature3)
+		{
+			if (creature3->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			{
+				SetState(IDLE);
+				return;
+			}
+
+			creature3->info.set_hp(creature3->info.hp() + creature3->info.defence() - shared_from_this()->info.attack());
+
+			if (creature3->info.hp() <= 0)
+				return;
+
+			creature3->SetWait(50);
+			creature3->KnockBack(shared_from_this());
+		}
+
+		if (creature4)
+		{
+			if (creature4->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			{
+				SetState(IDLE);
+				return;
+			}
+
+			if (creature4->info.hp() <= 0)
+				return;
+
+			creature4->info.set_hp(creature4->info.hp() + creature4->info.defence() - shared_from_this()->info.attack());
+
+			creature4->SetWait(50);
+			creature4->KnockBack(shared_from_this());
+		}
 	}
 }
 

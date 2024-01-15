@@ -19,6 +19,12 @@ message S_EnterGame
 	uint64 accountId = 2;
 }
 
+message C_LeaveGame
+{
+	bool success = 1;
+	uint64 accountId = 2;
+}
+
 // C_EnterRoom
 message S_MyPlayer
 {

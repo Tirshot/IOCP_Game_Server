@@ -167,6 +167,11 @@ void GameOver::OnClickExitButton()
 			scene->RemoveUI(this);
 		}
 
+		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+		if (myPlayer == nullptr)
+			return;
+
 		// 프로그램 종료
 		PostQuitMessage(0);
 	}

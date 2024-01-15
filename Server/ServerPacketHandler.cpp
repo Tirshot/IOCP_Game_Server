@@ -5,6 +5,7 @@
 #include "GameSession.h"
 #include "GameRoom.h"
 #include "GameObject.h"
+#include "Chat.h"
 #include "Player.h"
 #include "Monster.h"
 #include "NPC.h"
@@ -130,8 +131,11 @@ void ServerPacketHandler::Handle_C_SendMessage(GameSessionRef session, BYTE* buf
 	string str = texts.str();
 
 	GameRoomRef room = session->gameRoom.lock();
+
 	if (room)
 	{
+		wstring wstr = GChat->StringToWStr(str);
+		GChat->AddChatToLog(objectId, now, wstr);
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendMessage(objectId, now, str);
 		room->Broadcast(sendBuffer);
 	}

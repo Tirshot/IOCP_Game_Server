@@ -61,7 +61,6 @@ int main()
 
 
 	GThreadManager->Join();
-	
 	// Windows Socket 종료
 	SocketUtils::Clear();	
 }

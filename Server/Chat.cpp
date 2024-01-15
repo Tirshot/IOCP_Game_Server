@@ -4,6 +4,10 @@
 #include "GameRoom.h"
 #include "GameSession.h"
 #include "Player.h"
+#include <filesystem>
+#include <fstream>
+
+namespace fs = std::filesystem;
 
 extern ChatRef GChat = make_shared<Chat>();
 
@@ -83,8 +87,6 @@ void Chat::AddText(const wstring str)
 void Chat::SendToClient(int objectId)
 {
 	list<pair<time_t, wstring>>& sendTexts = _texts[objectId];
-
-
 }
 
 void Chat::PrintText()
@@ -107,5 +109,72 @@ void Chat::PrintText()
 		}
 		// 출력된 텍스트를 삭제
 		it = _texts.erase(it);
+	}
+}
+
+void Chat::AddChatToLog(uint64 objectId, time_t time, wstring str)
+{
+	_log[objectId].push_back(pair<time_t, wstring>(time, str));
+}
+
+string Chat::WStrToString(wstring wstr)
+{
+	// wstring to string 변환
+	int bufferSize = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+
+	string str2(bufferSize, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &str2[0], bufferSize, nullptr, nullptr);
+
+	return str2;
+}
+
+wstring Chat::StringToWStr(string str)
+{
+	// string to wstring 변환
+	int bufferSize = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
+
+	wstring str2(bufferSize, 0);
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &str2[0], bufferSize);
+
+	return str2;
+}
+
+void Chat::SaveLogFile()
+{
+	fs::path _logPath = fs::path(L"E:\\Cpp\\IOCP\\Server\\Server\\Log");
+	// C++ 스타일
+	{
+		wofstream ofs;
+		ofs.open(_logPath / "test.txt", ios_base::out | ios_base::app);
+		if (ofs.is_open())
+		{
+			// _log 순회
+			for (auto& log : _log)
+			{
+				int objectId = log.first;
+				list<pair<time_t, wstring>>& logList = log.second;
+
+				ofs << "Object ID: " << objectId << endl;
+
+				// log 순회
+				for (auto& texts : logList)
+				{
+					time_t time = texts.first;
+					wstring wstr = texts.second;
+
+					// 시간을 문자열로 변환
+					char timeStr[26];
+					ctime_s(timeStr, sizeof(timeStr), &time);
+
+					ofs << "  Time: " << timeStr << " Message: " << wstr << endl;
+				}
+				ofs << endl;
+			}
+			ofs.close();
+		}
+		else
+		{
+			cout << "파일 열기 실패" << endl;
+		}
 	}
 }
