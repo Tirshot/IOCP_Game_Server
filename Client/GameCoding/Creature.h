@@ -19,7 +19,7 @@ public:
 
 	virtual void OnDamaged(Creature* attacker);
 	
-	void KnockBack();
+	void KnockBack(Creature* attacker);
 	uint64 SetWait(uint64 time) { return _wait = GetTickCount64() + time; }
 
 	Protocol::OBJECT_TYPE GetType() { return this->info.objecttype(); }

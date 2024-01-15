@@ -72,8 +72,8 @@ void Arrow::TickIdle()
 		{
 			scene->SpawnObject<HitEffect>(nextPos);
 			creature->OnDamaged(_owner);
-			//creature->SetWait(0);
-			//creature->SetState(HIT);
+			creature->SetWait(100);
+			creature->SetState(HIT);
 		}
 	}
 	scene->RemoveActor(this);

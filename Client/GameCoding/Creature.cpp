@@ -66,9 +66,35 @@ void Creature::OnDamaged(Creature* attacker)
 	}
 }
 
-void Creature::KnockBack()
+void Creature::KnockBack(Creature* attacker)
 {
+	// 플레이어가 몬스터를 바라보는 방향
+	auto dir = attacker->GetLookAtDir(this->GetCellPos());
+	Vec2Int backPos = {};
+
+	switch (dir)
+	{
+	case DIR_UP:
+		backPos = GetCellPos() + Vec2Int {0, -1};
+		break;
+
+	case DIR_DOWN:
+		backPos = GetCellPos() + Vec2Int{ 0, 1 };
+		break;
+
+	case DIR_LEFT:
+		backPos = GetCellPos() + Vec2Int{ -1, 0 };
+		break;
+
+	case DIR_RIGHT:
+		backPos = GetCellPos() + Vec2Int{ 1, 0 };
+		break;
+
+	default:
+		return;
+	}
+
 	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
-	if (CanGo(-GetFrontCellPos()))
-		SetCellPos(-GetFrontCellPos(), true);
+	if (CanGo(backPos))
+		SetCellPos(backPos, true);
 }

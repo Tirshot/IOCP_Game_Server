@@ -126,7 +126,6 @@ void Monster::TickSkill()
 
 void Monster::TickHit()
 {
- 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	_now = GetTickCount64();
 
 	if (_now > _wait)
@@ -149,13 +148,4 @@ void Monster::UpdateAnimation()
 		SetFlipbook(_flipbookHit[info.dir()]);
 		break;
 	}
-}
-
-void Monster::KnockBack()
-{
-	auto dir = GetCellPos() - GetFrontCellPos();
-
-	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
-	if (CanGo(GetCellPos() + dir))
-		SetCellPos(GetCellPos() + dir, true);
 }

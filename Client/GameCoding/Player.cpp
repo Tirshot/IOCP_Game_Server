@@ -143,7 +143,9 @@ void Player::TickSkill()
 				monster->OnDamaged(this);
 
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
-				monster->SetWait(150);
+				monster->SetWait(50);
+				monster->SetState(HIT);
+				monster->KnockBack(this);
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
@@ -198,6 +200,9 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,-1 });
 				creature->OnDamaged(this);
+				creature->SetWait(50);
+				creature->SetState(HIT);
+				creature->KnockBack(this);
 			}
 
 			if (creature2)
@@ -211,6 +216,9 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 1,0 });
 				creature2->OnDamaged(this);
+				creature2->SetWait(50);
+				creature2->SetState(HIT);
+				creature2->KnockBack(this);
 			}
 
 			if (creature3)
@@ -224,6 +232,9 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,1 });
 				creature3->OnDamaged(this);
+				creature3->SetWait(50);
+				creature3->SetState(HIT);
+				creature3->KnockBack(this);
 			}
 
 			if (creature4)
@@ -237,6 +248,9 @@ void Player::TickSpin()
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ -1,0 });
 				creature4->OnDamaged(this);
+				creature4->SetWait(50);
+				creature4->SetState(HIT);
+				creature4->KnockBack(this);
 			}
 		}
 		SetState(MOVE);

@@ -20,8 +20,6 @@ public:
 	virtual void TickHit() override;
 	virtual void UpdateAnimation()  override;
 
-	void KnockBack();
-
 protected:
 	Flipbook* _flipbookMove[4] = {};
 	Flipbook* _flipbookHit[4] = {};

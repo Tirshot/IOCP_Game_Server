@@ -133,7 +133,7 @@ void Monster::UpdateHit()
 {
 	uint64 now = GetTickCount64();
 
-	if (_waitUntil > now)
+	if (_waitHit > now)
 		return;
 
 	SetState(IDLE);

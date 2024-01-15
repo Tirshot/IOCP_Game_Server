@@ -87,8 +87,8 @@ void Player::UpdateSkill()
 				return;
 			}
 			// 몬스터가 플레이어에게 피격
-			creature->SetState(HIT); // 서버 사이드의 상태 변경이 필요한가? 이미 클라에서 변경되었음
-			//creature->OnDamaged(shared_from_this());
+			creature->SetWait(50);
+			creature->KnockBack(shared_from_this());
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
