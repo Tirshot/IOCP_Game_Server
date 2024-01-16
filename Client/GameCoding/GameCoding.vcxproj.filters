@@ -48,9 +48,6 @@
     <Filter Include="소스 파일\03. Objects\Game\Creature">
       <UniqueIdentifier>{c96bed43-60ce-4a04-b44a-4c9cf5cd40d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\03. Objects\Game\Effect">
-      <UniqueIdentifier>{fe6dc297-d745-42bd-82bd-edfd31666b84}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\03. Objects\Game\Projectile">
       <UniqueIdentifier>{e04346c0-81de-4d26-84e9-22df7129525c}</UniqueIdentifier>
     </Filter>
@@ -83,6 +80,9 @@
     </Filter>
     <Filter Include="소스 파일\03. Objects\Game\Item">
       <UniqueIdentifier>{dbdf3fa7-88e2-4a54-800c-b57cbd0424ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04. Resources\Paper2D\Effect">
+      <UniqueIdentifier>{fe6dc297-d745-42bd-82bd-edfd31666b84}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -126,7 +126,7 @@
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
     <ClInclude Include="HitEffect.h">
-      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
       <Filter>소스 파일\03. Objects\Game\Projectile</Filter>
@@ -273,7 +273,7 @@
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
     <ClInclude Include="TeleportEffect.h">
-      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClInclude>
     <ClInclude Include="Gold.h">
       <Filter>소스 파일\06. UI\InGame</Filter>
@@ -283,6 +283,9 @@
     </ClInclude>
     <ClInclude Include="ArrowItem.h">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="DeathEffect.h">
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -334,7 +337,7 @@
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClCompile>
     <ClCompile Include="HitEffect.cpp">
-      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
       <Filter>소스 파일\03. Objects\Game\Projectile</Filter>
@@ -463,7 +466,7 @@
       <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
     <ClCompile Include="TeleportEffect.cpp">
-      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClCompile>
     <ClCompile Include="Gold.cpp">
       <Filter>소스 파일\06. UI\InGame</Filter>
@@ -473,6 +476,9 @@
     </ClCompile>
     <ClCompile Include="ArrowItem.cpp">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="DeathEffect.cpp">
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

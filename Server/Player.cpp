@@ -14,7 +14,7 @@ Player::Player()
 	info.set_mp(50);
 	info.set_maxhp(5);
 	info.set_maxmp(50);
-	info.set_attack(1);
+	info.set_attack(20);
 	info.set_defence(0);
 	info.set_arrows(10);
 }

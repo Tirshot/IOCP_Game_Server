@@ -291,6 +291,7 @@ void GameRoom::RemoveObject(uint64 id)
 
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_monsters.erase(id);
+		_monsterCount--;
 		break;
 
 	case Protocol::OBJECT_TYPE_NPC:
@@ -523,7 +524,7 @@ Vec2Int GameRoom::GetRandomEmptyCellPos()
 		int32 y = rand() % size.y;
 		Vec2Int cellPos{ x, y };
 
-		if (CanGo(cellPos))
+		if (MonsterCanGo(cellPos))
 			return cellPos;
 	}
 }

@@ -36,5 +36,5 @@ void TutorialTrigger::Tick()
 	if (_tutorial == nullptr)
 		return;
 
-	PressSpaceInteract(_tutorial);
+	TouchInteract(_tutorial);
 }

@@ -26,64 +26,63 @@ void TriggerActor::BeginPlay()
 void TriggerActor::Tick()
 {
 	Super::Tick();
+
+	_scene = GET_SINGLE(SceneManager)->GetDevScene();
+	_myPlayer = dynamic_cast<MyPlayer*>(_scene->GetCreatureAt({ info.posx(),info.posy() }));
 }
 
 void TriggerActor::PressSpaceInteract(UI* ui)
 { 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt({ info.posx(),info.posy() }));
-
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
-	if (myPlayer)
+	if (_myPlayer)
 	{
-		Protocol::DIR_TYPE dir = myPlayer->info.dir();
+		Protocol::DIR_TYPE dir = _myPlayer->info.dir();
 
 		// 위를 쳐다보고 Spacebar를 누르면 활성화
-		if (myPlayer->info.dir() == Protocol::DIR_TYPE_UP
-			&& myPlayer->GetState() == Protocol::OBJECT_STATE_TYPE_SKILL
+		if (_myPlayer->info.dir() == Protocol::DIR_TYPE_UP
+			&& _myPlayer->GetState() == Protocol::OBJECT_STATE_TYPE_SKILL
 			&& GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 		{
 			_visiblity = true;
 			ui->SetVisible(_visiblity);
-			GET_SINGLE(ChatManager)->AddMessage(L"창은 2초 후에 자동 비활성화됩니다.");
 		}
 	}
 	// 2초 후 숨김
-	if (_visiblity)
+	else
 	{
-		_exptime += deltaTime;
-	}
-
-	if (_exptime >= 2.f)
-	{
-		_visiblity = false;
+		FadeOut();
 		ui->SetVisible(_visiblity);
-		_exptime = 0.f;
 	}
 }
 
-void TriggerActor::PressSpaceInteract()
+void TriggerActor::TouchInteract(UI* ui)
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt({ info.posx(),info.posy() }));
-
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
-	if (myPlayer)
+	if (IsTouched())
 	{
-		Protocol::DIR_TYPE dir = myPlayer->info.dir();
-
-		// 위를 쳐다보고 Spacebar를 누르면 활성화
-		if (myPlayer->info.dir() == Protocol::DIR_TYPE_UP
-			&& myPlayer->GetState() == Protocol::OBJECT_STATE_TYPE_SKILL
-			&& GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
-		{
-			_visiblity = true;
-			/*ui->SetVisible(_visiblity);*/
-			GET_SINGLE(ChatManager)->AddMessage(L"창은 2초 후에 자동 비활성화됩니다.");
-		}
+		_visiblity = true;
+		ui->SetVisible(_visiblity);
 	}
+	// 해당 타일을 벗어나면 사라짐
+	else
+	{
+		_visiblity = false;
+		ui->SetVisible(_visiblity);
+	}
+}
+
+bool TriggerActor::IsTouched()
+{
+	// myPlayer가 트리거 위에 있으면 활성화
+	if (_myPlayer)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void TriggerActor::FadeOut()
+{
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	if (_visiblity)
 	{
@@ -93,24 +92,7 @@ void TriggerActor::PressSpaceInteract()
 	if (_sumTime >= 2.f)
 	{
 		_visiblity = false;
-		/*ui->SetVisible(_visiblity);*/
 		_exptime = 0.f;
 	}
-}
-
-bool TriggerActor::IsTouched()
-{
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt({ info.posx(),info.posy() }));
-
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
-	// myPlayer가 트리거 위에 있으면 활성화
-	if (myPlayer)
-	{
-		return true;
-	}
-
-	return false;
 }
 

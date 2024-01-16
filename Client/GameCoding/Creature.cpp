@@ -3,6 +3,7 @@
 #include "SceneManager.h"
 #include "DevScene.h"
 #include "HitEffect.h"
+#include "DeathEffect.h"
 #include "Monster.h"
 #include "ClientPacketHandler.h"
 #include "NetworkManager.h"
@@ -62,6 +63,7 @@ void Creature::OnDamaged(Creature* attacker)
 		if (scene)
 		{
 			scene->RemoveActor(this);
+			scene->SpawnObject<DeathEffect>(GetCellPos());
 		}
 	}
 }
