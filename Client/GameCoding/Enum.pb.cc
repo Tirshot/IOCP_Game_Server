@@ -22,7 +22,7 @@ namespace _pbi = _pb::internal;
 
 namespace Protocol {
 }  // namespace Protocol
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[6];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[7];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Enum_2eproto = nullptr;
 const uint32_t TableStruct_Enum_2eproto::offsets[1] = {};
 static constexpr ::_pbi::MigrationSchema* schemas = nullptr;
@@ -51,11 +51,12 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "AFF\020\002*z\n\tITEM_TYPE\022\022\n\016ITEM_TYPE_NONE\020\000\022\023"
   "\n\017ITEM_TYPE_HEART\020\001\022\027\n\023ITEM_TYPE_FULLHEA"
   "RT\020\002\022\026\n\022ITEM_TYPE_MAXHEART\020\003\022\023\n\017ITEM_TYP"
-  "E_ARROW\020\004b\006proto3"
+  "E_ARROW\020\004*4\n\010NPC_TYPE\022\021\n\rNPC_TYPE_SIGN\020\000"
+  "\022\025\n\021NPC_TYPE_MERCHANT\020\001b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 897, descriptor_table_protodef_Enum_2eproto,
+    false, false, 951, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -167,6 +168,20 @@ bool ITEM_TYPE_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* NPC_TYPE_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[6];
+}
+bool NPC_TYPE_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
       return true;
     default:
       return false;

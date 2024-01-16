@@ -60,7 +60,8 @@ SignRef GameObject::CreateSign()
 {
 	SignRef sign = make_shared<Sign>();
 	sign->info.set_objectid(s_idGenerator++);
-	sign->info.set_objecttype(Protocol::OBJECT_TYPE_NPC_SIGN);
+	sign->info.set_objecttype(Protocol::OBJECT_TYPE_NPC);
+	sign->info.set_npctype(Protocol::NPC_TYPE_SIGN);
 
 	return sign;
 }

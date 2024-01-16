@@ -27,14 +27,16 @@ void UI::Tick()
 {
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	for (UI* ui : scene->_uis)
-		ui->Tick();
+		if (ui->GetVisible() == true)
+			ui->Tick();
 }
 
 void UI::Render(HDC hdc)
 {
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	for (UI* ui : scene->_uis)
-		ui->Render(hdc);
+		if (ui->GetVisible() == true)
+			ui->Render(hdc);
 }
 
 RECT UI::GetRect()

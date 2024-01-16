@@ -27,6 +27,7 @@ public:
 
 	Creature* GetCreatureAt(Vec2Int cellPos);
 	Player* GetPlayerByID(uint64 objectId);
+	vector<UI*> GetUIs() { return _uis; }
 
 public:
 	vector<Actor*> _actors[LAYER_MAXCOUNT];

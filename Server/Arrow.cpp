@@ -94,7 +94,9 @@ void Arrow::TickHit()
 	if (_target)
 	{
 		_target->info.set_hp(_target->info.hp() + _target->info.defence() - shared_from_this()->info.attack());
- 		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
+		_target->SetWait(100);
+		_target->SetState(HIT);
+		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
 	}
 	else
 	{

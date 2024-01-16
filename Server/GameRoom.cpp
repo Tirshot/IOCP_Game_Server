@@ -34,6 +34,26 @@ void GameRoom::Init()
 		npc1->info.set_name("Sign");
 		AddObject(npc1);
 	}
+	// 상인
+	{
+		NPCRef npc2 = GameObject::CreateNPC();
+		npc2->info.set_posx(40);
+		npc2->info.set_posy(25);
+		npc2->info.set_defence(9999);
+		npc2->info.set_name("Merchant");
+		// npc 종류 입력
+		npc2->info.set_npctype(Protocol::NPC_TYPE_MERCHANT);
+		AddObject(npc2);
+	}
+	// Sign
+	{
+		SignRef npc3 = GameObject::CreateSign();
+		npc3->info.set_posx(28);
+		npc3->info.set_posy(4);
+		npc3->info.set_defence(9999);
+		npc3->info.set_name("Merchant_Sign");
+		AddObject(npc3);
+	}
 }
 
 void GameRoom::Update()
@@ -108,8 +128,8 @@ void GameRoom::EnterRoom(GameSessionRef session)
 
 	// Player Character Spawn
 	Vec2Int randCellPos = GetRandomEmptySpawnCellPos();
-	player->info.set_posx(randCellPos.x);
-	player->info.set_posy(randCellPos.y);
+	player->info.set_posx(40);
+	player->info.set_posy(26);
 	player->info.set_dir(Protocol::DIR_TYPE_DOWN);
 
 	// 입장한 클라이언트에게 정보 전송

@@ -201,5 +201,5 @@ void Monster::UpdateHit()
 	if (_waitHit > now)
 		return;
 
-	SetState(IDLE);
+	SetState(IDLE, true);
 }

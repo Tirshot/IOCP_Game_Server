@@ -84,6 +84,12 @@
     <Filter Include="소스 파일\04. Resources\Paper2D\Effect">
       <UniqueIdentifier>{fe6dc297-d745-42bd-82bd-edfd31666b84}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\06. UI\InGame\MyPlayer">
+      <UniqueIdentifier>{2d9651ad-00f1-4e9a-bec6-159654e423f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\06. UI\InGame\NPC">
+      <UniqueIdentifier>{9b2b07bf-73c4-42c3-af8c-899ec0b1812e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -233,21 +239,6 @@
     <ClInclude Include="Button.h">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClInclude>
-    <ClInclude Include="Chat.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClInclude>
-    <ClInclude Include="HP.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponSlot.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClInclude>
-    <ClInclude Include="GameOver.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClInclude>
-    <ClInclude Include="ChatInput.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClInclude>
     <ClInclude Include="NPC.h">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
@@ -269,17 +260,8 @@
     <ClInclude Include="HeartItem.h">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClInclude>
-    <ClInclude Include="MP.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClInclude>
     <ClInclude Include="TeleportEffect.h">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="Gold.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrowUI.h">
-      <Filter>소스 파일\06. UI\InGame</Filter>
     </ClInclude>
     <ClInclude Include="ArrowItem.h">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
@@ -289,6 +271,48 @@
     </ClInclude>
     <ClInclude Include="Merchant.h">
       <Filter>소스 파일\03. Objects\Game\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="MerchantTrigger.h">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="MerchantTutorialTrigger.h">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowUI.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Chat.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="ChatInput.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOver.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Gold.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="HP.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MP.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="WeaponSlot.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="MerchantTutorial.h">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="MerchantUI.h">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="NamePlate.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="TextBox.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -429,21 +453,6 @@
     <ClCompile Include="Button.cpp">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Chat.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClCompile>
-    <ClCompile Include="HP.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponSlot.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClCompile>
-    <ClCompile Include="GameOver.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClCompile>
-    <ClCompile Include="ChatInput.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClCompile>
     <ClCompile Include="NPC.cpp">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClCompile>
@@ -465,17 +474,8 @@
     <ClCompile Include="HeartItem.cpp">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClCompile>
-    <ClCompile Include="MP.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClCompile>
     <ClCompile Include="TeleportEffect.cpp">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="Gold.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrowUI.cpp">
-      <Filter>소스 파일\06. UI\InGame</Filter>
     </ClCompile>
     <ClCompile Include="ArrowItem.cpp">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
@@ -485,6 +485,48 @@
     </ClCompile>
     <ClCompile Include="Merchant.cpp">
       <Filter>소스 파일\03. Objects\Game\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="MerchantTrigger.cpp">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="MerchantTutorialTrigger.cpp">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrowUI.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Chat.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="ChatInput.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOver.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Gold.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="HP.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MP.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="WeaponSlot.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="MerchantTutorial.cpp">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="MerchantUI.cpp">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="NamePlate.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -388,6 +388,7 @@ class ObjectInfo final :
     kArrowsFieldNumber = 16,
     kMpFieldNumber = 17,
     kMaxMpFieldNumber = 18,
+    kNpcTypeFieldNumber = 19,
   };
   // string name = 5;
   void clear_name();
@@ -556,6 +557,15 @@ class ObjectInfo final :
   void _internal_set_maxmp(int32_t value);
   public:
 
+  // .Protocol.NPC_TYPE npcType = 19;
+  void clear_npctype();
+  ::Protocol::NPC_TYPE npctype() const;
+  void set_npctype(::Protocol::NPC_TYPE value);
+  private:
+  ::Protocol::NPC_TYPE _internal_npctype() const;
+  void _internal_set_npctype(::Protocol::NPC_TYPE value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -582,6 +592,7 @@ class ObjectInfo final :
     int32_t arrows_;
     int32_t mp_;
     int32_t maxmp_;
+    int npctype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1252,6 +1263,26 @@ inline void ObjectInfo::_internal_set_maxmp(int32_t value) {
 inline void ObjectInfo::set_maxmp(int32_t value) {
   _internal_set_maxmp(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.maxMp)
+}
+
+// .Protocol.NPC_TYPE npcType = 19;
+inline void ObjectInfo::clear_npctype() {
+  _impl_.npctype_ = 0;
+}
+inline ::Protocol::NPC_TYPE ObjectInfo::_internal_npctype() const {
+  return static_cast< ::Protocol::NPC_TYPE >(_impl_.npctype_);
+}
+inline ::Protocol::NPC_TYPE ObjectInfo::npctype() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.npcType)
+  return _internal_npctype();
+}
+inline void ObjectInfo::_internal_set_npctype(::Protocol::NPC_TYPE value) {
+  
+  _impl_.npctype_ = value;
+}
+inline void ObjectInfo::set_npctype(::Protocol::NPC_TYPE value) {
+  _internal_set_npctype(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.npcType)
 }
 
 // -------------------------------------------------------------------

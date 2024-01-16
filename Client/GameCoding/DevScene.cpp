@@ -13,11 +13,14 @@
 #include "HitEffect.h"
 #include "Sign.h"
 #include "TutorialTrigger.h"
+#include "MerchantTrigger.h"
+#include "MerchantTutorialTrigger.h"
 #include "UI.h"
 #include "TilemapActor.h"
 #include "Tilemap.h"
 #include "SoundManager.h"
 #include "Sound.h"
+#include "Merchant.h"
 #include "Monster.h"
 #include "MyPlayer.h"
 #include "Item.h"
@@ -74,6 +77,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Death", L"Sprite\\Effect\\Death.bmp", RGB(255,0,255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Here", L"Sprite\\Effect\\Here.bmp", RGB(0,0,0));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Sign", L"Sprite\\NPC\\Sign.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Merchant", L"Sprite\\NPC\\Merchant.bmp", RGB(255, 0, 255));
 	
 	// UI 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"GameOver", L"Sprite\\UI\\GameOver.bmp", RGB(128, 128, 128));
@@ -82,14 +86,16 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Staff", L"Sprite\\Item\\Staff.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Frame", L"Sprite\\UI\\Frame.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MainFrame", L"Sprite\\UI\\MainFrame.bmp", RGB(255, 0, 255));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Slot", L"Sprite\\UI\\Slot.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Selected", L"Sprite\\UI\\Selected.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Pop", L"Sprite\\UI\\pop.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"PopBackground", L"Sprite\\UI\\PopBackground.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Chat", L"Sprite\\UI\\Chat.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ChatInput", L"Sprite\\UI\\Chat.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Gold", L"Sprite\\UI\\Gold.bmp", RGB(255,0,255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Crown", L"Sprite\\UI\\Crown.bmp", RGB(255,0,255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowUI", L"Sprite\\UI\\ArrowUI.bmp", RGB(0, 255, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tutorial", L"Sprite\\UI\\Tutorial.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MerchantTutorial", L"Sprite\\UI\\MerchantTutorial.bmp");
 
 	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
@@ -103,6 +109,15 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Exit_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 0, 100, 200, 100);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Exit_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 200, 100, 200, 100);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Exit_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 400, 100, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 0, 200, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 200, 200, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 400, 200, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 0, 300, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 200, 300, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 400, 300, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 0, 400, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 200, 400, 200, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 400, 400, 200, 100);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"GameOver", GET_SINGLE(ResourceManager)->GetTexture(L"GameOver"), 0, 0, 400, 100);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"BlackHeart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Heart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 25, 0, 50, 21);
@@ -111,6 +126,8 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Staff", GET_SINGLE(ResourceManager)->GetTexture(L"Staff"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Frame", GET_SINGLE(ResourceManager)->GetTexture(L"Frame"), 0, 0, 76, 76);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"MainFrame", GET_SINGLE(ResourceManager)->GetTexture(L"MainFrame"), 0, 0, 462, 695);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Pop", GET_SINGLE(ResourceManager)->GetTexture(L"Pop"), 0, 0, 130, 28);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"PopBackground", GET_SINGLE(ResourceManager)->GetTexture(L"PopBackground"), 0, 0, 300, 200);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Slot", GET_SINGLE(ResourceManager)->GetTexture(L"Slot"), 0, 0, 76, 76);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"SelectedSlot", GET_SINGLE(ResourceManager)->GetTexture(L"SelectedSlot"), 0, 0, 44, 44);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Selected", GET_SINGLE(ResourceManager)->GetTexture(L"Selected"), 0, 0, 88, 88);
@@ -119,6 +136,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Gold", GET_SINGLE(ResourceManager)->GetTexture(L"Gold"), 23, 24, 23, 24);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"ArrowUI", GET_SINGLE(ResourceManager)->GetTexture(L"ArrowUI"), 0, 0, 24, 23);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Tutorial", GET_SINGLE(ResourceManager)->GetTexture(L"Tutorial"), 0, 0, 400, 300);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"MerchantTutorial", GET_SINGLE(ResourceManager)->GetTexture(L"MerchantTutorial"), 0, 0, 400, 300);
 
 
 	LoadMap();
@@ -454,11 +472,36 @@ void DevScene::LoadNPC()
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SignMove", { 48, 96}, 1, 3, 0, 3.f });
 	}
-	{	// 이름 변경 트리거 배치
+	{	// 튜토리얼 트리거 배치
 		TutorialTrigger* nc = new TutorialTrigger();
 		nc->info.set_posx(4);
 		nc->info.set_posy(4);
 		SpawnObject<TutorialTrigger>(nc->GetCellPos());
+	}
+	{	// 상인 튜토리얼 트리거 배치
+		TutorialTrigger* nc = new TutorialTrigger();
+		nc->info.set_posx(28);
+		nc->info.set_posy(5);
+		SpawnObject<MerchantTutorialTrigger>(nc->GetCellPos());
+	}
+	// 상인
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Merchant");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MerchantIdle");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_MerchantIdle", { 60, 100}, 1, 3, 0, 3.f });
+	}
+	{
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Merchant");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MerchantMove");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_MerchantMove", { 60, 100}, 0, 0, 0, 0.f });
+	}
+	{	// 상점 트리거 배치
+		MerchantTrigger* mt = new MerchantTrigger();
+		mt->info.set_posx(40);
+		mt->info.set_posy(26);
+		SpawnObject<MerchantTrigger>(mt->GetCellPos());
 	}
 }
 
@@ -607,7 +650,7 @@ void DevScene::LoadUI()
 		gold->SetVisible(true);
 		AddUI(gold);
 	}
-	{	// Gold
+	{	// Arrow UI
 		ArrowUI* arrowUI = new ArrowUI();
 		arrowUI->SetVisible(true);
 		AddUI(arrowUI);
@@ -664,19 +707,28 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_NPC)
 		{
-			NPC* npc = SpawnObject<NPC>(Vec2Int{ info.posx(), info.posy() });
-			// 애니메이션을 위해
-			npc->info = info;
-			npc->SetDir(DIR_DOWN);
-			npc->SetState(info.state());
-		}
-		else if (info.objecttype() == Protocol::OBJECT_TYPE_NPC_SIGN)
-		{
-			Sign* npc = SpawnObject<Sign>(Vec2Int{ info.posx(), info.posy() });
-			// 애니메이션을 위해
-			npc->info = info;
-			npc->SetDir(DIR_DOWN);
-			npc->SetState(info.state());
+			switch (info.npctype())
+			{
+			case Protocol::NPC_TYPE_SIGN:
+			{
+				Sign* npc = SpawnObject<Sign>(Vec2Int{ info.posx(), info.posy() });
+				// 애니메이션을 위해
+				npc->info = info;
+				npc->SetDir(DIR_DOWN);
+				npc->SetState(info.state());
+			}
+				break;
+
+			case Protocol::NPC_TYPE_MERCHANT:
+			{
+				Merchant* npc = SpawnObject<Merchant>(Vec2Int{ info.posx(), info.posy() });
+				// 애니메이션을 위해
+				npc->info = info;
+				npc->SetDir(DIR_DOWN);
+				npc->SetState(info.state());
+			}
+				break;
+			}
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_ITEM)
 		{

@@ -45,10 +45,9 @@ void TriggerActor::PressSpaceInteract(UI* ui)
 			ui->SetVisible(_visiblity);
 		}
 	}
-	// 2ÃÊ ÈÄ ¼û±è
 	else
 	{
-		FadeOut();
+		_visiblity = false;
 		ui->SetVisible(_visiblity);
 	}
 }

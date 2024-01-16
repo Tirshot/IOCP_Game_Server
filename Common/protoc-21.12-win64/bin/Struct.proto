@@ -31,6 +31,7 @@ message ObjectInfo
 	int32 arrows = 16;
 	int32 mp = 17;
 	int32 maxMp = 18;
+	NPC_TYPE npcType = 19;
 
 }
 

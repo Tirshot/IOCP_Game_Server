@@ -217,6 +217,31 @@ inline bool ITEM_TYPE_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ITEM_TYPE>(
     ITEM_TYPE_descriptor(), name, value);
 }
+enum NPC_TYPE : int {
+  NPC_TYPE_SIGN = 0,
+  NPC_TYPE_MERCHANT = 1,
+  NPC_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  NPC_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool NPC_TYPE_IsValid(int value);
+constexpr NPC_TYPE NPC_TYPE_MIN = NPC_TYPE_SIGN;
+constexpr NPC_TYPE NPC_TYPE_MAX = NPC_TYPE_MERCHANT;
+constexpr int NPC_TYPE_ARRAYSIZE = NPC_TYPE_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* NPC_TYPE_descriptor();
+template<typename T>
+inline const std::string& NPC_TYPE_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, NPC_TYPE>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function NPC_TYPE_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    NPC_TYPE_descriptor(), enum_t_value);
+}
+inline bool NPC_TYPE_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, NPC_TYPE* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<NPC_TYPE>(
+    NPC_TYPE_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -268,6 +293,11 @@ template <> struct is_proto_enum< ::Protocol::ITEM_TYPE> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::ITEM_TYPE>() {
   return ::Protocol::ITEM_TYPE_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::NPC_TYPE> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::NPC_TYPE>() {
+  return ::Protocol::NPC_TYPE_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE
