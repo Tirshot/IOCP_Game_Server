@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Sign.h"
 #include "DevScene.h"
+#include "Flipbook.h"
+#include "Texture.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "MyPlayer.h"
@@ -35,14 +37,13 @@ void Sign::Render(HDC hdc)
 
 void Sign::TickIdle()
 {
-	// 매 틱마다 표지판 앞에 MyPlayer가 있는지 체크, DIR_UP도 체크
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	Scene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene)
 	{
 		MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt(GetFrontCellPos()));
 
-		if (myPlayer)
+		if (myPlayer == nullptr)
 		{
 			SetState(MOVE);
 		}
@@ -57,7 +58,7 @@ void Sign::TickMove()
 	{
 		MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt(GetFrontCellPos()));
 
-		if (myPlayer == nullptr)
+		if (myPlayer)
 		{
 			SetState(IDLE);
 		}

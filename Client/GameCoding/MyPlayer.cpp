@@ -135,6 +135,13 @@ void MyPlayer::TickInput()
 		// 추후에 갈고리로 변경예정
 		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
 	}
+
+	// CellPos 확인
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_9))
+	{
+		Vec2Int CellPos = GetCellPos();
+		GET_SINGLE(ChatManager)->AddMessage(format(L"({0}, {1})", CellPos.x,CellPos.y));
+	}
 }
 
 void MyPlayer::TryMove()

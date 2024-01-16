@@ -26,20 +26,19 @@ void TriggerActor::BeginPlay()
 void TriggerActor::Tick()
 {
 	Super::Tick();
-
-	_scene = GET_SINGLE(SceneManager)->GetDevScene();
-	_myPlayer = dynamic_cast<MyPlayer*>(_scene->GetCreatureAt({ info.posx(),info.posy() }));
 }
 
 void TriggerActor::PressSpaceInteract(UI* ui)
 { 
-	if (_myPlayer)
+	if (IsTouched())
 	{
-		Protocol::DIR_TYPE dir = _myPlayer->info.dir();
+		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+		Protocol::DIR_TYPE dir = myPlayer->info.dir();
 
 		// 위를 쳐다보고 Spacebar를 누르면 활성화
-		if (_myPlayer->info.dir() == Protocol::DIR_TYPE_UP
-			&& _myPlayer->GetState() == Protocol::OBJECT_STATE_TYPE_SKILL
+		if (myPlayer->info.dir() == Protocol::DIR_TYPE_UP
+			&& myPlayer->GetState() == Protocol::OBJECT_STATE_TYPE_SKILL
 			&& GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 		{
 			_visiblity = true;
@@ -71,11 +70,13 @@ void TriggerActor::TouchInteract(UI* ui)
 
 bool TriggerActor::IsTouched()
 {
-	// myPlayer가 트리거 위에 있으면 활성화
-	if (_myPlayer)
-	{
-		return true;
-	}
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt({ info.posx(),info.posy() }));
+
+	if (myPlayer)
+		{
+			return true;
+		}
 
 	return false;
 }

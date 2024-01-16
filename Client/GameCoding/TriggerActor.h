@@ -24,7 +24,5 @@ public:
 protected:
 	bool _visiblity = false;
 	float _exptime = 0.f; // Exposure time
-	MyPlayer* _myPlayer = nullptr;
-	DevScene* _scene = nullptr;
 };
 

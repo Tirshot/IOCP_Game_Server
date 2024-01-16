@@ -287,6 +287,9 @@
     <ClInclude Include="DeathEffect.h">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Merchant.h">
+      <Filter>소스 파일\03. Objects\Game\NPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -479,6 +482,9 @@
     </ClCompile>
     <ClCompile Include="DeathEffect.cpp">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Merchant.cpp">
+      <Filter>소스 파일\03. Objects\Game\NPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

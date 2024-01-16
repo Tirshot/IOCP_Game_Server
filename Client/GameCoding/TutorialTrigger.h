@@ -1,6 +1,7 @@
 #pragma once
 #include "TriggerActor.h"
 class Tutorial;
+class Flipbook;
 class TutorialTrigger : public TriggerActor
 {
 	using Super = TriggerActor;
