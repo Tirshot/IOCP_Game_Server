@@ -61,11 +61,15 @@ void Game::Render()
 	{ // 마우스 위치 출력
 		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
 		wstring str = std::format(L"Mouse({0}, {1})", mousePos.x, mousePos.y);
+		SetTextColor(_hdcBack, RGB(0, 0, 0));
+		SetBkMode(_hdcBack, TRANSPARENT);
 		::TextOut(_hdcBack, 680, 28, str.c_str(), static_cast<int32>(str.size()));
 	}
 
 	{ // FPS, Delta Time 출력
 		wstring str = std::format(L"FPS : {0}", fps);
+		SetTextColor(_hdcBack, RGB(0, 0, 0));
+		SetBkMode(_hdcBack, TRANSPARENT);
 		::TextOut(_hdcBack, 680, 10, str.c_str(), static_cast<int32>(str.size()));
 	}
 

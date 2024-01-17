@@ -177,6 +177,8 @@
     <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="NamePlate.h" />
+    <ClInclude Include="ShopItemPanel.h" />
+    <ClInclude Include="ShopUI.h" />
     <ClInclude Include="TeleportEffect.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TutorialTrigger.h" />
@@ -252,6 +254,8 @@
     <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="NamePlate.cpp" />
+    <ClCompile Include="ShopItemPanel.cpp" />
+    <ClCompile Include="ShopUI.cpp" />
     <ClCompile Include="TeleportEffect.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TutorialTrigger.cpp" />

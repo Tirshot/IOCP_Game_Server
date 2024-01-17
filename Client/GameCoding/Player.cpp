@@ -187,14 +187,14 @@ void Player::TickSpin()
 		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 십자에 있는 좌표
-			Creature* creature = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 }); // up
-			Creature* creature2 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 }); // right
-			Creature* creature3 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 }); // down
-			Creature* creature4 = scene->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 }); // left
+			Monster* monster = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 })); // up
+			Monster* monster2 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 })); // right
+			Monster* monster3 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 })); // down
+			Monster* monster4 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 })); // left
 
-			if (creature)
+			if (monster)
 			{
-				if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				if (monster->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 				{
 					SetState(IDLE);
 					return;
@@ -202,19 +202,19 @@ void Player::TickSpin()
 
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,-1 });
-				creature->OnDamaged(this);
+				monster->OnDamaged(this);
 
-				if (creature->info.hp() <= 0)
+				if (monster->info.hp() <= 0)
 					return;
 
-				creature->SetWait(50);
-				creature->SetState(HIT);
-				creature->KnockBack(this);
+				monster->SetWait(50);
+				monster->SetState(HIT);
+				monster->KnockBack(this);
 			}
 
-			if (creature2)
+			if (monster2)
 			{
-				if (creature2->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				if (monster2->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 				{
 					SetState(IDLE);
 					return;
@@ -222,19 +222,19 @@ void Player::TickSpin()
 
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 1,0 });
-				creature2->OnDamaged(this);
+				monster2->OnDamaged(this);
 
-				if (creature2->info.hp() <= 0)
+				if (monster2->info.hp() <= 0)
 					return;
 
-				creature2->SetWait(50);
-				creature2->SetState(HIT);
-				creature2->KnockBack(this);
+				monster2->SetWait(50);
+				monster2->SetState(HIT);
+				monster2->KnockBack(this);
 			}
 
-			if (creature3)
+			if (monster3)
 			{
-				if (creature3->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				if (monster3->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 				{
 					SetState(IDLE);
 					return;
@@ -242,19 +242,19 @@ void Player::TickSpin()
 
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,1 });
-				creature3->OnDamaged(this);
+				monster3->OnDamaged(this);
 
-				if (creature3->info.hp() <= 0)
+				if (monster3->info.hp() <= 0)
 					return;
 
-				creature3->SetWait(50);
-				creature3->SetState(HIT);
-				creature3->KnockBack(this);
+				monster3->SetWait(50);
+				monster3->SetState(HIT);
+				monster3->KnockBack(this);
 			}
 
-			if (creature4)
+			if (monster4)
 			{
-				if (creature4->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+				if (monster4->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 				{
 					SetState(IDLE);
 					return;
@@ -262,14 +262,14 @@ void Player::TickSpin()
 
 				// 몬스터에 피격 이펙트 출력
 				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ -1,0 });
-				creature4->OnDamaged(this);
+				monster4->OnDamaged(this);
 
-				if (creature4->info.hp() <= 0)
+				if (monster4->info.hp() <= 0)
 					return;
 
-				creature4->SetWait(50);
-				creature4->SetState(HIT);
-				creature4->KnockBack(this);
+				monster4->SetWait(50);
+				monster4->SetState(HIT);
+				monster4->KnockBack(this);
 			}
 		}
 		SetState(MOVE);

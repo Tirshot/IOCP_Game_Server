@@ -4,6 +4,7 @@
 #include "Panel.h"
 #include "SceneManager.h"
 #include "DevScene.h"
+#include "Chat.h"
 
 
 UI::UI()
@@ -27,16 +28,14 @@ void UI::Tick()
 {
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	for (UI* ui : scene->_uis)
-		if (ui->GetVisible() == true)
-			ui->Tick();
+		ui->Tick();
 }
 
 void UI::Render(HDC hdc)
 {
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	for (UI* ui : scene->_uis)
-		if (ui->GetVisible() == true)
-			ui->Render(hdc);
+		ui->Render(hdc);
 }
 
 RECT UI::GetRect()

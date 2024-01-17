@@ -34,6 +34,7 @@ void Chat::BeginPlay()
 	SetRectPos((int)_rectPos.x, (int)_rectPos.y);
 
 	_chatSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Chat");
+	SetVisible(true);
 }
 
 void Chat::Tick()

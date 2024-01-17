@@ -314,6 +314,12 @@
     <ClInclude Include="TextBox.h">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClInclude>
+    <ClInclude Include="ShopUI.h">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="ShopItemPanel.h">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -527,6 +533,12 @@
     </ClCompile>
     <ClCompile Include="TextBox.cpp">
       <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ShopUI.cpp">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="ShopItemPanel.cpp">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

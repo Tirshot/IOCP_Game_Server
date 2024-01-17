@@ -1,6 +1,6 @@
 #pragma once
 #include "Panel.h"
-class Sprite;
+class Texture;
 class MerchantUI :  public Panel
 {
 	using Super = Panel;
@@ -13,14 +13,12 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
 
-	void OnClickBackButton();
 	void OnClickShopButton(); // 상점 UI 활성
 	void OnClickQuestButton(); // 퀘스트 UI 활성
 	void OnClickExitButton();
 
 protected:
 	RECT _rect = {};
-	Sprite* _background = nullptr;
 	int _alpha = 0;
 	float _sumTime = 0.f;
 };

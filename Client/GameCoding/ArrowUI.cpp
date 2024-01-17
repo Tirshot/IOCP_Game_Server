@@ -51,6 +51,7 @@ void ArrowUI::Render(HDC hdc)
 
 	// °ñµå °¹¼ö ÅØ½ºÆ®
 	SetTextColor(hdc, RGB(0, 0, 0));
+	SetBkMode(hdc, TRANSPARENT);
 	wstring str = std::format(L"{0}", _arrowsCount);
 	::DrawTextW(hdc, str.c_str(), -1, &_rect, DT_LEFT);
 }

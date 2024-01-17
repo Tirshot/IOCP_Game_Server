@@ -46,6 +46,7 @@ void TextBox::Render(HDC hdc)
 	_rect.top = _pos.y + 15;
 	_rect.bottom = _rect.top + _size.y;
 
+	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(255, 255, 255));
 	::DrawTextW(hdc, _text.c_str(), -1, &_rect, DT_LEFT | DT_VCENTER);
 }

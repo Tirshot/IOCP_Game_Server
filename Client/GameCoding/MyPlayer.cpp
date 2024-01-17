@@ -4,6 +4,7 @@
 #include "ResourceManager.h"
 #include "Flipbook.h"
 #include "Texture.h"
+#include "NPC.h"
 #include "TimeManager.h"
 #include "CameraComponent.h"
 #include "SceneManager.h"
@@ -79,6 +80,7 @@ void MyPlayer::TickInput()
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	// 채팅 입력창
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
 	{	
@@ -88,6 +90,11 @@ void MyPlayer::TickInput()
 	// 공격
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
+		NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
+
+		if (npc)
+			return;
+
 		SetState(SKILL);
 		_sumTime = 0;
 	}
@@ -97,6 +104,11 @@ void MyPlayer::TickInput()
 	{
 		if (_sumTime >= 1.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
 		{
+			NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
+
+			if (npc)
+				return;
+
 			SetState(SPIN_READY);
 			_sumTime = 0;
 		}

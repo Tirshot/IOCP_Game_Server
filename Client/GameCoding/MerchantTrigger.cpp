@@ -3,20 +3,12 @@
 #include "DevScene.h"
 #include "Merchant.h"
 #include "MerchantUI.h"
+#include "ShopUI.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
 
 MerchantTrigger::MerchantTrigger()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
-	// 상점 panel 노출
-	MerchantUI* tu = new MerchantUI();
-
-	_merchantUI = tu;
-	_merchantUI->SetVisible(false);
-	_merchantUI->SetPos({ 300,50 });
-	scene->AddUI(_merchantUI);
 }
 
 MerchantTrigger::~MerchantTrigger()
@@ -32,9 +24,22 @@ void MerchantTrigger::Tick()
 {
 	Super::Tick();
 
-	if (_merchantUI == nullptr)
-		return;
-
 	// 바라보고 스페이스를 입력하면 ui가 표시
-	PressSpaceInteract(_merchantUI);
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (scene)
+	{	
+		MerchantUI* merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
+		ShopUI* shopUI = scene->FindUI<ShopUI>(scene->GetUIs());
+
+		if(merchantUI)
+			PressSpaceInteract(merchantUI);
+
+		// 움직이면 UI 숨김
+		if (IsTouched() == false)
+		{
+			shopUI->SetVisible(false);
+			//questUI
+		}
+	}
 }

@@ -27,7 +27,7 @@ GameOver::GameOver()
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_On"), BS_Pressed);
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_Hovered"), BS_Hovered);
 		revive->SetPos(Vec2{ 200, 400 });
-		revive->SetSize({ 200, 100 });
+		revive->SetSize({ 140, 40 });
 		revive->SetVisible(false);
 		revive->AddOnClickDelegate(this, &GameOver::OnClickReviveButton);
 		AddChild(revive);
@@ -39,7 +39,7 @@ GameOver::GameOver()
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
 		exit->SetPos(Vec2{ 600, 400 });
-		exit->SetSize({ 200, 100 });
+		exit->SetSize({ 140, 40 });
 		exit->SetVisible(false);
 		exit->AddOnClickDelegate(this, &GameOver::OnClickExitButton);
 		AddChild(exit);

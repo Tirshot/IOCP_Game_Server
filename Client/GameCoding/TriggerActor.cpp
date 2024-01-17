@@ -38,7 +38,6 @@ void TriggerActor::PressSpaceInteract(UI* ui)
 
 		// 위를 쳐다보고 Spacebar를 누르면 활성화
 		if (myPlayer->info.dir() == Protocol::DIR_TYPE_UP
-			&& myPlayer->GetState() == Protocol::OBJECT_STATE_TYPE_SKILL
 			&& GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 		{
 			_visiblity = true;

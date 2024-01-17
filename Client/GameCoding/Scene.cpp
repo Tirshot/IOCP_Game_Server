@@ -6,6 +6,7 @@
 #include "TimeManager.h"
 #include "Creature.h"
 #include "Panel.h"
+#include "Chat.h"
 #include "Player.h"
 
 Scene::Scene()
@@ -39,7 +40,17 @@ void Scene::Update()
 			actor->Tick();
 
 	for (UI* ui : _uis)
-		ui->Tick();
+		if (ui->GetVisible())
+			ui->Tick();
+
+	for (UI* ui : _uis)
+	{
+		Chat* chat = dynamic_cast<Chat*>(ui);
+		if (!chat)
+			continue;
+
+		chat->Tick();
+	}
 }
 
 void Scene::Render(HDC hdc)

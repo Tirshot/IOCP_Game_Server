@@ -14,6 +14,19 @@ public:
 	virtual void Render(HDC hdc);
 
 	void AddChild(UI* ui);
+
+	template <typename T>
+	T* FindChild(const vector<UI*>& children)
+	{
+		for (auto& item : children)
+		{
+			T* foundItem = dynamic_cast<T*>(item);
+			if (foundItem)
+				return foundItem;
+		}
+		return nullptr;
+	}
+
 	bool RemoveChild(UI* ui);
 
 	auto& GetChildren() { return _children; }

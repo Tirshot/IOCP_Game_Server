@@ -17,6 +17,7 @@ Player::Player()
 	info.set_attack(20);
 	info.set_defence(0);
 	info.set_arrows(10);
+	info.set_gold(9999);
 }
 
 Player::~Player()
