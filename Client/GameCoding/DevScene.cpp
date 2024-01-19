@@ -11,6 +11,7 @@
 #include "Tutorial.h"
 #include "Player.h"
 #include "HitEffect.h"
+#include "HealEffect.h"
 #include "Sign.h"
 #include "TutorialTrigger.h"
 #include "MerchantTrigger.h"
@@ -25,19 +26,16 @@
 #include "MyPlayer.h"
 #include "Item.h"
 #include "HeartItem.h"
+#include "StatusPanel.h"
 #include "SceneManager.h"
 #include "WeaponSlot.h"
 #include "Chat.h"
 #include "ChatInput.h"
-#include "Gold.h"
-#include "ArrowUI.h"
 #include "ChatManager.h"
 #include "NetworkManager.h"
 #include "ClientPacketHandler.h"
 #include "Arrow.h"
 #include "ArrowItem.h"
-#include "HP.h"
-#include "MP.h"
 #include "GameOver.h"
 #include "ShopUI.h"
 #include "MerchantUI.h"
@@ -81,7 +79,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Hit", L"Sprite\\Effect\\Hit.bmp", RGB(0,0,0));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Teleport", L"Sprite\\Effect\\Teleport.bmp", RGB(0,0,0));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Death", L"Sprite\\Effect\\Death.bmp", RGB(255,0,255));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Here", L"Sprite\\Effect\\Here.bmp", RGB(0,0,0));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Heal", L"Sprite\\Effect\\Heal.bmp", RGB(0,0,0));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Sign", L"Sprite\\NPC\\Sign.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Merchant", L"Sprite\\NPC\\Merchant.bmp", RGB(255, 0, 255));
 	
@@ -627,12 +625,12 @@ void DevScene::LoadEffect()
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_Death", { 80, 80}, 0, 5, 0, 0.5f, false });
 	}
-	// Here Effect
+	// Heal Effect
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Here");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Here");
+		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Heal");
+		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Heal");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_Here", { 100, 30}, 0, 3, 0, 0.5f, true });
+		fb->SetInfo({ texture, L"FB_Heal", { 80, 70}, 0, 4, 0, 0.5f, false });
 	}
 }
 
@@ -678,26 +676,10 @@ void DevScene::LoadUI()
 		GET_SINGLE(ChatManager)->SetChatInput(chatInput);
 		AddUI(chatInput);
 	}
-	{	// HP
-		HP* hp = new HP();
-		hp->SetVisible(true);
-		AddUI(hp);
-	}
-	{  // MP
-		MP* mp = new MP();
-		mp->SetVisible(true);
-		AddUI(mp);
-	}
-	
-	{	// Gold
-		Gold* gold = new Gold();
-		gold->SetVisible(true);
-		AddUI(gold);
-	}
-	{	// Arrow UI
-		ArrowUI* arrowUI = new ArrowUI();
-		arrowUI->SetVisible(true);
-		AddUI(arrowUI);
+	{
+		StatusPanel* statusPanel = new StatusPanel();
+		statusPanel->SetVisible(true);
+		AddUI(statusPanel);
 	}
 	{	// Game Over
 		GameOver* go = new GameOver();

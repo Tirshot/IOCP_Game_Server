@@ -5,11 +5,13 @@
 #include "Flipbook.h"
 #include "Texture.h"
 #include "NPC.h"
+#include "Monster.h"
 #include "TimeManager.h"
 #include "CameraComponent.h"
 #include "SceneManager.h"
 #include "DevScene.h"
 #include "HitEffect.h"
+#include "HealEffect.h"
 #include "TeleportEffect.h"
 #include "Arrow.h"
 #include "ClientPacketHandler.h"
@@ -70,6 +72,33 @@ void MyPlayer::Teleport(Vec2Int cellPos)
 	SyncToServer();
 }
 
+int MyPlayer::GetSelectedSlot()
+{
+	return _selectedSlot;
+}
+
+void MyPlayer::UsePotion()
+{
+	if (_potionNums <= 0)
+		return;
+
+	if (info.maxhp() == info.hp())
+		return;
+
+	info.set_hp(clamp(info.hp() + 1, 0, info.maxhp()));
+	{
+		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+	}
+	//
+	clamp(_potionNums -= 1, 0, 99);
+}
+
+void MyPlayer::AddPotion(int num)
+{
+	clamp(_potionNums += num, 0, 99); 
+}
+
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
@@ -97,6 +126,12 @@ void MyPlayer::TickInput()
 
 		SetState(SKILL);
 		_sumTime = 0;
+	}
+
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
+	{
+		UsePotion();
+		scene->SpawnObject<HealEffect>({ GetCellPos() });
 	}
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
@@ -137,15 +172,28 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
 	{
 		SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
+		_selectedSlot = 0;
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
 	{
 		SetWeaponType(Protocol::WEAPON_TYPE_BOW);
+		_selectedSlot = 1;
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
 	{
-		// 추후에 갈고리로 변경예정
 		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
+		_selectedSlot = 2;
+	}
+
+	// Debug - 상인 앞으로 위치 이동
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_7))
+	{
+		info.set_gold(info.gold() + 1000);
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
+		GET_SINGLE(ChatManager)->AddMessage(L"보유 골드 증가");
 	}
 
 	// Debug - 상인 앞으로 위치 이동
@@ -159,7 +207,20 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_9))
 	{
 		Vec2Int CellPos = GetCellPos();
-		GET_SINGLE(ChatManager)->AddMessage(format(L"({0}, {1})", CellPos.x,CellPos.y));
+		GET_SINGLE(ChatManager)->AddMessage(format(L"위치 : ({0}, {1})", CellPos.x, CellPos.y));
+	}
+
+	// Debug - 사망
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_0))
+	{
+		info.set_hp(0);
+		Monster* monster = new Monster();
+		OnDamaged(monster);
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
+		delete monster;
 	}
 }
 

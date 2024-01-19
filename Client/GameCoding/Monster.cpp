@@ -28,7 +28,7 @@ Monster::Monster()
 	// Ω∫≈»µµ protobuf∑Œ πﬁæ∆ø»
 	//info.set_hp(50);
 	//info.set_maxhp(50);
-	//info.set_attack(10);
+	info.set_attack(10);
 	//info.set_defence(0);
 }
 

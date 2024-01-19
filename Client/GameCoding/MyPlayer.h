@@ -14,6 +14,11 @@ public:
 
 public:
 	void Teleport(Vec2Int cellPos);
+	int GetSelectedSlot();
+
+	void UsePotion();
+	void AddPotion(int num);
+	int GetPotionNums() { return _potionNums; }
 
 private:
 	void TickInput();
@@ -33,5 +38,7 @@ private:
 	bool _keyPressed = false;
 	Texture* _plum = nullptr;
 	float _sumTime = 0.f;
+	int _selectedSlot = 0;
+	int _potionNums = 0;
 };
 

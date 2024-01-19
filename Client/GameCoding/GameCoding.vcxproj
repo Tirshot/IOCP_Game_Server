@@ -163,6 +163,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="Gold.h" />
+    <ClInclude Include="HealEffect.h" />
     <ClInclude Include="HeartItem.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HP.h" />
@@ -177,11 +178,13 @@
     <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="NamePlate.h" />
+    <ClInclude Include="Potion.h" />
     <ClInclude Include="Quest.h" />
     <ClInclude Include="QuestUI.h" />
     <ClInclude Include="QuestUIPanel.h" />
     <ClInclude Include="ShopItemPanel.h" />
     <ClInclude Include="ShopUI.h" />
+    <ClInclude Include="StatusPanel.h" />
     <ClInclude Include="TeleportEffect.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TutorialTrigger.h" />
@@ -243,6 +246,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="Gold.cpp" />
+    <ClCompile Include="HealEffect.cpp" />
     <ClCompile Include="HeartItem.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HP.cpp" />
@@ -257,11 +261,13 @@
     <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="NamePlate.cpp" />
+    <ClCompile Include="Potion.cpp" />
     <ClCompile Include="Quest.cpp" />
     <ClCompile Include="QuestUI.cpp" />
     <ClCompile Include="QuestUIPanel.cpp" />
     <ClCompile Include="ShopItemPanel.cpp" />
     <ClCompile Include="ShopUI.cpp" />
+    <ClCompile Include="StatusPanel.cpp" />
     <ClCompile Include="TeleportEffect.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TutorialTrigger.cpp" />

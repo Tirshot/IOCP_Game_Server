@@ -23,7 +23,7 @@ WeaponSlot::~WeaponSlot()
 
 void WeaponSlot::BeginPlay()
 {
-	// _slots에 push_back 하면 슬롯이 자동으로 증가
+	// _slots에 push_back 하면 슬롯이 증가
 	_slots.insert({ 1, _weaponSword });
 	_slots.insert({ 2, _weaponBow });
 	_slots.insert({ 3, _weaponStaff });
@@ -85,7 +85,10 @@ void WeaponSlot::Render(HDC hdc)
 
 int16 WeaponSlot::HighlightSlot()
 {
-	Player* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	/* 0, 1, 2*/
+	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	if (player)
+		return player->GetSelectedSlot();
 
-	return player ? player->GetWeaponType() : 0; /* 0, 1, 2*/
+	return 0; 
 }

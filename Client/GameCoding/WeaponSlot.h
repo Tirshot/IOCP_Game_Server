@@ -22,7 +22,7 @@ public:
 
 	int16 HighlightSlot();
 
-	vector<Sprite*> AddSlot(Sprite* sprite) { _slots.insert({ _num++, sprite}); }
+	void AddSlot(Sprite* sprite) { _slots.insert({ _num++, sprite}); }
 
 protected:
 	Vec2	_pos = { 0, 0 };
@@ -36,7 +36,7 @@ private:
 	Sprite* _weaponSword = nullptr;
 	Sprite* _weaponBow = nullptr;
 	Sprite* _weaponStaff = nullptr;
+	Sprite* _potion = nullptr;
 
 	int _num = 1;
 };
-

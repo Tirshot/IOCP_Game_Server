@@ -35,7 +35,7 @@ public:
 	Vec2 GetCameraPos() { return _cameraPos; }
 	void SetCameraPos(Vec2 cameraPos) { _cameraPos = cameraPos; }
 
-public:
+private:
 	Vec2 _cameraPos = { 0,0 };
 
 public:

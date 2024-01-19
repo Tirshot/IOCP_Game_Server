@@ -335,6 +335,15 @@
     <ClInclude Include="QuestUI.h">
       <Filter>소스 파일\06. UI\InGame\Quest</Filter>
     </ClInclude>
+    <ClInclude Include="Potion.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusPanel.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="HealEffect.h">
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -563,6 +572,15 @@
     </ClCompile>
     <ClCompile Include="Gold.cpp">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Potion.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="StatusPanel.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="HealEffect.cpp">
+      <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

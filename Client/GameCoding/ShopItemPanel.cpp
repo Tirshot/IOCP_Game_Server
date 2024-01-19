@@ -6,6 +6,7 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "NamePlate.h"
+#include "WeaponSlot.h"
 #include "DevScene.h"
 #include "MerchantUI.h"
 #include "ShopUI.h"
@@ -268,6 +269,7 @@ void ShopItemPanel::OnClickPurchaseButton()
 	if (_allCost <= 0)
 		return;
 
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (myPlayer)
@@ -292,7 +294,7 @@ void ShopItemPanel::OnClickPurchaseButton()
 			break;
 
 		case POTION:
-			// potion item ++
+			myPlayer->AddPotion(_itemCount);
 			break;
 		}
 		myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);
