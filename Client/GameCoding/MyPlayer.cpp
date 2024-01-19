@@ -187,7 +187,18 @@ void MyPlayer::TickInput()
 		_selectedSlot = 2;
 	}
 
-	// Debug - 상인 앞으로 위치 이동
+	// Debug - 보유 화살 개수 증가
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_6))
+	{
+		info.set_arrows(info.arrows() + 10);
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 보유 화살 증가");
+	}
+
+	// Debug - 보유 골드 증가
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_7))
 	{
 		info.set_gold(info.gold() + 1000);
@@ -195,14 +206,14 @@ void MyPlayer::TickInput()
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
-		GET_SINGLE(ChatManager)->AddMessage(L"보유 골드 증가");
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 보유 골드 증가");
 	}
 
 	// Debug - 상인 앞으로 위치 이동
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_8))
 	{
 		SetCellPos({ 40,26 }, true);
-		GET_SINGLE(ChatManager)->AddMessage(L"상인 앞으로 이동");
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 상인 앞으로 이동");
 	}
 
 	// Debug - CellPos 확인
