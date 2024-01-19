@@ -4,8 +4,10 @@
 #include "Merchant.h"
 #include "MerchantUI.h"
 #include "ShopUI.h"
+#include "ClientPacketHandler.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "NetworkManager.h"
 
 MerchantTrigger::MerchantTrigger()
 {
@@ -32,9 +34,10 @@ void MerchantTrigger::Tick()
 		MerchantUI* merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
 		ShopUI* shopUI = scene->FindUI<ShopUI>(scene->GetUIs());
 
-		if(merchantUI)
+		if (merchantUI)
+		{
 			PressSpaceInteract(merchantUI);
-
+		}
 		// ¿òÁ÷ÀÌ¸é UI ¼û±è
 		if (IsTouched() == false)
 		{

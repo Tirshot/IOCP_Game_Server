@@ -59,6 +59,22 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 		case S_Gold:
 			Handle_S_Gold(session, buffer, len);
 			break;
+
+		case S_Quest:
+			Handle_S_Quests(session, buffer, len);
+			break;
+
+		case S_QuestProcess:
+			Handle_S_QuestProcess(session, buffer, len);
+			break;
+
+		case S_QuestComplete:
+			Handle_S_QuestComplete(session, buffer, len);
+			break;
+
+		case S_QuestList:
+			Handle_S_QuestList(session, buffer, len);
+			break;
 	}
 }
 
@@ -195,7 +211,6 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 	//
 	const Protocol::ObjectInfo& info = pkt.info();
 
-	
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	// 화살의 주인 플레이어를 가져옴
 	if (scene)
@@ -281,6 +296,95 @@ void ClientPacketHandler::Handle_S_Gold(ServerSessionRef session, BYTE* buffer, 
 	}
 }
 
+void ClientPacketHandler::Handle_S_Quests(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_Quest pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	const Protocol::QuestInfo& questInfo = pkt.questinfo();
+
+	if (scene)
+	{
+		scene->AddQuest(questInfo);
+	}
+}
+
+void ClientPacketHandler::Handle_S_QuestProcess(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_QuestProcess pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	uint64 objectId = pkt.questinfo().objectid();
+	uint64 questId = pkt.questinfo().questid();
+	int process = pkt.questinfo().process();
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+
+	if (player)
+	{
+		Protocol::QUEST_STATE& state = player->GetQuestState(questId);
+		player->SetQuestState(questId, Protocol::QUEST_STATE_ACCEPT);
+	}
+}
+
+void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_QuestComplete pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	uint64 objectId = pkt.questinfo().objectid();
+	uint64 questId = pkt.questinfo().questid();
+	int process = pkt.questinfo().process();
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+
+	if (player)
+	{
+		Protocol::QUEST_STATE& state = player->GetQuestState(questId);
+		player->SetQuestState(questId, Protocol::QUEST_STATE_COMPLETED);
+		GET_SINGLE(ChatManager)->AddMessage(L"QUEST COMPLETE!!");
+	}
+}
+
+void ClientPacketHandler::Handle_S_QuestList(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_QuestList pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	Protocol::QuestInfo info = pkt.questinfo();
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		scene->SetQuests( info.questid(), info);
+	}
+}
+
 // 패킷 보내기
 SendBufferRef ClientPacketHandler::Make_C_Move()
 {
@@ -345,4 +449,21 @@ SendBufferRef ClientPacketHandler::Make_C_Revive(Protocol::ObjectInfo& objectInf
 	*pkt.mutable_info() = objectInfo;
 
 	return MakeSendBuffer(pkt, C_Revive);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_Quest(uint64 objectId, uint64 questId)
+{
+	Protocol::C_Quest pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_questid(questId);
+
+	return MakeSendBuffer(pkt, C_Quest);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_QuestList()
+{
+	Protocol::C_QuestList pkt;
+
+	return MakeSendBuffer(pkt, C_QuestList);
 }

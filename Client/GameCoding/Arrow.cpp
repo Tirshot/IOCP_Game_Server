@@ -72,7 +72,6 @@ void Arrow::TickIdle()
 		{
 			scene->SpawnObject<HitEffect>(nextPos);
 			creature->OnDamaged(_owner);
-			creature->SetWait(100);
 			creature->SetState(HIT);
 		}
 	}

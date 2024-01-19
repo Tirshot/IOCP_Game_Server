@@ -52,6 +52,9 @@ extern BuffDataDefaultTypeInternal _BuffData_default_instance_;
 class ObjectInfo;
 struct ObjectInfoDefaultTypeInternal;
 extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
+class QuestInfo;
+struct QuestInfoDefaultTypeInternal;
+extern QuestInfoDefaultTypeInternal _QuestInfo_default_instance_;
 class Text;
 struct TextDefaultTypeInternal;
 extern TextDefaultTypeInternal _Text_default_instance_;
@@ -59,6 +62,7 @@ extern TextDefaultTypeInternal _Text_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::BuffData* Arena::CreateMaybeMessage<::Protocol::BuffData>(Arena*);
 template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
+template<> ::Protocol::QuestInfo* Arena::CreateMaybeMessage<::Protocol::QuestInfo>(Arena*);
 template<> ::Protocol::Text* Arena::CreateMaybeMessage<::Protocol::Text>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
@@ -773,6 +777,242 @@ class Text final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Struct_2eproto;
 };
+// -------------------------------------------------------------------
+
+class QuestInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.QuestInfo) */ {
+ public:
+  inline QuestInfo() : QuestInfo(nullptr) {}
+  ~QuestInfo() override;
+  explicit PROTOBUF_CONSTEXPR QuestInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  QuestInfo(const QuestInfo& from);
+  QuestInfo(QuestInfo&& from) noexcept
+    : QuestInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline QuestInfo& operator=(const QuestInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline QuestInfo& operator=(QuestInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const QuestInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const QuestInfo* internal_default_instance() {
+    return reinterpret_cast<const QuestInfo*>(
+               &_QuestInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(QuestInfo& a, QuestInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(QuestInfo* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(QuestInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  QuestInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<QuestInfo>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const QuestInfo& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const QuestInfo& from) {
+    QuestInfo::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(QuestInfo* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.QuestInfo";
+  }
+  protected:
+  explicit QuestInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectidFieldNumber = 2,
+    kQuestidFieldNumber = 1,
+    kTargettypeFieldNumber = 3,
+    kTargetnumsFieldNumber = 4,
+    kProcessFieldNumber = 5,
+    kQueststateFieldNumber = 6,
+    kRewardGoldFieldNumber = 7,
+    kRewardItemFieldNumber = 8,
+    kRewardItemNumFieldNumber = 9,
+  };
+  // uint64 objectid = 2;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
+  private:
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
+  public:
+
+  // int32 questid = 1;
+  void clear_questid();
+  int32_t questid() const;
+  void set_questid(int32_t value);
+  private:
+  int32_t _internal_questid() const;
+  void _internal_set_questid(int32_t value);
+  public:
+
+  // .Protocol.OBJECT_TYPE targettype = 3;
+  void clear_targettype();
+  ::Protocol::OBJECT_TYPE targettype() const;
+  void set_targettype(::Protocol::OBJECT_TYPE value);
+  private:
+  ::Protocol::OBJECT_TYPE _internal_targettype() const;
+  void _internal_set_targettype(::Protocol::OBJECT_TYPE value);
+  public:
+
+  // int32 targetnums = 4;
+  void clear_targetnums();
+  int32_t targetnums() const;
+  void set_targetnums(int32_t value);
+  private:
+  int32_t _internal_targetnums() const;
+  void _internal_set_targetnums(int32_t value);
+  public:
+
+  // int32 process = 5;
+  void clear_process();
+  int32_t process() const;
+  void set_process(int32_t value);
+  private:
+  int32_t _internal_process() const;
+  void _internal_set_process(int32_t value);
+  public:
+
+  // .Protocol.QUEST_STATE queststate = 6;
+  void clear_queststate();
+  ::Protocol::QUEST_STATE queststate() const;
+  void set_queststate(::Protocol::QUEST_STATE value);
+  private:
+  ::Protocol::QUEST_STATE _internal_queststate() const;
+  void _internal_set_queststate(::Protocol::QUEST_STATE value);
+  public:
+
+  // int32 rewardGold = 7;
+  void clear_rewardgold();
+  int32_t rewardgold() const;
+  void set_rewardgold(int32_t value);
+  private:
+  int32_t _internal_rewardgold() const;
+  void _internal_set_rewardgold(int32_t value);
+  public:
+
+  // .Protocol.ITEM_TYPE rewardItem = 8;
+  void clear_rewarditem();
+  ::Protocol::ITEM_TYPE rewarditem() const;
+  void set_rewarditem(::Protocol::ITEM_TYPE value);
+  private:
+  ::Protocol::ITEM_TYPE _internal_rewarditem() const;
+  void _internal_set_rewarditem(::Protocol::ITEM_TYPE value);
+  public:
+
+  // int32 rewardItemNum = 9;
+  void clear_rewarditemnum();
+  int32_t rewarditemnum() const;
+  void set_rewarditemnum(int32_t value);
+  private:
+  int32_t _internal_rewarditemnum() const;
+  void _internal_set_rewarditemnum(int32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.QuestInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t objectid_;
+    int32_t questid_;
+    int targettype_;
+    int32_t targetnums_;
+    int32_t process_;
+    int queststate_;
+    int32_t rewardgold_;
+    int rewarditem_;
+    int32_t rewarditemnum_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Struct_2eproto;
+};
 // ===================================================================
 
 
@@ -1379,9 +1619,195 @@ inline void Text::set_allocated_str(std::string* str) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.Text.str)
 }
 
+// -------------------------------------------------------------------
+
+// QuestInfo
+
+// int32 questid = 1;
+inline void QuestInfo::clear_questid() {
+  _impl_.questid_ = 0;
+}
+inline int32_t QuestInfo::_internal_questid() const {
+  return _impl_.questid_;
+}
+inline int32_t QuestInfo::questid() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.questid)
+  return _internal_questid();
+}
+inline void QuestInfo::_internal_set_questid(int32_t value) {
+  
+  _impl_.questid_ = value;
+}
+inline void QuestInfo::set_questid(int32_t value) {
+  _internal_set_questid(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.questid)
+}
+
+// uint64 objectid = 2;
+inline void QuestInfo::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
+}
+inline uint64_t QuestInfo::_internal_objectid() const {
+  return _impl_.objectid_;
+}
+inline uint64_t QuestInfo::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.objectid)
+  return _internal_objectid();
+}
+inline void QuestInfo::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
+}
+inline void QuestInfo::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.objectid)
+}
+
+// .Protocol.OBJECT_TYPE targettype = 3;
+inline void QuestInfo::clear_targettype() {
+  _impl_.targettype_ = 0;
+}
+inline ::Protocol::OBJECT_TYPE QuestInfo::_internal_targettype() const {
+  return static_cast< ::Protocol::OBJECT_TYPE >(_impl_.targettype_);
+}
+inline ::Protocol::OBJECT_TYPE QuestInfo::targettype() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.targettype)
+  return _internal_targettype();
+}
+inline void QuestInfo::_internal_set_targettype(::Protocol::OBJECT_TYPE value) {
+  
+  _impl_.targettype_ = value;
+}
+inline void QuestInfo::set_targettype(::Protocol::OBJECT_TYPE value) {
+  _internal_set_targettype(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.targettype)
+}
+
+// int32 targetnums = 4;
+inline void QuestInfo::clear_targetnums() {
+  _impl_.targetnums_ = 0;
+}
+inline int32_t QuestInfo::_internal_targetnums() const {
+  return _impl_.targetnums_;
+}
+inline int32_t QuestInfo::targetnums() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.targetnums)
+  return _internal_targetnums();
+}
+inline void QuestInfo::_internal_set_targetnums(int32_t value) {
+  
+  _impl_.targetnums_ = value;
+}
+inline void QuestInfo::set_targetnums(int32_t value) {
+  _internal_set_targetnums(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.targetnums)
+}
+
+// int32 process = 5;
+inline void QuestInfo::clear_process() {
+  _impl_.process_ = 0;
+}
+inline int32_t QuestInfo::_internal_process() const {
+  return _impl_.process_;
+}
+inline int32_t QuestInfo::process() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.process)
+  return _internal_process();
+}
+inline void QuestInfo::_internal_set_process(int32_t value) {
+  
+  _impl_.process_ = value;
+}
+inline void QuestInfo::set_process(int32_t value) {
+  _internal_set_process(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.process)
+}
+
+// .Protocol.QUEST_STATE queststate = 6;
+inline void QuestInfo::clear_queststate() {
+  _impl_.queststate_ = 0;
+}
+inline ::Protocol::QUEST_STATE QuestInfo::_internal_queststate() const {
+  return static_cast< ::Protocol::QUEST_STATE >(_impl_.queststate_);
+}
+inline ::Protocol::QUEST_STATE QuestInfo::queststate() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.queststate)
+  return _internal_queststate();
+}
+inline void QuestInfo::_internal_set_queststate(::Protocol::QUEST_STATE value) {
+  
+  _impl_.queststate_ = value;
+}
+inline void QuestInfo::set_queststate(::Protocol::QUEST_STATE value) {
+  _internal_set_queststate(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.queststate)
+}
+
+// int32 rewardGold = 7;
+inline void QuestInfo::clear_rewardgold() {
+  _impl_.rewardgold_ = 0;
+}
+inline int32_t QuestInfo::_internal_rewardgold() const {
+  return _impl_.rewardgold_;
+}
+inline int32_t QuestInfo::rewardgold() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.rewardGold)
+  return _internal_rewardgold();
+}
+inline void QuestInfo::_internal_set_rewardgold(int32_t value) {
+  
+  _impl_.rewardgold_ = value;
+}
+inline void QuestInfo::set_rewardgold(int32_t value) {
+  _internal_set_rewardgold(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardGold)
+}
+
+// .Protocol.ITEM_TYPE rewardItem = 8;
+inline void QuestInfo::clear_rewarditem() {
+  _impl_.rewarditem_ = 0;
+}
+inline ::Protocol::ITEM_TYPE QuestInfo::_internal_rewarditem() const {
+  return static_cast< ::Protocol::ITEM_TYPE >(_impl_.rewarditem_);
+}
+inline ::Protocol::ITEM_TYPE QuestInfo::rewarditem() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.rewardItem)
+  return _internal_rewarditem();
+}
+inline void QuestInfo::_internal_set_rewarditem(::Protocol::ITEM_TYPE value) {
+  
+  _impl_.rewarditem_ = value;
+}
+inline void QuestInfo::set_rewarditem(::Protocol::ITEM_TYPE value) {
+  _internal_set_rewarditem(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardItem)
+}
+
+// int32 rewardItemNum = 9;
+inline void QuestInfo::clear_rewarditemnum() {
+  _impl_.rewarditemnum_ = 0;
+}
+inline int32_t QuestInfo::_internal_rewarditemnum() const {
+  return _impl_.rewarditemnum_;
+}
+inline int32_t QuestInfo::rewarditemnum() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.rewardItemNum)
+  return _internal_rewarditemnum();
+}
+inline void QuestInfo::_internal_set_rewarditemnum(int32_t value) {
+  
+  _impl_.rewarditemnum_ = value;
+}
+inline void QuestInfo::set_rewarditemnum(int32_t value) {
+  _internal_set_rewarditemnum(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardItemNum)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

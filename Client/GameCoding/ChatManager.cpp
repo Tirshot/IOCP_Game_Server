@@ -41,7 +41,7 @@ wstring ChatManager::StringToWStr(string str)
 	// string to wstring º¯È¯
 	int bufferSize = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
 
-	wstring str2(bufferSize, 0);
+	wstring str2(bufferSize, L'\0');
 	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &str2[0], bufferSize);
 
 	return str2;

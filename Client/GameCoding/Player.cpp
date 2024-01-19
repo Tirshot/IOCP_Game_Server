@@ -76,6 +76,8 @@ void Player::BeginPlay()
 void Player::Tick()
 {
 	Super::Tick();
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 }
 
 void Player::Render(HDC hdc)

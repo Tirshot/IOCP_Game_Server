@@ -66,9 +66,10 @@ void Arrow::TickIdle()
 			SetCellPos(nextPos + deltaXY[info.dir()]);
 			SetState(MOVE);
 			_waitUntil = GetTickCount64() + 50; // 클라이언트의 화살 속도와 동기화
+			return;
 		}
-
 		SetState(HIT);
+		return;
 	}
 	_hit = false;
 }
@@ -93,10 +94,13 @@ void Arrow::TickHit()
 	_target = dynamic_pointer_cast<Monster>(room->GetCreatureAt(nextPos));
 	if (_target)
 	{
-		_target->info.set_hp(_target->info.hp() + _target->info.defence() - shared_from_this()->info.attack());
-		_target->SetWait(100);
-		_target->SetState(HIT);
+		//_target->info.set_hp(_target->info.hp() + _target->info.defence() - shared_from_this()->info.attack());
 		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
+		
+		if (_target->info.hp() <= 0)
+		{
+			static_pointer_cast<Player>(_owner)->QuestProgress(0);
+		}
 	}
 	else
 	{

@@ -90,6 +90,12 @@
     <Filter Include="소스 파일\06. UI\InGame\NPC">
       <UniqueIdentifier>{9b2b07bf-73c4-42c3-af8c-899ec0b1812e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\08. Quest">
+      <UniqueIdentifier>{51c47545-dd6a-49fe-82fe-401195811ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\06. UI\InGame\Quest">
+      <UniqueIdentifier>{411c386a-1c5b-4764-99a6-628096bcd0c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -320,6 +326,15 @@
     <ClInclude Include="ShopItemPanel.h">
       <Filter>소스 파일\06. UI\InGame\NPC</Filter>
     </ClInclude>
+    <ClInclude Include="Quest.h">
+      <Filter>소스 파일\08. Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestUIPanel.h">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestUI.h">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -510,9 +525,6 @@
     <ClCompile Include="GameOver.cpp">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClCompile>
-    <ClCompile Include="Gold.cpp">
-      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
-    </ClCompile>
     <ClCompile Include="HP.cpp">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClCompile>
@@ -539,6 +551,18 @@
     </ClCompile>
     <ClCompile Include="ShopItemPanel.cpp">
       <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Quest.cpp">
+      <Filter>소스 파일\08. Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestUIPanel.cpp">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestUI.cpp">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="Gold.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

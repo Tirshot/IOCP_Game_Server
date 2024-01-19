@@ -52,6 +52,10 @@ using Dir = Protocol::DIR_TYPE;
 #define SPIN Protocol::OBJECT_STATE_TYPE_SPIN
 #define TELEPORT Protocol::OBJECT_STATE_TYPE_TELEPORT
 
+#define Q_IDLE Protocol::QUEST_STATE_IDLE
+#define Q_ACCEPT Protocol::QUEST_STATE_ACCEPT
+#define Q_COMPLETED Protocol::QUEST_STATE_COMPLETED
+
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 
 enum class WeaponType

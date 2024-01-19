@@ -242,6 +242,33 @@ inline bool NPC_TYPE_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<NPC_TYPE>(
     NPC_TYPE_descriptor(), name, value);
 }
+enum QUEST_STATE : int {
+  QUEST_STATE_IDLE = 0,
+  QUEST_STATE_ACCEPT = 1,
+  QUEST_STATE_COMPLETED = 2,
+  QUEST_STATE_FINISHED = 3,
+  QUEST_STATE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  QUEST_STATE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool QUEST_STATE_IsValid(int value);
+constexpr QUEST_STATE QUEST_STATE_MIN = QUEST_STATE_IDLE;
+constexpr QUEST_STATE QUEST_STATE_MAX = QUEST_STATE_FINISHED;
+constexpr int QUEST_STATE_ARRAYSIZE = QUEST_STATE_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* QUEST_STATE_descriptor();
+template<typename T>
+inline const std::string& QUEST_STATE_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, QUEST_STATE>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function QUEST_STATE_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    QUEST_STATE_descriptor(), enum_t_value);
+}
+inline bool QUEST_STATE_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, QUEST_STATE* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<QUEST_STATE>(
+    QUEST_STATE_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -298,6 +325,11 @@ template <> struct is_proto_enum< ::Protocol::NPC_TYPE> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::NPC_TYPE>() {
   return ::Protocol::NPC_TYPE_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::QUEST_STATE> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::QUEST_STATE>() {
+  return ::Protocol::QUEST_STATE_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

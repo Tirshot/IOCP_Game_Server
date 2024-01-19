@@ -32,6 +32,8 @@
 #include "Gold.h"
 #include "ArrowUI.h"
 #include "ChatManager.h"
+#include "NetworkManager.h"
+#include "ClientPacketHandler.h"
 #include "Arrow.h"
 #include "ArrowItem.h"
 #include "HP.h"
@@ -39,6 +41,8 @@
 #include "GameOver.h"
 #include "ShopUI.h"
 #include "MerchantUI.h"
+#include "QuestUI.h"
+#include "Quest.h"
 
 DevScene::DevScene()
 {
@@ -92,6 +96,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Pop", L"Sprite\\UI\\pop.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PopBackground", L"Sprite\\UI\\PopBackground.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ShopButtonsBackground", L"Sprite\\UI\\ShopButtonsBackground.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"QuestButtonsBackground", L"Sprite\\UI\\QuestButtonsBackground.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Chat", L"Sprite\\UI\\Chat.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ChatInput", L"Sprite\\UI\\Chat.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Gold", L"Sprite\\UI\\Gold.bmp", RGB(255,0,255));
@@ -153,6 +158,9 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"RButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 284, 540, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"RRButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 384, 540, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"PurchaseButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 484, 540, 32, 21);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"AcceptButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 84, 640, 32, 21);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"CompleteButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 184, 640, 32, 21);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"FinishedButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 284, 640, 32, 21);
 
 
 	LoadMap();
@@ -171,7 +179,6 @@ void DevScene::Init()
 void DevScene::Update()
 {
 	Super::Update();
-	// TickMonsterSpawn(); // 몬스터 소환은 서버에서 관리
 }
 
 void DevScene::Render(HDC hdc)
@@ -684,12 +691,19 @@ void DevScene::LoadUI()
 		tu->SetPos({ 300,50 });
 		AddUI(tu);
 	}
-	{	// 상점 UI
+	{	// 상인 - 상점 UI
 		ShopUI* shopUI = new ShopUI();
 		shopUI->SetPos({135,80});
 		shopUI->SetSize({ 535,450 });
 		shopUI->SetVisible(false);
 		AddUI(shopUI);
+	}
+	{	// 상인 - 퀘스트 UI
+		QuestUI* questUI = new QuestUI();
+		questUI->SetPos({ 135,80 });
+		questUI->SetSize({ 535,450 });
+		questUI->SetVisible(false);
+		AddUI(questUI);
 	}
 }
 
@@ -1052,6 +1066,19 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 		if (CanGo(cellPos))
 			return cellPos;
 	}
+}
+
+void DevScene::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
+{
+	Player* player = GetPlayerByID(playerId);
+	player->SetQuestState(questId, state);
+}
+
+Protocol::QUEST_STATE DevScene::GetPlayerQuestState(int objectId, int questId)
+{
+	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	if (player)
+		return player->GetQuestState(questId);
 }
 
 void DevScene::TickMonsterSpawn()

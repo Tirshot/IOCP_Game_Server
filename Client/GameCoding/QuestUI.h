@@ -1,13 +1,13 @@
 #pragma once
 #include "Panel.h"
 class Texture;
-class ShopUI :  public Panel
+class QuestUI : public Panel
 {
 	using Super = Panel;
 
 public:
-	ShopUI();
-	virtual ~ShopUI();
+	QuestUI();
+	virtual ~QuestUI();
 
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
@@ -15,13 +15,14 @@ public:
 
 	void OnClickBackButton();
 	void OnClickExitButton();
+	void OnClickRefreshButton();
 
-	void SetAllCost(int cost) { _allCost = cost; }
+	void ResetQuestList();
 
 protected:
 	RECT _rect = {};
 	Texture* _background = nullptr;
-	map<int, int> _costs = {};
-	int _allCost = 0;
+	map<int, Protocol::QuestInfo> _quests;
+	int _idx = 1;
 };
-extern int g_itemidGenarator;
+

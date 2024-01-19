@@ -32,7 +32,6 @@ message ObjectInfo
 	int32 mp = 17;
 	int32 maxMp = 18;
 	NPC_TYPE npcType = 19;
-
 }
 
 message Text
@@ -40,4 +39,17 @@ message Text
 	uint64 objectId = 1;
 	uint64 time = 2;
 	string str = 3;
+}
+
+message QuestInfo
+{
+	int32 questid = 1;
+	uint64 objectid = 2;
+	OBJECT_TYPE targettype = 3;
+	int32 targetnums = 4;
+	int32 process = 5;
+	QUEST_STATE queststate = 6;
+	int32 rewardGold = 7;
+	ITEM_TYPE rewardItem = 8;
+	int32 rewardItemNum = 9;
 }

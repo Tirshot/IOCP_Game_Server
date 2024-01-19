@@ -177,6 +177,9 @@
     <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="NamePlate.h" />
+    <ClInclude Include="Quest.h" />
+    <ClInclude Include="QuestUI.h" />
+    <ClInclude Include="QuestUIPanel.h" />
     <ClInclude Include="ShopItemPanel.h" />
     <ClInclude Include="ShopUI.h" />
     <ClInclude Include="TeleportEffect.h" />
@@ -254,6 +257,9 @@
     <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="NamePlate.cpp" />
+    <ClCompile Include="Quest.cpp" />
+    <ClCompile Include="QuestUI.cpp" />
+    <ClCompile Include="QuestUIPanel.cpp" />
     <ClCompile Include="ShopItemPanel.cpp" />
     <ClCompile Include="ShopUI.cpp" />
     <ClCompile Include="TeleportEffect.cpp" />

@@ -17,7 +17,7 @@ Player::Player()
 	info.set_attack(20);
 	info.set_defence(0);
 	info.set_arrows(10);
-	info.set_gold(9999);
+	info.set_gold(1500);
 }
 
 Player::~Player()
@@ -147,10 +147,10 @@ void Player::UpdateSpin()
 				return;
 			}
 
+			creature2->info.set_hp(creature2->info.hp() + creature2->info.defence() - shared_from_this()->info.attack());
+			
 			if (creature2->info.hp() <= 0)
 				return;
-
-			creature2->info.set_hp(creature2->info.hp() + creature2->info.defence() - shared_from_this()->info.attack());
 
 			creature2->SetWait(50);
 			creature2->KnockBack(shared_from_this());
@@ -181,10 +181,10 @@ void Player::UpdateSpin()
 				return;
 			}
 
+			creature4->info.set_hp(creature4->info.hp() + creature4->info.defence() - shared_from_this()->info.attack());
+
 			if (creature4->info.hp() <= 0)
 				return;
-
-			creature4->info.set_hp(creature4->info.hp() + creature4->info.defence() - shared_from_this()->info.attack());
 
 			creature4->SetWait(50);
 			creature4->KnockBack(shared_from_this());
@@ -270,4 +270,33 @@ void Player::Teleport()
 		session->Send(sendBuffer);
 		room->Broadcast(sendBuffer);
 	}
+}
+
+void Player::QuestProgress(int questid)
+{
+	Protocol::QUEST_STATE state = GetQuestState(questid);
+	if (state == Protocol::QUEST_STATE_ACCEPT)
+	{
+		// 몬스터 처치 카운트 
+		{
+			Protocol::QuestInfo& QuestInfo = room->GetQuest(questid);
+			QuestInfo.set_process(QuestInfo.process() + 1);
+
+			if (QuestInfo.process() >= QuestInfo.targetnums())
+			{
+				QuestInfo.set_process(QuestInfo.targetnums());
+				SetQuestState(questid, Protocol::QUEST_STATE_COMPLETED);
+				{
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), questid, QuestInfo.process());
+					session->Send(sendBuffer);
+				}
+			}
+			else
+			{
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), questid, QuestInfo.process());
+				session->Send(sendBuffer);
+			}
+		}
+	}
+	return;
 }

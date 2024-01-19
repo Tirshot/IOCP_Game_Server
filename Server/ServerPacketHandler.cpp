@@ -41,6 +41,14 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Revive(session, buffer, len);
 		break;
 
+	case C_Quest:
+		Handle_C_Quest(session, buffer, len);
+		break;
+
+	case C_QuestList:
+		Handle_C_QuestList(session, buffer, len);
+		break;
+
 	default:
 		break;
 	}
@@ -215,6 +223,52 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 	}
 }
 
+void ServerPacketHandler::Handle_C_Quest(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_Quest pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+	//
+	uint64 objectid = pkt.objectid();
+	uint64 questid = pkt.questid();
+	GameRoomRef room = session->gameRoom.lock();
+
+	if (room)
+	{
+		room->SetPlayerQuestState(objectid, questid, Protocol::QUEST_STATE_ACCEPT);
+	}
+}
+
+void ServerPacketHandler::Handle_C_QuestList(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_QuestList pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+	//
+	GameRoomRef room = session->gameRoom.lock();
+
+	if (room)
+	{
+		auto quests = room->GetQuests();
+		uint64 objectId = session->player.lock()->info.objectid();
+		for (auto& quest : quests)
+		{
+			int questid = quest.first;
+			auto job = quest.second;
+			{
+				SendBufferRef sendBuffer = Make_S_QuestList(objectId, job);
+				session->Send(sendBuffer);
+			}
+		}
+	}
+}
+
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
 	Protocol::S_TEST pkt;
@@ -316,6 +370,53 @@ SendBufferRef ServerPacketHandler::Make_S_Gold(uint64 objectId, int32 gold)
 	pkt.set_gold(gold);
 
 	return MakeSendBuffer(pkt, S_Gold);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_Quests(const Protocol::QuestInfo& info)
+{
+	Protocol::S_Quest pkt;
+
+	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
+	*questInfo = info;
+
+	return MakeSendBuffer(pkt, S_Quest);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_QuestProcess(uint64 objectid, uint64 questid, uint64 process)
+{
+	Protocol::S_QuestProcess pkt;
+
+	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
+	questInfo->set_objectid(objectid);
+	questInfo->set_questid(questid);
+	questInfo->set_process(process);
+	questInfo->set_queststate(Protocol::QUEST_STATE_ACCEPT);
+
+	return MakeSendBuffer(pkt, S_QuestProcess);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_QuestComplete(uint64 objectid, uint64 questid, uint64 process)
+{
+	Protocol::S_QuestComplete pkt;
+
+	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
+	questInfo->set_objectid(objectid);
+	questInfo->set_questid(questid);
+	questInfo->set_process(process);
+	questInfo->set_queststate(Protocol::QUEST_STATE_COMPLETED);
+
+	return MakeSendBuffer(pkt, S_QuestComplete);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_QuestList(uint64 objectid, const Protocol::QuestInfo& info)
+{
+	Protocol::S_QuestList pkt;
+
+	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
+	*questInfo = info;
+	questInfo->set_objectid(objectid);
+
+	return MakeSendBuffer(pkt, S_QuestList);
 }
 
 SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)

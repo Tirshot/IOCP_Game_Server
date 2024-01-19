@@ -28,6 +28,16 @@ enum
 	S_Teleport = 34,
 
 	S_Gold = 36,
+
+	C_Quest = 40,
+	S_Quest = 41,
+
+	C_QuestAccept = 42,
+	S_QuestProcess = 43,
+	S_QuestComplete = 44,
+
+	C_QuestList = 46,
+	S_QuestList = 47,
 };
 
 struct BuffData
@@ -47,6 +57,8 @@ public:
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Revive(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_Quest(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_QuestList(GameSessionRef session, BYTE* buffer, int32 len);
 	
 	
 	// 보내기
@@ -59,6 +71,10 @@ public:
 	static SendBufferRef Make_S_SendMessage(uint64 objectId, uint64 time, string str);
 	static SendBufferRef Make_S_Teleport(uint64 objectId, int32 cellPosX, int32 cellPosY);
 	static SendBufferRef Make_S_Gold(uint64 objectId, int32 gold);
+	static SendBufferRef Make_S_Quests(const Protocol::QuestInfo& info);
+	static SendBufferRef Make_S_QuestProcess(uint64 objectid, uint64 questid, uint64 process);
+	static SendBufferRef Make_S_QuestComplete(uint64 objectid, uint64 questid, uint64 process);
+	static SendBufferRef Make_S_QuestList(uint64 objectid, const Protocol::QuestInfo& info);
 
 	// Arrow의 info를 넘김
 	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id);

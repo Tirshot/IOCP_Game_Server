@@ -14,6 +14,7 @@ using NameChangerRef = shared_ptr<class NameChanger>;
 using ProjectileRef = shared_ptr<class Projectile>;
 using ArrowRef = shared_ptr<class Arrow>;
 using ChatRef = shared_ptr<class Chat>;
+using QuestRef = shared_ptr<class Quest>;
 
 #include "Enum.pb.h"
 using Dir = Protocol::DIR_TYPE;
@@ -30,6 +31,10 @@ using Dir = Protocol::DIR_TYPE;
 #define STOP Protocol::OBJECT_STATE_TYPE_STOP
 #define SPIN Protocol::OBJECT_STATE_TYPE_SPIN
 #define TELEPORT Protocol::OBJECT_STATE_TYPE_TELEPORT
+
+#define Q_IDLE Protocol::QUEST_STATE_IDLE
+#define Q_ACCEPT Protocol::QUEST_STATE_ACCEPT
+#define Q_COMPLETED Protocol::QUEST_STATE_COMPLETED
 
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 

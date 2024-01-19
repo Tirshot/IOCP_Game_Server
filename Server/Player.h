@@ -21,7 +21,12 @@ private:
 public:
 	void MakeArrow();
 	void Teleport();
-	// Get, Set 함수를 안쓰기 위해 public, 추후 수정 필요
+
+public:
+	void QuestProgress(int questid);
+	Protocol::QUEST_STATE GetQuestState(int questid) { return _questsStates[questid]; }
+	void SetQuestState(int questid, Protocol::QUEST_STATE state) { _questsStates[questid] = state; }
+	
 public:
 	GameSessionRef session;
 
@@ -29,5 +34,7 @@ private:
 	// 초당 마나 회복 계산
 	uint64 _now = 0;
 	uint64 _prev = 0;
+	
+	map<int, Protocol::QUEST_STATE> _questsStates;
 };
 

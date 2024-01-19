@@ -117,3 +117,34 @@ message S_Gold
 	uint64 objectId = 1;
 	int32 gold = 2;
 }
+
+message C_Quest
+{
+	uint64 objectId = 1;
+	uint64 questId = 2;
+}
+
+message S_Quest
+{
+	QuestInfo questinfo = 1;
+}
+
+message S_QuestProcess
+{
+	QuestInfo questinfo = 1;
+}
+
+message S_QuestComplete
+{
+	QuestInfo questinfo = 1;
+}
+
+message C_QuestList
+{
+	QuestInfo questinfo = 1;
+}
+
+message S_QuestList
+{
+	QuestInfo questinfo = 1;
+}

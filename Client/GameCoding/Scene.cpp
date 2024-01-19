@@ -43,14 +43,9 @@ void Scene::Update()
 		if (ui->GetVisible())
 			ui->Tick();
 
-	for (UI* ui : _uis)
-	{
-		Chat* chat = dynamic_cast<Chat*>(ui);
-		if (!chat)
-			continue;
-
+	Chat* chat = FindUI<Chat>(_uis);
+	if(chat)
 		chat->Tick();
-	}
 }
 
 void Scene::Render(HDC hdc)

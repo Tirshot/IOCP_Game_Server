@@ -29,6 +29,16 @@ enum
 	S_Teleport = 34,
 
 	S_Gold = 36,
+
+	C_Quest = 40,
+	S_Quest = 41,
+
+	C_QuestAccept = 42,
+	S_QuestProcess = 43,
+	S_QuestComplete = 44,
+
+	C_QuestList = 46,
+	S_QuestList = 47,
 };
 class Creature;
 class ClientPacketHandler
@@ -47,6 +57,10 @@ public:
 	static void Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Teleport(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Gold(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Quests(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_QuestProcess(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_QuestComplete(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_QuestList(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// º¸³»±â
 	static SendBufferRef Make_C_Move();
@@ -72,5 +86,7 @@ public:
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
 	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
+	static SendBufferRef Make_C_Quest(uint64 objectId, uint64 questId);
+	static SendBufferRef Make_C_QuestList();
 };
 

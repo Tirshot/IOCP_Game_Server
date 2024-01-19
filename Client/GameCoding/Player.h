@@ -26,6 +26,9 @@ protected:
 public:
 	virtual void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 	void SyncToServer();
+	map<int, Protocol::QUEST_STATE>& GetQuestStates() { return _questsStates; }
+	Protocol::QUEST_STATE& GetQuestState(int questId) { return _questsStates[questId]; }
+	void SetQuestState(int questId, Protocol::QUEST_STATE state) { _questsStates[questId] = state; }
 
 private:
 	Flipbook* _flipbookIdle[4] = {};
@@ -41,5 +44,6 @@ private:
 protected:
 	uint64 _now = 0;
 	uint64 _prev = 0;
+	map<int, Protocol::QUEST_STATE> _questsStates;
 };
 

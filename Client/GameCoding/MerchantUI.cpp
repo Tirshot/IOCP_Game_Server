@@ -1,11 +1,14 @@
 #include "pch.h"
 #include "MerchantUI.h"
+#include "QuestUI.h"
 #include "Sprite.h"
 #include "Button.h"
 #include "TextBox.h"
 #include "NamePlate.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "NetworkManager.h"
+#include "ClientPacketHandler.h"
 #include "Scene.h"
 #include "DevScene.h"
 #include "ShopUI.h"
@@ -80,6 +83,11 @@ void MerchantUI::Tick()
 {
 	for (auto& child : _children)
 		child->Tick();
+
+	{	// 퀘스트 리스트 받아오기
+		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_QuestList();
+		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+	}
 }
 
 void MerchantUI::Render(HDC hdc)
@@ -95,7 +103,9 @@ void MerchantUI::OnClickShopButton()
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	ShopUI* shopui = scene->FindUI<ShopUI>(scene->GetUIs());
-	shopui->SetVisible(true);
+
+	if (shopui)
+		shopui->SetVisible(true);
 
 	// item count reset
 	auto* child = shopui->FindChild<ShopItemPanel>(shopui->GetChildren());
@@ -108,12 +118,18 @@ void MerchantUI::OnClickQuestButton()
 	SetVisible(false);
 
 	// 퀘스트 Panel 활성화
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 
+	QuestUI* questUI = scene->FindUI<QuestUI>(scene->GetUIs());
+
+	if (questUI)
+	{
+		questUI->ResetQuestList();
+		questUI->SetVisible(true);
+	}
 }
 
 void MerchantUI::OnClickExitButton()
 {
 	SetVisible(false);
-
-
 }

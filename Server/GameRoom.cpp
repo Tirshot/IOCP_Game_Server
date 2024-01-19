@@ -8,6 +8,7 @@
 #include "Item.h"
 #include "Arrow.h"
 #include "Chat.h"
+#include "Quest.h"
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
 
@@ -53,6 +54,28 @@ void GameRoom::Init()
 		npc3->info.set_defence(9999);
 		npc3->info.set_name("Merchant_Sign");
 		AddObject(npc3);
+	}
+	// Quest 생성
+	{
+		QuestRef quest1 = Quest::CreateQuest();
+		quest1->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
+		quest1->info.set_targetnums(1);
+		quest1->info.set_rewardgold(150);
+		_quests.insert({ quest1->info.questid(), quest1->info});
+	}
+	{
+		QuestRef quest2 = Quest::CreateQuest();
+		quest2->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
+		quest2->info.set_targetnums(1);
+		quest2->info.set_rewardgold(0);
+		_quests.insert({ quest2->info.questid(), quest2->info });
+	}
+	{
+		QuestRef quest3 = Quest::CreateQuest();
+		quest3->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
+		quest3->info.set_targetnums(0);
+		quest3->info.set_rewardgold(0);
+		_quests.insert({ quest3->info.questid(), quest3->info });
 	}
 }
 
@@ -100,7 +123,6 @@ void GameRoom::Update()
 			_deleteObjects[id] = item.second;
 		}
 	}
-
 	// 투사체 및 아이템 제거
 	for (const auto& del : _deleteObjects)
 	{
@@ -165,17 +187,9 @@ void GameRoom::EnterRoom(GameSessionRef session)
 			Protocol::ObjectInfo* info = pkt.add_objects();
 			*info = item.second->info;
 		}
-
-		//for (auto& item : _items)
-		//{
-		//	Protocol::ObjectInfo* info = pkt.add_objects();
-		//	*info = item.second->info;
-		//}
-
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 		session->Send(sendBuffer);
 	}
-
 	AddObject(player);
 }
 
@@ -604,6 +618,23 @@ void GameRoom::RandomMonsterSpawn()
 	}
 }
 
+Protocol::QuestInfo& GameRoom::GetQuest(int questId)
+{
+	auto findit = _quests.find(questId);
+	if (findit != _quests.end())
+	{
+		Protocol::QuestInfo& info = _quests[questId];
+		return info;
+	}
+}
+
+void GameRoom::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
+{
+	PlayerRef player = dynamic_pointer_cast<Player>(FindObject(playerId));
+	if (player)
+		player->SetQuestState(questId, state);
+}
+
 
 void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 {
@@ -615,7 +646,7 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 
 	// set state, dir, pos + weaponType
 
- 	gameObject->info = pkt.info();
+	gameObject->info = pkt.info();
 
 	// 클라이언트의 패킷을 브로드캐스트
 	{
