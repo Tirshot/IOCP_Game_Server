@@ -181,12 +181,6 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 		player->session = session;
 		player->info.set_dir(Protocol::DIR_TYPE_DOWN);
 
-		// 입장한 클라이언트에게 정보 전송
-		{
-			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info);
-			session->Send(sendBuffer);
-		}
-
 		// 모든 오브젝트 정보 전송
 		{
 			Protocol::S_AddObject pkt;
@@ -214,9 +208,20 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 				Protocol::ObjectInfo* info = pkt.add_objects();
 				*info = item.second->info;
 			}
-
-			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-			session->Send(sendBuffer);
+			// 기존의 액터들 제거 후 다시 추가
+			{
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Reset();
+				session->Send(sendBuffer);
+			}
+			{	// 오브젝트 정보 추가
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+				session->Send(sendBuffer);
+			}
+			// 입장한 클라이언트에게 정보 전송
+			{
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info);
+				session->Send(sendBuffer);
+			}
 		}
 		room->AddObject(player);
 		room->RemoveTemp(id);
@@ -294,6 +299,13 @@ SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 atta
 	}
 
 	return MakeSendBuffer(pkt, S_TEST);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_Reset()
+{
+	Protocol::S_Reset pkt;
+
+	return MakeSendBuffer(pkt, S_Reset);
 }
 
 SendBufferRef ServerPacketHandler::Make_S_EnterGame()

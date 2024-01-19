@@ -76,7 +76,8 @@ void Creature::OnDamaged(CreatureRef attacker)
 		if (info.hp() == 0)
 		{
 			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
-			player->QuestProgress(0);
+			if (player)
+				player->QuestProgress(0);
 			// 플레이어만 막타를 쳤을 때 아이템이 드랍
 			if (attacker->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 			{	// 아이템 드랍, 1 ~ 99

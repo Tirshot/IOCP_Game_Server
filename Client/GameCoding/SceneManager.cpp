@@ -48,8 +48,10 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	}
 
 	// Scene 변경을 위해 기존 scene 제거
-	SAFE_DELETE(_scene);
+	if (_scene)
+		SAFE_DELETE(_scene);
 
+	newScene->SetPauseState(false);
 	// 기존 Scene을 변경하려는 Scene으로 대체
 	_scene = newScene;
 	_sceneType = sceneType;

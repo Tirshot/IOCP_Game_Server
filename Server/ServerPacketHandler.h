@@ -4,7 +4,7 @@ enum
 {
 	S_TEST = 1,
 	S_EnterGame = 2,
-	C_LeaveGame=3,
+	C_LeaveGame = 3,
 
 	S_MyPlayer = 4,
 	S_AddObject = 5,
@@ -38,6 +38,9 @@ enum
 
 	C_QuestList = 46,
 	S_QuestList = 47,
+
+
+	S_Reset = 99,
 };
 
 struct BuffData
@@ -63,6 +66,7 @@ public:
 	
 	// º¸³»±â
 	static SendBufferRef Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs);
+	static SendBufferRef Make_S_Reset();
 	static SendBufferRef Make_S_EnterGame();
 	static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
 	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);

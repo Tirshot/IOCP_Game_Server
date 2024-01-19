@@ -69,6 +69,9 @@ void GameOver::Tick()
 	{
 		for (auto& child : _children)
 		{
+			if (child == nullptr)
+				return;
+
 			child->SetVisible(true);
 			child->Tick();
 		}
@@ -132,27 +135,24 @@ void GameOver::FadeIn()
 
 void GameOver::OnClickReviveButton()
 {
-	if (_visible)
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (scene == nullptr)
+		return;
+
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	if (myPlayer == nullptr)
+		return;
+
+	// 수행 후
+	SetVisible(false);
+
+	// 부활 패킷 전송
 	{
-		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
-		if (scene == nullptr)
-			return;
-
-		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-
-		if (myPlayer == nullptr)
-			return;
-
-		// 부활 패킷 전송
-		{
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Revive(myPlayer->info);
-			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-		}
-
-		// 수행 후 ui 제거
-		scene->RemoveUI(this);
-		GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Revive(myPlayer->info);
+		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
 }
 

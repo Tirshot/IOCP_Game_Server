@@ -223,6 +223,25 @@ void DevScene::RemoveActor(Actor* actor)
 	}
 }
 
+void DevScene::ClearActors()
+{
+	for (auto& actorLayer : _actors)
+	{
+		for(auto& actor : actorLayer)
+			delete actor;
+
+		actorLayer.clear();
+	}
+}
+
+void DevScene::ClearUIs()
+{
+	for (auto& ui : _uis)
+		delete ui;
+
+	_uis.clear();
+}
+
 void DevScene::LoadMap()
 {
 	// ¹è°æ

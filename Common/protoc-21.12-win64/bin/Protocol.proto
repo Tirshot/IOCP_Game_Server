@@ -148,3 +148,8 @@ message S_QuestList
 {
 	QuestInfo questinfo = 1;
 }
+
+message S_Reset
+{
+	ObjectInfo objectinfo = 1;
+}

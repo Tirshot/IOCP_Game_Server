@@ -48,18 +48,19 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "WN\020\001\022\021\n\rDIR_TYPE_LEFT\020\002\022\022\n\016DIR_TYPE_RIGH"
   "T\020\003*P\n\013WEAPON_TYPE\022\025\n\021WEAPON_TYPE_SWORD\020"
   "\000\022\023\n\017WEAPON_TYPE_BOW\020\001\022\025\n\021WEAPON_TYPE_ST"
-  "AFF\020\002*z\n\tITEM_TYPE\022\022\n\016ITEM_TYPE_NONE\020\000\022\023"
-  "\n\017ITEM_TYPE_HEART\020\001\022\027\n\023ITEM_TYPE_FULLHEA"
-  "RT\020\002\022\026\n\022ITEM_TYPE_MAXHEART\020\003\022\023\n\017ITEM_TYP"
-  "E_ARROW\020\004*4\n\010NPC_TYPE\022\021\n\rNPC_TYPE_SIGN\020\000"
-  "\022\025\n\021NPC_TYPE_MERCHANT\020\001*p\n\013QUEST_STATE\022\024"
-  "\n\020QUEST_STATE_IDLE\020\000\022\026\n\022QUEST_STATE_ACCE"
-  "PT\020\001\022\031\n\025QUEST_STATE_COMPLETED\020\002\022\030\n\024QUEST"
-  "_STATE_FINISHED\020\003b\006proto3"
+  "AFF\020\002*\220\001\n\tITEM_TYPE\022\022\n\016ITEM_TYPE_NONE\020\000\022"
+  "\023\n\017ITEM_TYPE_HEART\020\001\022\027\n\023ITEM_TYPE_FULLHE"
+  "ART\020\002\022\026\n\022ITEM_TYPE_MAXHEART\020\003\022\023\n\017ITEM_TY"
+  "PE_ARROW\020\004\022\024\n\020ITEM_TYPE_POTION\020\005*4\n\010NPC_"
+  "TYPE\022\021\n\rNPC_TYPE_SIGN\020\000\022\025\n\021NPC_TYPE_MERC"
+  "HANT\020\001*p\n\013QUEST_STATE\022\024\n\020QUEST_STATE_IDL"
+  "E\020\000\022\026\n\022QUEST_STATE_ACCEPT\020\001\022\031\n\025QUEST_STA"
+  "TE_COMPLETED\020\002\022\030\n\024QUEST_STATE_FINISHED\020\003"
+  "b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 1065, descriptor_table_protodef_Enum_2eproto,
+    false, false, 1088, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -171,6 +172,7 @@ bool ITEM_TYPE_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
       return true;
     default:
       return false;

@@ -56,6 +56,12 @@ using Dir = Protocol::DIR_TYPE;
 #define Q_ACCEPT Protocol::QUEST_STATE_ACCEPT
 #define Q_COMPLETED Protocol::QUEST_STATE_COMPLETED
 
+#define ARROW Protocol::ITEM_TYPE_ARROW
+#define POTION Protocol::ITEM_TYPE_POTION
+#define MAXHEART Protocol::ITEM_TYPE_MAXHEART
+#define HEART Protocol::ITEM_TYPE_HEART
+#define FULLHEART Protocol::ITEM_TYPE_FULLHEART
+
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 
 enum class WeaponType

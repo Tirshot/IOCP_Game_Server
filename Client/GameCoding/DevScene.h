@@ -38,6 +38,9 @@ public:
 	virtual void AddActor(Actor* actor) override;
 	virtual void RemoveActor(Actor* actor) override;
 
+	void ClearActors();
+	void ClearUIs();
+
 	void LoadMap();
 	void LoadPlayer();
 	void LoadMonster();

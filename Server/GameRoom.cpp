@@ -150,8 +150,8 @@ void GameRoom::EnterRoom(GameSessionRef session)
 
 	// Player Character Spawn
 	Vec2Int randCellPos = GetRandomEmptySpawnCellPos();
-	player->info.set_posx(40);
-	player->info.set_posy(26);
+	player->info.set_posx(5);
+	player->info.set_posy(5);
 	player->info.set_dir(Protocol::DIR_TYPE_DOWN);
 
 	// 입장한 클라이언트에게 정보 전송

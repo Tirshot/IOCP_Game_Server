@@ -40,8 +40,13 @@ void Scene::Update()
 			actor->Tick();
 
 	for (UI* ui : _uis)
+	{
+		if (ui == nullptr)
+			return;
+
 		if (ui->GetVisible())
 			ui->Tick();
+	}
 
 	Chat* chat = FindUI<Chat>(_uis);
 	if(chat)

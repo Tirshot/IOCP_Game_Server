@@ -75,6 +75,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 		case S_QuestList:
 			Handle_S_QuestList(session, buffer, len);
 			break;
+
+		case S_Reset:
+			Handle_S_Reset(session, buffer, len);
+			break;
 	}
 }
 
@@ -98,6 +102,15 @@ void ClientPacketHandler::Handle_S_TEST(ServerSessionRef session, BYTE* buffer, 
 		const Protocol::BuffData& data = pkt.buffs(i);
 		/*cout << "BuffInfo : " << data.buffid() << " " << data.remaintime() << endl;*/
 	}
+}
+
+void ClientPacketHandler::Handle_S_Reset(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	// 모든 액터, ui 초기화
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	// Scene 초기화
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
 
 void ClientPacketHandler::Handle_S_EnterGame(ServerSessionRef session, BYTE* buffer, int32 len)

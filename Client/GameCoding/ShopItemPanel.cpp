@@ -65,19 +65,25 @@ ShopItemPanel::ShopItemPanel()
 	}
 }
 
-ShopItemPanel::ShopItemPanel(Sprite* sprite, int cost, wstring name, wstring text, Vec2 pos)
+ShopItemPanel::ShopItemPanel(Sprite* sprite, Protocol::ITEM_TYPE itemtype, int cost, wstring name, wstring text, Vec2 pos)
 {
-	_itemID = g_itemidGenarator++;
 	_pos = pos;
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"ShopButtonsBackground");
 	_goldImage = GET_SINGLE(ResourceManager)->GetTexture(L"Gold");
 	SetSize({ 360,100 });
+	{	// ITEM
+		_itemImage = sprite;
+		_itemType = itemtype;
+		_itemCost = cost;
+		_itemName = name;
+		_itemText = text;
+	}
 	{ // LL Left
 		Button* LLeft = new Button();
 		LLeft->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LLButton"), BS_Default);
 		LLeft->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LLButton"), BS_Pressed);
 		LLeft->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LLButton"), BS_Hovered);
-		LLeft->SetPos(Vec2{ pos.x + 80, pos.y + 78 });
+		LLeft->SetPos(Vec2{ pos.x + 87, pos.y + 78 });
 		LLeft->SetSize({ 32, 21 });
 		LLeft->AddOnClickDelegate(this, &ShopItemPanel::OnClickLLButton);
 		AddChild(LLeft);
@@ -121,12 +127,6 @@ ShopItemPanel::ShopItemPanel(Sprite* sprite, int cost, wstring name, wstring tex
 		purchase->SetSize({ 32, 21 });
 		purchase->AddOnClickDelegate(this, &ShopItemPanel::OnClickPurchaseButton);
 		AddChild(purchase);
-	}
-	{	// Item
-		_itemImage = sprite;
-		_itemCost = cost;
-		_itemName = name;
-		_itemText = text;
 	}
 }
 
@@ -263,6 +263,9 @@ void ShopItemPanel::OnClickRButton()
 
 void ShopItemPanel::OnClickPurchaseButton()
 {
+	if (_allCost <= 0)
+		return;
+
 	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (myPlayer)
@@ -274,19 +277,19 @@ void ShopItemPanel::OnClickPurchaseButton()
 		if (gold < _allCost)
 			return;
 
-		switch (_itemID)
+		switch (_itemType)
 		{
-		case 0:
+		case ARROW:
 			myPlayer->info.set_arrows(arrows + _itemCount);
 			break;
 
-		case 1:
+		case MAXHEART:
 			if (maxHP + _itemCount > 10)
 				return;
 			myPlayer->info.set_maxhp(clamp(maxHP + _itemCount, 0, 10));
 			break;
 
-		case 2:
+		case POTION:
 			// potion item ++
 			break;
 		}

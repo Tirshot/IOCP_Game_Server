@@ -148,7 +148,14 @@ void MyPlayer::TickInput()
 		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
 	}
 
-	// CellPos 확인
+	// Debug - 상인 앞으로 위치 이동
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_8))
+	{
+		SetCellPos({ 40,26 }, true);
+		GET_SINGLE(ChatManager)->AddMessage(L"상인 앞으로 이동");
+	}
+
+	// Debug - CellPos 확인
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_9))
 	{
 		Vec2Int CellPos = GetCellPos();

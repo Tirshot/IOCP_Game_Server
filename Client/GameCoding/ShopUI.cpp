@@ -10,8 +10,6 @@
 #include "ResourceManager.h"
 #include "SceneManager.h"
 
-int g_itemidGenarator = 0;
-
 ShopUI::ShopUI()
 {
 	_rect = GetRect();
@@ -46,17 +44,17 @@ ShopUI::ShopUI()
 
 	{ // Arrow
 		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"ArrowItem");
-		ShopItemPanel* arrow = new ShopItemPanel(sprite, 5, (wstring)L"화살", (wstring)L"멀리서도 공격할 수 있게 해주는 화살.", { 140, 85 });
+		ShopItemPanel* arrow = new ShopItemPanel(sprite, ARROW, 5, (wstring)L"화살", (wstring)L"멀리서도 공격할 수 있게 해주는 화살.", { 140, 85 });
 		AddChild(arrow);
 	}
 	{ // MaxHP+
 		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"MaxHeartItem");
-		ShopItemPanel* maxHeart = new ShopItemPanel(sprite, 100, (wstring)L"맥스 하트", (wstring)L"즉시 최대 체력을 1 증가시킨다.\n최대 체력은 10을 넘을 수 없다.", { 140, 185 });
+		ShopItemPanel* maxHeart = new ShopItemPanel(sprite, MAXHEART, 100, (wstring)L"맥스 하트", (wstring)L"즉시 최대 체력을 1 증가시킨다.\n최대 체력은 10을 넘을 수 없다.", { 140, 185 });
 		AddChild(maxHeart);
 	}
 	{ // 포션
 		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"Potion");
-		ShopItemPanel* maxHeart = new ShopItemPanel(sprite, 15, (wstring)L"체력 포션", (wstring)L"사용 시 체력을 1 회복한다.", { 140, 285 });
+		ShopItemPanel* maxHeart = new ShopItemPanel(sprite, POTION, 15, (wstring)L"체력 포션", (wstring)L"사용 시 체력을 1 회복한다.", { 140, 285 });
 		AddChild(maxHeart);
 	}
 }
@@ -85,7 +83,7 @@ void ShopUI::Tick()
 
 		if (item != nullptr)
 		{
-			costs[item->GetItemID()] = item->GetCost();
+			costs[item->GetItemType()] = item->GetCost();
 		}
 	}
 	_costs = costs;

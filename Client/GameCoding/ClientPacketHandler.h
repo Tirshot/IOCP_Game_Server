@@ -39,6 +39,8 @@ enum
 
 	C_QuestList = 46,
 	S_QuestList = 47,
+
+	S_Reset = 99,
 };
 class Creature;
 class ClientPacketHandler
@@ -48,6 +50,7 @@ public:
 
 	// ¹Þ±â
 	static void Handle_S_TEST(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Reset(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_EnterGame(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len);

@@ -8,7 +8,7 @@ class ShopItemPanel : public Panel
 
 public:
 	ShopItemPanel();
-	ShopItemPanel(Sprite* texture, int cost, wstring name, wstring text, Vec2 pos);
+	ShopItemPanel(Sprite* sprite, Protocol::ITEM_TYPE itemtype, int cost, wstring name, wstring text, Vec2 pos);
 	virtual ~ShopItemPanel();
 
 	virtual void BeginPlay() override;
@@ -25,13 +25,13 @@ public:
 	void OnClickPurchaseButton();
 
 	int GetCost() { return _allCost; }
-	int GetItemID() { return _itemID; }
+	int GetItemType() { return _itemType; }
 
 protected:
 	Texture* _background = nullptr;
 	Sprite* _itemImage = nullptr;
 	Texture* _goldImage = nullptr;
-	int _itemID = 0; /* 0 : arrow, 1 : maxHP, 2 : potion*/
+	Protocol::ITEM_TYPE _itemType = Protocol::ITEM_TYPE_ARROW; /* 0 : arrow, 1 : maxHP, 2 : potion*/
 	wstring _itemText = L"";
 	wstring _itemName = L"";
 	int _itemCount = 0;

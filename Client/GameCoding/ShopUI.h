@@ -24,4 +24,3 @@ protected:
 	map<int, int> _costs = {};
 	int _allCost = 0;
 };
-extern int g_itemidGenarator;
