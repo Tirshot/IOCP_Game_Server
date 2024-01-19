@@ -10,6 +10,7 @@
 #include "MerchantUI.h"
 #include "ShopUI.h"
 #include "ResourceManager.h"
+#include "SoundManager.h"
 #include "SceneManager.h"
 #include "NetworkManager.h"
 #include "ChatManager.h"
@@ -190,6 +191,7 @@ void QuestUIPanel::OnClickAcceptButton()
 				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Quest(myPlayerId, _questId);
 				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 			}
+			GET_SINGLE(SoundManager)->Play(L"QuestAccept");
 		}
 	}
 }
@@ -214,6 +216,7 @@ void QuestUIPanel::OnClickCompleteButton()
 				MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 				myPlayer->info.set_gold(myPlayer->info.gold() + _reward);
 				// _rewardItem?
+				GET_SINGLE(SoundManager)->Play(L"QuestFinished");
 			}
 		}
 	}

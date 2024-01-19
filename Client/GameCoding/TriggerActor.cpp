@@ -7,6 +7,7 @@
 #include "ChatManager.h"
 #include "InputManager.h"
 #include "TimeManager.h"
+#include "SoundManager.h"
 
 TriggerActor::TriggerActor()
 {
@@ -40,6 +41,7 @@ void TriggerActor::PressSpaceInteract(UI* ui)
 		if (myPlayer->info.dir() == Protocol::DIR_TYPE_UP
 			&& GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 		{
+			GET_SINGLE(SoundManager)->Play(L"Merchant");
 			_visiblity = true;
 			ui->SetVisible(_visiblity);
 		}

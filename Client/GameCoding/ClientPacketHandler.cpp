@@ -11,9 +11,10 @@
 #include "Creature.h"
 #include "Player.h"
 #include "MyPlayer.h"
+#include "Chat.h"
 #include "ChatManager.h"
 #include "NetworkManager.h"
-#include "Chat.h"
+#include "SoundManager.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -378,6 +379,7 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 		player->SetQuestState(questId, Protocol::QUEST_STATE_COMPLETED);
 		GET_SINGLE(ChatManager)->AddMessage(L"QUEST COMPLETE!!");
 		GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
+		GET_SINGLE(SoundManager)->Play(L"QuestComplete");
 	}
 }
 

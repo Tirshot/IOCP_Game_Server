@@ -3,6 +3,7 @@
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "Sprite.h"
+#include "SoundManager.h"
 
 Button::Button()
 {
@@ -51,6 +52,8 @@ void Button::Tick()
 				// OnClicked
 				if (_onClick)
 					_onClick();
+
+				GET_SINGLE(SoundManager)->Play(L"Button");
 			}
 		}
 	}

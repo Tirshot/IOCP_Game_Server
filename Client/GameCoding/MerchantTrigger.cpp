@@ -6,6 +6,7 @@
 #include "ShopUI.h"
 #include "ClientPacketHandler.h"
 #include "ResourceManager.h"
+#include "SoundManager.h"
 #include "SceneManager.h"
 #include "NetworkManager.h"
 

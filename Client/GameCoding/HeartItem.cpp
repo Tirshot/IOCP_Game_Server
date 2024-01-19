@@ -6,6 +6,7 @@
 #include "DevScene.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
 #include "ChatManager.h"
 #include "NetworkManager.h"
 #include "ClientPacketHandler.h"
@@ -73,6 +74,7 @@ void HeartItem::TickIdle()
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_RemoveObject(this->info.objectid());
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
+		GET_SINGLE(SoundManager)->Play(L"Heart");
 	}
 }
 

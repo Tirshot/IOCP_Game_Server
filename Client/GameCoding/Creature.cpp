@@ -7,6 +7,7 @@
 #include "Monster.h"
 #include "ClientPacketHandler.h"
 #include "NetworkManager.h"
+#include "SoundManager.h"
 
 Creature::Creature()
 {
@@ -51,7 +52,14 @@ void Creature::OnDamaged(Creature* attacker)
 
 	// hp는 항상 양수
 	info.set_hp(max(0, info.hp() - damage));
-
+	if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+	{
+		GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
+	}
+	else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+	{
+		GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
+	}
 	{	// 피격 패킷 전송
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Hit(info, attacker->info.objectid());
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);

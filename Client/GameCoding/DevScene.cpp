@@ -170,6 +170,7 @@ void DevScene::Init()
 	LoadEffect();
 	LoadTilemap();
 	LoadUI();
+	LoadSound();
 
 	Super::Init();
 }
@@ -210,6 +211,7 @@ void DevScene::RemoveActor(Actor* actor)
 	MyPlayer* player = dynamic_cast<MyPlayer*>(actor);
 	if (player)
 	{
+		GET_SINGLE(SoundManager)->Play(L"GameOver");
 		Chat* chat = GET_SINGLE(ChatManager)->GetChat();
 		chat->AddText(L"캐릭터가 쓰러졌습니다.");
 		for (auto& ui : _uis)
@@ -287,25 +289,25 @@ void DevScene::LoadPlayer()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 1, 0.5f });
+		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveDown", { 200, 200}, 0, 9, 1, 0.5f });
+		fb->SetInfo({ texture, L"FB_MoveDown", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveLeft", { 200, 200}, 0, 9, 1, 0.5f });
+		fb->SetInfo({ texture, L"FB_MoveLeft", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	{
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoveRight", { 200, 200}, 0, 9, 1, 0.5f });
+		fb->SetInfo({ texture, L"FB_MoveRight", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	// 플레이어 Attack, 매개변수 끝은 loop
 	{
@@ -616,7 +618,7 @@ void DevScene::LoadEffect()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Teleport");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Teleport");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_Teleport", { 80, 70}, 0, 9, 0, 0.5f, false });
+		fb->SetInfo({ texture, L"FB_Teleport", { 80, 70}, 0, 9, 0, 0.3f, false });
 	}
 	// Death Effect
 	{
@@ -630,7 +632,7 @@ void DevScene::LoadEffect()
 		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Heal");
 		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Heal");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_Heal", { 80, 70}, 0, 4, 0, 0.5f, false });
+		fb->SetInfo({ texture, L"FB_Heal", { 80, 70}, 0, 4, 0, 0.2f, false });
 	}
 }
 
@@ -706,6 +708,29 @@ void DevScene::LoadUI()
 		questUI->SetVisible(false);
 		AddUI(questUI);
 	}
+}
+
+void DevScene::LoadSound()
+{
+	GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav");
+	GET_SINGLE(SoundManager)->Play(L"BGM", true);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Land", L"Sound\\Land.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Sword", L"Sound\\Sword.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Bow", L"Sound\\Bow.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Staff", L"Sound\\Staff.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Potion", L"Sound\\Potion.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Heart", L"Sound\\Heart.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Teleport", L"Sound\\Teleport.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"SpinAttack", L"Sound\\SpinAttack.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"SpinReady", L"Sound\\SpinReady.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"QuestAccept", L"Sound\\QuestAccept.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"QuestComplete", L"Sound\\QuestComplete.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"QuestFinished", L"Sound\\QuestFinished.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"MonsterOnDamaged", L"Sound\\MonsterOnDamaged.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"PlayerOnDamaged", L"Sound\\PlayerOnDamaged.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav");
+	GET_SINGLE(ResourceManager)->LoadSound(L"Merchant", L"Sound\\Merchant.wav");
 }
 
 GameObject* DevScene::GetObjects(uint64 id)

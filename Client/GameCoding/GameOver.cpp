@@ -7,6 +7,7 @@
 #include "ResourceManager.h"
 #include "TimeManager.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
 #include "NetworkManager.h"
 #include "ClientPacketHandler.h"
 

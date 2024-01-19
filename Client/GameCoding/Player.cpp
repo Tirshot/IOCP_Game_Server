@@ -5,6 +5,7 @@
 #include "ResourceManager.h"
 #include "Flipbook.h"
 #include "TimeManager.h"
+#include "SoundManager.h"
 #include "CameraComponent.h"
 #include "SceneManager.h"
 #include "DevScene.h"
@@ -276,7 +277,7 @@ void Player::TickSpin()
 		}
 		SetState(MOVE);
 		if (GetCellPos() == Vec2Int{ 44, 18 })
-			scene->SpawnObject<HitEffect>(GetCellPos());
+			scene->SpawnObject<TeleportEffect>(GetCellPos());
 	}
 }
 
@@ -294,20 +295,24 @@ void Player::UpdateAnimation()
 		break;
 
 	case MOVE:
+		GET_SINGLE(SoundManager)->Play(L"Land");
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 
 	case SKILL:
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
+			GET_SINGLE(SoundManager)->Play(L"Sword");
 			SetFlipbook(_flipbookAttack[info.dir()]);
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{
+			GET_SINGLE(SoundManager)->Play(L"Bow");
 			SetFlipbook(_flipbookBow[info.dir()]);
 		}
 		else
 		{
+			GET_SINGLE(SoundManager)->Play(L"Teleport");
 			SetFlipbook(_flipbookStaff[info.dir()]);
 		}
 		break;
@@ -315,6 +320,7 @@ void Player::UpdateAnimation()
 	case SPIN_READY:
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
+			GET_SINGLE(SoundManager)->Play(L"SpinReady");
 			SetFlipbook(_flipbookSpinReady[info.dir()]);
 		}
 		break;
@@ -322,6 +328,7 @@ void Player::UpdateAnimation()
 	case SPIN:
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
+			GET_SINGLE(SoundManager)->Play(L"SpinAttack");
 			SetFlipbook(_flipbookSpin[info.dir()]);
 		}
 		break;

@@ -37,7 +37,7 @@ private:
 
 	bool _keyPressed = false;
 	Texture* _plum = nullptr;
-	float _sumTime = 0.f;
+	float _sumTimes = 0.f;
 	int _selectedSlot = 0;
 	int _potionNums = 0;
 };

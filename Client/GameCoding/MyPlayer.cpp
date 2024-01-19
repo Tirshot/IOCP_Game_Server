@@ -2,6 +2,7 @@
 #include "MyPlayer.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
+#include "SoundManager.h"
 #include "Flipbook.h"
 #include "Texture.h"
 #include "NPC.h"
@@ -91,6 +92,7 @@ void MyPlayer::UsePotion()
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
 	//
+	GET_SINGLE(SoundManager)->Play(L"Potion");
 	clamp(_potionNums -= 1, 0, 99);
 }
 
@@ -104,7 +106,7 @@ void MyPlayer::TickInput()
 	_keyPressed = true;
 
 	float _deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-	_sumTime += _deltaTime;
+	_sumTimes += _deltaTime;
 
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
@@ -125,7 +127,7 @@ void MyPlayer::TickInput()
 			return;
 
 		SetState(SKILL);
-		_sumTime = 0;
+		_sumTimes = 0;
 	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
@@ -137,7 +139,7 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
 		&& GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 	{
-		if (_sumTime >= 1.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
+		if (_sumTimes >= 1.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
 		{
 			NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
 
@@ -145,7 +147,7 @@ void MyPlayer::TickInput()
 				return;
 
 			SetState(SPIN_READY);
-			_sumTime = 0;
+			_sumTimes = 0;
 		}
 	}
 
