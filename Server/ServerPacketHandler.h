@@ -75,7 +75,6 @@ public:
 	static SendBufferRef Make_S_SendMessage(uint64 objectId, uint64 time, string str);
 	static SendBufferRef Make_S_Teleport(uint64 objectId, int32 cellPosX, int32 cellPosY);
 	static SendBufferRef Make_S_Gold(uint64 objectId, int32 gold);
-	static SendBufferRef Make_S_Quests(const Protocol::QuestInfo& info);
 	static SendBufferRef Make_S_QuestProcess(uint64 objectid, uint64 questid, uint64 process);
 	static SendBufferRef Make_S_QuestComplete(uint64 objectid, uint64 questid, uint64 process);
 	static SendBufferRef Make_S_QuestList(uint64 objectid, const Protocol::QuestInfo& info);

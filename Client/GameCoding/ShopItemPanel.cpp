@@ -11,6 +11,8 @@
 #include "ShopUI.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "NetworkManager.h"
+#include "ClientPacketHandler.h"
 
 ShopItemPanel::ShopItemPanel()
 {
@@ -295,5 +297,10 @@ void ShopItemPanel::OnClickPurchaseButton()
 		}
 		myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);
 		ResetItemCount();
+		// 골드 소모 정보 전송 - objectinfo 내에 골드 정보가 저장되어있음
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
 	}
 }

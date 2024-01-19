@@ -54,8 +54,8 @@ ShopUI::ShopUI()
 	}
 	{ // 포션
 		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"Potion");
-		ShopItemPanel* maxHeart = new ShopItemPanel(sprite, POTION, 15, (wstring)L"체력 포션", (wstring)L"사용 시 체력을 1 회복한다.", { 140, 285 });
-		AddChild(maxHeart);
+		ShopItemPanel* potion = new ShopItemPanel(sprite, POTION, 15, (wstring)L"체력 포션", (wstring)L"사용 시 체력을 1 회복한다.", { 140, 285 });
+		AddChild(potion);
 	}
 }
 

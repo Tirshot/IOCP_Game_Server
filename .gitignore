@@ -370,7 +370,6 @@ DummyClient/Intermediate/
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe

@@ -189,6 +189,11 @@ void Player::UpdateSpin()
 			creature4->SetWait(50);
 			creature4->KnockBack(shared_from_this());
 		}
+		if (GetQuestState(1) == Protocol::QUEST_STATE_ACCEPT)
+		{
+			if (GetCellPos() == Vec2Int {44,18})
+				QuestProgress(1);
+		}
 	}
 }
 

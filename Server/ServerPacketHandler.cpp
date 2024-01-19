@@ -229,7 +229,7 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 }
 
 void ServerPacketHandler::Handle_C_Quest(GameSessionRef session, BYTE* buffer, int32 len)
-{
+{	// Äù½ºÆ® ¼ö¶ô
 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
@@ -384,15 +384,6 @@ SendBufferRef ServerPacketHandler::Make_S_Gold(uint64 objectId, int32 gold)
 	return MakeSendBuffer(pkt, S_Gold);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_Quests(const Protocol::QuestInfo& info)
-{
-	Protocol::S_Quest pkt;
-
-	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
-	*questInfo = info;
-
-	return MakeSendBuffer(pkt, S_Quest);
-}
 
 SendBufferRef ServerPacketHandler::Make_S_QuestProcess(uint64 objectid, uint64 questid, uint64 process)
 {

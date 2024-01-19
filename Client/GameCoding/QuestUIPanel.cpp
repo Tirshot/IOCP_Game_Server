@@ -18,6 +18,7 @@
 QuestUIPanel::QuestUIPanel()
 {
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"QuestButtonsBackground");
+	_goldImage = GET_SINGLE(ResourceManager)->GetTexture(L"Gold");
 	SetSize({ 360,100 });
 	SetPos({135,80});
 	int _questId = 0;
@@ -31,6 +32,7 @@ QuestUIPanel::QuestUIPanel()
 QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, int idx)
 {
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"QuestButtonsBackground");
+	_goldImage = GET_SINGLE(ResourceManager)->GetTexture(L"Gold");
 	SetSize({ 360,100 });
 	SetPos({ 135,150 });
 
@@ -50,8 +52,8 @@ QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, int idx)
 		break;
 
 	case 1:
-		_questName = L"테스트용1";
-		_description = L"테스트용 퀘스트1입니다.";
+		_questName = L"이상한 문양";
+		_description = L"제 집 위에 보이는 문양을 보셨나요? 제가 이사할 때부터 있었는데..\n용사만 할 수 있는 액션을 하면 빛이 난다는 전설이 있었어요.";
 		break;
 
 	case 2:
@@ -134,15 +136,35 @@ void QuestUIPanel::Render(HDC hdc)
 		0,
 		SRCCOPY);
 
-	// 아이템 이름
+	// 퀘스트 이름
 	{
 		RECT _textRect = { _pos.x + 70,_pos.y + 10, _textRect.left + 250, _textRect.top + 18 };
 		DrawTextW(hdc, _questName.c_str(), -1, &_textRect, DT_LEFT);
 	}
-	// 아이템 설명
+	// 퀘스트 설명
 	{
 		RECT _textRect = { _pos.x + 70,_pos.y + 28, _textRect.left + 290, _textRect.top + 68 };
 		DrawTextW(hdc, _description.c_str(), -1, &_textRect, DT_LEFT | DT_WORDBREAK);
+	}
+	// 골드 이미지
+	{
+		::TransparentBlt(hdc,
+			_pos.x + 300,
+			_pos.y + 72,
+			_goldImage->GetSize().x / 3,
+			_goldImage->GetSize().y,
+			_goldImage->GetDC(),
+			0,
+			0,
+			_goldImage->GetSize().x / 3,
+			_goldImage->GetSize().y,
+			_goldImage->GetTransparent());
+	}
+	// 보상 Gold
+	{
+		wstring wstr = to_wstring(_reward);
+		RECT _textRect = { _pos.x + 325,_pos.y + 78, _textRect.left + 250, _textRect.top + 18 };
+		DrawTextW(hdc, wstr.c_str(), -1, &_textRect, DT_LEFT);
 	}
 
 	for (auto& child : _children)

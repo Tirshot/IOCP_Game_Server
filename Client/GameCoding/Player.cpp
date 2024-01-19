@@ -275,6 +275,8 @@ void Player::TickSpin()
 			}
 		}
 		SetState(MOVE);
+		if (GetCellPos() == Vec2Int{ 44, 18 })
+			scene->SpawnObject<HitEffect>(GetCellPos());
 	}
 }
 
@@ -355,4 +357,14 @@ void Player::SyncToServer()
 {
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+}
+
+int Player::GetQuestProgress(int questId)
+{
+	return _questsProgress[questId];
+}
+
+void Player::SetQuestProgress(int questId, int progress)
+{
+	_questsProgress[questId] = progress;
 }

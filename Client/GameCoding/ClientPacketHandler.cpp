@@ -345,10 +345,13 @@ void ClientPacketHandler::Handle_S_QuestProcess(ServerSessionRef session, BYTE* 
 
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	player->SetQuestProgress(questId, process);
 
+	{
+		GET_SINGLE(ChatManager)->AddMessage(format(L"퀘스트 진행 중, {0} / {1} 완료", process, scene->GetQuest(questId).targetnums()));
+	}
 	if (player)
 	{
-		Protocol::QUEST_STATE& state = player->GetQuestState(questId);
 		player->SetQuestState(questId, Protocol::QUEST_STATE_ACCEPT);
 	}
 }
@@ -372,9 +375,9 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 
 	if (player)
 	{
-		Protocol::QUEST_STATE& state = player->GetQuestState(questId);
 		player->SetQuestState(questId, Protocol::QUEST_STATE_COMPLETED);
 		GET_SINGLE(ChatManager)->AddMessage(L"QUEST COMPLETE!!");
+		GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
 	}
 }
 
@@ -470,6 +473,7 @@ SendBufferRef ClientPacketHandler::Make_C_Quest(uint64 objectId, uint64 questId)
 
 	pkt.set_objectid(objectId);
 	pkt.set_questid(questId);
+	GET_SINGLE(ChatManager)->AddMessage(L"퀘스트를 수락했습니다.");
 
 	return MakeSendBuffer(pkt, C_Quest);
 }

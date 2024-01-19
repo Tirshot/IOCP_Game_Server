@@ -90,7 +90,8 @@ public:
 	Vec2Int GetRandomEmptyCellPos();
 
 	// Äù½ºÆ® Ã³¸®
-	map<int, Protocol::QuestInfo> GetQuests() { return _quests; }
+	map<int, Protocol::QuestInfo>& GetQuests() { return _quests; }
+	Protocol::QuestInfo& GetQuest(int questId) { return _quests[questId]; }
 	void AddQuest(Protocol::QuestInfo info) { _quests.insert({ info.questid(), info }); }
 	void SetQuests(int questid, Protocol::QuestInfo quest) { _quests.insert_or_assign(questid, quest); }
 	void SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state);

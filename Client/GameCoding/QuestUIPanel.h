@@ -27,6 +27,7 @@ public:
 protected:
 	Texture* _background = nullptr;
 	Sprite* _questImage = nullptr;
+	Texture* _goldImage = nullptr;
 	Button* _accept = nullptr;
 	Button* _complete = nullptr;
 

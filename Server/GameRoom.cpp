@@ -59,15 +59,15 @@ void GameRoom::Init()
 	{
 		QuestRef quest1 = Quest::CreateQuest();
 		quest1->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-		quest1->info.set_targetnums(1);
+		quest1->info.set_targetnums(5);
 		quest1->info.set_rewardgold(150);
 		_quests.insert({ quest1->info.questid(), quest1->info});
 	}
 	{
 		QuestRef quest2 = Quest::CreateQuest();
-		quest2->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
+		quest2->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
 		quest2->info.set_targetnums(1);
-		quest2->info.set_rewardgold(0);
+		quest2->info.set_rewardgold(100);
 		_quests.insert({ quest2->info.questid(), quest2->info });
 	}
 	{
