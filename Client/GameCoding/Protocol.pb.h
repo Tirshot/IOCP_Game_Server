@@ -50,6 +50,9 @@ namespace Protocol {
 class C_Fire;
 struct C_FireDefaultTypeInternal;
 extern C_FireDefaultTypeInternal _C_Fire_default_instance_;
+class C_Heal;
+struct C_HealDefaultTypeInternal;
+extern C_HealDefaultTypeInternal _C_Heal_default_instance_;
 class C_Hit;
 struct C_HitDefaultTypeInternal;
 extern C_HitDefaultTypeInternal _C_Hit_default_instance_;
@@ -128,6 +131,7 @@ extern S_TeleportDefaultTypeInternal _S_Teleport_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C_Fire* Arena::CreateMaybeMessage<::Protocol::C_Fire>(Arena*);
+template<> ::Protocol::C_Heal* Arena::CreateMaybeMessage<::Protocol::C_Heal>(Arena*);
 template<> ::Protocol::C_Hit* Arena::CreateMaybeMessage<::Protocol::C_Hit>(Arena*);
 template<> ::Protocol::C_LeaveGame* Arena::CreateMaybeMessage<::Protocol::C_LeaveGame>(Arena*);
 template<> ::Protocol::C_Move* Arena::CreateMaybeMessage<::Protocol::C_Move>(Arena*);
@@ -2085,7 +2089,7 @@ class S_Hit final :
   enum : int {
     kObjectidFieldNumber = 1,
     kAttackeridFieldNumber = 2,
-    kObjecttypeFieldNumber = 3,
+    kDamageFieldNumber = 3,
   };
   // uint64 objectid = 1;
   void clear_objectid();
@@ -2105,13 +2109,13 @@ class S_Hit final :
   void _internal_set_attackerid(uint64_t value);
   public:
 
-  // uint64 objecttype = 3;
-  void clear_objecttype();
-  uint64_t objecttype() const;
-  void set_objecttype(uint64_t value);
+  // int32 damage = 3;
+  void clear_damage();
+  int32_t damage() const;
+  void set_damage(int32_t value);
   private:
-  uint64_t _internal_objecttype() const;
-  void _internal_set_objecttype(uint64_t value);
+  int32_t _internal_damage() const;
+  void _internal_set_damage(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_Hit)
@@ -2124,7 +2128,7 @@ class S_Hit final :
   struct Impl_ {
     uint64_t objectid_;
     uint64_t attackerid_;
-    uint64_t objecttype_;
+    int32_t damage_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2253,26 +2257,17 @@ class C_Hit final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kInfoFieldNumber = 1,
+    kObjectidFieldNumber = 1,
     kAttackeridFieldNumber = 2,
   };
-  // .Protocol.ObjectInfo info = 1;
-  bool has_info() const;
+  // uint64 objectid = 1;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
   private:
-  bool _internal_has_info() const;
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
   public:
-  void clear_info();
-  const ::Protocol::ObjectInfo& info() const;
-  PROTOBUF_NODISCARD ::Protocol::ObjectInfo* release_info();
-  ::Protocol::ObjectInfo* mutable_info();
-  void set_allocated_info(::Protocol::ObjectInfo* info);
-  private:
-  const ::Protocol::ObjectInfo& _internal_info() const;
-  ::Protocol::ObjectInfo* _internal_mutable_info();
-  public:
-  void unsafe_arena_set_allocated_info(
-      ::Protocol::ObjectInfo* info);
-  ::Protocol::ObjectInfo* unsafe_arena_release_info();
 
   // uint64 attackerid = 2;
   void clear_attackerid();
@@ -2291,7 +2286,7 @@ class C_Hit final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::ObjectInfo* info_;
+    uint64_t objectid_;
     uint64_t attackerid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -4347,6 +4342,154 @@ class S_Reset final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class C_Heal final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_Heal) */ {
+ public:
+  inline C_Heal() : C_Heal(nullptr) {}
+  ~C_Heal() override;
+  explicit PROTOBUF_CONSTEXPR C_Heal(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_Heal(const C_Heal& from);
+  C_Heal(C_Heal&& from) noexcept
+    : C_Heal() {
+    *this = ::std::move(from);
+  }
+
+  inline C_Heal& operator=(const C_Heal& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_Heal& operator=(C_Heal&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_Heal& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_Heal* internal_default_instance() {
+    return reinterpret_cast<const C_Heal*>(
+               &_C_Heal_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    26;
+
+  friend void swap(C_Heal& a, C_Heal& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_Heal* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_Heal* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_Heal* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_Heal>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_Heal& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_Heal& from) {
+    C_Heal::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_Heal* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_Heal";
+  }
+  protected:
+  explicit C_Heal(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+  };
+  // uint64 objectId = 1;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
+  private:
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_Heal)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t objectid_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -5228,113 +5371,48 @@ inline void S_Hit::set_attackerid(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_Hit.attackerid)
 }
 
-// uint64 objecttype = 3;
-inline void S_Hit::clear_objecttype() {
-  _impl_.objecttype_ = uint64_t{0u};
+// int32 damage = 3;
+inline void S_Hit::clear_damage() {
+  _impl_.damage_ = 0;
 }
-inline uint64_t S_Hit::_internal_objecttype() const {
-  return _impl_.objecttype_;
+inline int32_t S_Hit::_internal_damage() const {
+  return _impl_.damage_;
 }
-inline uint64_t S_Hit::objecttype() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_Hit.objecttype)
-  return _internal_objecttype();
+inline int32_t S_Hit::damage() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_Hit.damage)
+  return _internal_damage();
 }
-inline void S_Hit::_internal_set_objecttype(uint64_t value) {
+inline void S_Hit::_internal_set_damage(int32_t value) {
   
-  _impl_.objecttype_ = value;
+  _impl_.damage_ = value;
 }
-inline void S_Hit::set_objecttype(uint64_t value) {
-  _internal_set_objecttype(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_Hit.objecttype)
+inline void S_Hit::set_damage(int32_t value) {
+  _internal_set_damage(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_Hit.damage)
 }
 
 // -------------------------------------------------------------------
 
 // C_Hit
 
-// .Protocol.ObjectInfo info = 1;
-inline bool C_Hit::_internal_has_info() const {
-  return this != internal_default_instance() && _impl_.info_ != nullptr;
+// uint64 objectid = 1;
+inline void C_Hit::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
 }
-inline bool C_Hit::has_info() const {
-  return _internal_has_info();
+inline uint64_t C_Hit::_internal_objectid() const {
+  return _impl_.objectid_;
 }
-inline const ::Protocol::ObjectInfo& C_Hit::_internal_info() const {
-  const ::Protocol::ObjectInfo* p = _impl_.info_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ObjectInfo&>(
-      ::Protocol::_ObjectInfo_default_instance_);
+inline uint64_t C_Hit::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_Hit.objectid)
+  return _internal_objectid();
 }
-inline const ::Protocol::ObjectInfo& C_Hit::info() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_Hit.info)
-  return _internal_info();
-}
-inline void C_Hit::unsafe_arena_set_allocated_info(
-    ::Protocol::ObjectInfo* info) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
-  }
-  _impl_.info_ = info;
-  if (info) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_Hit.info)
-}
-inline ::Protocol::ObjectInfo* C_Hit::release_info() {
+inline void C_Hit::_internal_set_objectid(uint64_t value) {
   
-  ::Protocol::ObjectInfo* temp = _impl_.info_;
-  _impl_.info_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.objectid_ = value;
 }
-inline ::Protocol::ObjectInfo* C_Hit::unsafe_arena_release_info() {
-  // @@protoc_insertion_point(field_release:Protocol.C_Hit.info)
-  
-  ::Protocol::ObjectInfo* temp = _impl_.info_;
-  _impl_.info_ = nullptr;
-  return temp;
-}
-inline ::Protocol::ObjectInfo* C_Hit::_internal_mutable_info() {
-  
-  if (_impl_.info_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::ObjectInfo>(GetArenaForAllocation());
-    _impl_.info_ = p;
-  }
-  return _impl_.info_;
-}
-inline ::Protocol::ObjectInfo* C_Hit::mutable_info() {
-  ::Protocol::ObjectInfo* _msg = _internal_mutable_info();
-  // @@protoc_insertion_point(field_mutable:Protocol.C_Hit.info)
-  return _msg;
-}
-inline void C_Hit::set_allocated_info(::Protocol::ObjectInfo* info) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
-  }
-  if (info) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(info));
-    if (message_arena != submessage_arena) {
-      info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, info, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.info_ = info;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.C_Hit.info)
+inline void C_Hit::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_Hit.objectid)
 }
 
 // uint64 attackerid = 2;
@@ -6334,9 +6412,35 @@ inline void S_Reset::set_allocated_objectinfo(::Protocol::ObjectInfo* objectinfo
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_Reset.objectinfo)
 }
 
+// -------------------------------------------------------------------
+
+// C_Heal
+
+// uint64 objectId = 1;
+inline void C_Heal::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
+}
+inline uint64_t C_Heal::_internal_objectid() const {
+  return _impl_.objectid_;
+}
+inline uint64_t C_Heal::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_Heal.objectId)
+  return _internal_objectid();
+}
+inline void C_Heal::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
+}
+inline void C_Heal::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_Heal.objectId)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

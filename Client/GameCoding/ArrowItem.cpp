@@ -56,7 +56,10 @@ void ArrowItem::TickIdle()
 			myPlayer->info.set_arrows(myPlayer->info.arrows() + 1);
 
 		scene->RemoveActor(this);
-
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
 		// 오브젝트 제거 패킷 전송
 		{
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_RemoveObject(this->info.objectid());

@@ -2,6 +2,7 @@
 #include "Chat.h"
 #include "ResourceManager.h"
 #include "Sprite.h"
+#include "ChatInput.h"
 #include "TimeManager.h"
 #include "ChatManager.h"
 #include "SceneManager.h"
@@ -82,7 +83,7 @@ void Chat::Render(HDC hdc)
 			textRect.left = _rect.left + 10;
 			textRect.right = _rect.right - 10;
 			textRect.top = _rect.top + 10 + GetLineHeight(i);
-			textRect.bottom = _rect.bottom;
+			textRect.bottom = _rect.bottom - 20;
 
 			// DrawText 함수를 사용하여 텍스트 출력
 			DrawText(hdc, _texts[i].c_str(), -1, &textRect, DT_LEFT | DT_WORDBREAK);
@@ -113,14 +114,6 @@ void Chat::ChatBoxFade()
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 	_sumTime += deltaTime;
 
-	// 텍스트가 아직 있으면 창을 숨기지 않음
-	if (_texts.empty() == false)
-	{
-		_visible = true;
-		_alpha++;
-		_alpha = clamp(_alpha, 50, 200);
-	}
-
 	// 2초 후 텍스트를 제거하고 창을 숨김
 	if (_sumTime >= 2.f)
 	{
@@ -131,8 +124,25 @@ void Chat::ChatBoxFade()
 			_sumTime = 0;
 		}
 	}
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	ChatInput* chatInput = scene->FindUI<ChatInput>(scene->_uis);
 
-	if (_texts.empty() == true && _chatState == false)
+	if (chatInput->GetVisible() == true)
+	{
+		_sumTime = 0;
+		_alpha = 200;
+		SetVisible(true);
+	}
+
+	// 텍스트가 아직 있으면 창을 숨기지 않음
+	if (_texts.empty() == false)
+	{
+		_visible = true;
+		_alpha++;
+		_alpha = clamp(_alpha, 10, 200);
+	}
+
+	if (_visible && _texts.empty())
 	{
 		// 창이 페이드 아웃
 		_alpha--;

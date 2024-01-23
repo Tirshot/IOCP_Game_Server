@@ -47,8 +47,8 @@ void Creature::OnDamaged(CreatureRef attacker)
 	if (damage <= 0)
 		return;
 
-	//// hp는 항상 양수
- //	info.set_hp(max(0, info.hp() - damage));
+	// hp는 항상 양수
+ 	info.set_hp(max(0, info.hp() - damage));
 
 	// 채팅 출력
 	{
@@ -75,9 +75,6 @@ void Creature::OnDamaged(CreatureRef attacker)
 
 		if (info.hp() == 0)
 		{
-			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
-			if (player)
-				player->QuestProgress(0);
 			// 플레이어만 막타를 쳤을 때 아이템이 드랍
 			if (attacker->GetType() == Protocol::OBJECT_TYPE_PLAYER)
 			{	// 아이템 드랍, 1 ~ 99
@@ -220,7 +217,11 @@ void Creature::OnDamaged(CreatureRef attacker)
 			if (room)
 			{
 				room->RemoveObject(GetObjectID());
-			
+
+				PlayerRef player = dynamic_pointer_cast<Player>(attacker);
+				if (player)
+					player->QuestProgress(0);
+
 				// 채팅 출력
 				GChat->AddText(format(L"{0} {1}이(가) {2} {3}에 의해 쓰러짐",
 					objectType,

@@ -58,6 +58,7 @@ PROTOBUF_CONSTEXPR ObjectInfo::ObjectInfo(
   , /*decltype(_impl_.mp_)*/0
   , /*decltype(_impl_.maxmp_)*/0
   , /*decltype(_impl_.npctype_)*/0
+  , /*decltype(_impl_.potion_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ObjectInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ObjectInfoDefaultTypeInternal()
@@ -144,6 +145,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.mp_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.maxmp_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.npctype_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.potion_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::Text, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -172,8 +174,8 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::BuffData)},
   { 9, -1, -1, sizeof(::Protocol::ObjectInfo)},
-  { 34, -1, -1, sizeof(::Protocol::Text)},
-  { 43, -1, -1, sizeof(::Protocol::QuestInfo)},
+  { 35, -1, -1, sizeof(::Protocol::Text)},
+  { 44, -1, -1, sizeof(::Protocol::QuestInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -186,7 +188,7 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\?\n\010"
   "BuffData\022\016\n\006buffId\030\001 \001(\004\022\022\n\nremainTime\030\002"
-  " \001(\002\022\017\n\007victims\030\003 \003(\004\"\274\003\n\nObjectInfo\022\020\n\010"
+  " \001(\002\022\017\n\007victims\030\003 \003(\004\"\314\003\n\nObjectInfo\022\020\n\010"
   "objectId\030\001 \001(\004\022)\n\nobjectType\030\002 \001(\0162\025.Pro"
   "tocol.OBJECT_TYPE\022*\n\005state\030\003 \001(\0162\033.Proto"
   "col.OBJECT_STATE_TYPE\022\037\n\003dir\030\004 \001(\0162\022.Pro"
@@ -197,22 +199,23 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "col.WEAPON_TYPE\022\014\n\004gold\030\016 \001(\004\022%\n\010itemTyp"
   "e\030\017 \001(\0162\023.Protocol.ITEM_TYPE\022\016\n\006arrows\030\020"
   " \001(\005\022\n\n\002mp\030\021 \001(\005\022\r\n\005maxMp\030\022 \001(\005\022#\n\007npcTy"
-  "pe\030\023 \001(\0162\022.Protocol.NPC_TYPE\"3\n\004Text\022\020\n\010"
-  "objectId\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\013\n\003str\030\003 \001("
-  "\t\"\375\001\n\tQuestInfo\022\017\n\007questid\030\001 \001(\005\022\020\n\010obje"
-  "ctid\030\002 \001(\004\022)\n\ntargettype\030\003 \001(\0162\025.Protoco"
-  "l.OBJECT_TYPE\022\022\n\ntargetnums\030\004 \001(\005\022\017\n\007pro"
-  "cess\030\005 \001(\005\022)\n\nqueststate\030\006 \001(\0162\025.Protoco"
-  "l.QUEST_STATE\022\022\n\nrewardGold\030\007 \001(\005\022\'\n\nrew"
-  "ardItem\030\010 \001(\0162\023.Protocol.ITEM_TYPE\022\025\n\rre"
-  "wardItemNum\030\t \001(\005b\006proto3"
+  "pe\030\023 \001(\0162\022.Protocol.NPC_TYPE\022\016\n\006potion\030\024"
+  " \001(\005\"3\n\004Text\022\020\n\010objectId\030\001 \001(\004\022\014\n\004time\030\002"
+  " \001(\004\022\013\n\003str\030\003 \001(\t\"\375\001\n\tQuestInfo\022\017\n\007quest"
+  "id\030\001 \001(\005\022\020\n\010objectid\030\002 \001(\004\022)\n\ntargettype"
+  "\030\003 \001(\0162\025.Protocol.OBJECT_TYPE\022\022\n\ntargetn"
+  "ums\030\004 \001(\005\022\017\n\007process\030\005 \001(\005\022)\n\nqueststate"
+  "\030\006 \001(\0162\025.Protocol.QUEST_STATE\022\022\n\nrewardG"
+  "old\030\007 \001(\005\022\'\n\nrewardItem\030\010 \001(\0162\023.Protocol"
+  ".ITEM_TYPE\022\025\n\rrewardItemNum\030\t \001(\005b\006proto"
+  "3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 865, descriptor_table_protodef_Struct_2eproto,
+    false, false, 881, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 4,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -527,6 +530,7 @@ ObjectInfo::ObjectInfo(const ObjectInfo& from)
     , decltype(_impl_.mp_){}
     , decltype(_impl_.maxmp_){}
     , decltype(_impl_.npctype_){}
+    , decltype(_impl_.potion_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -539,8 +543,8 @@ ObjectInfo::ObjectInfo(const ObjectInfo& from)
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.npctype_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.npctype_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.potion_) -
+    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.potion_));
   // @@protoc_insertion_point(copy_constructor:Protocol.ObjectInfo)
 }
 
@@ -568,6 +572,7 @@ inline void ObjectInfo::SharedCtor(
     , decltype(_impl_.mp_){0}
     , decltype(_impl_.maxmp_){0}
     , decltype(_impl_.npctype_){0}
+    , decltype(_impl_.potion_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.name_.InitDefault();
@@ -602,8 +607,8 @@ void ObjectInfo::Clear() {
 
   _impl_.name_.ClearToEmpty();
   ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.npctype_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.npctype_));
+      reinterpret_cast<char*>(&_impl_.potion_) -
+      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.potion_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -773,6 +778,14 @@ const char* ObjectInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
         } else
           goto handle_unusual;
         continue;
+      // int32 potion = 20;
+      case 20:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 160)) {
+          _impl_.potion_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -926,6 +939,12 @@ uint8_t* ObjectInfo::_InternalSerialize(
       19, this->_internal_npctype(), target);
   }
 
+  // int32 potion = 20;
+  if (this->_internal_potion() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(20, this->_internal_potion(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1051,6 +1070,13 @@ size_t ObjectInfo::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_npctype());
   }
 
+  // int32 potion = 20;
+  if (this->_internal_potion() != 0) {
+    total_size += 2 +
+      ::_pbi::WireFormatLite::Int32Size(
+        this->_internal_potion());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1126,6 +1152,9 @@ void ObjectInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   if (from._internal_npctype() != 0) {
     _this->_internal_set_npctype(from._internal_npctype());
   }
+  if (from._internal_potion() != 0) {
+    _this->_internal_set_potion(from._internal_potion());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1150,8 +1179,8 @@ void ObjectInfo::InternalSwap(ObjectInfo* other) {
       &other->_impl_.name_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.npctype_)
-      + sizeof(ObjectInfo::_impl_.npctype_)
+      PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.potion_)
+      + sizeof(ObjectInfo::_impl_.potion_)
       - PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.objectid_)>(
           reinterpret_cast<char*>(&_impl_.objectid_),
           reinterpret_cast<char*>(&other->_impl_.objectid_));

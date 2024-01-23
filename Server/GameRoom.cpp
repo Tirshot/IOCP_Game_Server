@@ -9,6 +9,7 @@
 #include "Arrow.h"
 #include "Chat.h"
 #include "Quest.h"
+#include <filesystem>
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
 
@@ -24,7 +25,10 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
-	_tilemap.LoadFile(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Tilemap\\Tilemap01.txt");
+	filesystem::path currentPath = filesystem::current_path();
+	filesystem::path tilemapDirectory = currentPath / ".." / "Client" / "Resources" / "Tilemap" / "Tilemap01.txt";
+	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
+	_tilemap.LoadFile(relativePath);
 
 	// Sign
 	{
@@ -57,25 +61,25 @@ void GameRoom::Init()
 	}
 	// Quest »ý¼º
 	{
+		QuestRef quest0 = Quest::CreateQuest();
+		quest0->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
+		quest0->info.set_targetnums(5);
+		quest0->info.set_rewardgold(150);
+		_quests.insert({ quest0->info.questid(), quest0->info});
+	}
+	{
 		QuestRef quest1 = Quest::CreateQuest();
-		quest1->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-		quest1->info.set_targetnums(5);
-		quest1->info.set_rewardgold(150);
-		_quests.insert({ quest1->info.questid(), quest1->info});
+		quest1->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
+		quest1->info.set_targetnums(1);
+		quest1->info.set_rewardgold(100);
+		_quests.insert({ quest1->info.questid(), quest1->info });
 	}
 	{
 		QuestRef quest2 = Quest::CreateQuest();
-		quest2->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
-		quest2->info.set_targetnums(1);
-		quest2->info.set_rewardgold(100);
+		quest2->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
+		quest2->info.set_targetnums(0);
+		quest2->info.set_rewardgold(0);
 		_quests.insert({ quest2->info.questid(), quest2->info });
-	}
-	{
-		QuestRef quest3 = Quest::CreateQuest();
-		quest3->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-		quest3->info.set_targetnums(0);
-		quest3->info.set_rewardgold(0);
-		_quests.insert({ quest3->info.questid(), quest3->info });
 	}
 }
 
@@ -632,7 +636,7 @@ void GameRoom::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_ST
 {
 	PlayerRef player = dynamic_pointer_cast<Player>(FindObject(playerId));
 	if (player)
-		player->SetQuestState(questId, state);
+		player->SetQuestState(questId, state, 0);
 }
 
 

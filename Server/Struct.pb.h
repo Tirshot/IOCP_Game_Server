@@ -393,6 +393,7 @@ class ObjectInfo final :
     kMpFieldNumber = 17,
     kMaxMpFieldNumber = 18,
     kNpcTypeFieldNumber = 19,
+    kPotionFieldNumber = 20,
   };
   // string name = 5;
   void clear_name();
@@ -570,6 +571,15 @@ class ObjectInfo final :
   void _internal_set_npctype(::Protocol::NPC_TYPE value);
   public:
 
+  // int32 potion = 20;
+  void clear_potion();
+  int32_t potion() const;
+  void set_potion(int32_t value);
+  private:
+  int32_t _internal_potion() const;
+  void _internal_set_potion(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -597,6 +607,7 @@ class ObjectInfo final :
     int32_t mp_;
     int32_t maxmp_;
     int npctype_;
+    int32_t potion_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1523,6 +1534,26 @@ inline void ObjectInfo::_internal_set_npctype(::Protocol::NPC_TYPE value) {
 inline void ObjectInfo::set_npctype(::Protocol::NPC_TYPE value) {
   _internal_set_npctype(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.npcType)
+}
+
+// int32 potion = 20;
+inline void ObjectInfo::clear_potion() {
+  _impl_.potion_ = 0;
+}
+inline int32_t ObjectInfo::_internal_potion() const {
+  return _impl_.potion_;
+}
+inline int32_t ObjectInfo::potion() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.potion)
+  return _internal_potion();
+}
+inline void ObjectInfo::_internal_set_potion(int32_t value) {
+  
+  _impl_.potion_ = value;
+}
+inline void ObjectInfo::set_potion(int32_t value) {
+  _internal_set_potion(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.potion)
 }
 
 // -------------------------------------------------------------------

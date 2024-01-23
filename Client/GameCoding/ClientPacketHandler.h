@@ -40,6 +40,8 @@ enum
 	C_QuestList = 46,
 	S_QuestList = 47,
 
+	C_Heal = 49,
+
 	S_Reset = 99,
 };
 class Creature;
@@ -56,6 +58,7 @@ public:
 	static void Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Teleport(ServerSessionRef session, BYTE* buffer, int32 len);
@@ -85,11 +88,12 @@ public:
 	}
 
 	static SendBufferRef Make_C_Fire(uint64 ownerid);
-	static SendBufferRef Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId);
+	//static SendBufferRef Make_C_Hit(uint64 objectId, uint64 attackerId);
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
 	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
 	static SendBufferRef Make_C_Quest(uint64 objectId, uint64 questId);
 	static SendBufferRef Make_C_QuestList();
+	static SendBufferRef Make_C_Heal(uint64 objectId);
 };
 

@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "HitEffect.h"
 #include "ChatManager.h"
+#include "SoundManager.h"
 
 Arrow::Arrow()
 {
@@ -67,15 +68,8 @@ void Arrow::TickIdle()
 			SetState(MOVE);
 			return;
 		}
-		 // 이펙트 출력
-		if (creature && creature->GetType() == Protocol::OBJECT_TYPE_MONSTER)
-		{
-			scene->SpawnObject<HitEffect>(nextPos);
-			creature->OnDamaged(_owner);
-			creature->SetState(HIT);
-		}
+		SetState(HIT);
 	}
-	scene->RemoveActor(this);
 }
 
 void Arrow::TickMove()
@@ -106,6 +100,20 @@ void Arrow::TickMove()
 			break;
 		}
 	}
+}
+
+void Arrow::TickHit()
+{
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	Vec2Int pos = Vec2Int{ info.posx(), info.posy() };
+	Vec2Int nextPos = pos + deltaXY[info.dir()];
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	// 앞이 비어있으면 전진, 몬스터라면 타격
+	/*Monster* _target = dynamic_cast<Monster*>(scene->GetCreatureAt(nextPos));*/
+
+	scene->RemoveActor(this);
 }
 
 void Arrow::UpdateAnimation()

@@ -24,9 +24,13 @@ public:
 
 public:
 	void QuestProgress(int questid);
-	Protocol::QUEST_STATE GetQuestState(int questid) { return _questsStates[questid]; }
-	void SetQuestState(int questid, Protocol::QUEST_STATE state) { _questsStates[questid] = state; }
+	pair<Protocol::QUEST_STATE, int > GetQuestState(int questid) { return _questsStates[questid]; }
+	void SetQuestState(int questid, Protocol::QUEST_STATE state, int progress) { _questsStates[questid] = { state, progress }; }
 	
+	int GetQuestProgress(int questId);
+	void SetQuestProgress(int questId, int progress);
+	void AddQuestProgress(int questId) { _questsStates[questId].second += 1; }
+
 public:
 	GameSessionRef session;
 
@@ -35,6 +39,6 @@ private:
 	uint64 _now = 0;
 	uint64 _prev = 0;
 	
-	map<int, Protocol::QUEST_STATE> _questsStates;
+	map<int, pair<Protocol::QUEST_STATE, int>> _questsStates;
 };
 

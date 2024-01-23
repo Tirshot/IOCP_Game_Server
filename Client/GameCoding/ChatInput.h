@@ -1,6 +1,5 @@
 #pragma once
 #include "UI.h"
-class Sprite;
 class ChatInput : public UI
 {
 public:
@@ -16,13 +15,13 @@ public:
 	void SetSize(Vec2Int size) { _size = { size.x, size.y }; }
 
 	void AddTextChar(WCHAR text[], int len);
+	void RemoveTextChar(WCHAR text[], int len);
 	void ClearTextBox();
 
 	HDC GetDC();
 	RECT GetRect() { return _rect; }
 
 protected:
-	Sprite* _sprite = nullptr;
 	RECT _rect = {};
 	HDC _hdc = nullptr;
 

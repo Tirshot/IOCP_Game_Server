@@ -31,10 +31,14 @@ void Game::Init(HWND hwnd)
 	HBITMAP prev = (HBITMAP)::SelectObject(_hdcBack, _bmpBack); // DC와 비트맵 연결
 	::DeleteObject(prev);
 
+	filesystem::path currentPath = filesystem::current_path();
+	filesystem::path resourceDirectory = currentPath / ".." / ".." / "Client" / "Resources";
+	filesystem::path relativePath = filesystem::relative(resourceDirectory, currentPath);
+	
 	GET_SINGLE(TimeManager)->Init();
 	GET_SINGLE(InputManager)->Init(hwnd);
 	GET_SINGLE(SceneManager)->Init();
-	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"E:\\Cpp\\IOCP\\Server\\Client\\Resources"));
+	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(relativePath));
 	GET_SINGLE(SoundManager)->Init(hwnd);
 
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);

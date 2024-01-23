@@ -79,6 +79,9 @@ void Player::Tick()
 	Super::Tick();
 
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (info.hp() <= 0)
+		scene->RemoveActor(this);
 }
 
 void Player::Render(HDC hdc)
@@ -142,8 +145,8 @@ void Player::TickSkill()
 			if (monster)
 			{
 				// 몬스터에 피격 이펙트 출력
-				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				monster->OnDamaged(this);
+				//scene->SpawnObject<HitEffect>(GetFrontCellPos());
+				//GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
 
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
 				if (monster->info.hp() <=0)
@@ -202,14 +205,6 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
-
-				// 몬스터에 피격 이펙트 출력
-				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,-1 });
-				monster->OnDamaged(this);
-
-				if (monster->info.hp() <= 0)
-					return;
-
 				monster->SetWait(50);
 				monster->SetState(HIT);
 				monster->KnockBack(this);
@@ -222,14 +217,6 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
-
-				// 몬스터에 피격 이펙트 출력
-				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 1,0 });
-				monster2->OnDamaged(this);
-
-				if (monster2->info.hp() <= 0)
-					return;
-
 				monster2->SetWait(50);
 				monster2->SetState(HIT);
 				monster2->KnockBack(this);
@@ -242,14 +229,6 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
-
-				// 몬스터에 피격 이펙트 출력
-				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ 0,1 });
-				monster3->OnDamaged(this);
-
-				if (monster3->info.hp() <= 0)
-					return;
-
 				monster3->SetWait(50);
 				monster3->SetState(HIT);
 				monster3->KnockBack(this);
@@ -262,21 +241,16 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
-
-				// 몬스터에 피격 이펙트 출력
-				scene->SpawnObject<HitEffect>(GetCellPos() + Vec2Int{ -1,0 });
-				monster4->OnDamaged(this);
-
-				if (monster4->info.hp() <= 0)
-					return;
-
 				monster4->SetWait(50);
 				monster4->SetState(HIT);
 				monster4->KnockBack(this);
 			}
 		}
 		SetState(MOVE);
-		if (GetCellPos() == Vec2Int{ 44, 18 })
+
+		MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
+		if (myPlayer && myPlayer->GetQuestState(1) == Protocol::QUEST_STATE_ACCEPT
+			&& GetCellPos() == Vec2Int{ 44, 18 })
 			scene->SpawnObject<TeleportEffect>(GetCellPos());
 	}
 }
@@ -364,14 +338,4 @@ void Player::SyncToServer()
 {
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-}
-
-int Player::GetQuestProgress(int questId)
-{
-	return _questsProgress[questId];
-}
-
-void Player::SetQuestProgress(int questId, int progress)
-{
-	_questsProgress[questId] = progress;
 }

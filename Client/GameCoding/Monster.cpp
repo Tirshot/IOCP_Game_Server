@@ -5,6 +5,7 @@
 #include "Flipbook.h"
 #include "TimeManager.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
 #include "DevScene.h"
 #include "Tilemap.h"
 #include "Player.h"
@@ -116,11 +117,8 @@ void Monster::TickSkill()
 	Player* player = dynamic_cast<Player*>(scene->GetCreatureAt(GetFrontCellPos()));
 	
 	// Player에 피격 이펙트 출력
-	if (player)
-	{
-		player->OnDamaged(this);
-	}
 	scene->SpawnObject<HitEffect>(GetFrontCellPos());
+	GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
 	SetState(IDLE);
 }
 

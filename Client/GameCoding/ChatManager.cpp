@@ -73,6 +73,14 @@ void ChatManager::SetVisibleChat()
 	_chat->SetChatState(true);
 }
 
+void ChatManager::SetInvisibleChat()
+{
+	_chat->SetVisible(false);
+	_chat->SetAlpha(0);
+	_chat->SetSumTime(0);
+	_chat->SetChatState(false);
+}
+
 void ChatManager::SetVisibleChatInput(bool visible)
 {
 	_chatInput->SetVisible(visible);

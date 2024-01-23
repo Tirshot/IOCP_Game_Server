@@ -39,6 +39,7 @@ enum
 	C_QuestList = 46,
 	S_QuestList = 47,
 
+	C_Heal = 49,
 
 	S_Reset = 99,
 };
@@ -56,16 +57,18 @@ public:
 
 	// 받기
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
-	static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
+	//static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Revive(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Quest(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_QuestList(GameSessionRef session, BYTE* buffer, int32 len);
-	
+	static void Handle_C_Heal(GameSessionRef session, BYTE* buffer, int32 len);
+
 	
 	// 보내기
 	static SendBufferRef Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs);
+	static SendBufferRef Make_S_Hit(uint64 objectId, uint64 attackerId, int32 damage);
 	static SendBufferRef Make_S_Reset();
 	static SendBufferRef Make_S_EnterGame();
 	static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);

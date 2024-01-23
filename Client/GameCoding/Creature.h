@@ -17,7 +17,7 @@ public:
 	virtual void TickSkill()  override {};
 	virtual void UpdateAnimation()  override {};
 
-	virtual void OnDamaged(Creature* attacker);
+	/*virtual void OnDamaged(Creature* attacker);*/
 	
 	void KnockBack(Creature* attacker);
 	uint64 SetWait(uint64 time) { return _wait = GetTickCount64() + time; }

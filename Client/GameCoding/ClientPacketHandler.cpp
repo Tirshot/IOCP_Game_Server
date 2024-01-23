@@ -45,6 +45,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 			Handle_S_Move(session, buffer, len);
 			break;
 
+		case S_Hit:
+			Handle_S_Hit(session, buffer, len);
+			break;
+
 		case S_Fire:
 			Handle_S_Fire(session, buffer, len);
 			break;
@@ -213,6 +217,39 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 	}
 }
 
+void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_Hit pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	uint64 objectId = pkt.objectid();
+	uint64 attackerId = pkt.attackerid();
+	int32 damage = pkt.damage();
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	Creature* creature = dynamic_cast<Creature*>(scene->GetObjects(objectId));
+
+	if (creature == nullptr)
+		return;
+
+	{
+		Player* player = dynamic_cast<Player*>(creature);
+
+		if (player)
+			GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
+		else
+			GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
+
+	}
+	scene->SpawnObject<HitEffect>(creature->GetCellPos());
+	creature->info.set_hp(clamp(creature->info.hp() - damage, 0, creature->info.maxhp()));
+}
+
 void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
@@ -345,7 +382,7 @@ void ClientPacketHandler::Handle_S_QuestProcess(ServerSessionRef session, BYTE* 
 	int process = pkt.questinfo().process();
 
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
 	player->SetQuestProgress(questId, process);
 
 	{
@@ -353,7 +390,7 @@ void ClientPacketHandler::Handle_S_QuestProcess(ServerSessionRef session, BYTE* 
 	}
 	if (player)
 	{
-		player->SetQuestState(questId, Protocol::QUEST_STATE_ACCEPT);
+		player->SetQuestState(questId, Protocol::QUEST_STATE_ACCEPT ,process);
 	}
 }
 
@@ -372,11 +409,11 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 	int process = pkt.questinfo().process();
 
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (player)
 	{
-		player->SetQuestState(questId, Protocol::QUEST_STATE_COMPLETED);
+		player->SetQuestState(questId, Protocol::QUEST_STATE_COMPLETED, process);
 		GET_SINGLE(ChatManager)->AddMessage(L"QUEST COMPLETE!!");
 		GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
 		GET_SINGLE(SoundManager)->Play(L"QuestComplete");
@@ -428,17 +465,6 @@ SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
 	return MakeSendBuffer(pkt, C_Fire);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_Hit(Protocol::ObjectInfo& objectInfo, uint64 attackerId)
-{
-	// 패킷 생성
-	Protocol::C_Hit pkt;
-
-	*pkt.mutable_info() = objectInfo;
-	pkt.set_attackerid(attackerId);
-
-	return MakeSendBuffer(pkt, C_Hit);
-}
-
 SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t time, string str)
 {
 	Protocol::C_SendMessage pkt;
@@ -485,4 +511,11 @@ SendBufferRef ClientPacketHandler::Make_C_QuestList()
 	Protocol::C_QuestList pkt;
 
 	return MakeSendBuffer(pkt, C_QuestList);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_Heal(uint64 objectId)
+{
+	Protocol::C_Heal pkt;
+
+	return MakeSendBuffer(pkt, C_Heal);
 }

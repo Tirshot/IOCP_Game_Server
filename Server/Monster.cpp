@@ -69,6 +69,12 @@ void Monster::UpdateIdle()
 		{
 			// 공격하기
 			SetDir(GetLookAtDir(target->GetCellPos()));
+			target->OnDamaged(shared_from_this());
+			{
+				int32 damage = info.attack() - target->info.defence();
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(target->info.objectid(), info.objectid(), damage);
+				target->session->Send(sendBuffer);
+			}
 
 			// 주변의 클라이언트에 알림
 			SetState(SKILL, true);
@@ -104,71 +110,6 @@ void Monster::UpdateIdle()
 			else
 			{
 				_target.reset();
-
-				{ // 타겟을 찾지 못하면 랜덤으로 한 칸씩 이동
-					// 0, 1, 2, 3
-					auto randPos = rand() % 3;
-					Vec2Int nextPos = {};
-
-					switch (randPos)
-					{
-					case DIR_UP:
-						nextPos = GetCellPos() + Vec2Int{ 0, -1 };
-
-						if (room->MonsterCanGo(nextPos))
-						{
-							SetDir(GetLookAtDir(nextPos));
-							SetCellPos(nextPos);
-							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
-
-							// 주위의 클라이언트에 알림
-							SetState(MOVE, true);
-						}
-						break;
-
-					case DIR_DOWN:
-						nextPos = GetCellPos() + Vec2Int{ 0, 1 };
-
-						if (room->MonsterCanGo(nextPos))
-						{
-							SetDir(GetLookAtDir(nextPos));
-							SetCellPos(nextPos);
-							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
-
-							// 주위의 클라이언트에 알림
-							SetState(MOVE, true);
-						}
-						break;
-
-					case DIR_LEFT:
-						nextPos = GetCellPos() + Vec2Int{ -1, 0 };
-
-						if (room->MonsterCanGo(nextPos))
-						{
-							SetDir(GetLookAtDir(nextPos));
-							SetCellPos(nextPos);
-							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
-
-							// 주위의 클라이언트에 알림
-							SetState(MOVE, true);
-						}
-						break;
-
-					case DIR_RIGHT:
-						nextPos = GetCellPos() + Vec2Int{ 1, 0 };
-
-						if (room->MonsterCanGo(nextPos))
-						{
-							SetDir(GetLookAtDir(nextPos));
-							SetCellPos(nextPos);
-							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
-
-							// 주위의 클라이언트에 알림
-							SetState(MOVE, true);
-						}
-						break;
-					}
-				}
 			}
 		}
 	}

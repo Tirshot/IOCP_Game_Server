@@ -25,9 +25,9 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Move(session, buffer, len);
 		break;
 
-	case C_Hit:
-		Handle_C_Hit(session, buffer, len);
-		break;
+	//case C_Hit:
+	//	Handle_C_Hit(session, buffer, len);
+	//	break;
 
 	case C_Fire:
 		Handle_C_Fire(session, buffer, len);
@@ -47,6 +47,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 
 	case C_QuestList:
 		Handle_C_QuestList(session, buffer, len);
+		break;
+
+	case C_Heal:
+		Handle_C_Heal(session, buffer, len);
 		break;
 
 	default:
@@ -69,35 +73,10 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 		room->Handle_C_Move(pkt);
 }
 
-void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
-{
- 	PacketHeader* header = (PacketHeader*)buffer;
-	//uint16 id = header->id;
-	uint16 size = header->size;
-
-	Protocol::C_Hit pkt;
-	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
-	uint64 objectId = pkt.info().objectid();
-	uint64 attackerId = pkt.attackerid();
-
-	// OnDamaged 함수는 피격자가 주체
-	GameRoomRef room = session->gameRoom.lock();
-	if (room)
-	{
-		GameObjectRef gameObject = room->FindObject(objectId);
-		CreatureRef creature = dynamic_pointer_cast<Creature>(gameObject);
-
-		GameObjectRef attackerObject = room->FindObject(attackerId);
-		CreatureRef attacker = dynamic_pointer_cast<Creature>(attackerObject);
-
-		if (creature && attacker)
-		{
-			creature->info.set_hp(pkt.info().hp());
-			creature->OnDamaged(attacker);
-		}
-	}
-}
+//void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
+//{
+//
+//}
 
 void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len)
 {
@@ -171,6 +150,7 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 		PlayerRef player = GameObject::CreatePlayer();
 		player->info = info;
 		player->info.set_hp(info.maxhp());
+		player->info.set_mp(info.maxhp());
 		player->info.set_posx(5);
 		player->info.set_posy(5);
 		player->info.set_weapontype(Protocol::WEAPON_TYPE_SWORD);
@@ -274,6 +254,21 @@ void ServerPacketHandler::Handle_C_QuestList(GameSessionRef session, BYTE* buffe
 	}
 }
 
+void ServerPacketHandler::Handle_C_Heal(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_QuestList pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+	//
+	GameRoomRef room = session->gameRoom.lock();
+	
+	PlayerRef healedPlayer = session->player.lock();
+	healedPlayer->info.set_hp(healedPlayer->info.hp() + 1);
+}
+
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
 	Protocol::S_TEST pkt;
@@ -299,6 +294,17 @@ SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 atta
 	}
 
 	return MakeSendBuffer(pkt, S_TEST);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_Hit(uint64 objectId, uint64 attackerId, int32 damage)
+{
+	Protocol::S_Hit pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_attackerid(attackerId);
+	pkt.set_damage(damage);
+
+	return MakeSendBuffer(pkt, S_Hit);
 }
 
 SendBufferRef ServerPacketHandler::Make_S_Reset()

@@ -80,6 +80,8 @@ int MyPlayer::GetSelectedSlot()
 
 void MyPlayer::UsePotion()
 {
+	_potionNums = info.potion();
+
 	if (_potionNums <= 0)
 		return;
 
@@ -87,18 +89,15 @@ void MyPlayer::UsePotion()
 		return;
 
 	info.set_hp(clamp(info.hp() + 1, 0, info.maxhp()));
-	{
-		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
-		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-	}
 	//
 	GET_SINGLE(SoundManager)->Play(L"Potion");
-	clamp(_potionNums -= 1, 0, 99);
-}
-
-void MyPlayer::AddPotion(int num)
-{
-	clamp(_potionNums += num, 0, 99); 
+	info.set_potion(clamp(info.potion() - 1, 0, 99));
+	{
+		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Heal(info.objectid());
+		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+	}
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	scene->SpawnObject<HealEffect>({ GetCellPos() });
 }
 
 void MyPlayer::TickInput()
@@ -133,13 +132,12 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
 	{
 		UsePotion();
-		scene->SpawnObject<HealEffect>({ GetCellPos() });
 	}
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
 		&& GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 	{
-		if (_sumTimes >= 1.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
+		if (_sumTimes >= 0.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
 		{
 			NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
 
@@ -209,11 +207,15 @@ void MyPlayer::TickInput()
 		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 보유 골드 증가");
 	}
 
-	// Debug - 상인 앞으로 위치 이동
+	// Debug -	Move
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_8))
 	{
-		SetCellPos({ 40,26 }, true);
-		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 상인 앞으로 이동");
+		SetCellPos({ 44,25 }, true);
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : Move");
 	}
 
 	// Debug - CellPos 확인
@@ -227,13 +229,10 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_0))
 	{
 		info.set_hp(0);
-		Monster* monster = new Monster();
-		OnDamaged(monster);
 		{
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
-		delete monster;
 	}
 }
 
@@ -351,4 +350,15 @@ void MyPlayer::SyncToServer()
 
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+}
+
+
+int MyPlayer::GetQuestProgress(int questId)
+{
+	return _questsStates[questId].second;
+}
+
+void MyPlayer::SetQuestProgress(int questId, int progress)
+{
+	_questsStates[questId].second = progress;
 }

@@ -37,10 +37,12 @@
 #include "Arrow.h"
 #include "ArrowItem.h"
 #include "GameOver.h"
+#include "DeathEffect.h"
 #include "ShopUI.h"
 #include "MerchantUI.h"
 #include "QuestUI.h"
 #include "Quest.h"
+#include <filesystem>
 
 DevScene::DevScene()
 {
@@ -203,6 +205,7 @@ void DevScene::RemoveActor(Actor* actor)
 	Monster* monster = dynamic_cast<Monster*>(actor);
 	if (monster)
 	{
+		SpawnObject<DeathEffect>(monster->GetCellPos());
 		_monsterCount--;
 		return;
 	}
@@ -211,6 +214,8 @@ void DevScene::RemoveActor(Actor* actor)
 	MyPlayer* player = dynamic_cast<MyPlayer*>(actor);
 	if (player)
 	{
+		SpawnObject<DeathEffect>(player->GetCellPos());
+
 		GET_SINGLE(SoundManager)->Play(L"GameOver");
 		Chat* chat = GET_SINGLE(ChatManager)->GetChat();
 		chat->AddText(L"캐릭터가 쓰러졌습니다.");
@@ -712,8 +717,8 @@ void DevScene::LoadUI()
 
 void DevScene::LoadSound()
 {
-	GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav");
-	GET_SINGLE(SoundManager)->Play(L"BGM", true);
+	/*GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav");
+	GET_SINGLE(SoundManager)->Play(L"BGM", true);*/
 	GET_SINGLE(ResourceManager)->LoadSound(L"Land", L"Sound\\Land.wav");
 	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav");
 	GET_SINGLE(ResourceManager)->LoadSound(L"Sword", L"Sound\\Sword.wav");
@@ -1096,13 +1101,13 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 
 void DevScene::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
 {
-	Player* player = GetPlayerByID(playerId);
-	player->SetQuestState(questId, state);
+	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	player->SetQuestState(questId, state, 0);
 }
 
 Protocol::QUEST_STATE DevScene::GetPlayerQuestState(int objectId, int questId)
 {
-	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
 	if (player)
 		return player->GetQuestState(questId);
 }

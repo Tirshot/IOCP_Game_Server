@@ -14,7 +14,6 @@ enum class KeyType
     Enter = VK_RETURN,
     LeftShift = VK_LSHIFT,
     RightShift = VK_RSHIFT,
-    Backspace = VK_BACK,
 
     W = 'W',
     A = 'A',

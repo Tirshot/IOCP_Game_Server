@@ -1,22 +1,13 @@
 #include "pch.h"
 #include "ChatInput.h"
 #include "Sprite.h"
-#include "ResourceManager.h"
 #include "ChatManager.h"
 
 ChatInput::ChatInput()
 {
-	_rect = GetRect();
-	_rect.left = 0;
-	_rect.right = 500;
-	_rect.top = -13;
-	_rect.bottom = 20;
-
-	_sprite = GET_SINGLE(ResourceManager)->GetSprite(L"ChatInput");
-
 	_visible = false;
-	_pos = { 10,520 };
-	_size = { 500, 20 };
+	_pos = { 10, 530 };
+	_size = { 300, 20 };
 }
 
 ChatInput::~ChatInput()
@@ -25,8 +16,7 @@ ChatInput::~ChatInput()
 
 void ChatInput::BeginPlay()
 {
-	//_size.x = _rect.right - _rect.left;
-	//_size.y = _rect.bottom - _rect.top;
+
 }
 
 void ChatInput::Tick()
@@ -41,21 +31,12 @@ void ChatInput::Render(HDC hdc)
 
 	if (_visible)
 	{
-		{// 백그라운드
-			::BitBlt(hdc,
-				(int)_pos.x + 15,
-				(int)_pos.y,
-				_size.x,
-				_size.y,
-				_sprite->GetDC(),
-				0,
-				0,
-				SRCCOPY);
-
+		{
 			// Input text
-			SetBkMode(_sprite->GetDC(), TRANSPARENT);
-			SetTextColor(_sprite->GetDC(), RGB(230, 230, 230));
-			::DrawTextW(_sprite->GetDC(), _text, -1,&_rect, DT_LEFT | DT_TOP);
+			SetBkMode(hdc, BLACKNESS);
+			SetTextColor(hdc, RGB(230, 230, 230));
+			RECT textRect = { _pos.x + 5, _pos.y - 45, textRect.left + _size.x, textRect.top + 35 };
+			DrawTextW(hdc, _text, -1,&textRect, DT_LEFT);
 		}
 	}
 }
@@ -74,18 +55,13 @@ void ChatInput::AddTextChar(WCHAR text[], int len)
 		_text[i] = text[i];
 }
 
-void ChatInput::ClearTextBox()
+void ChatInput::RemoveTextChar(WCHAR text[], int len)
 {
-	// 백그라운드를 검은 색으로 지우기
-	HBRUSH brush = CreateSolidBrush(RGB(0, 0, 0));
-	FillRect(_sprite->GetDC(), &_rect, brush);
-	DeleteObject(brush);
-
-	// _text 초기화
-	memset(_text, 0, 255);
+	_text[len] = L' ';
 }
 
-HDC ChatInput::GetDC()
+void ChatInput::ClearTextBox()
 {
-	return _sprite ? _sprite->GetDC() : 0;
+	// _text 초기화
+	memset(_text, 0, 255);
 }

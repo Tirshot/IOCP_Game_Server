@@ -14,6 +14,7 @@
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "MyPlayer.h"
+#include "DevScene.h"
 
 #define MAX_LOADSTRING 100
 
@@ -141,6 +142,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_KEYDOWN:
+        if (wParam == VK_ESCAPE)
+        {
+            isChatting = false;
+            memset(str1, 0, sizeof(str1));
+            GET_SINGLE(ChatManager)->SetInvisibleChat();
+            GET_SINGLE(ChatManager)->SetVisibleChatInput(false);
+
+            MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+            myPlayer->SetState(IDLE);
+        }
+
         // 엔터 키를 누르면 채팅 입력 시작 또는 종료
         if (wParam == VK_RETURN)
         {
@@ -182,15 +194,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_CHAR:
         if (isChatting)
         {
+            if (wParam == VK_BACK)
+            {
+                if (len > 0)
+                {
+                    len--;
+                    str1[len + 1] = L'\0';
+                    InvalidateRect(hWnd, NULL, FALSE);
+                    GET_SINGLE(ChatManager)->GetChatInput()->RemoveTextChar(str1, len + 1);
+                    return 0;
+                }
+            }
             len = (int)wcslen(str1);
             str1[len] = static_cast<WCHAR>(wParam);
             str1[len + 1] = L'\0';
 
             // 현재 조합 중인 문자열을 그대로 출력
             GET_SINGLE(ChatManager)->SetVisibleChat();
-            GET_SINGLE(ChatManager)->GetChatInput()->AddTextChar(str1, len);
+            GET_SINGLE(ChatManager)->GetChatInput()->AddTextChar(str1, len + 1);
         }
-        else if (isChatting == false)
+        else if (isChatting == false && wParam == VK_RETURN)
         {
             MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
             if (myPlayer && myPlayer->info.state() == CHAT)

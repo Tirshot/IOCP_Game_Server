@@ -92,8 +92,14 @@ void Player::UpdateSkill()
 				return;
 			}
 			// 몬스터가 플레이어에게 피격
+			creature->OnDamaged(shared_from_this());
 
-			creature->info.set_hp(creature->info.hp() + creature->info.defence() - shared_from_this()->info.attack());
+			int damage = shared_from_this()->info.attack() - creature->info.defence();
+			{
+				int32 damage = info.attack() - creature->info.defence();
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(creature->info.objectid(), info.objectid(), damage);
+				session->Send(sendBuffer);
+			}
 
 			if (creature->info.hp() <= 0)
 				return;
@@ -129,12 +135,14 @@ void Player::UpdateSpin()
 				SetState(IDLE);
 				return;
 			}
+			creature->OnDamaged(shared_from_this());
 
-			creature->info.set_hp(creature->info.hp() + creature->info.defence() - shared_from_this()->info.attack());
-
-			if (creature->info.hp() <= 0)
-				return;
-
+			int damage = shared_from_this()->info.attack() - creature->info.defence();
+			{
+				int32 damage = info.attack() - creature->info.defence();
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(creature->info.objectid(), info.objectid(), damage);
+				session->Send(sendBuffer);
+			}
 			creature->SetWait(50);
 			creature->KnockBack(shared_from_this());
 		}
@@ -146,12 +154,14 @@ void Player::UpdateSpin()
 				SetState(IDLE);
 				return;
 			}
+			creature2->OnDamaged(shared_from_this());
 
-			creature2->info.set_hp(creature2->info.hp() + creature2->info.defence() - shared_from_this()->info.attack());
-			
-			if (creature2->info.hp() <= 0)
-				return;
-
+			int damage = shared_from_this()->info.attack() - creature2->info.defence();
+			{
+				int32 damage = info.attack() - creature2->info.defence();
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(creature2->info.objectid(), info.objectid(), damage);
+				session->Send(sendBuffer);
+			}
 			creature2->SetWait(50);
 			creature2->KnockBack(shared_from_this());
 		}
@@ -163,12 +173,14 @@ void Player::UpdateSpin()
 				SetState(IDLE);
 				return;
 			}
+			creature3->OnDamaged(shared_from_this());
 
-			creature3->info.set_hp(creature3->info.hp() + creature3->info.defence() - shared_from_this()->info.attack());
-
-			if (creature3->info.hp() <= 0)
-				return;
-
+			int damage = shared_from_this()->info.attack() - creature3->info.defence();
+			{
+				int32 damage = info.attack() - creature3->info.defence();
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(creature3->info.objectid(), info.objectid(), damage);
+				session->Send(sendBuffer);
+			}
 			creature3->SetWait(50);
 			creature3->KnockBack(shared_from_this());
 		}
@@ -181,20 +193,24 @@ void Player::UpdateSpin()
 				return;
 			}
 
-			creature4->info.set_hp(creature4->info.hp() + creature4->info.defence() - shared_from_this()->info.attack());
+			creature4->OnDamaged(shared_from_this());
 
-			if (creature4->info.hp() <= 0)
-				return;
-
+			int damage = shared_from_this()->info.attack() - creature4->info.defence();
+			{
+				int32 damage = info.attack() - creature4->info.defence();
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(creature4->info.objectid(), info.objectid(), damage);
+				session->Send(sendBuffer);
+			}
 			creature4->SetWait(50);
 			creature4->KnockBack(shared_from_this());
 		}
-		if (GetQuestState(1) == Protocol::QUEST_STATE_ACCEPT)
+		if (GetQuestState(1).first == Protocol::QUEST_STATE_ACCEPT)
 		{
 			if (GetCellPos() == Vec2Int {44,18})
 				QuestProgress(1);
 		}
 	}
+	SetState(MOVE);
 }
 
 void Player::UpdateTeleport()
@@ -229,7 +245,6 @@ void Player::MakeArrow()
 		room->Broadcast(sendBuffer);
 	}
 	room->AddObject(arrow);
-	uint64 ownerid = arrow->GetOwner()->GetObjectID();
 
 	info.set_arrows(info.arrows() - 1);
 }
@@ -279,29 +294,55 @@ void Player::Teleport()
 
 void Player::QuestProgress(int questid)
 {
-	Protocol::QUEST_STATE state = GetQuestState(questid);
+	Protocol::QUEST_STATE state = GetQuestState(questid).first;
+	Protocol::QuestInfo questInfo = room->GetQuest(questid);
+	int targetNums = questInfo.targetnums();
+	int newProcess = GetQuestProgress(questid) + 1;
+
+	if (state == Protocol::QUEST_STATE_FINISHED || state == Protocol::QUEST_STATE_COMPLETED)
+		return;
+
 	if (state == Protocol::QUEST_STATE_ACCEPT)
 	{
 		// 몬스터 처치 카운트 
 		{
-			Protocol::QuestInfo& QuestInfo = room->GetQuest(questid);
-			QuestInfo.set_process(QuestInfo.process() + 1);
-
-			if (QuestInfo.process() >= QuestInfo.targetnums())
+			SetQuestProgress(questid,newProcess);
+			// Process ++
 			{
-				QuestInfo.set_process(QuestInfo.targetnums());
-				SetQuestState(questid, Protocol::QUEST_STATE_COMPLETED);
-				{
-					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), questid, QuestInfo.process());
-					session->Send(sendBuffer);
-				}
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), questid, newProcess);
+				session->Send(sendBuffer);
+			}
+
+			auto it = _questsStates.find(questid);
+			if (it != _questsStates.end())
+			{
+				it->second.second = newProcess; // 진행도 업데이트
 			}
 			else
 			{
-				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), questid, QuestInfo.process());
-				session->Send(sendBuffer);
+				return;
+			}
+
+			if (newProcess >= targetNums)
+			{
+				{
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), questid, newProcess);
+					session->Send(sendBuffer);
+					SetQuestState(questid, Protocol::QUEST_STATE_COMPLETED, targetNums);
+					return;
+				}
 			}
 		}
 	}
 	return;
+}
+
+int Player::GetQuestProgress(int questId)
+{
+	return _questsStates[questId].second;
+}
+
+void Player::SetQuestProgress(int questId, int progress)
+{
+	_questsStates[questId].second = progress;
 }

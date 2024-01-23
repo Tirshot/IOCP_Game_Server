@@ -277,6 +277,7 @@ void ShopItemPanel::OnClickPurchaseButton()
 		int gold = myPlayer->info.gold();
 		int arrows = myPlayer->info.arrows();
 		int maxHP = myPlayer->info.maxhp();
+		int myPotion = myPlayer->GetPotionNums();
 
 		if (gold < _allCost)
 			return;
@@ -294,7 +295,9 @@ void ShopItemPanel::OnClickPurchaseButton()
 			break;
 
 		case POTION:
-			myPlayer->AddPotion(_itemCount);
+			if (myPotion >= 9)
+				return;
+			myPlayer->info.set_potion(myPlayer->info.potion() + _itemCount);
 			break;
 		}
 		myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);

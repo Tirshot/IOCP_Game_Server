@@ -24,6 +24,7 @@ public:
 	wstring ChangeTimeFormat(time_t now);
 
 	void SetVisibleChat();
+	void SetInvisibleChat();
 	void SetVisibleChatInput(bool visible);
 
 	void SendMessageToServer(const wstring text);

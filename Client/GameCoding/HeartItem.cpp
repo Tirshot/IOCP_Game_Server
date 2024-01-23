@@ -68,7 +68,10 @@ void HeartItem::TickIdle()
 			GET_SINGLE(ChatManager)->AddMessage(L"최대 체력이 1 증가했습니다.");
 		}
 		scene->RemoveActor(this);
-		
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
 		// 오브젝트 제거 패킷 전송
 		{
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_RemoveObject(this->info.objectid());

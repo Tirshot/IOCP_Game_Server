@@ -141,7 +141,7 @@ wstring Chat::StringToWStr(string str)
 
 void Chat::SaveLogFile()
 {
-	fs::path _logPath = fs::path(L"E:\\Cpp\\IOCP\\Server\\Server\\Log");
+	fs::path _logPath = fs::path(L"..\..\..\\Server\\Log");
 	// C++ 스타일
 	{
 		wofstream ofs;
@@ -174,7 +174,7 @@ void Chat::SaveLogFile()
 		}
 		else
 		{
-			cout << "파일 열기 실패" << endl;
+			cout << "로그파일 열기 실패" << endl;
 		}
 	}
 }

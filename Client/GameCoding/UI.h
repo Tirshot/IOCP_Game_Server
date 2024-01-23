@@ -16,7 +16,7 @@ public:
 	Vec2Int GetSize() { return _size; }
 
 	void SetVisible(bool visible) { if (_visible == visible) return; _visible = visible; }
-	bool GetVisible() { return _visible; }
+	bool GetVisible() const { return _visible; }
 
 	// UI를 사각형이라고 가정
 	RECT GetRect();

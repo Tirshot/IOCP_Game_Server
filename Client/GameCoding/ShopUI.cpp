@@ -54,7 +54,7 @@ ShopUI::ShopUI()
 	}
 	{ // 포션
 		Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"Potion");
-		ShopItemPanel* potion = new ShopItemPanel(sprite, POTION, 15, (wstring)L"체력 포션", (wstring)L"R을 눌러 사용 시 체력을 1 회복한다.\n최대 99개 소유할 수 있다.", { 140, 285 });
+		ShopItemPanel* potion = new ShopItemPanel(sprite, POTION, 15, (wstring)L"체력 포션", (wstring)L"R을 눌러 사용 시 체력을 1 회복한다.\n최대 10개 소유할 수 있다.", { 140, 285 });
 		AddChild(potion);
 	}
 }
