@@ -344,6 +344,12 @@
     <ClInclude Include="HealEffect.h">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>소스 파일\01. Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -581,6 +587,12 @@
     </ClCompile>
     <ClCompile Include="HealEffect.cpp">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

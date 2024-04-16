@@ -42,6 +42,8 @@
 #include "MerchantUI.h"
 #include "QuestUI.h"
 #include "Quest.h"
+#include "FileManager.h"
+#include "Inventory.h"
 #include <filesystem>
 
 DevScene::DevScene()
@@ -105,6 +107,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tutorial", L"Sprite\\UI\\Tutorial.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MerchantTutorial", L"Sprite\\UI\\MerchantTutorial.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ShopUIBackground", L"Sprite\\UI\\ShopUI.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Inventory", L"Sprite\\UI\\inventory.bmp", RGB(255, 0, 255));
 
 	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
@@ -161,7 +164,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"AcceptButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 84, 640, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"CompleteButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 184, 640, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"FinishedButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 284, 640, 32, 21);
-
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Inventory", GET_SINGLE(ResourceManager)->GetTexture(L"Inventory"), 0, 0, 290, 356);
 
 	LoadMap();
 	LoadPlayer();
@@ -663,55 +666,86 @@ void DevScene::LoadUI()
 {
 	{	// 무기 슬롯, pivot은 중앙 하단
 		WeaponSlot* ws = new WeaponSlot();
-		ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
-		ws->SetVisible(true);
-		AddUI(ws);
+		if (ws)
+		{
+			ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
+			ws->SetVisible(true);
+			AddUI(ws);
+		}
 	}
 	{  // 채팅 창
 		Chat* chat = new Chat(Vec2{ 10,320 } /*Texts*/);
-
-		// background
-		chat->SetPos(Vec2{ 10,320 });
-		chat->SetVisible(true);
-		chat->SetAlpha(250);
-		GET_SINGLE(ChatManager)->SetChat(chat);
-		AddUI(chat);
+		if (chat)
+		{// background
+			chat->SetPos(Vec2{ 10,320 });
+			chat->SetVisible(true);
+			chat->SetAlpha(250);
+			GET_SINGLE(ChatManager)->SetChat(chat);
+			AddUI(chat);
+		}
 	}
 	{	// Chatting input
 		ChatInput* chatInput = new ChatInput();
-		/*chatInput->SetSize(Vec2Int{ 300,20 });*/
-		GET_SINGLE(ChatManager)->SetChatInput(chatInput);
-		AddUI(chatInput);
+		if (chatInput)
+		{
+			/*chatInput->SetSize(Vec2Int{ 300,20 });*/
+			GET_SINGLE(ChatManager)->SetChatInput(chatInput);
+			AddUI(chatInput);
+		}
 	}
 	{
 		StatusPanel* statusPanel = new StatusPanel();
-		statusPanel->SetVisible(true);
-		AddUI(statusPanel);
+		if (statusPanel)
+		{
+			statusPanel->SetVisible(true);
+			AddUI(statusPanel);
+		}
 	}
 	{	// Game Over
 		GameOver* go = new GameOver();
-		go->SetVisible(false);
-		AddUI(go);
+		if (go)
+		{
+			go->SetVisible(false);
+			AddUI(go);
+		}
 	}
 	{	// 상인 UI
 		MerchantUI* tu = new MerchantUI();
-		tu->SetVisible(false);
-		tu->SetPos({ 300,50 });
-		AddUI(tu);
+		if (tu)
+		{
+			tu->SetVisible(false);
+			tu->SetPos({ 300,50 });
+			AddUI(tu);
+		}
 	}
 	{	// 상인 - 상점 UI
 		ShopUI* shopUI = new ShopUI();
-		shopUI->SetPos({135,80});
-		shopUI->SetSize({ 535,450 });
-		shopUI->SetVisible(false);
-		AddUI(shopUI);
+		if (shopUI)
+		{
+			shopUI->SetPos({ 135,80 });
+			shopUI->SetSize({ 535,450 });
+			shopUI->SetVisible(false);
+			AddUI(shopUI);
+		}
 	}
 	{	// 상인 - 퀘스트 UI
 		QuestUI* questUI = new QuestUI();
-		questUI->SetPos({ 135,80 });
-		questUI->SetSize({ 535,450 });
-		questUI->SetVisible(false);
-		AddUI(questUI);
+		if (questUI)
+		{
+			questUI->SetPos({ 135,80 });
+			questUI->SetSize({ 535,450 });
+			questUI->SetVisible(false);
+			AddUI(questUI);
+		}
+	}
+	{	// 인벤토리 및 장비창
+		Inventory* Inven = new Inventory();
+		if (Inven)
+		{
+			Inven->SetPos({ 480, 125 });
+			Inven->SetVisible(false);
+			AddUI(Inven);
+		}
 	}
 }
 

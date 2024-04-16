@@ -155,6 +155,7 @@
     <ClInclude Include="DevScene.h" />
     <ClInclude Include="Enum.pb.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="FlipBook.h" />
     <ClInclude Include="FlipbookActor.h" />
     <ClInclude Include="framework.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HP.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Merchant.h" />
     <ClInclude Include="MerchantTrigger.h" />
@@ -239,6 +241,7 @@
     <ClCompile Include="Enum.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FlipBook.cpp" />
     <ClCompile Include="FlipbookActor.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -251,6 +254,7 @@
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HP.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Merchant.cpp" />
     <ClCompile Include="MerchantTrigger.cpp" />

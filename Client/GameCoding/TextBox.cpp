@@ -50,3 +50,8 @@ void TextBox::Render(HDC hdc)
 	SetTextColor(hdc, RGB(255, 255, 255));
 	::DrawTextW(hdc, _text.c_str(), -1, &_rect, DT_LEFT | DT_VCENTER);
 }
+
+void TextBox::ChangeText(wstring text)
+{
+	_text = text;
+}

@@ -19,6 +19,8 @@ public:
 	void UsePotion();
 	int GetPotionNums() { return info.potion(); }
 
+	void OpenInventory();
+
 private:
 	void TickInput();
 	void TryMove();

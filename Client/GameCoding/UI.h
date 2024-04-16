@@ -21,6 +21,7 @@ public:
 	// UI를 사각형이라고 가정
 	RECT GetRect();
 	bool IsMouseInRect();
+	bool IsMouseInRect(RECT rect);
 
 protected:
 	Vec2	_pos = { 0, 0 };

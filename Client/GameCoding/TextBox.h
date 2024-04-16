@@ -13,6 +13,9 @@ public:
 	virtual void Tick();
 	virtual void Render(HDC hdc);
 
+public:
+	void ChangeText(wstring text);
+
 protected:
 	Sprite* _backGround = nullptr;
 	RECT _rect = {};

@@ -20,6 +20,7 @@
 #include "ChatManager.h"
 #include "Chat.h"
 #include "GameOver.h"
+#include "Inventory.h"
 
 
 MyPlayer::MyPlayer()
@@ -100,6 +101,22 @@ void MyPlayer::UsePotion()
 	scene->SpawnObject<HealEffect>({ GetCellPos() });
 }
 
+void MyPlayer::OpenInventory()
+{
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene == nullptr)
+		return;
+
+	Inventory* Inven = scene->FindUI<Inventory>(scene->GetUIs());
+	if (Inven == nullptr)
+		return;
+
+	if (Inven->GetVisible())
+		Inven->SetVisible(false);
+	else
+		Inven->SetVisible(true);
+}
+
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
@@ -132,6 +149,11 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
 	{
 		UsePotion();
+	}
+
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::I))
+	{
+		OpenInventory();
 	}
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
