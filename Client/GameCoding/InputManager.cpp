@@ -45,3 +45,13 @@ void InputManager::Update()
 	::GetCursorPos(&_mousePos);
 	::ScreenToClient(_hwnd, &_mousePos);
 }
+
+bool InputManager::IsMouseOutRect(RECT& rect)
+{
+	POINT mousePos = GetMousePos();
+
+	if (mousePos.x < rect.left || mousePos.x > rect.right || mousePos.y < rect.top || mousePos.y > rect.bottom)
+		return true;
+
+	return false;
+}

@@ -71,6 +71,9 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"HeartItem", L"Sprite\\Item\\HeartItem.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"FullHeartItem", L"Sprite\\Item\\FullHeartItem.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MaxHeartItem", L"Sprite\\Item\\MaxHeartItem.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"SwordItem", L"Sprite\\Item\\SwordItem.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"BowItem", L"Sprite\\Item\\BowItem.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"StaffItem", L"Sprite\\Item\\StaffItem.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowItem", L"Sprite\\Item\\ArrowItem.bmp", RGB(255,0,255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"BlackMp", L"Sprite\\UI\\BlackMp.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MP", L"Sprite\\UI\\MP.bmp");
@@ -120,6 +123,9 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"FullHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"FullHeartItem"), 50, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"MaxHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"MaxHeartItem"), 0, 0, 48, 20);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"ArrowItem", GET_SINGLE(ResourceManager)->GetTexture(L"ArrowItem"), 0, 0, 24, 23);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"SwordItem", GET_SINGLE(ResourceManager)->GetTexture(L"SwordItem"), 0, 0, 48, 48);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"BowItem", GET_SINGLE(ResourceManager)->GetTexture(L"BowItem"), 0, 0, 51, 51);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"StaffItem", GET_SINGLE(ResourceManager)->GetTexture(L"StaffItem"), 0, 0, 39, 42);
 
 	// UI 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Revive_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 30, 140, 40);
@@ -141,6 +147,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"BlackHeart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Heart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 25, 0, 50, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Sword", GET_SINGLE(ResourceManager)->GetTexture(L"Sword"), 12, 3, 52, 52);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Dummy5", GET_SINGLE(ResourceManager)->GetTexture(L"Sword"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Bow", GET_SINGLE(ResourceManager)->GetTexture(L"Bow"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Staff", GET_SINGLE(ResourceManager)->GetTexture(L"Staff"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Frame", GET_SINGLE(ResourceManager)->GetTexture(L"Frame"), 0, 0, 76, 76);
@@ -739,7 +746,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// 인벤토리 및 장비창
-		Inventory* Inven = new Inventory();
+		Inventory* Inven = GET_SINGLE(Inventory);
 		if (Inven)
 		{
 			Inven->SetPos({ 480, 125 });

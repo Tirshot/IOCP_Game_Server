@@ -13,6 +13,7 @@
 #include "ChatManager.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include "InputManager.h"
 #include "MyPlayer.h"
 #include "DevScene.h"
 
@@ -134,9 +135,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_COMMAND  - 애플리케이션 메뉴를 처리합니다.
 //  WM_PAINT    - 주 창을 그립니다.
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
+
+// 채팅 프레임워크
 bool isChatting = false;
 static WCHAR str1[256];
 int len = 0;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)

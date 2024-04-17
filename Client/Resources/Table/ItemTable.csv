@@ -1,4 +1,43 @@
-1,Sword,Weapon,검\n근접 공격을 한다.\n공격 버튼을 길게 눌러 회전 공격을 한다.
-2,Bow,Weapon,활\n원거리 공격을 한다.\n화살을 소모하여 먼 거리의 적을 공격한다.
-3,Staff,Weapon,스태프\n사용하여 3칸 앞으로 순간이동한다.\n전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.
-4,Arrow,Consumable,화살\n(소모품)\n원거리 공격을 하기 위한 화살.
+1,SwordItem,검,Weapon,근접 공격을 한다. 공격 버튼을 길게 눌러 회전 공격을 한다.
+2,BowItem,활,Weapon,원거리 공격을 한다. 화살을 소모하여 먼 거리의 적을 공격한다.
+3,StaffItem,스태프,Weapon,3칸 앞으로 순간이동한다. 전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.
+4,ArrowItem,화살,Consumable,소모품. 원거리 공격을 하기 위한 화살.
+5,Potion,HP 회복포션,Consumable,소모품. 체력을 한 칸 회복한다.
+6,MaxHeartItem,Dummy2,Dummy2,Dummy2
+7,SwordItem,Dummy3,Dummy3,Dummy3
+8,SwordItem,Dummy4,Dummy4,Dummy4
+9,SwordItem,Dummy5,Dummy5,Dummy5
+10,SwordItem,Dummy6,Dummy6,Dummy6
+11,SwordItem,Dummy7,Dummy7,Dummy7
+12,SwordItem,Dummy8,Dummy8,Dummy8
+13,SwordItem,Dummy9,Dummy9,Dummy9
+14,BowItem,Dummy10,Dummy10,Dummy10
+15,StaffItem,Dummy11,Dummy11,Dummy11
+16,ArrowItem,Dummy12,Dummy12,Dummy12
+17,Potion,Dummy13,Dummy13,Dummy13
+18,MaxHeartItem,Dummy14,Dummy14,Dummy14
+19,SwordItem,Dummy15,Dummy15,Dummy15
+20,SwordItem,Dummy16,Dummy16,Dummy16
+21,SwordItem,Dummy17,Dummy17,Dummy17
+22,SwordItem,Dummy18,Dummy18,Dummy18
+23,SwordItem,Dummy19,Dummy19,Dummy19
+24,SwordItem,Dummy20,Dummy20,Dummy20
+25,SwordItem,Dummy21,Dummy21,Dummy21
+26,BowItem,Dummy22,Dummy22,Dummy22
+27,StaffItem,Dummy23,Dummy23,Dummy23
+28,ArrowItem,Dummy24,Dummy24,Dummy24
+29,Potion,Dummy25,Dummy25,Dummy25
+30,MaxHeartItem,Dummy26,Dummy26,Dummy26
+31,SwordItem,Dummy27,Dummy27,Dummy27
+32,SwordItem,Dummy28,Dummy28,Dummy28
+33,SwordItem,Dummy29,Dummy29,Dummy29
+34,SwordItem,Dummy30,Dummy30,Dummy30
+35,SwordItem,Dummy31,Dummy31,Dummy31
+36,SwordItem,Dummy32,Dummy32,Dummy32
+37,SwordItem,Dummy33,Dummy33,Dummy33
+38,BowItem,Dummy34,Dummy34,Dummy34
+39,StaffItem,Dummy35,Dummy35,Dummy35
+40,ArrowItem,Dummy36,Dummy36,Dummy36
+41,ArrowItem,Dummy37,Dummy37,Dummy37
+42,ArrowItem,Dummy38,Dummy38,Dummy38
+43,ArrowItem,Dummy39,Dummy39,Dummy39

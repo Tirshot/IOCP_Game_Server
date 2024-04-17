@@ -14,11 +14,17 @@ public:
 	virtual void Render(HDC hdc);
 
 public:
-	void ChangeText(wstring text);
+	void SetText(wstring text);
+
+	void SetPadding(float x, float y);
 
 protected:
 	Sprite* _backGround = nullptr;
 	RECT _rect = {};
 	wstring _text = L"";
+
+private:
+	float _leftPadding = 15.f;
+	float _topPadding = 15.f;
 };
 

@@ -70,6 +70,8 @@ public:
 	POINT GetMousePos() { return _mousePos; }
 	KeyState SetButtonUp(KeyType key) { return _states[static_cast<uint8>(key)] = KeyState::Up; }
 
+    bool IsMouseOutRect(RECT& rect);
+
 private:
 	KeyState GetState(KeyType key) { return _states[static_cast<uint8>(key)]; }
 	KeyState GetState(int key) { return _states[static_cast<uint8>(key)]; }

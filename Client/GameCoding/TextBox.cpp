@@ -41,17 +41,23 @@ void TextBox::Render(HDC hdc)
 		0,
 		SRCCOPY);
 
-	_rect.left = _pos.x + 15;
+	_rect.left = _pos.x + _leftPadding;
 	_rect.right = _rect.left + _size.x;
-	_rect.top = _pos.y + 15;
+	_rect.top = _pos.y + _topPadding;
 	_rect.bottom = _rect.top + _size.y;
 
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(255, 255, 255));
-	::DrawTextW(hdc, _text.c_str(), -1, &_rect, DT_LEFT | DT_VCENTER);
+	::DrawTextW(hdc, _text.c_str(), -1, &_rect, DT_LEFT | DT_VCENTER | DT_WORDBREAK);
 }
 
-void TextBox::ChangeText(wstring text)
+void TextBox::SetText(wstring text)
 {
 	_text = text;
+}
+
+void TextBox::SetPadding(float x, float y)
+{
+	_leftPadding = x;
+	_topPadding = y;
 }

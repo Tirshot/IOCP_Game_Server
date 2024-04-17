@@ -74,15 +74,6 @@ bool UI::IsMouseInRect()
 bool UI::IsMouseInRect(RECT rect)
 {
 	POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
-
-	if (mousePos.x < rect.left)
-		return false;
-	if (mousePos.x > rect.right)
-		return false;
-	if (mousePos.y < rect.top)
-		return false;
-	if (mousePos.y > rect.bottom)
-		return false;
-
-	return true;
+	
+	return ::PtInRect(&rect, mousePos);
 }
