@@ -1,32 +1,12 @@
 #pragma once
 #include "Panel.h"
 
-struct TABLE
-{
-	int ItemId;
-	string Name;
-	string Description;
-};
-
-struct ITEM
-{
-	int ItemId = 0;
-	int ItemCount = 0;
-	wstring Name = L"";
-	wstring KorName = L"";
-	wstring Type = L"";
-	wstring Description = L"";
-	class Sprite* Sprite = nullptr;
-	RECT Rect = {};
-};
-
-
 class Inventory : public Panel
 {
 	using Super = Panel;
 
-	DECLARE_SINGLE(Inventory);
-
+public:
+	Inventory();
 	virtual ~Inventory();
 
 public:
@@ -34,35 +14,41 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
-	// 외부에서 AddItem 함수 발동 -> SetItemSlot에 의해 _slots 순회 -> 인벤토리에 렌더링
 private:
 	void SetItemSlot(ITEM& slot);
 	void SetSlotRects();
+	void SetEquipSlotRects();
+
+	//enum WEARABLE_TYPE
+	//{
+	//	WEARABLE_TYPE_WEAPON = 0;
+	//WEARABLE_TYPE_HELMET = 1;
+	//WEARABLE_TYPE_ARMOR = 2;
+	//WEARABLE_TYPE_PANTS = 3;
+	//WEARABLE_TYPE_BOOTS = 4;
+	//}
 
 public:
 	bool AddItem(int ItemId);
-	void RemoveItem(ITEM& item);
-
+	bool RemoveItem(int itemId);
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
+	
+	ITEM* GetEquippedItem(wstring wstr);
 
-	int GetIndex(int x, int y);
-
-	vector<wstring> findItemInfo(int itemID);
-
-	int findItemByName(wstring Name);
-
-public:
-	wstring GetName(vector<wstring> row);
-	wstring GetKorName(vector<wstring> row);
-	wstring GetType(vector<wstring> row);
-	wstring GetDescription(vector<wstring> row);
-	class Sprite* GetSprite(wstring wstr);
+private:
+	void EquipItem(ITEM& item);
+	void PressToSetQuickItem(ITEM& slot);
 
 protected:
 	// nums : 8 x 5, slot : 28 x 28px
+	// 인벤토리
 	vector<ITEM> _slots;
 	vector<RECT> _rects;
-	vector<vector<wstring>> _itemTable;
+
+	// 장착 슬롯
+	map<int, ITEM> _equips;
+	vector<RECT> _equipRects;
+	
 	class TextBox* _itemName = nullptr;
 	class TextBox* _itemCount = nullptr;
 	class TextBox* _itemDescription = nullptr;

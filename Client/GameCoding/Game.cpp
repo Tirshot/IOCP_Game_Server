@@ -7,6 +7,7 @@
 #include "SoundManager.h"
 #include "NetworkManager.h"
 #include "ChatManager.h"
+#include "ItemManager.h"
 
 Game::Game()
 {
@@ -43,6 +44,7 @@ void Game::Init(HWND hwnd)
 
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 
+	GET_SINGLE(ItemManager)->Init();
 	GET_SINGLE(NetworkManager)->Init();
 }
 

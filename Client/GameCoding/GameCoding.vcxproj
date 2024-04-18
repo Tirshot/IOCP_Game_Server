@@ -171,6 +171,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="Merchant.h" />
     <ClInclude Include="MerchantTrigger.h" />
     <ClInclude Include="MerchantTutorial.h" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Quest.h" />
     <ClInclude Include="QuestUI.h" />
     <ClInclude Include="QuestUIPanel.h" />
+    <ClInclude Include="QuickSlot.h" />
     <ClInclude Include="ShopItemPanel.h" />
     <ClInclude Include="ShopUI.h" />
     <ClInclude Include="StatusPanel.h" />
@@ -256,6 +258,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Merchant.cpp" />
     <ClCompile Include="MerchantTrigger.cpp" />
     <ClCompile Include="MerchantTutorial.cpp" />
@@ -269,6 +272,7 @@
     <ClCompile Include="Quest.cpp" />
     <ClCompile Include="QuestUI.cpp" />
     <ClCompile Include="QuestUIPanel.cpp" />
+    <ClCompile Include="QuickSlot.cpp" />
     <ClCompile Include="ShopItemPanel.cpp" />
     <ClCompile Include="ShopUI.cpp" />
     <ClCompile Include="StatusPanel.cpp" />

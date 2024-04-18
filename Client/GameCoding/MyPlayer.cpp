@@ -21,6 +21,7 @@
 #include "Chat.h"
 #include "GameOver.h"
 #include "Inventory.h"
+#include "ItemManager.h"
 
 
 MyPlayer::MyPlayer()
@@ -103,13 +104,7 @@ void MyPlayer::UsePotion()
 
 void MyPlayer::OpenInventory()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (scene == nullptr)
-		return;
-
-	Inventory* Inven = scene->FindUI<Inventory>(scene->GetUIs());
-	if (Inven == nullptr)
-		return;
+	Inventory* Inven = GET_SINGLE(ItemManager)->GetInventory();
 
 	if (Inven->GetVisible())
 		Inven->SetVisible(false);
@@ -194,17 +189,14 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
 	{
 		SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
-		_selectedSlot = 0;
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
 	{
 		SetWeaponType(Protocol::WEAPON_TYPE_BOW);
-		_selectedSlot = 1;
 	}
 	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
 	{
 		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
-		_selectedSlot = 2;
 	}
 
 	// Debug - 보유 화살 개수 증가

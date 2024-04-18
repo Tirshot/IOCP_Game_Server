@@ -44,6 +44,7 @@
 #include "Quest.h"
 #include "FileManager.h"
 #include "Inventory.h"
+#include "QuickSlot.h"
 #include <filesystem>
 
 DevScene::DevScene()
@@ -95,7 +96,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Sword", L"Sprite\\Item\\Sword.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Bow", L"Sprite\\Item\\Bow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Staff", L"Sprite\\Item\\Staff.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"Frame", L"Sprite\\UI\\Frame.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"QuickSlot", L"Sprite\\UI\\QuickSlot.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MainFrame", L"Sprite\\UI\\MainFrame.bmp", RGB(255, 0, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Selected", L"Sprite\\UI\\Selected.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Pop", L"Sprite\\UI\\pop.bmp");
@@ -147,15 +148,13 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"BlackHeart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Heart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 25, 0, 50, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Sword", GET_SINGLE(ResourceManager)->GetTexture(L"Sword"), 12, 3, 52, 52);
-	GET_SINGLE(ResourceManager)->CreateSprite(L"Dummy5", GET_SINGLE(ResourceManager)->GetTexture(L"Sword"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Bow", GET_SINGLE(ResourceManager)->GetTexture(L"Bow"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Staff", GET_SINGLE(ResourceManager)->GetTexture(L"Staff"), 12, 3, 52, 52);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Frame", GET_SINGLE(ResourceManager)->GetTexture(L"Frame"), 0, 0, 76, 76);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"MainFrame", GET_SINGLE(ResourceManager)->GetTexture(L"MainFrame"), 0, 0, 462, 695);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Pop", GET_SINGLE(ResourceManager)->GetTexture(L"Pop"), 0, 0, 130, 28);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"PopBackground", GET_SINGLE(ResourceManager)->GetTexture(L"PopBackground"), 0, 0, 300, 250);
-	GET_SINGLE(ResourceManager)->CreateSprite(L"Slot", GET_SINGLE(ResourceManager)->GetTexture(L"Slot"), 0, 0, 76, 76);
-	GET_SINGLE(ResourceManager)->CreateSprite(L"SelectedSlot", GET_SINGLE(ResourceManager)->GetTexture(L"SelectedSlot"), 0, 0, 44, 44);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"QuickSlot", GET_SINGLE(ResourceManager)->GetTexture(L"QuickSlot"), 0, 0, 480, 65);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Selected", GET_SINGLE(ResourceManager)->GetTexture(L"Selected"), 0, 0, 88, 88);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Chat", GET_SINGLE(ResourceManager)->GetTexture(L"Chat"), 0, 0, 130, 28);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"ChatInput", GET_SINGLE(ResourceManager)->GetTexture(L"ChatInput"), 0, 0, 400, 28);
@@ -671,14 +670,25 @@ void DevScene::LoadTilemap()
 
 void DevScene::LoadUI()
 {
-	{	// ¹«±â ½½·Ô, pivotÀº Áß¾Ó ÇÏ´Ü
-		WeaponSlot* ws = new WeaponSlot();
-		if (ws)
+	//{	// ¹«±â ½½·Ô, pivotÀº Áß¾Ó ÇÏ´Ü
+	//	WeaponSlot* ws = new WeaponSlot();
+	//	if (ws)
+	//	{
+	//		ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
+	//		
+	//		ws->SetVisible(true);
+	//		AddUI(ws);
+	//	}
+	//}
+	{	// Äü ½½·Ô
+		QuickSlot* qs = GET_SINGLE(QuickSlot);
+		if (qs)
 		{
-			ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
-			ws->SetVisible(true);
-			AddUI(ws);
+			qs->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
+			qs->SetVisible(true);
+			AddUI(qs);
 		}
+
 	}
 	{  // Ã¤ÆÃ Ã¢
 		Chat* chat = new Chat(Vec2{ 10,320 } /*Texts*/);
@@ -746,7 +756,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// ÀÎº¥Åä¸® ¹× ÀåºñÃ¢
-		Inventory* Inven = GET_SINGLE(Inventory);
+		Inventory* Inven = new Inventory();
 		if (Inven)
 		{
 			Inven->SetPos({ 480, 125 });

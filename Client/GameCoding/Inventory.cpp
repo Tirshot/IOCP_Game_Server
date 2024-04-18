@@ -5,7 +5,14 @@
 #include "FileManager.h"
 #include "ChatManager.h"
 #include "InputManager.h"
+#include "ItemManager.h"
 #include "TextBox.h"
+#include "QuickSlot.h"
+
+Inventory::Inventory()
+{
+
+}
 
 Inventory::~Inventory()
 {
@@ -14,7 +21,6 @@ Inventory::~Inventory()
 
 void Inventory::BeginPlay()
 {
-    _itemTable = GET_SINGLE(FileManager)->GetDataFromCSV("E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Table\\ItemTable.csv");
     _background = GET_SINGLE(ResourceManager)->GetSprite(L"Inventory");
     _itemSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
     _invenRect = { 485, 160, 770, 460 };
@@ -45,13 +51,13 @@ void Inventory::BeginPlay()
         _itemDescription->SetPadding(5, 5);
         AddChild(_itemDescription);
     }
-    
+
     // 각 슬롯에 RECT 생성
     SetSlotRects();
+    SetEquipSlotRects();
 
     for (int i = 0; i < 5; i++)
         AddItem(i);
-
 }
 
 void Inventory::Tick()
@@ -68,6 +74,21 @@ void Inventory::Tick()
         _slots[i].Rect = _rects[i];
     }
 
+    for (int i = 0; i < 4; i++)
+    {
+        // 장비 슬롯 연동
+        SetItemSlot(_equips[i]);
+    }
+
+    {
+        // 각 장비 슬롯에 RECT 할당
+        _equips[0].Rect = _equipRects[3];    // 무기
+        _equips[1].Rect = _equipRects[1];    // 헬멧
+        _equips[2].Rect = _equipRects[4];    // 몸통
+        _equips[3].Rect = _equipRects[7];    // 바지
+        _equips[4].Rect = _equipRects[8];    // 신발
+    }
+    
     // 아이템 드래그 앤 드랍
     for (auto& slot : _slots)
     {
@@ -76,6 +97,12 @@ void Inventory::Tick()
             // 아이템 설명
             _itemName->SetText(slot.KorName);
             _itemDescription->SetText(slot.Description);
+
+            // 아이템 장착
+            if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::RightMouse))
+            {
+                EquipItem(slot);
+            }
 
             // 드래그 시작
             if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
@@ -90,12 +117,17 @@ void Inventory::Tick()
             {
                 // 다른 슬롯으로 드랍
                 if (_selectedItem != nullptr)
-                {
+                {                    
                     _destinatedItem = &slot;
                     ChangeItem(*_selectedItem, *_destinatedItem);
                 }
                 _selectedItem = nullptr;
+                _destinatedItem = nullptr;
+                _temp = {};
             }
+
+            // 퀵 슬롯에 등록
+            PressToSetQuickItem(slot);
 
             // 아이템 개수 표시
             if (slot.Type == L"Consumable")
@@ -108,6 +140,7 @@ void Inventory::Tick()
                 _itemCount->SetVisible(false);
             }
         }
+
         // 인벤토리 바깥으로 드랍
         if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect))
         {
@@ -115,19 +148,20 @@ void Inventory::Tick()
             {
                 if (_selectedItem != nullptr)
                 {
-                    RemoveItem(*_selectedItem);
-                    _selectedItem = nullptr;
+                    if (RemoveItem(_selectedItem->ItemId))
+                        _selectedItem = nullptr;
                 }
             }
         }
+    } // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
+    if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+    {
+        _selectedItem = nullptr;
     }
 }
 
 void Inventory::Render(HDC hdc)
 {
-    int _initialX = _pos.x + 6;
-    int _initialY = _pos.y + 42;
-
     ::TransparentBlt(hdc,
         _pos.x ,
         _pos.y,
@@ -164,6 +198,30 @@ void Inventory::Render(HDC hdc)
             break;
     }
 
+    for (int i = 0; i < 5; i++)
+    {
+        if (_equips[i].Sprite == nullptr)
+            continue;
+
+        float spritePosX = _equips[i].Rect.left;
+        float spritePosY = _equips[i].Rect.top - 2;
+
+        ::TransparentBlt(hdc,
+            spritePosX,
+            spritePosY,
+            _slotSize,
+            _slotSize,
+            _equips[i].Sprite->GetDC(),
+            0,
+            0,
+            _equips[i].Sprite->GetSize().x,
+            _equips[i].Sprite->GetSize().y,
+            _equips[i].Sprite->GetTransparent());
+
+        if (_slots[i].ItemId == 0)
+            break;
+    }
+
     for (auto& child : _children)
         if (child->GetVisible())
             child->Render(hdc);
@@ -194,13 +252,14 @@ void Inventory::SetItemSlot(ITEM& slot)
         return;
 
     // 이름과 Sprite, Rect, Description, Type 할당
-    vector<wstring> ItemInfo = findItemInfo(slot.ItemId);
+    vector<wstring> ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(slot.ItemId);
 
-    slot.Name = GetName(ItemInfo);
-    slot.KorName = GetKorName(ItemInfo);
-    slot.Description = GetDescription(ItemInfo);
-    slot.Type = GetType(ItemInfo);
-    slot.Sprite = GetSprite(slot.Name);
+    slot.Name = GET_SINGLE(ItemManager)->GetName(ItemInfo);
+    slot.KorName = GET_SINGLE(ItemManager)->GetKorName(ItemInfo);
+    slot.Description = GET_SINGLE(ItemManager)->GetDescription(ItemInfo);
+    slot.Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
+    slot.SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
+    slot.Sprite = GET_SINGLE(ItemManager)->GetSprite(slot.Name);
 }
 
 void Inventory::SetSlotRects()
@@ -213,8 +272,24 @@ void Inventory::SetSlotRects()
     {
         for (int i = 0; i < 8; i++)
         {
-            RECT Rect = { _initialX + (34 * i), _initialY + (34 * j), _initialX + (34 * i) + 22,  _initialY + (34 * j) + _slotSize };
+            RECT Rect = { _initialX + (34 * i), _initialY + (34 * j), _initialX + (34 * i) + _slotSize,  _initialY + (34 * j) + _slotSize };
             _rects.push_back(Rect);
+        }
+    }
+}
+
+void Inventory::SetEquipSlotRects()
+{
+    int _initialX = _pos.x + 13;
+    int _initialY = _pos.y + 228;
+
+    // 각 슬롯에 Rect 할당
+    for (int j = 0; j < 3; j++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            RECT Rect = { _initialX + (34 * i), _initialY + (34 * j), _initialX + (34 * i) + 22,  _initialY + (34 * j) + _slotSize };
+            _equipRects.push_back(Rect);
         }
     }
 }
@@ -242,7 +317,7 @@ bool Inventory::AddItem(int ItemId)
         {
             if (slot.ItemId == 0)
             {
-                auto ItemInfo = findItemInfo(ItemId);
+                auto ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(slot.ItemId);
                 slot.ItemId = ItemId;
                 slot.ItemCount = 1;
                 return true;
@@ -256,36 +331,34 @@ bool Inventory::AddItem(int ItemId)
     }
 }
 
-void Inventory::RemoveItem(ITEM& item)
+bool Inventory::RemoveItem(int itemId)
 {
     bool found = false;
     // 기본 무기는 제거 불가
-    if (item.ItemId == 1 || item.ItemId == 2 || item.ItemId == 3)
-        return;
+    if (itemId == 1 || itemId == 2 || itemId == 3)
+        return false;
     
     // 아이템이 이미 존재하는 경우
     for (auto& slot : _slots)
     {
-        if (slot.ItemId == item.ItemId)
+        if (slot.ItemId == itemId)
         {
             found = true;
-            break;
+        }
+
+        if (found == true)
+        {
+            slot.ItemCount--; // 수량 감소
+            if (slot.ItemCount <= 0)
+            {
+                slot = {};
+                return true;
+            }
         }
     }
 
-    if (found == true)
-    {
-        item.ItemCount--; // 수량 감소
-        if (item.ItemCount <= 0)
-        {
-            item = {};
-        }
-    }
-    // 아이템이 존재하지 않는 경우
-    else
-    {
-        return;
-    }
+    // 아이템이 없는 경우
+    return false;
 }
 
 void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
@@ -295,69 +368,89 @@ void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
     itemTo = _temp;
 }
 
-int Inventory::GetIndex(int x, int y)
+ITEM* Inventory::GetEquippedItem(wstring wstr)
 {
-	return y * 8 + x;
+    if (wstr == L"Weapon")
+        return &_equips[0];
+
+    if (wstr == L"Helmet")
+        return &_equips[1];
+
+    if (wstr == L"Armor")
+        return &_equips[2];
+
+    if (wstr == L"Pants")
+        return &_equips[3];
+
+    if (wstr == L"Boots")
+        return &_equips[4];
 }
 
-vector<wstring> Inventory::findItemInfo(int itemID)
+void Inventory::EquipItem(ITEM& item)
 {
-    for (auto& row : _itemTable)
+    if (item.Type != L"Wearable")
+        return;
+
+    if (item.SubType == L"Weapon")
     {
-        if (row.empty())
-            return {};
-
-        int result;
-        std::wistringstream(row[0]) >> result;
-
-        if (result == itemID)
-        {
-            return row;
-        }
+        _equips[0] = item;
+        return;
     }
-
-    // 실패하면 무엇을 반환할까
-    return {};
-}
-
-int Inventory::findItemByName(wstring Name)
-{
-    for (auto& row : _itemTable)
+    else if (item.SubType == L"Helmet")
     {
-        if (row.empty())
-            return -1;
-
-        if (row[1] == Name)
-        {
-            return stoi(row[0]);
-        }
+        _equips[1] = item;
+        return;
     }
-
-    return -1;
+    else if (item.SubType == L"Armor")
+    {
+        _equips[2] = item;
+        return;
+    }
+    else if (item.SubType == L"Pants")
+    {
+        _equips[3] = item;
+        return;
+    }
+    else if (item.SubType == L"Boots")
+    {
+        _equips[4] = item;
+        return;
+    }
 }
 
-
-wstring Inventory::GetName(vector<wstring> row)
+void Inventory::PressToSetQuickItem(ITEM& slot)
 {
-    return row[1];
-}
-
-wstring Inventory::GetKorName(vector<wstring> row)
-{
-    return row[2];
-}
-
-wstring Inventory::GetType(vector<wstring> row)
-{
-    return row[3];
-}
-
-wstring Inventory::GetDescription(vector<wstring> row)
-{
-    return row[4];
-}
-
-Sprite* Inventory::GetSprite(wstring wstr)
-{
-    return GET_SINGLE(ResourceManager)->GetSprite(wstr);
+    // 퀵 슬롯 등록
+    if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_1))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 1);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_2))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 2);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_3))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 3);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_4))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 4);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_5))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 5);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_6))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 6);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_7))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 7);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_8))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 8);
+    }
 }

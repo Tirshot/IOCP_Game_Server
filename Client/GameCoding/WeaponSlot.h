@@ -1,10 +1,10 @@
 #pragma once
-#include "UI.h"
+#include "Panel.h"
 class Sprite;
-class WeaponSlot : public UI
+class WeaponSlot : public Panel
 {
-	using Super = UI;
-#define MAX_SLOT 10
+	using Super = Panel;
+
 public:
 	WeaponSlot();
 	virtual ~WeaponSlot();
@@ -13,30 +13,12 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
-	Vec2Int GetSize() { return _size; }
-	void SetSize(Vec2Int size) { _size = size; }
+	/*int16 HighlightSlot();*/
 
-	Vec2 GetPos() { return _pos; }
-	void SetPos(Vec2 pos) { _pos = pos; }
-	// UI를 사각형이라고 가정
-
-	int16 HighlightSlot();
-
-	void AddSlot(Sprite* sprite) { _slots.insert({ _num++, sprite}); }
+	/*void AddSlot(Sprite* sprite) { _slots.insert({ _num++, sprite}); }*/
 
 protected:
-	Vec2	_pos = { 0, 0 };
-	Vec2Int _size = { 52, 52};
-	map<int, Sprite*> _slots;
-	Sprite* _woodenSlot = nullptr;
-	Sprite* _selectedSlot = nullptr;
-	Sprite* _selected = nullptr;
-
-private:
-	Sprite* _weaponSword = nullptr;
-	Sprite* _weaponBow = nullptr;
-	Sprite* _weaponStaff = nullptr;
-	Sprite* _potion = nullptr;
-
-	int _num = 1;
+	vector<ITEM> _slots;
+	Sprite* _slotBackground = nullptr;
+	Sprite* _slotSelected = nullptr;
 };

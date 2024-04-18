@@ -62,6 +62,15 @@ using Dir = Protocol::DIR_TYPE;
 #define HEART Protocol::ITEM_TYPE_HEART
 #define FULLHEART Protocol::ITEM_TYPE_FULLHEART
 
+#define CONSUMABLE Protocoll::ITEM_TYPE_CONSUMABLE
+#define WEARABLE Protocoll::ITEM_TYPE_WEARABLE
+
+#define WEAPON Protocoll::WEARABLE_TYPE_WEAPON
+#define HELMET Protocoll::WEARABLE_TYPE_HELMET
+#define ARMOR Protocoll::WEARABLE_TYPE_ARMOR
+#define PANTS Protocoll::WEARABLE_TYPE_PANTS
+#define BOOTS Protocoll::WEARABLE_TYPE_BOOTS
+
 using ObjectState = Protocol::OBJECT_STATE_TYPE;
 
 enum class WeaponType
@@ -69,4 +78,24 @@ enum class WeaponType
 	Sword,
 	Bow,
 	Staff
+};
+
+struct TABLE
+{
+	int ItemId;
+	string Name;
+	string Description;
+};
+
+struct ITEM
+{
+	int ItemId = 0;
+	int ItemCount = 0;
+	wstring Name = L"";
+	wstring KorName = L"";
+	wstring Type = L"";
+	wstring SubType = L"";
+	wstring Description = L"";
+	class Sprite* Sprite = nullptr;
+	RECT Rect = {};
 };
