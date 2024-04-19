@@ -2,12 +2,13 @@
 #include "Inventory.h"
 #include "Sprite.h"
 #include "ResourceManager.h"
-#include "FileManager.h"
 #include "ChatManager.h"
 #include "InputManager.h"
+#include "SceneManager.h"
 #include "ItemManager.h"
 #include "TextBox.h"
 #include "QuickSlot.h"
+#include "MyPlayer.h"
 
 Inventory::Inventory()
 {
@@ -56,12 +57,25 @@ void Inventory::BeginPlay()
     SetSlotRects();
     SetEquipSlotRects();
 
-    for (int i = 0; i < 5; i++)
+    // 기본 무기 지급
+    for (int i = 1; i < 5; i++)
         AddItem(i);
+
+    _initialized = true;
 }
 
 void Inventory::Tick()
 {
+    // 최초 1회만 실행
+    if (_initialized)
+    {
+        // 검 기본 장착
+        ITEM* item1 = FindItem(1);
+        EquipItem(*item1);
+
+        _initialized = false;
+    }
+
     _mousePos = GET_SINGLE(InputManager)->GetMousePos();
 
     // 아이템 슬롯 초기화
@@ -317,9 +331,47 @@ bool Inventory::AddItem(int ItemId)
         {
             if (slot.ItemId == 0)
             {
-                auto ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(slot.ItemId);
                 slot.ItemId = ItemId;
                 slot.ItemCount = 1;
+                SetItemSlot(slot);
+                return true;
+            }
+        }
+    }
+
+    {   // 인벤토리가 가득 찼을 경우
+        GET_SINGLE(ChatManager)->AddMessage(L"인벤토리가 가득 찼습니다.");
+        return false;
+    }
+}
+
+bool Inventory::AddItem(int ItemId, int ItemCount)
+{
+
+    bool found = false;
+
+    // _slots 순회
+    for (auto& slot : _slots)
+    {
+        // 아이템이 이미 존재하는 경우
+        if (slot.ItemId == ItemId)
+        {
+            slot.ItemCount += ItemCount; // 수량 증가
+            found = true;
+            return true;
+        }
+    }
+
+    // 아이템이 존재하지 않는 경우
+    if (found == false)
+    {
+        for (auto& slot : _slots)
+        {
+            if (slot.ItemId == 0)
+            {
+                slot.ItemId = ItemId;
+                slot.ItemCount = ItemCount;
+                SetItemSlot(slot);
                 return true;
             }
         }
@@ -361,11 +413,55 @@ bool Inventory::RemoveItem(int itemId)
     return false;
 }
 
+bool Inventory::RemoveItem(int itemId, int ItemCount)
+{
+    bool found = false;
+    // 기본 무기는 제거 불가
+    if (itemId == 1 || itemId == 2 || itemId == 3)
+        return false;
+
+    // 아이템이 이미 존재하는 경우
+    for (auto& slot : _slots)
+    {
+        if (slot.ItemId == itemId)
+        {
+            found = true;
+        }
+
+        if (found == true)
+        {
+            // 제거하려는 아이템의 갯수가 지정된 양보다 적을 경우
+            if (slot.ItemCount < ItemCount)
+                return false;
+
+            slot.ItemCount -= ItemCount; // 수량 감소
+            if (slot.ItemCount <= 0)
+            {
+                slot = {};
+                return true;
+            }
+        }
+    }
+
+    // 아이템이 없는 경우
+    return false;
+}
+
 void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
 {
     _temp = itemFrom;
     itemFrom = itemTo;
     itemTo = _temp;
+}
+
+ITEM* Inventory::FindItem(int itemId)
+{
+    for (auto& slot : _slots)
+    {
+        if (slot.ItemId == itemId)
+            return &slot;
+    }
+    return nullptr;
 }
 
 ITEM* Inventory::GetEquippedItem(wstring wstr)
@@ -391,28 +487,66 @@ void Inventory::EquipItem(ITEM& item)
     if (item.Type != L"Wearable")
         return;
 
-    if (item.SubType == L"Weapon")
+    MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    if (myPlayer == nullptr)
+        return;
+
+    if (item.SubType == L"Sword")
     {
+        if (_equips[0].ItemId == item.ItemId)
+            return;
+
         _equips[0] = item;
+        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
+        return;
+    }
+    else if (item.SubType == L"Bow")
+    {
+        if (_equips[0].ItemId == item.ItemId)
+            return;
+
+        _equips[0] = item;
+        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_BOW);
+        return;
+    }
+    else if (item.SubType == L"Staff")
+    {
+        if (_equips[0].ItemId == item.ItemId)
+            return;
+
+        _equips[0] = item;
+        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
         return;
     }
     else if (item.SubType == L"Helmet")
     {
+        if (_equips[1].ItemId == item.ItemId)
+            return;
+
         _equips[1] = item;
         return;
     }
     else if (item.SubType == L"Armor")
     {
+        if (_equips[2].ItemId == item.ItemId)
+            return;
+
         _equips[2] = item;
         return;
     }
     else if (item.SubType == L"Pants")
     {
+        if (_equips[3].ItemId == item.ItemId)
+            return;
+
         _equips[3] = item;
         return;
     }
     else if (item.SubType == L"Boots")
     {
+        if (_equips[4].ItemId == item.ItemId)
+            return;
+
         _equips[4] = item;
         return;
     }

@@ -35,13 +35,14 @@ void Game::Init(HWND hwnd)
 	filesystem::path currentPath = filesystem::current_path();
 	filesystem::path resourceDirectory = currentPath / ".." / ".." / "Client" / "Resources";
 	filesystem::path relativePath = filesystem::relative(resourceDirectory, currentPath);
-	
+
 	GET_SINGLE(TimeManager)->Init();
 	GET_SINGLE(InputManager)->Init(hwnd);
-	GET_SINGLE(SceneManager)->Init();
+
 	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(relativePath));
 	GET_SINGLE(SoundManager)->Init(hwnd);
 
+	GET_SINGLE(SceneManager)->Init();
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 
 	GET_SINGLE(ItemManager)->Init();

@@ -347,9 +347,6 @@
     <ClInclude Include="Inventory.h">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>소스 파일\01. Manager</Filter>
-    </ClInclude>
     <ClInclude Include="QuickSlot.h">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClInclude>
@@ -594,9 +591,6 @@
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
     <ClCompile Include="QuickSlot.cpp">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>

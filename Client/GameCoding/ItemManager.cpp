@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "ItemManager.h"
-#include "FileManager.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "Sprite.h"
@@ -11,8 +10,6 @@
 
 void ItemManager::Init()
 {
-	_itemTable = GET_SINGLE(FileManager)->GetDataFromCSV("E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Table\\ItemTable.csv");
-    
     DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
     if (scene == nullptr)
         return;
@@ -23,7 +20,9 @@ void ItemManager::Init()
 
 vector<wstring> ItemManager::FindItemInfo(int itemID)
 {
-    for (auto& row : _itemTable)
+    const auto ItemTable = GET_SINGLE(ResourceManager)->GetItemTable();
+
+    for (auto& row : ItemTable)
     {
         if (row.empty())
             return {};
@@ -43,7 +42,9 @@ vector<wstring> ItemManager::FindItemInfo(int itemID)
 
 int ItemManager::FindItemIDByName(wstring Name)
 {
-    for (auto& row : _itemTable)
+    const auto ItemTable = GET_SINGLE(ResourceManager)->GetItemTable();
+
+    for (auto& row : ItemTable)
     {
         if (row.empty())
             return -1;
@@ -55,6 +56,28 @@ int ItemManager::FindItemIDByName(wstring Name)
     }
 
     return -1;
+}
+
+ITEM& ItemManager::GetItem(int itemID)
+{
+    // 아이템 정보를 찾음
+    vector<wstring> ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(itemID);
+
+    // ITEM 객체를 동적으로 할당
+    ITEM* item = new ITEM;
+
+    // 아이템 정보 할당
+    item->ItemId = itemID;
+    item->ItemCount = 1;
+    item->Name = GET_SINGLE(ItemManager)->GetName(ItemInfo);
+    item->KorName = GET_SINGLE(ItemManager)->GetKorName(ItemInfo);
+    item->Description = GET_SINGLE(ItemManager)->GetDescription(ItemInfo);
+    item->Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
+    item->SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
+    item->Sprite = GET_SINGLE(ItemManager)->GetSprite(item->Name);
+
+    // 동적으로 할당한 ITEM 객체의 참조를 반환
+    return *item;
 }
 
 bool ItemManager::AddItemToInventory(int itemId)
@@ -70,6 +93,21 @@ bool ItemManager::RemoveItemFromInventory(int itemId)
 void ItemManager::SetItemToQuickSlot(ITEM* item, int index)
 {
     GetQuickSlot()->SetQuickSlot(item, index);
+}
+
+int ItemManager::GetQuickSlotSelectedIndex()
+{
+    return _quickSlot->GetSelectedIndex();
+}
+
+wstring ItemManager::GetQuickSlotSelectedSubType()
+{
+    return _quickSlot->GetSelectedSubType();
+}
+
+void ItemManager::EquipItem(ITEM& item)
+{
+    _inventory->EquipItem(item);
 }
 
 wstring ItemManager::GetName(vector<wstring> row)

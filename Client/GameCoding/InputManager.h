@@ -21,6 +21,11 @@ enum class KeyType
     D = 'D',
     R = 'R',
     I = 'I',
+    Z = 'Z',
+    X = 'X',
+    C = 'C',
+    V = 'V',
+    B = 'B',
 
     // 숫자 0부터 9까지
     KEY_0 = '0',

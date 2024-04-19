@@ -16,6 +16,8 @@ public:
 public:
 	void SetQuickSlot(ITEM* item, int index);
 
+	int GetSelectedIndex() { return _selectedIndex; }
+	wstring GetSelectedSubType() { return _selectedItemSubType; }
 
 public:
 	void SetPressedButton();
@@ -23,7 +25,10 @@ public:
 protected:
 	vector<ITEM> _slots;
 	Sprite* _slotBackground = nullptr;
-	Sprite* _slotSelected = nullptr;
+	Sprite* _slotSelectedSprite = nullptr;
+	ITEM* _selectedItem = nullptr;
+	int _selectedIndex = 0;
+	wstring _selectedItemSubType = L"";
 
 private:
 	int _slotSize = 60;

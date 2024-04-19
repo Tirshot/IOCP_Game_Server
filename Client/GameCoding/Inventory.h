@@ -30,12 +30,15 @@ private:
 
 public:
 	bool AddItem(int ItemId);
+	bool AddItem(int ItemId, int ItemCount);
 	bool RemoveItem(int itemId);
+	bool RemoveItem(int itemId, int ItemCount);
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
+
+	ITEM* FindItem(int itemId);
 	
 	ITEM* GetEquippedItem(wstring wstr);
 
-private:
 	void EquipItem(ITEM& item);
 	void PressToSetQuickItem(ITEM& slot);
 
@@ -57,6 +60,7 @@ protected:
 
 private:
 	int _slotSize = 28;
+	bool _initialized = false;
 
 	// 드래그 앤 드랍
 	ITEM* _selectedItem;

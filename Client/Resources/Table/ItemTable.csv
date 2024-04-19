@@ -1,6 +1,6 @@
-1,SwordItem,검,Wearable,Weapon,근접 공격을 한다. 공격 버튼을 길게 눌러 회전 공격을 한다.
-2,BowItem,활,Wearable,Weapon,원거리 공격을 한다. 화살을 소모하여 먼 거리의 적을 공격한다.
-3,StaffItem,스태프,Wearable,Weapon,3칸 앞으로 순간이동한다. 전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.
+1,SwordItem,검,Wearable,Sword,근접 공격을 한다. 공격 버튼을 길게 눌러 회전 공격을 한다.
+2,BowItem,활,Wearable,Bow,원거리 공격을 한다. 화살을 소모하여 먼 거리의 적을 공격한다.
+3,StaffItem,스태프,Wearable,Staff,3칸 앞으로 순간이동한다. 전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.
 4,ArrowItem,화살,Consumable,Arrow,소모품. 원거리 공격을 하기 위한 화살.
 5,Potion,HP 회복포션,Consumable,Potion,소모품. 체력을 한 칸 회복한다.
 6,MaxHeartItem,Dummy2,Dummy2,Dummy3,Dummy2

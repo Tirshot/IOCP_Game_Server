@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "InputManager.h"
 #include "SceneManager.h"
+#include "ItemManager.h"
 
 QuickSlot::~QuickSlot()
 {
@@ -12,7 +13,7 @@ QuickSlot::~QuickSlot()
 void QuickSlot::BeginPlay()
 {
 	_slotBackground = GET_SINGLE(ResourceManager)->GetSprite(L"QuickSlot");
-	_slotSelected = GET_SINGLE(ResourceManager)->GetSprite(L"Selected");
+	_slotSelectedSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Selected");
 
 	_size_x = _slotBackground->GetSize().x;
 	_size_y = _slotBackground->GetSize().y;
@@ -22,17 +23,15 @@ void QuickSlot::BeginPlay()
 	_center_y = _pos.y - (_size_y);
 
 	_slots.assign( 9, {0});
-		
+	_slots[1] = GET_SINGLE(ItemManager)->GetItem(1);
+	_slots[2] = GET_SINGLE(ItemManager)->GetItem(2);
+	_slots[3] = GET_SINGLE(ItemManager)->GetItem(3);
 }
 
 void QuickSlot::Tick()
 {
 	// 선택된 슬롯 하이라이트
 	SetPressedButton();
-
-
-
-	
 }
 
 void QuickSlot::Render(HDC hdc)
@@ -56,9 +55,9 @@ void QuickSlot::Render(HDC hdc)
 		_pos.y - 65,
 		_slotSize,
 		_slotSize,
-		_slotSelected->GetDC(),
-		_slotSelected->GetPos().x,
-		_slotSelected->GetPos().y,
+		_slotSelectedSprite->GetDC(),
+		_slotSelectedSprite->GetPos().x,
+		_slotSelectedSprite->GetPos().y,
 		80,
 		80,
 		RGB(128, 128, 128));
@@ -122,26 +121,48 @@ void QuickSlot::SetQuickSlot(ITEM* item, int index)
 void QuickSlot::SetPressedButton()
 {
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
+	{
 		_pressedButton = 1;
+	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
+	{
 		_pressedButton = 2;
+	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
+	{
 		_pressedButton = 3;
+	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_4))
+	{
 		_pressedButton = 4;
+	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_5))
+	{
 		_pressedButton = 5;
+	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_6))
+	{
 		_pressedButton = 6;
+	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_7))
+	{
 		_pressedButton = 7;
+	}
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_8))
+	{
 		_pressedButton = 8;
+	}
+
+	_selectedIndex = _pressedButton;
+
+	// 유효하지 않은 아이템 장착 불가
+	if (_slots[_selectedIndex].ItemId != 0)
+		GET_SINGLE(ItemManager)->EquipItem(_slots[_selectedIndex]);
 }

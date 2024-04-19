@@ -155,7 +155,6 @@
     <ClInclude Include="DevScene.h" />
     <ClInclude Include="Enum.pb.h" />
     <ClInclude Include="Enums.h" />
-    <ClInclude Include="FileManager.h" />
     <ClInclude Include="FlipBook.h" />
     <ClInclude Include="FlipbookActor.h" />
     <ClInclude Include="framework.h" />
@@ -243,7 +242,6 @@
     <ClCompile Include="Enum.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FlipBook.cpp" />
     <ClCompile Include="FlipbookActor.cpp" />
     <ClCompile Include="Game.cpp" />

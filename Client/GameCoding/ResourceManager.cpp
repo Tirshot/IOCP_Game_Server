@@ -5,6 +5,10 @@
 #include "Flipbook.h"
 #include "Tilemap.h"
 #include "Sound.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <locale>
 
 ResourceManager::~ResourceManager()
 {
@@ -15,6 +19,7 @@ void ResourceManager::Init(HWND hwnd, fs::path resourcePath)
 {
 	_hwnd = hwnd;
 	_resourcePath = resourcePath;
+	_itemTable = GetDataFromCSV("E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Table\\ItemTable.csv");
 }
 
 void ResourceManager::Clear()
@@ -141,5 +146,35 @@ Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path)
 	_sounds[key] = sound;
 
 	return sound;
+}
+
+vector<vector<wstring>> ResourceManager::GetDataFromCSV(const string& filename)
+{
+	vector<vector<wstring>> data;
+	locale::global(locale("korean"));
+
+	wifstream file(filename);
+	if (!file.is_open())
+	{
+		return data;
+	}
+
+	wstring line;
+	while (getline(file, line))
+	{
+		vector<wstring> row;
+		wstringstream ss(line);
+		wstring cell;
+
+		while (getline(ss, cell, L','))
+		{
+			row.push_back(cell);
+		}
+		data.push_back(row);
+	}
+
+	file.close();
+
+	return data;
 }
 

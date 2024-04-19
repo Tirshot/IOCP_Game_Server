@@ -106,6 +106,9 @@ void MyPlayer::OpenInventory()
 {
 	Inventory* Inven = GET_SINGLE(ItemManager)->GetInventory();
 
+	if (Inven == nullptr)
+		return;
+
 	if (Inven->GetVisible())
 		Inven->SetVisible(false);
 	else
@@ -185,22 +188,22 @@ void MyPlayer::TickInput()
 	else
 		_keyPressed = false;
 
-	// 무기 선택, UI 연동 필요
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
-	{
-		SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
-	}
-	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
-	{
-		SetWeaponType(Protocol::WEAPON_TYPE_BOW);
-	}
-	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
-	{
-		SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
-	}
+	//// 무기 선택, UI 연동 필요 -> 퀵슬롯으로 대체됨
+	//if (GET_SINGLE(ItemManager)->GetQuickSlotSelectedSubType() == L"Sword")
+	//{
+	//	SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
+	//}
+	//else if (GET_SINGLE(ItemManager)->GetQuickSlotSelectedSubType() == L"Bow")
+	//{
+	//	SetWeaponType(Protocol::WEAPON_TYPE_BOW);
+	//}
+	//else if (GET_SINGLE(ItemManager)->GetQuickSlotSelectedSubType() == L"Staff")
+	//{
+	//	SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
+	//}
 
 	// Debug - 보유 화살 개수 증가
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_6))
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::Z))
 	{
 		info.set_arrows(info.arrows() + 10);
 		{
@@ -211,7 +214,7 @@ void MyPlayer::TickInput()
 	}
 
 	// Debug - 보유 골드 증가
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_7))
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::X))
 	{
 		info.set_gold(info.gold() + 1000);
 		{
@@ -222,7 +225,7 @@ void MyPlayer::TickInput()
 	}
 
 	// Debug -	Move
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_8))
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::C))
 	{
 		SetCellPos({ 44,25 }, true);
 		{
@@ -233,14 +236,14 @@ void MyPlayer::TickInput()
 	}
 
 	// Debug - CellPos 확인
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_9))
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::V))
 	{
 		Vec2Int CellPos = GetCellPos();
 		GET_SINGLE(ChatManager)->AddMessage(format(L"위치 : ({0}, {1})", CellPos.x, CellPos.y));
 	}
 
 	// Debug - 사망
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_0))
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::B))
 	{
 		info.set_hp(0);
 		{
