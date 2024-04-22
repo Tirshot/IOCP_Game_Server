@@ -24,13 +24,30 @@ void Inventory::BeginPlay()
 {
     _background = GET_SINGLE(ResourceManager)->GetSprite(L"Inventory");
     _itemSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
-    _invenRect = { 485, 160, 770, 460 };
+    _invenRect = {};        // 485, 160, 770, 460
+    {
+        _invenRect.left = (int)_pos.x + 5;
+        _invenRect.top = (int)_pos.y + 35;
+        _invenRect.right = _invenRect.left + 285;
+        _invenRect.bottom = _invenRect.top + 300;
+    }
+    
+    _dragRect = {};
+    {
+        _dragRect.left = (int)_pos.x;
+        _dragRect.top = (int)_pos.y;
+        _dragRect.right = _dragRect.left + 290;
+        _dragRect.bottom = _dragRect.top + 35;
+    }
+
     _slots.assign(40, { 0 });
+
+    // _pos = 480, 125
 
     { // 아이템 이름
         wstring wstr = L"아이템 이름";
         _itemName = new TextBox(wstr);
-        _itemName->SetPos({ 605, 350 });
+        _itemName->SetPos({ _pos.x + 125, _pos.y + 225 });        // 605, 350
         _itemName->SetSize({ 155, 25 });
         _itemName->SetPadding(5, 5);
         AddChild(_itemName);
@@ -38,7 +55,7 @@ void Inventory::BeginPlay()
     { // 아이템 개수
         wstring wstr = L"개수";
         _itemCount = new TextBox(wstr);
-        _itemCount->SetPos({ 710, 350 });
+        _itemCount->SetPos({ _pos.x + 230, _pos.y + 225 });      // 710, 350
         _itemCount->SetSize({ 40, 25 });
         _itemCount->SetPadding(5, 5);
         _itemCount->SetVisible(false);
@@ -47,15 +64,11 @@ void Inventory::BeginPlay()
     { // 아이템 설명
         wstring wstr = L"아이템 설명";
         _itemDescription = new TextBox(wstr);
-        _itemDescription->SetPos({ 605, 375 });
+        _itemDescription->SetPos({ _pos.x + 125, _pos.y + 250 });     // 605, 375
         _itemDescription->SetSize({ 155, 75 });
         _itemDescription->SetPadding(5, 5);
         AddChild(_itemDescription);
     }
-
-    // 각 슬롯에 RECT 생성
-    SetSlotRects();
-    SetEquipSlotRects();
 
     // 기본 무기 지급
     for (int i = 1; i < 5; i++)
@@ -66,6 +79,8 @@ void Inventory::BeginPlay()
 
 void Inventory::Tick()
 {
+    MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
     // 최초 1회만 실행
     if (_initialized)
     {
@@ -76,101 +91,132 @@ void Inventory::Tick()
         _initialized = false;
     }
 
-    _mousePos = GET_SINGLE(InputManager)->GetMousePos();
-
-    // 아이템 슬롯 초기화
-    for (int i = 0; i < _slots.size(); i++)
+    // 서버와 동기화되는 소모템 연동
+    if (myPlayer)
     {
-        // 보유한 아이템을 슬롯에 할당
-        SetItemSlot(_slots[i]);
-
-        // 각 슬롯에 RECT 할당
-        _slots[i].Rect = _rects[i];
+        SetItemCount(4, myPlayer->info.arrows());
+        SetItemCount(5, myPlayer->info.potion());
     }
 
-    for (int i = 0; i < 4; i++)
-    {
-        // 장비 슬롯 연동
-        SetItemSlot(_equips[i]);
-    }
+    auto what = _slots;
 
+    // UI 관련 코드 //
+    if (_visible)
     {
-        // 각 장비 슬롯에 RECT 할당
-        _equips[0].Rect = _equipRects[3];    // 무기
-        _equips[1].Rect = _equipRects[1];    // 헬멧
-        _equips[2].Rect = _equipRects[4];    // 몸통
-        _equips[3].Rect = _equipRects[7];    // 바지
-        _equips[4].Rect = _equipRects[8];    // 신발
-    }
-    
-    // 아이템 드래그 앤 드랍
-    for (auto& slot : _slots)
-    {
-        if (IsMouseInRect(slot.Rect))
+        _mousePos = GET_SINGLE(InputManager)->GetMousePos();
+
+        // 아이템 슬롯 초기화
+        for (int j = 0; j < 5; j++)
         {
-            // 아이템 설명
-            _itemName->SetText(slot.KorName);
-            _itemDescription->SetText(slot.Description);
-
-            // 아이템 장착
-            if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::RightMouse))
+            for (int i = 0; i < 8; i++)
             {
-                EquipItem(slot);
-            }
+                // 보유한 아이템에 정보 할당
+                SetItemSlot(_slots[i + j * 8]);
 
-            // 드래그 시작
-            if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
-            {
-                // 빈 슬롯은 드래그 불가
-                if (slot.ItemId <= 0)
-                    continue;
-
-                _selectedItem = &slot;
-            }
-            else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
-            {
-                // 다른 슬롯으로 드랍
-                if (_selectedItem != nullptr)
-                {                    
-                    _destinatedItem = &slot;
-                    ChangeItem(*_selectedItem, *_destinatedItem);
-                }
-                _selectedItem = nullptr;
-                _destinatedItem = nullptr;
-                _temp = {};
-            }
-
-            // 퀵 슬롯에 등록
-            PressToSetQuickItem(slot);
-
-            // 아이템 개수 표시
-            if (slot.Type == L"Consumable")
-            {
-                _itemCount->SetVisible(true);
-                _itemCount->SetText(to_wstring(slot.ItemCount) + L"개");
-            }
-            else
-            {
-                _itemCount->SetVisible(false);
+                // 각 슬롯에 rect 초기화
+                auto& rect = _slots[i + j * 8].Rect;
+                rect.left = _pos.x + 13 + i * (_slotSize + 6);
+                rect.top = _pos.y + 45 + j * (_slotSize + 6);
+                rect.right = rect.left + _slotSize;
+                rect.bottom = rect.top + _slotSize;
             }
         }
 
-        // 인벤토리 바깥으로 드랍
-        if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect))
+        for (int i = 0; i < 4; i++)
         {
-            if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+            // 장비 슬롯 연동
+            SetItemSlot(_equips[i]);
+        }
+
+        {
+            // 각 장비 슬롯에 RECT 할당
+            _equips[0].Rect = RECT{ (int)_pos.x + 13, (int)_pos.y + 262, (int)_pos.x + 13 + 28, (int)_pos.y + 262 + 28 };    // 무기 _pos.x + 13, _pos.y + 200
+            _equips[1].Rect = RECT{ (int)_pos.x + 45, (int)_pos.y + 230, (int)_pos.x + 13 + 28, (int)_pos.y + 230 + 28 };    // 헬멧
+            _equips[2].Rect = RECT{ (int)_pos.x + 45, (int)_pos.y + 262, (int)_pos.x + 13 + 28, (int)_pos.y + 262 + 28 };    // 몸통
+            _equips[3].Rect = RECT{ (int)_pos.x + 45, (int)_pos.y + 294, (int)_pos.x + 13 + 28, (int)_pos.y + 294 + 28 };    // 바지
+            _equips[4].Rect = RECT{ (int)_pos.x + 77, (int)_pos.y + 294, (int)_pos.x + 13 + 28, (int)_pos.y + 294 + 28 };    // 신발
+        }
+
+        for (auto& slot : _slots)
+        {
+            // 아이템 드래그 앤 드랍
+            if (IsMouseInRect(slot.Rect))
             {
-                if (_selectedItem != nullptr)
+                // 아이템 설명
+                _itemName->SetText(slot.KorName);
+                _itemDescription->SetText(slot.Description);
+
+                // 아이템 장착
+                if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::RightMouse))
                 {
-                    if (RemoveItem(_selectedItem->ItemId))
+                    EquipItem(slot);
+                }
+
+                // 드래그 시작
+                if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
+                {
+                    // 빈 슬롯은 드래그 불가
+                    if (slot.ItemId <= 0)
+                        return;
+
+                    _selectedItem = &slot;
+                }
+                else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+                {
+                    // 다른 슬롯으로 드랍
+                    if (_selectedItem != nullptr)
+                    {
+                        _destinatedItem = &slot;
+                        ChangeItem(*_selectedItem, *_destinatedItem);
                         _selectedItem = nullptr;
+                        return;
+                    }
+                }
+
+                // 퀵 슬롯에 등록
+                PressToSetQuickItem(slot);
+
+                // 아이템 개수 표시
+                if (slot.Type == L"Consumable")
+                {
+                    _itemCount->SetVisible(true);
+                    _itemCount->SetText(to_wstring(slot.ItemCount) + L"개");
+                }
+                else
+                {
+                    _itemCount->SetVisible(false);
+                }
+            }
+
+            // 인벤토리 바깥으로 드랍
+            if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect))
+            {
+                if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+                {
+                    if (_selectedItem != nullptr)
+                    {
+                        if (RemoveItem(_selectedItem->ItemId, _selectedItem->ItemCount))
+                            _selectedItem = nullptr;
+                    }
                 }
             }
         }
-    } // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
-    if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
-    {
-        _selectedItem = nullptr;
+        // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
+        if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+        {
+            _selectedItem = nullptr;
+        }
+
+        // 창 드래그로 이동
+        Panel::DragAndMove(&_dragRect);
+        if (_isDragging)
+        {
+            // 인벤토리 영역 RECT 이동
+            _invenRect.left = (int)_pos.x + 5;
+            _invenRect.top = (int)_pos.y + 35;
+            _invenRect.right = _invenRect.left + 285;
+            _invenRect.bottom = _invenRect.top + 300;
+        }
     }
 }
 
@@ -265,6 +311,12 @@ void Inventory::SetItemSlot(ITEM& slot)
     if (slot.ItemId <= 0)
         return;
 
+    if (slot.ItemCount <= 0)
+    {
+        slot = {};
+        return;
+    }
+
     // 이름과 Sprite, Rect, Description, Type 할당
     vector<wstring> ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(slot.ItemId);
 
@@ -274,22 +326,6 @@ void Inventory::SetItemSlot(ITEM& slot)
     slot.Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
     slot.SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
     slot.Sprite = GET_SINGLE(ItemManager)->GetSprite(slot.Name);
-}
-
-void Inventory::SetSlotRects()
-{
-    int _initialX = _pos.x + 13;
-    int _initialY = _pos.y + 45;
-
-    // 각 슬롯에 Rect 할당
-    for (int j = 0; j < 5; j++)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            RECT Rect = { _initialX + (34 * i), _initialY + (34 * j), _initialX + (34 * i) + _slotSize,  _initialY + (34 * j) + _slotSize };
-            _rects.push_back(Rect);
-        }
-    }
 }
 
 void Inventory::SetEquipSlotRects()
@@ -306,6 +342,12 @@ void Inventory::SetEquipSlotRects()
             _equipRects.push_back(Rect);
         }
     }
+}
+
+void Inventory::SlotRectsPosUpdate(RECT* rect)
+{
+    rect->left = _pos.x + 13;
+    rect->top = _pos.y + 45;
 }
 
 bool Inventory::AddItem(int ItemId)
@@ -401,6 +443,32 @@ bool Inventory::RemoveItem(int itemId)
         if (found == true)
         {
             slot.ItemCount--; // 수량 감소
+
+            // 서버와 동기화되는 소모품 관리
+            {
+                MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+                switch (slot.ItemId)
+                {
+                case 4: // Arrow
+                {
+                    if (myPlayer)
+                    {
+                        int arrows = myPlayer->info.arrows();
+                        myPlayer->info.set_arrows(arrows - 1);
+                        break;
+                    }
+                }
+                case 5: // Potion
+                    if (myPlayer)
+                    {
+                        int potions = myPlayer->info.potion();
+                        myPlayer->info.set_potion(potions - 1);
+                        break;
+                    }
+                }
+            }
+
             if (slot.ItemCount <= 0)
             {
                 slot = {};
@@ -435,6 +503,33 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
                 return false;
 
             slot.ItemCount -= ItemCount; // 수량 감소
+
+            // 서버와 동기화되는 소모품 관리
+            {
+                MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+                switch (slot.ItemId)
+                {
+                case 4: // Arrow
+                {
+                    if (myPlayer)
+                    {
+                        int arrows = myPlayer->info.arrows();
+                        myPlayer->info.set_arrows(arrows - ItemCount);
+                        break;
+                    }
+                }
+                case 5: // Potion
+                {
+                    if (myPlayer)
+                    {
+                        int potions = myPlayer->info.potion();
+                        myPlayer->info.set_potion(potions - ItemCount);
+                        break;
+                    }
+                }
+                }
+            }
+
             if (slot.ItemCount <= 0)
             {
                 slot = {};
@@ -447,11 +542,20 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
     return false;
 }
 
+void Inventory::SetItemCount(int itemId, int ItemCount)
+{
+    ITEM* item = FindItem(itemId);
+    if (item)
+        item->ItemCount = ItemCount;
+    else
+        AddItem(itemId, ItemCount);
+}
+
 void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
 {
-    _temp = itemFrom;
+    ITEM temp = itemFrom;
     itemFrom = itemTo;
-    itemTo = _temp;
+    itemTo = temp;
 }
 
 ITEM* Inventory::FindItem(int itemId)

@@ -28,10 +28,16 @@ public:
 	}
 
 	bool RemoveChild(UI* ui);
-
 	auto& GetChildren() { return _children; }
+
+	void DragAndMove(RECT* rect);
 
 protected:
 	vector<UI*> _children;
+	bool _isDragging = false;
+	POINT _initialPos;
+	POINT _mousePos;
+	int _offsetX;
+	int _offsetY;
 };
 

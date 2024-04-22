@@ -16,23 +16,16 @@ public:
 
 private:
 	void SetItemSlot(ITEM& slot);
-	void SetSlotRects();
 	void SetEquipSlotRects();
-
-	//enum WEARABLE_TYPE
-	//{
-	//	WEARABLE_TYPE_WEAPON = 0;
-	//WEARABLE_TYPE_HELMET = 1;
-	//WEARABLE_TYPE_ARMOR = 2;
-	//WEARABLE_TYPE_PANTS = 3;
-	//WEARABLE_TYPE_BOOTS = 4;
-	//}
+	void SlotRectsPosUpdate(RECT* rect);
 
 public:
 	bool AddItem(int ItemId);
 	bool AddItem(int ItemId, int ItemCount);
 	bool RemoveItem(int itemId);
 	bool RemoveItem(int itemId, int ItemCount);
+	void SetItemCount(int itemId, int ItemCount);
+
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 
 	ITEM* FindItem(int itemId);
@@ -57,7 +50,7 @@ protected:
 	class TextBox* _itemDescription = nullptr;
 	class Sprite* _background = nullptr;
 	class Sprite* _itemSprite = nullptr;
-
+	
 private:
 	int _slotSize = 28;
 	bool _initialized = false;
@@ -65,8 +58,7 @@ private:
 	// 드래그 앤 드랍
 	ITEM* _selectedItem;
 	ITEM* _destinatedItem;
-	ITEM _temp;
 	RECT _invenRect;	// 인벤토리 영역 체크용 Rect
-	POINT _mousePos;
+	RECT _dragRect;		// 인벤토리 드래그 Rect
 };
 

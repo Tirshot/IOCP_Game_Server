@@ -350,7 +350,9 @@
     <ClInclude Include="QuickSlot.h">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="ItemManager.h" />
+    <ClInclude Include="ItemManager.h">
+      <Filter>소스 파일\01. Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -596,7 +598,7 @@
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
