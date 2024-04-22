@@ -102,8 +102,7 @@ void QuickSlot::SetQuickSlot(ITEM* item, int index)
 	// 동일한 아이템을 등록하면 등록 취소
 	if (_slots[index].ItemId == item->ItemId)
 	{
-		_slots[index] = ITEM{};
-		return;
+		_slots[index] = {};
 	}
 
 	// 동일한 아이템을 다른 슬롯에 등록하면 기존 등록 취소
@@ -111,7 +110,7 @@ void QuickSlot::SetQuickSlot(ITEM* item, int index)
 	{
 		if (slot.ItemId == item->ItemId)
 		{
-			slot = ITEM {};
+			slot = {};
 			break;
 		}
 	}

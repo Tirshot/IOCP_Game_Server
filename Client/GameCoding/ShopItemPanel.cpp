@@ -12,6 +12,7 @@
 #include "ShopUI.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "ItemManager.h"
 #include "NetworkManager.h"
 #include "ClientPacketHandler.h"
 
@@ -286,6 +287,7 @@ void ShopItemPanel::OnClickPurchaseButton()
 		{
 		case ARROW:
 			myPlayer->info.set_arrows(arrows + _itemCount);
+			GET_SINGLE(ItemManager)->AddItemToInventory(4);
 			break;
 
 		case MAXHEART:
@@ -298,6 +300,7 @@ void ShopItemPanel::OnClickPurchaseButton()
 			if (myPotion >= 9)
 				return;
 			myPlayer->info.set_potion(myPlayer->info.potion() + _itemCount);
+			GET_SINGLE(ItemManager)->AddItemToInventory(5);
 			break;
 		}
 		myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);

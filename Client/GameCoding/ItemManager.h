@@ -21,7 +21,7 @@ public:
 	bool RemoveItemFromInventory(int itemId);
 
 	class QuickSlot* GetQuickSlot() { return _quickSlot; }
-	void SetItemToQuickSlot(class ITEM* item, int index);
+	void SetItemToQuickSlot(struct ITEM* item, int index);
 
 	int GetQuickSlotSelectedIndex();
 	wstring GetQuickSlotSelectedSubType();

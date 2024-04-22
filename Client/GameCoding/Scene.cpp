@@ -8,6 +8,7 @@
 #include "Panel.h"
 #include "Chat.h"
 #include "Player.h"
+#include "Inventory.h"
 
 Scene::Scene()
 {
@@ -51,6 +52,10 @@ void Scene::Update()
 	Chat* chat = FindUI<Chat>(_uis);
 	if(chat)
 		chat->Tick();
+
+	Inventory* inven = FindUI<Inventory>(_uis);
+	if (inven)
+		inven->Tick();
 }
 
 void Scene::Render(HDC hdc)
