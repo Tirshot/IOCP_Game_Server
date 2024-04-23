@@ -34,6 +34,7 @@ public:
 	wstring GetType(vector <wstring> row);
 	wstring GetSubType(vector <wstring> row);
 	wstring GetDescription(vector <wstring> row);
+	int GetPrice(vector <wstring> row);
 	Sprite* GetSprite(wstring wstr);
 
 private:

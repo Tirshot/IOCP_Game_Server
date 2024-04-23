@@ -108,9 +108,9 @@ void MerchantUI::OnClickShopButton()
 		shopui->SetVisible(true);
 
 	// item count reset
-	auto* child = shopui->FindChild<ShopItemPanel>(shopui->GetChildren());
-	if (child)
-		child->ResetItemCount();
+	//auto* child = shopui->FindChild<ShopItemPanel>(shopui->GetChildren());
+	//if (child)
+	//	child->ResetItemCount();
 }
 
 void MerchantUI::OnClickQuestButton()

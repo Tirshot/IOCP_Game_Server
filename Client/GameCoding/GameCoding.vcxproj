@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="AlertBox.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="ArrowItem.h" />
     <ClInclude Include="ArrowUI.h" />
@@ -170,6 +171,7 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemCountBox.h" />
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="Merchant.h" />
     <ClInclude Include="MerchantTrigger.h" />
@@ -225,6 +227,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="AlertBox.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="ArrowItem.cpp" />
     <ClCompile Include="ArrowUI.cpp" />
@@ -256,6 +259,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemCountBox.cpp" />
     <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Merchant.cpp" />
     <ClCompile Include="MerchantTrigger.cpp" />

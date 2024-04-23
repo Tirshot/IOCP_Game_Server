@@ -28,7 +28,7 @@ public:
 
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 
-	ITEM* FindItem(int itemId);
+	ITEM* FindItemFromInventory(int itemId);
 	
 	ITEM* GetEquippedItem(wstring wstr);
 

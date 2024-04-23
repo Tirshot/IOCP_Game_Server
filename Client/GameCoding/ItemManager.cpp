@@ -72,6 +72,7 @@ ITEM& ItemManager::GetItem(int itemID)
     item->Name = GET_SINGLE(ItemManager)->GetName(ItemInfo);
     item->KorName = GET_SINGLE(ItemManager)->GetKorName(ItemInfo);
     item->Description = GET_SINGLE(ItemManager)->GetDescription(ItemInfo);
+    item->Price = GET_SINGLE(ItemManager)->GetPrice(ItemInfo);
     item->Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
     item->SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
     item->Sprite = GET_SINGLE(ItemManager)->GetSprite(item->Name);
@@ -133,6 +134,11 @@ wstring ItemManager::GetSubType(vector<wstring> row)
 wstring ItemManager::GetDescription(vector<wstring> row)
 {
     return row[5];
+}
+
+int ItemManager::GetPrice(vector<wstring> row)
+{
+    return stoi(row[6]);
 }
 
 Sprite* ItemManager::GetSprite(wstring wstr)

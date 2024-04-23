@@ -30,6 +30,7 @@ public:
 	bool RemoveChild(UI* ui);
 	auto& GetChildren() { return _children; }
 
+	void UpdateChildPos(Panel* parent, int deltaX, int deltaY);
 	void DragAndMove(RECT* rect);
 
 protected:

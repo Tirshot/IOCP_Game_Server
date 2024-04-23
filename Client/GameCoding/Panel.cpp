@@ -44,6 +44,8 @@ void Panel::AddChild(UI* ui)
 	if (ui == nullptr)
 		return;
 
+	ui->SetParent(this);
+
 	_children.push_back(ui);
 }
 
@@ -56,6 +58,22 @@ bool Panel::RemoveChild(UI* ui)
 
 	_children.erase(findIt);
 	return true;
+}
+
+void Panel::UpdateChildPos(Panel* parent, int deltaX, int deltaY)
+{
+	// 자식 위치 업데이트
+	if (parent)
+		for (auto& child : parent->GetChildren())
+		{
+			if (child->GetParent() != parent)
+				continue;
+
+			Vec2 childPos = child->GetPos();
+			child->SetPos({ childPos.x + deltaX, childPos.y + deltaY });
+
+			UpdateChildPos(dynamic_cast<Panel*>(child), deltaX, deltaY);
+		}
 }
 
 void Panel::DragAndMove(RECT* rect)
@@ -98,11 +116,12 @@ void Panel::DragAndMove(RECT* rect)
 		_pos.y = newTop;
 
 		// 자식 위치 업데이트
-		for (auto& child : _children)
-		{
-			Vec2 childPos = child->GetPos();
-			child->SetPos({ childPos.x + deltaX, childPos.y + deltaY });
-		}
+		UpdateChildPos(this, deltaX, deltaY);
+		//for (auto& child : _children)
+		//{
+		//	Vec2 childPos = child->GetPos();
+		//	child->SetPos({ childPos.x + deltaX, childPos.y + deltaY });
+		//}
 	}
 
 	// 드래그 종료

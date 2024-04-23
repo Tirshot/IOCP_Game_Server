@@ -12,7 +12,7 @@ public:
 	QuestUIPanel(Protocol::QuestInfo& info, int idx);
 
 	virtual ~QuestUIPanel();
-
+	
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);

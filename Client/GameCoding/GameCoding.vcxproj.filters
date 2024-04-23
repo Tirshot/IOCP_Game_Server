@@ -353,6 +353,12 @@
     <ClInclude Include="ItemManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
+    <ClInclude Include="ItemCountBox.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="AlertBox.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -599,6 +605,12 @@
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemCountBox.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="AlertBox.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

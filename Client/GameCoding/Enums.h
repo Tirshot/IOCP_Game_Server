@@ -12,6 +12,13 @@ enum class CreatureType
 	Monster,
 };
 
+enum class TextAlign
+{
+	Left,
+	Center,
+	Right,
+};
+
 // 정수 변환을 건너뛰기 위해 enum을 사용
 enum LAYER_TYPE
 {
@@ -96,6 +103,7 @@ struct ITEM
 	wstring Type = L"";
 	wstring SubType = L"";
 	wstring Description = L"";
+	int Price = 0;
 	class Sprite* Sprite = nullptr;
 	RECT Rect = {};
 };

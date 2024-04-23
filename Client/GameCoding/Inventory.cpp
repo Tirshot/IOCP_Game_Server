@@ -27,9 +27,9 @@ void Inventory::BeginPlay()
     _invenRect = {};        // 485, 160, 770, 460
     {
         _invenRect.left = (int)_pos.x + 5;
-        _invenRect.top = (int)_pos.y + 35;
+        _invenRect.top = (int)_pos.y;
         _invenRect.right = _invenRect.left + 285;
-        _invenRect.bottom = _invenRect.top + 300;
+        _invenRect.bottom = _invenRect.top + 335;
     }
     
     _dragRect = {};
@@ -74,6 +74,10 @@ void Inventory::BeginPlay()
     for (int i = 1; i < 5; i++)
         AddItem(i);
 
+    // 테스트용 장비 지급
+    for (int i = 10; i < 25; i++)
+        AddItem(i);
+
     _initialized = true;
 }
 
@@ -81,11 +85,17 @@ void Inventory::Tick()
 {
     MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
+    // ESC를 누르면 인벤토리 끄기
+    if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::ESC))
+    {
+        _visible = false;
+    }
+
     // 최초 1회만 실행
     if (_initialized)
     {
         // 검 기본 장착
-        ITEM* item1 = FindItem(1);
+        ITEM* item1 = FindItemFromInventory(1);
         EquipItem(*item1);
 
         _initialized = false;
@@ -98,13 +108,9 @@ void Inventory::Tick()
         SetItemCount(5, myPlayer->info.potion());
     }
 
-    auto what = _slots;
-
     // UI 관련 코드 //
     if (_visible)
     {
-        _mousePos = GET_SINGLE(InputManager)->GetMousePos();
-
         // 아이템 슬롯 초기화
         for (int j = 0; j < 5; j++)
         {
@@ -142,6 +148,8 @@ void Inventory::Tick()
             // 아이템 드래그 앤 드랍
             if (IsMouseInRect(slot.Rect))
             {
+                _mousePos = GET_SINGLE(InputManager)->GetMousePos();
+
                 // 아이템 설명
                 _itemName->SetText(slot.KorName);
                 _itemDescription->SetText(slot.Description);
@@ -199,10 +207,15 @@ void Inventory::Tick()
                             _selectedItem = nullptr;
                     }
                 }
+                // 외부 클릭시 인벤토리 끄기
+                else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
+                {
+                    _visible = false;
+                }
             }
         }
         // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
-        if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+        if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))            
         {
             _selectedItem = nullptr;
         }
@@ -213,9 +226,9 @@ void Inventory::Tick()
         {
             // 인벤토리 영역 RECT 이동
             _invenRect.left = (int)_pos.x + 5;
-            _invenRect.top = (int)_pos.y + 35;
+            _invenRect.top = (int)_pos.y;
             _invenRect.right = _invenRect.left + 285;
-            _invenRect.bottom = _invenRect.top + 300;
+            _invenRect.bottom = _invenRect.top + 335;
         }
     }
 }
@@ -248,8 +261,8 @@ void Inventory::Render(HDC hdc)
             _slotSize,
             _slotSize,
             _slots[i].Sprite->GetDC(),
-            0,
-            0,
+            _slots[i].Sprite->GetPos().x,
+            _slots[i].Sprite->GetPos().y,
             _slots[i].Sprite->GetSize().x,
             _slots[i].Sprite->GetSize().y,
             _slots[i].Sprite->GetTransparent());
@@ -272,8 +285,8 @@ void Inventory::Render(HDC hdc)
             _slotSize,
             _slotSize,
             _equips[i].Sprite->GetDC(),
-            0,
-            0,
+            _equips[i].Sprite->GetPos().x,
+            _equips[i].Sprite->GetPos().y,
             _equips[i].Sprite->GetSize().x,
             _equips[i].Sprite->GetSize().y,
             _equips[i].Sprite->GetTransparent());
@@ -286,6 +299,7 @@ void Inventory::Render(HDC hdc)
         if (child->GetVisible())
             child->Render(hdc);
 
+    // 드래그 중인 아이템
     if (_selectedItem == nullptr)
     {
         return;
@@ -298,12 +312,13 @@ void Inventory::Render(HDC hdc)
             _slotSize,
             _slotSize,
             _selectedItem->Sprite->GetDC(),
-            0,
-            0,
+            _selectedItem->Sprite->GetPos().x,
+            _selectedItem->Sprite->GetPos().y,
             _selectedItem->Sprite->GetSize().x,
             _selectedItem->Sprite->GetSize().y,
             _selectedItem->Sprite->GetTransparent());
     }
+
 }
 
 void Inventory::SetItemSlot(ITEM& slot)
@@ -317,12 +332,17 @@ void Inventory::SetItemSlot(ITEM& slot)
         return;
     }
 
+    // 성능 최적화 - 이미 정보가 할당된 아이템이라면 스킵
+    if (slot.Sprite != nullptr)
+        return;
+
     // 이름과 Sprite, Rect, Description, Type 할당
     vector<wstring> ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(slot.ItemId);
 
     slot.Name = GET_SINGLE(ItemManager)->GetName(ItemInfo);
     slot.KorName = GET_SINGLE(ItemManager)->GetKorName(ItemInfo);
     slot.Description = GET_SINGLE(ItemManager)->GetDescription(ItemInfo);
+    slot.Price = GET_SINGLE(ItemManager)->GetPrice(ItemInfo);
     slot.Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
     slot.SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
     slot.Sprite = GET_SINGLE(ItemManager)->GetSprite(slot.Name);
@@ -544,11 +564,15 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
 
 void Inventory::SetItemCount(int itemId, int ItemCount)
 {
-    ITEM* item = FindItem(itemId);
+    ITEM* item = FindItemFromInventory(itemId);
     if (item)
+    {
         item->ItemCount = ItemCount;
+    }
     else
+    {
         AddItem(itemId, ItemCount);
+    }
 }
 
 void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
@@ -558,7 +582,7 @@ void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
     itemTo = temp;
 }
 
-ITEM* Inventory::FindItem(int itemId)
+ITEM* Inventory::FindItemFromInventory(int itemId)
 {
     for (auto& slot : _slots)
     {

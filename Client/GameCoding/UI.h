@@ -18,6 +18,9 @@ public:
 	void SetVisible(bool visible) { if (_visible == visible) return; _visible = visible; }
 	bool GetVisible() const { return _visible; }
 
+	void SetParent(UI* ui) { _parent = ui; }
+	UI* GetParent() { return _parent; }
+
 	// UI를 사각형이라고 가정
 	RECT GetRect();
 	bool IsMouseInRect();
@@ -27,5 +30,6 @@ protected:
 	Vec2	_pos = { 0, 0 };
 	Vec2Int _size = { 150, 150 };
 	bool _visible = true;
+	UI* _parent = nullptr;
 };
 
