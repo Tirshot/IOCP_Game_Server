@@ -44,6 +44,7 @@
 #include "Quest.h"
 #include "Inventory.h"
 #include "QuickSlot.h"
+#include "AlertBox.h"
 #include <filesystem>
 
 DevScene::DevScene()
@@ -189,7 +190,8 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"PurchaseButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 484, 540, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"AcceptButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 84, 640, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"CompleteButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 184, 640, 32, 21);
-	GET_SINGLE(ResourceManager)->CreateSprite(L"FinishedButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 284, 640, 32, 21);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"PopAcceptButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 615, 30, 60, 35);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"PopDenyButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 615, 130, 60, 35);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Inventory", GET_SINGLE(ResourceManager)->GetTexture(L"Inventory"), 0, 0, 290, 356);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"DangerIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 0, 0, 34, 34);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"AlertIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 34, 0, 34, 34);

@@ -35,6 +35,8 @@ public:
 	void EquipItem(ITEM& item);
 	void PressToSetQuickItem(ITEM& slot);
 
+	void OnPopClickAcceptDelegate();
+
 protected:
 	// nums : 8 x 5, slot : 28 x 28px
 	// 인벤토리
@@ -54,11 +56,14 @@ protected:
 private:
 	int _slotSize = 28;
 	bool _initialized = false;
+	bool _isItemDropped = false;
 
 	// 드래그 앤 드랍
 	ITEM* _selectedItem;
+	ITEM* _deleteItem = {};
 	ITEM* _destinatedItem;
 	RECT _invenRect;	// 인벤토리 영역 체크용 Rect
 	RECT _dragRect;		// 인벤토리 드래그 Rect
+	class AlertBox* _alert = nullptr;
 };
 

@@ -11,35 +11,6 @@ AlertBox::AlertBox()
 {
 	_background = GET_SINGLE(ResourceManager)->GetSprite(L"Pop");
 	_icon = GET_SINGLE(ResourceManager)->GetSprite(L"InformationIcon");
-
-	// 텍스트
-	{
-		TextBox* text = new TextBox();
-		text->SetText(L"테스트용 텍스트입니다. \n두번째 줄입니다. \n 세번째 줄입니다.");
-		text->SetPos(Vec2{_pos.x + 30, _pos.y + 10});
-		text->SetSize(Vec2Int{ _size.x - 30, _size.y - 40 });
-		AddChild(text);
-	}
-
-	// 확인
-	{
-		Button* accept = new Button();
-		//accept->SetSprite(, ButtonState::BS_Default);
-		//accept->SetSprite(, ButtonState::BS_Hovered);
-		//accept->SetSprite(, ButtonState::BS_Clicked);
-		auto parent = GetParent();
-		accept->AddOnClickDelegate(this, AlertBox::OnClickAcceptButton);
-		//AddChild(accept);
-	}
-
-	// 취소
-	{
-		Button* deny = new Button();
-		//deny->SetSprite(, ButtonState::BS_Default);
-		//deny->SetSprite(, ButtonState::BS_Hovered);
-		//deny->SetSprite(, ButtonState::BS_Clicked);
-		//AddChild(deny);
-	}
 }
 
 AlertBox::~AlertBox()
@@ -48,21 +19,81 @@ AlertBox::~AlertBox()
 
 void AlertBox::BeginPlay()
 {
+	// 기즈모 위치를 중앙에 위치시키기 위해서는 Size 설정을 Pos 설정보다 먼저!!
+	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
+
+	// 텍스트
+	{
+		TextBox* text = new TextBox();
+		text->SetText(L"테스트용 텍스트입니다. \n두번째 줄입니다. \n 세번째 줄입니다.");
+		text->SetPos(Vec2{ _pos.x  + 60, _pos.y  + 10 });
+		text->SetSize(Vec2Int{ _size.x - 80, (_size.y / 2) });
+		AddChild(text);
+	}
+
+	// 확인
+	{
+		Button* accept = new Button();
+		accept->SetPos({ _pos.x + _size.x / 2 - 40, _pos.y + _size.y - 35});
+		accept->SetSize({ 50,30 });
+		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Default);
+		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Hovered);
+		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Clicked);
+		accept->AddOnClickDelegate(this, &AlertBox::OnClickAcceptButton);
+		AddChild(accept);
+	}
+
+	// 취소
+	{
+		Button* deny = new Button();
+		deny->SetPos({ _pos.x + _size.x  / 2 + 40, _pos.y + _size.y  - 35 });
+		deny->SetSize({ 50,30 });
+		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Default);
+		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Hovered);
+		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Clicked);
+		deny->AddOnClickDelegate(this, &AlertBox::OnClickDenyButton);
+		AddChild(deny);
+	}
+
 	for (auto& child : _children)
 		child->BeginPlay();
 }
 
 void AlertBox::Tick()
 {
+	Panel::DragAndMove(&_rect);
+
 	for (auto& child : _children)
-		child->Tick();
+		if (_visible == true)
+			child->Tick();
 }
 
 void AlertBox::Render(HDC hdc)
 {
+	if (_visible == false)
+		return;
+
+	// 배경
+	::TransparentBlt(hdc,
+		(int32)_pos.x,
+		(int32)_pos.y,
+		GetSize().x + 10,
+		GetSize().y,
+		_background->GetDC(),
+		_background->GetPos().x,
+		_background->GetPos().y,
+		_background->GetSize().x,
+		_background->GetSize().y,
+		_background->GetTransparent());
+
+	for (auto& child : _children)
+		if (child->GetVisible() == true)
+			child->Render(hdc);
+
+	// 경고 아이콘
 	::TransparentBlt(hdc,
 		_pos.x + 10,
-		_pos.y + 10,
+		_pos.y + (int)_size.y / 6,
 		43,
 		43,
 		_icon->GetDC(),
@@ -71,14 +102,11 @@ void AlertBox::Render(HDC hdc)
 		_icon->GetSize().x,
 		_icon->GetSize().y,
 		_icon->GetTransparent());
-
-	for (auto& child : _children)
-		if (child->GetVisible() == true)
-			child->Render(hdc);
 }
 
 void AlertBox::SetIcon(wstring wstr)
 {
+	// Danger, Alert, Information
 	if (wstr == L"Danger")
 	{
 		_icon = GET_SINGLE(ResourceManager)->GetSprite(L"DangerIcon");
@@ -95,5 +123,22 @@ void AlertBox::SetIcon(wstring wstr)
 
 void AlertBox::OnClickAcceptButton()
 {
-	_visible = false;
+	SetVisible(false);
+
+	// 부모 UI에서 작동할 콜백 함수가 있으면 기능 수행
+	if (_parentCallback != nullptr)
+	{
+		_parentCallback();
+	}
+}
+
+void AlertBox::OnClickDenyButton()
+{
+	SetVisible(false);
+}
+
+void AlertBox::SetText(wstring wstr)
+{
+	auto textbox = FindChild<TextBox>(_children);
+	textbox->SetText(wstr);
 }

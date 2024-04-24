@@ -36,14 +36,16 @@ void TextBox::Render(HDC hdc)
 	{
 		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
 
-		::BitBlt(hdc,
+		::StretchBlt(hdc,
 			mousePos.x,
 			mousePos.y,
-			GetSize().x,
-			GetSize().y,
+			_size.x,
+			_size.y,
 			_backGround->GetDC(),
 			0,
 			0,
+			_backGround->GetSize().x,
+			_backGround->GetSize().y,
 			SRCCOPY);
 
 		_rect.left = mousePos.x + _leftPadding;
@@ -53,14 +55,16 @@ void TextBox::Render(HDC hdc)
 	}
 	else
 	{
-		::BitBlt(hdc,
+		::StretchBlt(hdc,
 			_pos.x,
 			_pos.y,
-			GetSize().x,
-			GetSize().y,
+			_size.x,
+			_size.y,
 			_backGround->GetDC(),
 			0,
 			0,
+			_backGround->GetSize().x,
+			_backGround->GetSize().y,
 			SRCCOPY);
 
 		_rect.left = _pos.x + _leftPadding;

@@ -22,12 +22,19 @@ public:
 	}
 	std::function<void(void)>_parentCallback = nullptr;
 
+	void SetPos(Vec2 pos) { _pos = { pos.x - (int)_size.x / 2, pos.y - (int)_size.y / 2 }; }
+
 private:
-	void SetIcon(wstring wstr);
 	void OnClickAcceptButton();
+	void OnClickDenyButton();
+
+public:
+	void SetIcon(wstring wstr);
+	void SetText(wstring wstr);
 
 private:
 	class Sprite* _background = nullptr;
 	class Sprite* _icon = nullptr;
+	RECT _rect = {};
 };
 

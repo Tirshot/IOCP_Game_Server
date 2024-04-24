@@ -9,10 +9,24 @@
 #include "TextBox.h"
 #include "QuickSlot.h"
 #include "MyPlayer.h"
+#include "AlertBox.h"
 
 Inventory::Inventory()
 {
-
+    _background = GET_SINGLE(ResourceManager)->GetSprite(L"Inventory");
+    _itemSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
+    {
+        // 팝업
+        _alert = new AlertBox();
+        if (_alert)
+        {
+            _alert->SetSize({ 300, 150 });
+            _alert->SetPos({ 400, 300 });
+            AddChild(_alert);
+            _alert->AddParentDelegate(this, &Inventory::OnPopClickAcceptDelegate);
+            _alert->SetVisible(false);
+        }
+    }
 }
 
 Inventory::~Inventory()
@@ -22,8 +36,6 @@ Inventory::~Inventory()
 
 void Inventory::BeginPlay()
 {
-    _background = GET_SINGLE(ResourceManager)->GetSprite(L"Inventory");
-    _itemSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
     _invenRect = {};        // 485, 160, 770, 460
     {
         _invenRect.left = (int)_pos.x + 5;
@@ -69,6 +81,9 @@ void Inventory::BeginPlay()
         _itemDescription->SetPadding(5, 5);
         AddChild(_itemDescription);
     }
+
+    for (auto& child : _children)
+        child->BeginPlay();
 
     // 기본 무기 지급
     for (int i = 1; i < 5; i++)
@@ -197,25 +212,42 @@ void Inventory::Tick()
             }
 
             // 인벤토리 바깥으로 드랍
-            if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect))
+            if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect)
+                && GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
             {
-                if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+
+                if (_selectedItem != nullptr)
                 {
-                    if (_selectedItem != nullptr)
+                    _deleteItem = _selectedItem;
+
+                    int deleteItemID = _deleteItem->ItemId;
+
+                    if (deleteItemID == 1 || deleteItemID == 2 || deleteItemID == 3)
                     {
-                        if (RemoveItem(_selectedItem->ItemId, _selectedItem->ItemCount))
-                            _selectedItem = nullptr;
+                        _alert->SetText(L"기본 무기는 버릴 수 없습니다.");
+                        _alert->SetIcon(L"Alert");
                     }
+                    else
+                    {
+                        _alert->SetText(L"아이템을 모두 버리겠습니까?\n다시 주울 수 없습니다.");
+                        _alert->SetIcon(L"Danger");
+                    }
+                    _alert->SetVisible(true);
+                    continue;
                 }
-                // 외부 클릭시 인벤토리 끄기
-                else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
-                {
-                    _visible = false;
-                }
+
+                _selectedItem = nullptr;
+                 
+                //// 외부 클릭시 인벤토리 끄기
+                //else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
+                //{
+                //    _visible = false;
+                //}
             }
         }
+
         // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
-        if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))            
+        if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
         {
             _selectedItem = nullptr;
         }
@@ -231,6 +263,10 @@ void Inventory::Tick()
             _invenRect.bottom = _invenRect.top + 335;
         }
     }
+
+    for (auto& child : _children)
+        if (child->GetVisible())
+            child->Tick();
 }
 
 void Inventory::Render(HDC hdc)
@@ -715,4 +751,12 @@ void Inventory::PressToSetQuickItem(ITEM& slot)
     {
         GET_SINGLE(ItemManager)->SetItemToQuickSlot(&slot, 8);
     }
+}
+
+void Inventory::OnPopClickAcceptDelegate()
+{
+    if (RemoveItem(_deleteItem->ItemId, _deleteItem->ItemCount))
+        _deleteItem = nullptr;
+
+    _isItemDropped = true;
 }
