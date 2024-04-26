@@ -86,6 +86,11 @@ bool ItemManager::AddItemToInventory(int itemId)
     return GetInventory()->AddItem(itemId);
 }
 
+bool ItemManager::AddItemToInventory(int itemId, int counts)
+{
+    return GetInventory()->AddItem(itemId, counts);
+}
+
 bool ItemManager::RemoveItemFromInventory(int itemId)
 {
     return GetInventory()->RemoveItem(itemId);
@@ -109,6 +114,33 @@ wstring ItemManager::GetQuickSlotSelectedSubType()
 void ItemManager::EquipItem(ITEM& item)
 {
     _inventory->EquipItem(item);
+}
+
+bool ItemManager::IsInventoryFull()
+{
+    auto slots = _inventory->GetSlots();
+
+    for (auto& slot : slots)
+    {
+        if (slot.ItemId == 0)
+            return false;
+    }
+
+    return true;
+}
+
+int ItemManager::GetEmptySlots()
+{
+    auto slots = _inventory->GetSlots();
+    int emptySlots = 0;
+
+    for (auto& slot : slots)
+    {
+        if (slot.ItemId == 0)
+            emptySlots++;
+    }
+
+    return emptySlots;
 }
 
 wstring ItemManager::GetName(vector<wstring> row)

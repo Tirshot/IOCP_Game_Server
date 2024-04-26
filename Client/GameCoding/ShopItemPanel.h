@@ -16,6 +16,11 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
 
+	RECT GetRect() { return _rect; }
+	ITEM* GetItem() { return _item;  }
+
+	void OnPopClickAcceptDelegate();
+
 protected:
 	Texture* _background = nullptr;
 	Texture* _goldImage = nullptr;
@@ -23,6 +28,6 @@ protected:
 	RECT _rect;
 	class TextBox* _description = nullptr;
 	class TextBox* _itemName = nullptr;
-	int _allCost = 0;
+	class ItemCountsPopUp* _countsPopUp = nullptr;
 };
 

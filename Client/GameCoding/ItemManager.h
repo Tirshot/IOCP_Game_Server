@@ -18,6 +18,7 @@ public:
 
 	class Inventory* GetInventory() { return _inventory; }
 	bool AddItemToInventory(int itemId);
+	bool AddItemToInventory(int itemId, int counts);
 	bool RemoveItemFromInventory(int itemId);
 
 	class QuickSlot* GetQuickSlot() { return _quickSlot; }
@@ -27,6 +28,9 @@ public:
 	wstring GetQuickSlotSelectedSubType();
 
 	void EquipItem(ITEM& item);
+
+	bool IsInventoryFull();
+	int GetEmptySlots();
 
 public:
 	wstring GetName(vector <wstring> row);

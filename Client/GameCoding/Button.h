@@ -51,7 +51,6 @@ public:
 				(owner->*func)();
 			};
 	}
-
 	std::function<void(void)>_onClick = nullptr;
 };
 

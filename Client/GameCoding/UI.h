@@ -25,11 +25,18 @@ public:
 	RECT GetRect();
 	bool IsMouseInRect();
 	bool IsMouseInRect(RECT rect);
+	bool IsMouseOutRect(RECT rect);
+
+	int GetUIID() { return _id; }
 
 protected:
 	Vec2	_pos = { 0, 0 };
 	Vec2Int _size = { 150, 150 };
 	bool _visible = true;
 	UI* _parent = nullptr;
+	int _id = 0;
+
+	// id ºÎ¿©
+	static int ui_idGenerator;
 };
 

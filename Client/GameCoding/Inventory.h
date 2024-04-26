@@ -18,13 +18,17 @@ private:
 	void SetItemSlot(ITEM& slot);
 	void SetEquipSlotRects();
 	void SlotRectsPosUpdate(RECT* rect);
+	void SyncItemToServer(int itemID, int counts);
 
 public:
 	bool AddItem(int ItemId);
 	bool AddItem(int ItemId, int ItemCount);
+	bool RemoveItem(ITEM* item);
+	bool RemoveItem(ITEM* item, int ItemCount);
 	bool RemoveItem(int itemId);
 	bool RemoveItem(int itemId, int ItemCount);
 	void SetItemCount(int itemId, int ItemCount);
+	vector<ITEM> GetSlots() { return _slots; }
 
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 

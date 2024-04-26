@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Panel.h"
 #include "InputManager.h"
+#include "AlertBox.h"
+#include "ItemCountsPopUp.h"
 
 Panel::Panel()
 {
@@ -19,6 +21,8 @@ void Panel::BeginPlay()
 {
 	Super::BeginPlay();
 
+	_initialPos = _pos;
+
 	for (UI* child : _children)
 		child->BeginPlay();
 }
@@ -26,6 +30,9 @@ void Panel::BeginPlay()
 void Panel::Tick()
 {
 	Super::Tick();
+
+	if (_visible == false)
+		_pos = _initialPos;
 
 	for (UI* child : _children)
 		child->Tick();
@@ -69,6 +76,14 @@ void Panel::UpdateChildPos(Panel* parent, int deltaX, int deltaY)
 			if (child->GetParent() != parent)
 				continue;
 
+			// AlertBox가 따라 움직이는 버그 수정
+			if (dynamic_cast<AlertBox*>(child))
+				continue;
+
+			// ItemCountsPopUp이 따라 움직이는 버그 수정
+			if (dynamic_cast<ItemCountsPopUp*>(child))
+				continue;
+
 			Vec2 childPos = child->GetPos();
 			child->SetPos({ childPos.x + deltaX, childPos.y + deltaY });
 
@@ -82,13 +97,27 @@ void Panel::DragAndMove(RECT* rect)
 	int width = rect->right - rect->left;
 	int height = rect->bottom - rect->top;
 
+	// 두 개의 드래그 가능한 창이 존재할 때 가장 위(자식)의 창만 드래그 가능
+	for (auto& child : _children)
+	{
+		Panel* panel = dynamic_cast<Panel*>(child);
+		if (panel)
+		{
+			if (panel->_isDragging)
+			{
+				this->_isDragging = false;
+				return;
+			}
+		}
+	}
+
 	// 인벤토리 창 드래그
 	if (IsMouseInRect(*rect))
 	{
 		// 드래그 시작
 		if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
 		{
-			_initialPos = _mousePos;
+			_initialMousePos = _mousePos;
 			//
 			_offsetX = (int)_mousePos.x - (int)rect->left;
 			_offsetY = (int)_mousePos.y - (int)rect->top;

@@ -11,6 +11,7 @@
 #include "DevScene.h"
 #include "MerchantUI.h"
 #include "ShopUI.h"
+#include "ItemCountsPopUp.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "ItemManager.h"
@@ -45,7 +46,8 @@ ShopItemPanel::ShopItemPanel(ITEM* item, int index, Vec2 initialPos)
 		SetPos(Vec2{ initialPos.x + 185 , initialPos.y + 5 + GetSize().y * (index / 2) });
 
 	_rect = RECT{ (int)_pos.x, (int)_pos.y, (int)_pos.x + GetSize().x, (int)_pos.y + GetSize().y};
-	
+	_item->Rect = _rect;
+
 	// 아이템 이름
 	{
 		_itemName = new TextBox();
@@ -82,21 +84,6 @@ void ShopItemPanel::BeginPlay()
 
 void ShopItemPanel::Tick()
 {
-	if (IsMouseInRect(_rect))
-	{
-		_itemName->SetVisible(true);
-		_description->SetVisible(true);
-		if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
-		{
-			// 수량 확인 창
-		}
-	}
-	else
-	{
-		_itemName->SetVisible(false);
-		_description->SetVisible(false);
-	}
-
 	_rect.left = _pos.x;
 	_rect.top = _pos.y;
 	_rect.right = _pos.x + _size.x;
@@ -104,6 +91,18 @@ void ShopItemPanel::Tick()
 
 	for (auto& child : _children)
 		child->Tick();
+	
+	// 아이템 설명
+	if (IsMouseInRect(_rect))
+	{
+		_itemName->SetVisible(true);
+		_description->SetVisible(true);
+	}
+	else
+	{
+		_itemName->SetVisible(false);
+		_description->SetVisible(false);
+	}
 }
 
 void ShopItemPanel::Render(HDC hdc)
@@ -134,13 +133,6 @@ void ShopItemPanel::Render(HDC hdc)
 		_item->Sprite->GetSize().x,
 		_item->Sprite->GetSize().y,
 		_item->Sprite->GetTransparent());
-
-	//// 아이템 갯수
-	//{
-	//	wstring itemCount = to_wstring(_item->ItemCount);
-	//	RECT _textRect = { _pos.x + 152,_pos.y + 70,_textRect.left + 30,_textRect.top + 18 };
-	//	DrawTextW(hdc, itemCount.c_str(), -1, &_textRect, DT_CENTER);
-	//}
 
 	// 아이템 이름
 	{
@@ -192,6 +184,10 @@ void ShopItemPanel::Render(HDC hdc)
 	for (auto& child : _children)
 		if (child->GetVisible() == true)
 			child->Render(hdc);
+}
+
+void ShopItemPanel::OnPopClickAcceptDelegate()
+{
 }
 
 //void ShopItemPanel::OnClickPurchaseButton()

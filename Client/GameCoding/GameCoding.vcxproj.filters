@@ -359,6 +359,9 @@
     <ClInclude Include="AlertBox.h">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClInclude>
+    <ClInclude Include="ItemCountsPopUp.h">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -611,6 +614,9 @@
     </ClCompile>
     <ClCompile Include="AlertBox.cpp">
       <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemCountsPopUp.cpp">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -6,10 +6,11 @@
 #include "DevScene.h"
 #include "Chat.h"
 
+int UI::ui_idGenerator = 1;
 
 UI::UI()
 {
-
+	_id = ui_idGenerator++;
 }
 
 UI::~UI()
@@ -76,4 +77,20 @@ bool UI::IsMouseInRect(RECT rect)
 	POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
 	
 	return ::PtInRect(&rect, mousePos);
+}
+
+bool UI::IsMouseOutRect(RECT rect)
+{
+	POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
+
+	if (mousePos.x < rect.left)
+		return true;
+	if (mousePos.x > rect.right)
+		return true;
+	if (mousePos.y < rect.top)
+		return true;
+	if (mousePos.y > rect.bottom)
+		return true;
+
+	return false;
 }

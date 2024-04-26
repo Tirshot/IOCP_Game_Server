@@ -36,9 +36,10 @@ public:
 protected:
 	vector<UI*> _children;
 	bool _isDragging = false;
-	POINT _initialPos;
+	POINT _initialMousePos;
 	POINT _mousePos;
 	int _offsetX;
 	int _offsetY;
+	Vec2 _initialPos;
 };
 

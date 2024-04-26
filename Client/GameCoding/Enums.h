@@ -106,4 +106,15 @@ struct ITEM
 	int Price = 0;
 	class Sprite* Sprite = nullptr;
 	RECT Rect = {};
+
+	bool operator== (ITEM* other)
+	{
+		if (this->Rect.left == other->Rect.left
+			&& this->Rect.right == other->Rect.right
+			&& this->Rect.top == other->Rect.top
+			&& this->Rect.bottom == other->Rect.bottom)
+			return true;
+
+		return false;
+	}
 };
