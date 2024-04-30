@@ -113,6 +113,8 @@ void MyPlayer::OpenInventory()
 		Inven->SetVisible(false);
 	else
 		Inven->SetVisible(true);
+
+	Inven->ResetPos();
 }
 
 void MyPlayer::TickInput()

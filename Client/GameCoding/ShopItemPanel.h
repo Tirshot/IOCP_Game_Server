@@ -19,6 +19,8 @@ public:
 	RECT GetRect() { return _rect; }
 	ITEM* GetItem() { return _item;  }
 
+	int GetItemIndex() { return _index; }
+
 	void OnPopClickAcceptDelegate();
 
 protected:
@@ -29,5 +31,6 @@ protected:
 	class TextBox* _description = nullptr;
 	class TextBox* _itemName = nullptr;
 	class ItemCountsPopUp* _countsPopUp = nullptr;
+	int _index = 0;
 };
 

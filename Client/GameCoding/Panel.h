@@ -33,6 +33,12 @@ public:
 	void UpdateChildPos(Panel* parent, int deltaX, int deltaY);
 	void DragAndMove(RECT* rect);
 
+	void SetRelativePos(Vec2Int pos);
+	void SetChildInvisible();
+
+public:
+	void ResetPos();
+
 protected:
 	vector<UI*> _children;
 	bool _isDragging = false;
@@ -40,6 +46,5 @@ protected:
 	POINT _mousePos;
 	int _offsetX;
 	int _offsetY;
-	Vec2 _initialPos;
 };
 

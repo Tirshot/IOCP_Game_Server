@@ -36,5 +36,6 @@ private:
 	class Sprite* _background = nullptr;
 	class Sprite* _icon = nullptr;
 	RECT _rect = {};
+	Vec2 _initialPos = {};
 };
 

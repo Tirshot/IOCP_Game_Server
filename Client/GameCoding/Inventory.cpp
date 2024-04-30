@@ -50,6 +50,7 @@ void Inventory::BeginPlay()
         _itemName->SetPos({ _pos.x + 125, _pos.y + 225 });        // 605, 350
         _itemName->SetSize({ 155, 25 });
         _itemName->SetPadding(5, 5);
+        _itemName->SetInitialPos(_itemName->GetPos());
         AddChild(_itemName);
     }
     { // 아이템 개수
@@ -58,6 +59,7 @@ void Inventory::BeginPlay()
         _itemCount->SetPos({ _pos.x + 230, _pos.y + 225 });      // 710, 350
         _itemCount->SetSize({ 40, 25 });
         _itemCount->SetPadding(5, 5);
+        _itemCount->SetInitialPos(_itemCount->GetPos());
         _itemCount->SetVisible(false);
         AddChild(_itemCount);
     }
@@ -66,6 +68,7 @@ void Inventory::BeginPlay()
         _itemDescription = new TextBox(wstr);
         _itemDescription->SetPos({ _pos.x + 125, _pos.y + 250 });     // 605, 375
         _itemDescription->SetSize({ 155, 75 });
+        _itemDescription->SetInitialPos(_itemDescription->GetPos());
         _itemDescription->SetPadding(5, 5);
         AddChild(_itemDescription);
     }
@@ -80,6 +83,7 @@ void Inventory::BeginPlay()
             AddChild(_alert);
             _alert->AddParentDelegate(this, &Inventory::OnPopClickAcceptDelegate);
             _alert->SetVisible(false);
+            _alert->SetInitialPos(_alert->GetPos());
         }
     }
 
@@ -94,18 +98,13 @@ void Inventory::BeginPlay()
     for (int i = 10; i < 25; i++)
         AddItem(i);
 
+    SetInitialPos(GetPos());
     _initialized = true;
 }
 
 void Inventory::Tick()
 {
     MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-
-    // ESC를 누르면 인벤토리 끄기
-    if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::ESC))
-    {
-        _visible = false;
-    }
 
     // 최초 1회만 실행
     if (_initialized)
@@ -115,6 +114,27 @@ void Inventory::Tick()
         EquipItem(*item1);
 
         _initialized = false;
+    }
+
+    // Rect 위치 초기화
+    {
+        _invenRect.left = (int)_pos.x + 5;
+        _invenRect.top = (int)_pos.y;
+        _invenRect.right = _invenRect.left + 285;
+        _invenRect.bottom = _invenRect.top + 335;
+    }
+    {
+        _dragRect.left = (int)_pos.x;
+        _dragRect.top = (int)_pos.y;
+        _dragRect.right = _dragRect.left + 290;
+        _dragRect.bottom = _dragRect.top + 35;
+    }
+
+    // ESC를 누르면 인벤토리 끄기
+    if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::ESC))
+    {
+        _visible = false;
+        ResetPos();
     }
 
     // 아이템 슬롯 초기화
@@ -603,6 +623,11 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
 
 bool Inventory::RemoveItem(ITEM* item)
 {
+    // 기본 무기는 제거 불가
+    int itemId = item->ItemId;
+    if (itemId == 1 || itemId == 2 || itemId == 3)
+        return false;
+
     for (auto& slot : _slots)
     {
         if (slot == item)
@@ -623,6 +648,11 @@ bool Inventory::RemoveItem(ITEM* item)
 
 bool Inventory::RemoveItem(ITEM* item, int ItemCount)
 {
+    // 기본 무기는 제거 불가
+    int itemId = item->ItemId;
+    if (itemId == 1 || itemId == 2 || itemId == 3)
+        return false;
+
     for (auto& slot : _slots)
     {
         if (slot == item)

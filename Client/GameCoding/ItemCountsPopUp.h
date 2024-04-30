@@ -28,7 +28,9 @@ private:
 	void OnClickAcceptButton();
 	void OnClickDenyButton();
 	void OnClickCountPlusButton();
+	void OnClickCountDoublePlusButton();
 	void OnClickCountMinusButton();
+	void OnClickCountDoubleMinusButton();
 
 
 public:
@@ -36,6 +38,7 @@ public:
 	void SetText(wstring wstr);
 	RECT* GetRect() { return &_rect; }
 	int GetCounts() { return _counts; }
+	void SetPrice(int price) { _price = price; }
 	int GetPrice() { return _price; }
 
 private:

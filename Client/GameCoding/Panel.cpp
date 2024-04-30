@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "Panel.h"
 #include "InputManager.h"
+#include "SceneManager.h"
+#include "Button.h"
 #include "AlertBox.h"
+#include "DevScene.h"
 #include "ItemCountsPopUp.h"
 
 Panel::Panel()
@@ -94,19 +97,45 @@ void Panel::UpdateChildPos(Panel* parent, int deltaX, int deltaY)
 void Panel::DragAndMove(RECT* rect)
 {
 	_mousePos = GET_SINGLE(InputManager)->GetMousePos();
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
 	int width = rect->right - rect->left;
 	int height = rect->bottom - rect->top;
 
-	// 두 개의 드래그 가능한 창이 존재할 때 가장 위(자식)의 창만 드래그 가능
-	for (auto& child : _children)
-	{
-		Panel* panel = dynamic_cast<Panel*>(child);
-		if (panel)
+	// 여러 개의 패널이 띄워져 있을 때 가장 나중에 생성된 패널만 드래그 가능
+	if (_isDragging)
+	{	
+		// 두 개의 드래그 가능한 창이 존재할 때 자식의 창만 드래그 가능
+		for (auto& child : _children)
 		{
-			if (panel->_isDragging)
+			Panel* panel = dynamic_cast<Panel*>(child);
+			if (panel)
 			{
-				this->_isDragging = false;
-				return;
+				if (panel->_isDragging)
+				{
+					this->_isDragging = false;
+					return;
+				}
+			}
+		}
+		if (scene)
+		{
+			auto visibleUIs = scene->GetVisibleUIs();
+
+			if (visibleUIs.empty() == false)
+			{
+				for (auto& ui : visibleUIs)
+				{
+					Panel* panel = dynamic_cast<Panel*>(ui);
+					if (panel)
+					{
+						if (panel->_isDragging && panel->GetUIID() > this->GetUIID())
+						{
+							this->_isDragging = false;
+							return;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -157,5 +186,48 @@ void Panel::DragAndMove(RECT* rect)
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
 	{
 		_isDragging = false;
+	}
+}
+
+void Panel::SetRelativePos(Vec2Int pos)
+{
+	// 부모의 패널 중앙 기준
+	if (_parent == nullptr)
+		return;
+
+	Vec2 Pos = _parent->GetPos();
+	Vec2Int Size = _parent->GetSize();
+
+	SetPos({ (int)Pos.x + ((float)Size.x / 2) + (int)pos.x, (int)Pos.y + ((float)Size.y / 2) + (int)pos.y});
+}
+
+void Panel::SetChildInvisible()
+{
+	for (auto& child : _children)
+	{
+		Button* button = new Button();
+		if (button)
+			continue;
+
+		child->SetVisible(false);
+	}
+	ResetPos();
+}
+
+void Panel::ResetPos()
+{
+	// 기본 위치로 리셋
+	_pos = _initialPos;
+
+	for (auto& child : _children)
+	{
+		auto pos = child->GetInitialPos();
+		child->SetPos(pos);
+
+		auto panel = dynamic_cast<Panel*>(child);
+
+		// panel이면서 자식이 있는 경우 자식에 대해 ResetPos 실행
+		if (panel && panel->GetChildren().size() > 0)
+			panel->ResetPos();
 	}
 }

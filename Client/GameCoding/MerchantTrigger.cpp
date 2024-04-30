@@ -39,11 +39,13 @@ void MerchantTrigger::Tick()
 		{
 			PressSpaceInteract(merchantUI);
 		}
+
 		// ¿òÁ÷ÀÌ¸é UI ¼û±è
 		if (IsTouched() == false)
 		{
 			shopUI->SetVisible(false);
-			//questUI
+			shopUI->SetChildInvisible();
+			shopUI->ResetInitializingTime();
 		}
 	}
 }

@@ -9,8 +9,10 @@ public:
 	virtual void Tick();
 	virtual void Render(HDC hdc);
 
-	void SetPos(Vec2 pos) { _pos = pos; }
+	void SetPos(Vec2 pos) { _pos = pos;/*	_initialPos = _pos;*/}
 	Vec2 GetPos(){ return _pos; }
+	void SetInitialPos(Vec2 pos) { _initialPos = pos; }
+	Vec2 GetInitialPos() { return _initialPos; }
 
 	void SetSize(Vec2Int size) { _size = size; }
 	Vec2Int GetSize() { return _size; }
@@ -31,6 +33,7 @@ public:
 
 protected:
 	Vec2	_pos = { 0, 0 };
+	Vec2 _initialPos;
 	Vec2Int _size = { 150, 150 };
 	bool _visible = true;
 	UI* _parent = nullptr;

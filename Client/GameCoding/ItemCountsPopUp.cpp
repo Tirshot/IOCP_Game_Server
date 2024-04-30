@@ -28,8 +28,10 @@ void ItemCountsPopUp::BeginPlay()
 	{
 		TextBox* text = new TextBox();
 		text->SetText(L"테스트용 텍스트입니다. \n두번째 줄입니다. \n 세번째 줄입니다.");
-		text->SetPos(Vec2{ _pos.x + 60, _pos.y + 10 });
-		text->SetSize(Vec2Int{ _size.x - 80, (_size.y / 2) });
+		text->SetPos(Vec2{ _pos.x + 60, _pos.y + 20 });
+		text->SetSize(Vec2Int{ _size.x - 80, (_size.y / 2) - 25 });
+		text->SetPadding(3, 3);
+		text->SetInitialPos(text->GetPos());
 		AddChild(text);
 	}
 
@@ -42,6 +44,7 @@ void ItemCountsPopUp::BeginPlay()
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Hovered);
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Clicked);
 		accept->AddOnClickDelegate(this, &ItemCountsPopUp::OnClickAcceptButton);
+		accept->SetInitialPos(accept->GetPos());
 		AddChild(accept);
 	}
 
@@ -54,31 +57,60 @@ void ItemCountsPopUp::BeginPlay()
 		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Hovered);
 		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Clicked);
 		deny->AddOnClickDelegate(this, &ItemCountsPopUp::OnClickDenyButton);
+		deny->SetInitialPos(deny->GetPos());
 		AddChild(deny);
 	}
 
 	// 아이템 수량 감소
 	{
 		Button* minus = new Button();
-		minus->SetPos({ _pos.x + _size.x / 2 - 34, _pos.y + _size.y - 60 });
-		minus->SetSize({ 40,24 });
+		minus->SetPos({ _pos.x + _size.x / 2 - 34, _pos.y + _size.y - 55 });
+		minus->SetSize({ 30,18 });
 		minus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LButton"), ButtonState::BS_Default);
 		minus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LButton"), ButtonState::BS_Hovered);
 		minus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LButton"), ButtonState::BS_Clicked);
 		minus->AddOnClickDelegate(this, &ItemCountsPopUp::OnClickCountMinusButton);
+		minus->SetInitialPos(minus->GetPos());
 		AddChild(minus);
+	}
+
+	// 아이템 수량 10개 감소
+	{
+		Button* doubleMinus = new Button();
+		doubleMinus->SetPos({ _pos.x + _size.x / 2 - 78, _pos.y + _size.y - 55 });
+		doubleMinus->SetSize({ 30,18 });
+		doubleMinus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LLButton"), ButtonState::BS_Default);
+		doubleMinus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LLButton"), ButtonState::BS_Hovered);
+		doubleMinus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LLButton"), ButtonState::BS_Clicked);
+		doubleMinus->AddOnClickDelegate(this, &ItemCountsPopUp::OnClickCountDoubleMinusButton);
+		doubleMinus->SetInitialPos(doubleMinus->GetPos());
+		AddChild(doubleMinus);
 	}
 
 	// 아이템 수량 증가
 	{
 		Button* plus = new Button();
-		plus->SetPos({ _pos.x + _size.x / 2 + 42, _pos.y + _size.y - 60 });
-		plus->SetSize({ 40,24 });
+		plus->SetPos({ _pos.x + _size.x / 2 + 42, _pos.y + _size.y - 55 });
+		plus->SetSize({ 30,18 });
 		plus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RButton"), ButtonState::BS_Default);
 		plus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RButton"), ButtonState::BS_Hovered);
 		plus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RButton"), ButtonState::BS_Clicked);
 		plus->AddOnClickDelegate(this, &ItemCountsPopUp::OnClickCountPlusButton);
+		plus->SetInitialPos(plus->GetPos());
 		AddChild(plus);
+	}
+
+	// 아이템 수량 10개 증가
+	{
+		Button* doublePlus = new Button();
+		doublePlus->SetPos({ _pos.x + _size.x / 2 + 86, _pos.y + _size.y - 55 });
+		doublePlus->SetSize({ 30,18 });
+		doublePlus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RRButton"), ButtonState::BS_Default);
+		doublePlus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RRButton"), ButtonState::BS_Hovered);
+		doublePlus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RRButton"), ButtonState::BS_Clicked);
+		doublePlus->AddOnClickDelegate(this, &ItemCountsPopUp::OnClickCountDoublePlusButton);
+		doublePlus->SetInitialPos(doublePlus->GetPos());
+		AddChild(doublePlus);
 	}
 
 	for (auto& child : _children)
@@ -90,6 +122,8 @@ void ItemCountsPopUp::Tick()
 	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
 
 	Panel::DragAndMove(&_rect);
+
+	_totalPrice = _price * _counts;
 
 	for (auto& child : _children)
 		if (_visible == true)
@@ -133,9 +167,33 @@ void ItemCountsPopUp::Render(HDC hdc)
 
 	// 아이템 갯수
 	{
-		wstring itemCount = to_wstring(_counts);
-		RECT _textRect = { _pos.x + (_size.x / 2) - 10, _pos.y + (_size.y / 2) + 20,_textRect.left + 30,_textRect.top + 18 };
+		wstring itemCount = to_wstring(_counts) + L"개";
+		RECT _textRect = { _pos.x + (_size.x / 2) - 10, _pos.y + (_size.y / 2) + 25,_textRect.left + 30,_textRect.top + 18 };
 		DrawTextW(hdc, itemCount.c_str(), -1, &_textRect, DT_CENTER);
+	}
+
+	// 골드 아이콘
+	{
+		Sprite* goldImage = GET_SINGLE(ResourceManager)->GetSprite(L"Gold");
+
+		if (goldImage)
+		::TransparentBlt(hdc,
+			_pos.x + 115,
+			_pos.y + 85,
+			goldImage->GetSize().x,
+			goldImage->GetSize().y,
+			goldImage->GetDC(),
+			0,
+			0,
+			goldImage->GetSize().x,
+			goldImage->GetSize().y,
+			goldImage->GetTransparent());
+	}
+	// 최종 비용
+	{
+		wstring totalPrice = to_wstring(_totalPrice);
+		RECT _textRect = { _pos.x + (_size.x / 2) - 10, _pos.y + (_size.y / 2),_textRect.left + 30,_textRect.top + 18 };
+		DrawTextW(hdc, totalPrice.c_str(), -1, &_textRect, DT_CENTER);
 	}
 }
 
@@ -166,7 +224,8 @@ void ItemCountsPopUp::OnClickAcceptButton()
 		_parentCallback();
 	}
 
-	_counts = 0;
+	ResetPos();
+	_counts = 1;
 	_price = 0;
 }
 
@@ -174,7 +233,8 @@ void ItemCountsPopUp::OnClickDenyButton()
 {
 	SetVisible(false);
 
-	_counts = 0;
+	ResetPos();
+	_counts = 1;
 	_price = 0;
 }
 
@@ -183,9 +243,25 @@ void ItemCountsPopUp::OnClickCountPlusButton()
 	_counts++;
 }
 
+void ItemCountsPopUp::OnClickCountDoublePlusButton()
+{
+	_counts += 10;
+
+	if (_counts > 99)
+		_counts = 99;
+}
+
 void ItemCountsPopUp::OnClickCountMinusButton()
 {
 	_counts--;
+
+	if (_counts <= 1)
+		_counts = 1;
+}
+
+void ItemCountsPopUp::OnClickCountDoubleMinusButton()
+{
+	_counts -= 10;
 
 	if (_counts <= 1)
 		_counts = 1;

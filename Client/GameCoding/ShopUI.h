@@ -17,6 +17,8 @@ public:
 	void AddSellItem(ITEM* item);
 	void AddSellItem(int itemID);
 
+	void ResetInitializingTime() { _initializeTime = 0.f; }
+
 private:
 	void OnPopClickAcceptDelegate();
 	void OnClickBackButton();
@@ -27,6 +29,9 @@ private:
 	int GetItemIndex(int itemID);
 	void SetAllCost(int cost) { _allCost = cost; }
 	void SetChildVisible(bool visible);
+	
+	void OnClickCountMinusButton();
+	void OnClickCountPlusButton();
 
 
 protected:
@@ -34,9 +39,12 @@ protected:
 	RECT _dragRect = {};
 	Texture* _background = nullptr;
 	class ItemCountsPopUp* _countsPopUp = nullptr;
-	vector<ITEM*> _items = {};	// 
+	class	AlertBox* _alert = {};
+	vector<ITEM*> _items = {};	// 판매할 아이템이 저장되어 있음
 	ITEM* _sellItem = {};
-	int _counts = 1;
+	int _counts = 1;	// 아이템 구매 갯수
 	int _price = 0;
 	int _allCost = 0;
+	float _initializeTime = 0.f;	// 판매창 품목 구입 대기시간
+	int _page = 1;	// 열린 페이지
 };

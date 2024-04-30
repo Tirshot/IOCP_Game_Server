@@ -26,8 +26,9 @@ void AlertBox::BeginPlay()
 	{
 		TextBox* text = new TextBox();
 		text->SetText(L"테스트용 텍스트입니다. \n두번째 줄입니다. \n 세번째 줄입니다.");
-		text->SetPos(Vec2{ _pos.x  + 60, _pos.y  + 10 });
-		text->SetSize(Vec2Int{ _size.x - 80, (_size.y / 2) });
+		text->SetPos(Vec2{ _pos.x + 60, _pos.y  + 10 });
+		text->SetSize(Vec2Int{ (_size.x / 4) * 3, (_size.y / 2) });
+		text->SetInitialPos(text->GetPos());
 		AddChild(text);
 	}
 
@@ -40,6 +41,7 @@ void AlertBox::BeginPlay()
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Hovered);
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Clicked);
 		accept->AddOnClickDelegate(this, &AlertBox::OnClickAcceptButton);
+		accept->SetInitialPos(accept->GetPos());
 		AddChild(accept);
 	}
 
@@ -52,8 +54,11 @@ void AlertBox::BeginPlay()
 		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Hovered);
 		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Clicked);
 		deny->AddOnClickDelegate(this, &AlertBox::OnClickDenyButton);
+		deny->SetInitialPos(deny->GetPos());
 		AddChild(deny);
 	}
+
+	_initialPos = _pos;
 
 	for (auto& child : _children)
 		child->BeginPlay();
@@ -61,6 +66,9 @@ void AlertBox::BeginPlay()
 
 void AlertBox::Tick()
 {
+	// 기즈모 위치를 중앙에 위치시키기 위해서는 Size 설정을 Pos 설정보다 먼저!!
+	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
+
 	Panel::DragAndMove(&_rect);
 
 	for (auto& child : _children)
@@ -71,14 +79,16 @@ void AlertBox::Tick()
 void AlertBox::Render(HDC hdc)
 {
 	if (_visible == false)
+	{
 		return;
+	}
 
 	// 배경
 	::TransparentBlt(hdc,
 		(int32)_pos.x,
 		(int32)_pos.y,
-		GetSize().x + 10,
-		GetSize().y,
+		_size.x + 10,
+		_size.y,
 		_background->GetDC(),
 		_background->GetPos().x,
 		_background->GetPos().y,
@@ -111,7 +121,7 @@ void AlertBox::SetIcon(wstring wstr)
 	{
 		_icon = GET_SINGLE(ResourceManager)->GetSprite(L"DangerIcon");
 	}
-	else if (wstr == L"Alert")
+	else if (wstr == L"Alert" || wstr == L"Warning")
 	{
 		_icon = GET_SINGLE(ResourceManager)->GetSprite(L"AlertIcon");
 	}
@@ -125,6 +135,8 @@ void AlertBox::OnClickAcceptButton()
 {
 	SetVisible(false);
 
+	ResetPos();
+
 	// 부모 UI에서 작동할 콜백 함수가 있으면 기능 수행
 	if (_parentCallback != nullptr)
 	{
@@ -135,6 +147,8 @@ void AlertBox::OnClickAcceptButton()
 void AlertBox::OnClickDenyButton()
 {
 	SetVisible(false);
+
+	ResetPos();
 }
 
 void AlertBox::SetText(wstring wstr)
