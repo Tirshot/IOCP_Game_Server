@@ -21,7 +21,9 @@ MerchantUI::MerchantUI()
 	_rect.right = 800;
 	_rect.top = 0;
 	_rect.bottom = 600;
-
+	{ // 2D 스프라이트
+		_merchantSprite = GET_SINGLE(ResourceManager)->GetSprite(L"MerchantSprite");
+	}
 	{ // 대화 내용
 		wstring wstr = L"어서오세요!\n최고 품질의 아이템만 제공하는 언덕 집 상인입니다.\n저렴한 가격에 모시고 있습니다.";
 		TextBox* textBox = new TextBox(wstr);
@@ -92,6 +94,18 @@ void MerchantUI::Tick()
 
 void MerchantUI::Render(HDC hdc)
 {
+	::TransparentBlt(hdc,
+		_pos.x - 200,
+		_pos.y + 5,
+		_merchantSprite->GetSize().x * 3,
+		_merchantSprite->GetSize().y * 3,
+		_merchantSprite->GetDC(),
+		0,
+		0,
+		_merchantSprite->GetSize().x,
+		_merchantSprite->GetSize().y,
+		_merchantSprite->GetTransparent());
+
 	for (auto& child : _children)
 		child->Render(hdc);
 }

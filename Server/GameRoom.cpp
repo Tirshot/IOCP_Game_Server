@@ -29,7 +29,7 @@ void GameRoom::Init()
 	filesystem::path tilemapDirectory = currentPath / ".." / "Client" / "Resources" / "Tilemap" / "Tilemap01.txt";
 	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
 	_tilemap.LoadFile(relativePath);
-
+	GET_SINGLE(Quest)->Init();
 	// Sign
 	{
 		SignRef npc1 = GameObject::CreateSign();
@@ -59,27 +59,20 @@ void GameRoom::Init()
 		npc3->info.set_name("Merchant_Sign");
 		AddObject(npc3);
 	}
-	// Quest 생성
+	// 뱀 5마리 처치
 	{
-		QuestRef quest0 = Quest::CreateQuest();
-		quest0->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-		quest0->info.set_targetnums(5);
-		quest0->info.set_rewardgold(150);
-		_quests.insert({ quest0->info.questid(), quest0->info});
+		Quest quest0 = GET_SINGLE(Quest)->CreateQuest(0);
+		AddQuest(quest0);
 	}
+	// 특정 위치에서 동작 수행
 	{
-		QuestRef quest1 = Quest::CreateQuest();
-		quest1->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
-		quest1->info.set_targetnums(1);
-		quest1->info.set_rewardgold(100);
-		_quests.insert({ quest1->info.questid(), quest1->info });
+		Quest quest1 = GET_SINGLE(Quest)->CreateQuest(1);
+		AddQuest(quest1);
 	}
+	// 더미 Quest 생성
 	{
-		QuestRef quest2 = Quest::CreateQuest();
-		quest2->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-		quest2->info.set_targetnums(0);
-		quest2->info.set_rewardgold(0);
-		_quests.insert({ quest2->info.questid(), quest2->info });
+		Quest quest2 = GET_SINGLE(Quest)->CreateQuest(2);
+		AddQuest(quest2);
 	}
 }
 
@@ -657,4 +650,9 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
 		Broadcast(sendBuffer);
 	}
+}
+
+void GameRoom::AddQuest(Quest quest)
+{
+	_quests.insert({ quest.info.questid(), quest.info });
 }

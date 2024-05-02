@@ -196,6 +196,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"DangerIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 0, 0, 34, 34);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"AlertIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 34, 0, 34, 34);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"InformationIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 68, 0, 34, 34);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"MerchantSprite", GET_SINGLE(ResourceManager)->GetTexture(L"Merchant"), 0, 0, 60, 100);
 
 	LoadMap();
 	LoadPlayer();

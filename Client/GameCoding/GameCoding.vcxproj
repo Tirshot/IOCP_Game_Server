@@ -193,6 +193,7 @@
     <ClInclude Include="StatusPanel.h" />
     <ClInclude Include="TeleportEffect.h" />
     <ClInclude Include="TextBox.h" />
+    <ClInclude Include="Trigger.h" />
     <ClInclude Include="TutorialTrigger.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="NPC.h" />
@@ -282,6 +283,7 @@
     <ClCompile Include="StatusPanel.cpp" />
     <ClCompile Include="TeleportEffect.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TutorialTrigger.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="NPC.cpp" />

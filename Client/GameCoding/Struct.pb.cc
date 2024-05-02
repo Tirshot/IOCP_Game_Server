@@ -201,21 +201,20 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   " \001(\005\022\n\n\002mp\030\021 \001(\005\022\r\n\005maxMp\030\022 \001(\005\022#\n\007npcTy"
   "pe\030\023 \001(\0162\022.Protocol.NPC_TYPE\022\016\n\006potion\030\024"
   " \001(\005\"3\n\004Text\022\020\n\010objectId\030\001 \001(\004\022\014\n\004time\030\002"
-  " \001(\004\022\013\n\003str\030\003 \001(\t\"\375\001\n\tQuestInfo\022\017\n\007quest"
+  " \001(\004\022\013\n\003str\030\003 \001(\t\"\350\001\n\tQuestInfo\022\017\n\007quest"
   "id\030\001 \001(\005\022\020\n\010objectid\030\002 \001(\004\022)\n\ntargettype"
   "\030\003 \001(\0162\025.Protocol.OBJECT_TYPE\022\022\n\ntargetn"
   "ums\030\004 \001(\005\022\017\n\007process\030\005 \001(\005\022)\n\nqueststate"
   "\030\006 \001(\0162\025.Protocol.QUEST_STATE\022\022\n\nrewardG"
-  "old\030\007 \001(\005\022\'\n\nrewardItem\030\010 \001(\0162\023.Protocol"
-  ".ITEM_TYPE\022\025\n\rrewardItemNum\030\t \001(\005b\006proto"
-  "3"
+  "old\030\007 \001(\005\022\022\n\nrewardItem\030\010 \001(\005\022\025\n\rrewardI"
+  "temNum\030\t \001(\005b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 881, descriptor_table_protodef_Struct_2eproto,
+    false, false, 860, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 4,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -1600,12 +1599,11 @@ const char* QuestInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.ITEM_TYPE rewardItem = 8;
+      // int32 rewardItem = 8;
       case 8:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
-          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.rewarditem_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
-          _internal_set_rewarditem(static_cast<::Protocol::ITEM_TYPE>(val));
         } else
           goto handle_unusual;
         continue;
@@ -1690,11 +1688,10 @@ uint8_t* QuestInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(7, this->_internal_rewardgold(), target);
   }
 
-  // .Protocol.ITEM_TYPE rewardItem = 8;
+  // int32 rewardItem = 8;
   if (this->_internal_rewarditem() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      8, this->_internal_rewarditem(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(8, this->_internal_rewarditem(), target);
   }
 
   // int32 rewardItemNum = 9;
@@ -1756,10 +1753,9 @@ size_t QuestInfo::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_rewardgold());
   }
 
-  // .Protocol.ITEM_TYPE rewardItem = 8;
+  // int32 rewardItem = 8;
   if (this->_internal_rewarditem() != 0) {
-    total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_rewarditem());
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_rewarditem());
   }
 
   // int32 rewardItemNum = 9;

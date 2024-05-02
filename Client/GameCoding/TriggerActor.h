@@ -21,6 +21,8 @@ public:
 
 	void FadeOut();
 
+	void SetExpTime(float time) { _exptime = time; }
+
 protected:
 	bool _visiblity = false;
 	float _exptime = 0.f; // Exposure time

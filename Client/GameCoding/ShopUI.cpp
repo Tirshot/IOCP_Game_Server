@@ -419,6 +419,7 @@ void ShopUI::OnClickBackButton()
 
 	ResetPos();
 	_initializeTime = 0.f;
+	_page = 1;
 
 	MerchantUI* merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
 	merchantUI->SetVisible(true);
@@ -436,8 +437,10 @@ void ShopUI::OnClickExitButton()
 
 	SetVisible(false);
 	SetChildVisible(false);
+
 	ResetPos();
 	_initializeTime = 0.f;
+	_page = 1;
 }
 
 ITEM* ShopUI::GetSellItem(int itemID)

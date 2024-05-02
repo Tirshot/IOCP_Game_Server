@@ -14,6 +14,7 @@ using namespace std;
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
 #include "Chat.h"
+#include "Quest.h"
 
 int main()
 {

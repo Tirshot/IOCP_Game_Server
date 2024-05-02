@@ -45,28 +45,31 @@ QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, int idx)
 	_rewardItem = info.rewarditem();
 	_rewardItemNum = info.rewarditemnum();
 
-	switch (_questId)
-	{
-	case 0:
-		_questName = L"뱀이 너무 많아!";
-		_description = L"호기롭게 장사를 시작했지만, 손님이 적은 이유는 역시... 뱀 때문이겠죠?\n뱀 5마리만 처치해주세요.\n사례는 넉넉히 드리겠습니다.";
-		break;
+	// CSV파일을 이용해서 퀘스트 목록을 불러옴 -
 
-	case 1:
-		_questName = L"이상한 문양";
-		_description = L"제 집 위에 보이는 문양을 보셨나요? 제가 이사할 때부터 있었는데..\n용사만 할 수 있는 액션을 하면 빛이 난다는 전설이 있었어요.";
-		break;
 
-	case 2:
-		_questName = L"테스트용2";
-		_description = L"테스트용 퀘스트2입니다.";
-		break;
+	//switch (_questId)
+	//{
+	//case 0:
+	//	_questName = L"뱀이 너무 많아!";
+	//	_description = L"호기롭게 장사를 시작했지만, 손님이 적은 이유는 역시... 뱀 때문이겠죠?\n뱀 5마리만 처치해주세요.\n사례는 넉넉히 드리겠습니다.";
+	//	break;
 
-	default:
-		_questName = L"";
-		_description = L"";
-		break;
-	}
+	//case 1:
+	//	_questName = L"이상한 문양";
+	//	_description = L"제 집 위에 보이는 문양을 보셨나요? 제가 이사할 때부터 있었는데..\n용사만 할 수 있는 액션을 하면 빛이 난다는 전설이 있었어요.";
+	//	break;
+
+	//case 2:
+	//	_questName = L"테스트용2";
+	//	_description = L"테스트용 퀘스트2입니다.";
+	//	break;
+
+	//default:
+	//	_questName = L"";
+	//	_description = L"";
+	//	break;
+	//}
 
 	{ // 퀘스트 수락 버튼
 		Button* accept = new Button();

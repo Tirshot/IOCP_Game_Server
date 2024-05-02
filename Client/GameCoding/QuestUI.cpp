@@ -19,7 +19,7 @@ QuestUI::QuestUI()
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Off"), BS_Default);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_On"), BS_Pressed);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Hovered"), BS_Hovered);
-		back->SetPos(Vec2{ 585, 440 });
+		back->SetPos(Vec2{ _pos.x + 585, _pos.y + 435 });
 		back->SetSize({ 140, 40 });
 		back->AddOnClickDelegate(this, &QuestUI::OnClickBackButton);
 		AddChild(back);
@@ -30,7 +30,7 @@ QuestUI::QuestUI()
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Off"), BS_Default);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
-		exit->SetPos(Vec2{ 585, 490 });
+		exit->SetPos(Vec2{ _pos.x + 585, _pos.y + 485 });
 		exit->SetSize({ 140, 40 });
 		exit->AddOnClickDelegate(this, &QuestUI::OnClickExitButton);
 		AddChild(exit);

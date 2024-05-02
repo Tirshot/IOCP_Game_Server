@@ -984,13 +984,13 @@ class QuestInfo final :
   void _internal_set_rewardgold(int32_t value);
   public:
 
-  // .Protocol.ITEM_TYPE rewardItem = 8;
+  // int32 rewardItem = 8;
   void clear_rewarditem();
-  ::Protocol::ITEM_TYPE rewarditem() const;
-  void set_rewarditem(::Protocol::ITEM_TYPE value);
+  int32_t rewarditem() const;
+  void set_rewarditem(int32_t value);
   private:
-  ::Protocol::ITEM_TYPE _internal_rewarditem() const;
-  void _internal_set_rewarditem(::Protocol::ITEM_TYPE value);
+  int32_t _internal_rewarditem() const;
+  void _internal_set_rewarditem(int32_t value);
   public:
 
   // int32 rewardItemNum = 9;
@@ -1017,7 +1017,7 @@ class QuestInfo final :
     int32_t process_;
     int queststate_;
     int32_t rewardgold_;
-    int rewarditem_;
+    int32_t rewarditem_;
     int32_t rewarditemnum_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -1794,22 +1794,22 @@ inline void QuestInfo::set_rewardgold(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardGold)
 }
 
-// .Protocol.ITEM_TYPE rewardItem = 8;
+// int32 rewardItem = 8;
 inline void QuestInfo::clear_rewarditem() {
   _impl_.rewarditem_ = 0;
 }
-inline ::Protocol::ITEM_TYPE QuestInfo::_internal_rewarditem() const {
-  return static_cast< ::Protocol::ITEM_TYPE >(_impl_.rewarditem_);
+inline int32_t QuestInfo::_internal_rewarditem() const {
+  return _impl_.rewarditem_;
 }
-inline ::Protocol::ITEM_TYPE QuestInfo::rewarditem() const {
+inline int32_t QuestInfo::rewarditem() const {
   // @@protoc_insertion_point(field_get:Protocol.QuestInfo.rewardItem)
   return _internal_rewarditem();
 }
-inline void QuestInfo::_internal_set_rewarditem(::Protocol::ITEM_TYPE value) {
+inline void QuestInfo::_internal_set_rewarditem(int32_t value) {
   
   _impl_.rewarditem_ = value;
 }
-inline void QuestInfo::set_rewarditem(::Protocol::ITEM_TYPE value) {
+inline void QuestInfo::set_rewarditem(int32_t value) {
   _internal_set_rewarditem(value);
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardItem)
 }

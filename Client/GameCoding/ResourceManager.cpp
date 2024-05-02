@@ -159,6 +159,10 @@ vector<vector<wstring>> ResourceManager::GetDataFromCSV(const string& filename)
 		return data;
 	}
 
+	// 첫 번째 행을 건너뛰기 위해 한 번 더 getline 호출
+	wstring header;
+	getline(file, header);
+
 	wstring line;
 	while (getline(file, line))
 	{
