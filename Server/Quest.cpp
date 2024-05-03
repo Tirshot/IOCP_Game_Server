@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Quest.h"
+#include "GameRoom.h"
 
 #include <fstream>
 #include <sstream>
@@ -76,40 +77,42 @@ vector<wstring> Quest::GetQuestInfo(int questID)
 	return {};
 }
 
-Quest& Quest::CreateQuest(int questID)
+void Quest::CreateQuest()
 {
 	Quest* quest = new Quest();
 
-	vector<wstring> QuestInfo = GetQuestInfo(questID);
-
-	int TargetID = GetTargetID(QuestInfo);
-	wstring TargetType = GetTargetType(QuestInfo);
-	int TargetCounts = GetTargetCounts(QuestInfo);
-	int Gold = GetRewardGold(QuestInfo);
-	int ItemID = GetRewardItemID(QuestInfo);
-	int ItemCounts = GetRewardItemCounts(QuestInfo);
-		
-	quest->info.set_questid(questID);
-	quest->info.set_objectid(TargetID);
-	quest->info.set_queststate(Protocol::QUEST_STATE_IDLE);
-	
-	if (TargetType == L"None")
+	for (auto& questTable : _questTable)
 	{
-		quest->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
-	}
-	else if (TargetType == L"Monster")
-	{
-		quest->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-	}
-	else if (TargetType == L"Item")
-	{
-		quest->info.set_targettype(Protocol::OBJECT_TYPE_ITEM);
-	}
+		int Questid = stoi(questTable[0]);
+		int TargetID = stoi(questTable[1]);
+		wstring TargetType = questTable[2];
+		int TargetCounts = stoi(questTable[3]);
+		int Gold = stoi(questTable[4]);
+		int ItemID = stoi(questTable[5]);
+		int ItemCounts = stoi(questTable[6]);
 
-	quest->info.set_targetnums(TargetCounts);
-	quest->info.set_rewardgold(Gold);
-	quest->info.set_rewarditem(ItemID);
-	quest->info.set_rewarditemnum(ItemCounts);
+		quest->info.set_questid(Questid);
+		quest->info.set_targetid(TargetID);
+		quest->info.set_queststate(Protocol::QUEST_STATE_IDLE);
 
-	return *quest;
+		if (TargetType == L"None")
+		{
+			quest->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
+		}
+		else if (TargetType == L"Monster")
+		{
+			quest->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
+		}
+		else if (TargetType == L"Item")
+		{
+			quest->info.set_targettype(Protocol::OBJECT_TYPE_ITEM);
+		}
+
+		quest->info.set_targetnums(TargetCounts);
+		quest->info.set_rewardgold(Gold);
+		quest->info.set_rewarditem(ItemID);
+		quest->info.set_rewarditemnum(ItemCounts);
+
+		GRoom->AddQuest(*quest);
+	}
 }

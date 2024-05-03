@@ -26,5 +26,6 @@ public:
 protected:
 	bool _visiblity = false;
 	float _exptime = 0.f; // Exposure time
+	bool _isTouched = false;
 };
 

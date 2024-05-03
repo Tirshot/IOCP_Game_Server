@@ -33,6 +33,7 @@
 #include "ChatInput.h"
 #include "ChatManager.h"
 #include "NetworkManager.h"
+#include "QuestManager.h"
 #include "ClientPacketHandler.h"
 #include "Arrow.h"
 #include "ArrowItem.h"
@@ -45,6 +46,7 @@
 #include "Inventory.h"
 #include "QuickSlot.h"
 #include "AlertBox.h"
+#include "MerchantDialogueUI.h"
 #include <filesystem>
 
 DevScene::DevScene()
@@ -165,6 +167,12 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 430, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 230, 430, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 430, 430, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Accept_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 630, 330, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Accept_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 830, 330, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Accept_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 1030, 330, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Decline_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 630, 430, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Decline_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 830, 430, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Decline_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 1030, 430, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"GameOver", GET_SINGLE(ResourceManager)->GetTexture(L"GameOver"), 0, 0, 400, 100);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"BlackHeart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Heart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 25, 0, 50, 21);
@@ -704,7 +712,6 @@ void DevScene::LoadUI()
 			qs->SetVisible(true);
 			AddUI(qs);
 		}
-
 	}
 	{  // 채팅 창
 		Chat* chat = new Chat(Vec2{ 10,320 } /*Texts*/);
@@ -751,6 +758,16 @@ void DevScene::LoadUI()
 			AddUI(tu);
 		}
 	}
+	{
+		// 상인 대화 창
+		MerchantDialogueUI* talk = new MerchantDialogueUI();
+		if (talk)
+		{
+			talk->SetDialogue(0);
+			talk->SetVisible(false);
+			AddUI(talk);
+		}
+	}
 	{	// 상인 - 상점 UI
 		ShopUI* shopUI = new ShopUI();
 		if (shopUI)
@@ -766,6 +783,7 @@ void DevScene::LoadUI()
 		if (questUI)
 		{
 			questUI->SetPos({ 135,80 });
+			questUI->SetInitialPos({ 135,80 });
 			questUI->SetSize({ 535,450 });
 			questUI->SetVisible(false);
 			AddUI(questUI);

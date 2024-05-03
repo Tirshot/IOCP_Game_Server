@@ -88,6 +88,9 @@ bool ItemManager::AddItemToInventory(int itemId)
 
 bool ItemManager::AddItemToInventory(int itemId, int counts)
 {
+    if (itemId == 0)
+        return false;
+
     return GetInventory()->AddItem(itemId, counts);
 }
 

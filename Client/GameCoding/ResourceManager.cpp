@@ -20,6 +20,7 @@ void ResourceManager::Init(HWND hwnd, fs::path resourcePath)
 	_hwnd = hwnd;
 	_resourcePath = resourcePath;
 	_itemTable = GetDataFromCSV("E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Table\\ItemTable.csv");
+	_questTable = GetDataFromCSV("E:\\Cpp\\IOCP\\Server\\Client\\Resources\\Table\\QuestScript.csv");
 }
 
 void ResourceManager::Clear()
@@ -172,6 +173,14 @@ vector<vector<wstring>> ResourceManager::GetDataFromCSV(const string& filename)
 
 		while (getline(ss, cell, L','))
 		{
+			// 세미콜론을 줄바꿈 문자로 대체
+			size_t pos = cell.find(L';');
+
+			while (pos != wstring::npos)
+			{
+				cell.replace(pos, 1, L"\n");
+				pos = cell.find(L';', pos + 1);
+			}
 			row.push_back(cell);
 		}
 		data.push_back(row);

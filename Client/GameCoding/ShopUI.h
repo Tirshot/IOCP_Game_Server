@@ -18,6 +18,7 @@ public:
 	void AddSellItem(int itemID);
 
 	void ResetInitializingTime() { _initializeTime = 0.f; }
+	void ResetPage() { _page = 1; }
 
 private:
 	void OnPopClickAcceptDelegate();

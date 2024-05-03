@@ -245,7 +245,7 @@ void ServerPacketHandler::Handle_C_QuestList(GameSessionRef session, BYTE* buffe
 		for (auto& quest : quests)
 		{
 			int questid = quest.first;
-			auto job = quest.second;
+			Protocol::QuestInfo job = quest.second;
 			{
 				SendBufferRef sendBuffer = Make_S_QuestList(objectId, job);
 				session->Send(sendBuffer);

@@ -14,6 +14,8 @@
 #include "SceneManager.h"
 #include "NetworkManager.h"
 #include "ChatManager.h"
+#include "QuestManager.h"
+#include "ItemManager.h"
 #include "ClientPacketHandler.h"
 
 QuestUIPanel::QuestUIPanel()
@@ -30,14 +32,17 @@ QuestUIPanel::QuestUIPanel()
 	Protocol::QUEST_STATE _questState = Protocol::QUEST_STATE_IDLE;
 }
 
-QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, int idx)
+QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, Vec2 pos, int idx)
 {
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"QuestButtonsBackground");
 	_goldImage = GET_SINGLE(ResourceManager)->GetTexture(L"Gold");
+	_index = idx;
+
 	SetSize({ 360,100 });
 	SetPos({ 135,150 });
 
 	_questId = info.questid();
+	_targetId = info.targetid();
 	_objectType = info.targettype();
 	_targetNums = info.targetnums();
 	_questState = info.queststate();
@@ -45,38 +50,26 @@ QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, int idx)
 	_rewardItem = info.rewarditem();
 	_rewardItemNum = info.rewarditemnum();
 
-	// CSV파일을 이용해서 퀘스트 목록을 불러옴 -
+	int page = 1 + _index / 3;
 
+	SetPos(Vec2{ pos.x + 5 , pos.y + 5 + GetSize().y * (_index % 4) });
 
-	//switch (_questId)
-	//{
-	//case 0:
-	//	_questName = L"뱀이 너무 많아!";
-	//	_description = L"호기롭게 장사를 시작했지만, 손님이 적은 이유는 역시... 뱀 때문이겠죠?\n뱀 5마리만 처치해주세요.\n사례는 넉넉히 드리겠습니다.";
-	//	break;
+	_rect = RECT{ (int)_pos.x, (int)_pos.y, (int)_pos.x + GetSize().x, (int)_pos.y + GetSize().y };
+	_initialPos = _pos;
 
-	//case 1:
-	//	_questName = L"이상한 문양";
-	//	_description = L"제 집 위에 보이는 문양을 보셨나요? 제가 이사할 때부터 있었는데..\n용사만 할 수 있는 액션을 하면 빛이 난다는 전설이 있었어요.";
-	//	break;
+	// CSV파일을 이용해서 퀘스트 목록을 불러옴 
+	auto questInfo = GET_SINGLE(QuestManager)->GetQuestInfo(_questId);
 
-	//case 2:
-	//	_questName = L"테스트용2";
-	//	_description = L"테스트용 퀘스트2입니다.";
-	//	break;
-
-	//default:
-	//	_questName = L"";
-	//	_description = L"";
-	//	break;
-	//}
+	_questName = questInfo.questName;
+	_questNPC = questInfo.questNPC;
+	_description = questInfo.description;
 
 	{ // 퀘스트 수락 버튼
 		Button* accept = new Button();
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"AcceptButton"), BS_Default);
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Pressed);
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"AcceptButton"), BS_Hovered);
-		accept->SetPos({ 176, 61 + (_size.y) * (float)idx });
+		accept->SetPos({ _pos.x + 41, _pos.y + 61 + (_size.y) * (float)_index });
 		accept->SetSize({ 32, 21 });
 		accept->AddOnClickDelegate(this, &QuestUIPanel::OnClickAcceptButton);
 		_accept = accept;
@@ -88,7 +81,7 @@ QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, int idx)
 		complete->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Default);
 		complete->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Pressed);
 		complete->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Hovered);
-		complete->SetPos({ 176, 61 + (_size.y) * (float)idx });
+		complete->SetPos({ _pos.x + 41, _pos.y + 61 + (_size.y) * (float)_index });
 		complete->SetSize({ 32, 21 });
 		complete->AddOnClickDelegate(this, &QuestUIPanel::OnClickCompleteButton);
 		complete->SetVisible(false);
@@ -109,6 +102,8 @@ void QuestUIPanel::BeginPlay()
 
 void QuestUIPanel::Tick()
 {
+	_rect = { (int)_pos.x, (int)_pos.y, (int)_pos.x + GetSize().x, (int)_pos.y + GetSize().y };
+
 	for (auto& child : _children)
 		child->Tick();
 
@@ -147,7 +142,7 @@ void QuestUIPanel::Render(HDC hdc)
 	}
 	// 퀘스트 설명
 	{
-		RECT _textRect = { _pos.x + 70,_pos.y + 28, _textRect.left + 290, _textRect.top + 68 };
+		RECT _textRect = { _pos.x + 70,_pos.y + 30, _textRect.left + 290, _textRect.top + 68 };
 		DrawTextW(hdc, _description.c_str(), -1, &_textRect, DT_LEFT | DT_WORDBREAK);
 	}
 	// 골드 이미지
@@ -177,26 +172,7 @@ void QuestUIPanel::Render(HDC hdc)
 
 void QuestUIPanel::OnClickAcceptButton()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (scene)
-	{
-		int myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
-		auto state = scene->GetPlayerQuestState(myPlayerId, _questId);
-		if (state != Protocol::QUEST_STATE_IDLE)
-			return;
 
-		// 퀘스트 수락 패킷 전송
-		{
-			_questState = Protocol::QUEST_STATE_ACCEPT;
-
-			scene->SetPlayerQuestState(myPlayerId, _questId, Protocol::QUEST_STATE_ACCEPT);
-			{
-				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Quest(myPlayerId, _questId);
-				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-			}
-			GET_SINGLE(SoundManager)->Play(L"QuestAccept");
-		}
-	}
 }
 
 void QuestUIPanel::OnClickCompleteButton()
@@ -211,14 +187,24 @@ void QuestUIPanel::OnClickCompleteButton()
 		{
 			// 퀘스트 완료
 			{
+				MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+				if (myPlayer)
+				{
+					if (GET_SINGLE(ItemManager)->IsInventoryFull())
+					{
+						// 인벤토리가 가득 차(찰 예정이라)서 퀘스트 완료 불가 -> 추후 코드 수정필요
+						return;
+					}
+
+					myPlayer->info.set_gold(myPlayer->info.gold() + _reward);
+					GET_SINGLE(ItemManager)->AddItemToInventory(_rewardItem, _rewardItemNum);
+					// _rewardItem?
+				}
 				_questState = Protocol::QUEST_STATE_FINISHED;
 				scene->SetPlayerQuestState(myPlayerId, _questId, Protocol::QUEST_STATE_FINISHED);
 				RemoveChild(_complete);
 				RemoveChild(_accept);
-
-				MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-				myPlayer->info.set_gold(myPlayer->info.gold() + _reward);
-				// _rewardItem?
 				GET_SINGLE(SoundManager)->Play(L"QuestFinished");
 			}
 		}

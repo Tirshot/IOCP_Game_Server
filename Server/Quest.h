@@ -22,7 +22,7 @@ protected:
 	vector<wstring> GetQuestInfo(int questID);
 
 public:
-	Quest& CreateQuest(int questID);
+	void CreateQuest();
 
 
 public:

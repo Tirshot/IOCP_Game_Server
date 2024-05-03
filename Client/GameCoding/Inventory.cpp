@@ -51,26 +51,27 @@ void Inventory::BeginPlay()
         _itemName->SetSize({ 155, 25 });
         _itemName->SetPadding(5, 5);
         _itemName->SetInitialPos(_itemName->GetPos());
+        _itemName->SetFloating(true);
         AddChild(_itemName);
+    }
+    { // 아이템 설명
+        wstring wstr = L"아이템 설명";
+        _itemDescription = new TextBox(wstr);
+        _itemDescription->SetPos({ _pos.x + 125, _pos.y + 225 });     // 605, 375
+        _itemDescription->SetSize({ 155, 100 });
+        _itemDescription->SetInitialPos(_itemDescription->GetPos());
+        _itemDescription->SetPadding(5, 10);
+        AddChild(_itemDescription);
     }
     { // 아이템 개수
         wstring wstr = L"개수";
         _itemCount = new TextBox(wstr);
-        _itemCount->SetPos({ _pos.x + 230, _pos.y + 225 });      // 710, 350
+        _itemCount->SetPos({ _pos.x + 240, _pos.y + 225 });      // 710, 350
         _itemCount->SetSize({ 40, 25 });
         _itemCount->SetPadding(5, 5);
         _itemCount->SetInitialPos(_itemCount->GetPos());
         _itemCount->SetVisible(false);
         AddChild(_itemCount);
-    }
-    { // 아이템 설명
-        wstring wstr = L"아이템 설명";
-        _itemDescription = new TextBox(wstr);
-        _itemDescription->SetPos({ _pos.x + 125, _pos.y + 250 });     // 605, 375
-        _itemDescription->SetSize({ 155, 75 });
-        _itemDescription->SetInitialPos(_itemDescription->GetPos());
-        _itemDescription->SetPadding(5, 5);
-        AddChild(_itemDescription);
     }
 
     // 팝업
@@ -128,6 +129,13 @@ void Inventory::Tick()
         _dragRect.top = (int)_pos.y;
         _dragRect.right = _dragRect.left + 290;
         _dragRect.bottom = _dragRect.top + 35;
+    }
+
+    if (IsMouseOutRect(_invenRect) || IsMouseInRect(_dragRect))
+    {   // 마우스가 슬롯 밖에 있음
+        // 아이템 설명 초기화
+        _itemName->SetText(L"");
+        _itemDescription->SetText(L"");
     }
 
     // ESC를 누르면 인벤토리 끄기

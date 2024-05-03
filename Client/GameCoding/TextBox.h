@@ -30,6 +30,7 @@ private:
 	float _topPadding = 15.f;
 	bool _isFloating = false;
 	TextAlign _textAlign = TextAlign::Left;
+	bool _initialized = false;
 
 };
 

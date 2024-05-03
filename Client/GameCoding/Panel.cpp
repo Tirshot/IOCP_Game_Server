@@ -201,19 +201,6 @@ void Panel::SetRelativePos(Vec2Int pos)
 	SetPos({ (int)Pos.x + ((float)Size.x / 2) + (int)pos.x, (int)Pos.y + ((float)Size.y / 2) + (int)pos.y});
 }
 
-void Panel::SetChildInvisible()
-{
-	for (auto& child : _children)
-	{
-		Button* button = new Button();
-		if (button)
-			continue;
-
-		child->SetVisible(false);
-	}
-	ResetPos();
-}
-
 void Panel::ResetPos()
 {
 	// 기본 위치로 리셋

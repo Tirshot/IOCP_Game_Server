@@ -43,12 +43,14 @@ void TriggerActor::PressSpaceInteract(UI* ui)
 		{
 			GET_SINGLE(SoundManager)->Play(L"Merchant");
 			_visiblity = true;
+			_isTouched = true;
 			ui->SetVisible(_visiblity);
 		}
 	}
 	else
 	{
 		_visiblity = false;
+		_isTouched = false;
 		ui->SetVisible(_visiblity);
 	}
 }
@@ -58,12 +60,14 @@ void TriggerActor::TouchInteract(UI* ui)
 	if (IsTouched())
 	{
 		_visiblity = true;
+		_isTouched = true;
 		ui->SetVisible(_visiblity);
 	}
 	// 해당 타일을 벗어나면 사라짐
 	else
 	{
 		_visiblity = false;
+		_isTouched = false;
 		ui->SetVisible(_visiblity);
 	}
 }
@@ -74,9 +78,9 @@ bool TriggerActor::IsTouched()
 	MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt({ info.posx(),info.posy() }));
 
 	if (myPlayer)
-		{
-			return true;
-		}
+	{
+		return true;
+	}
 
 	return false;
 }

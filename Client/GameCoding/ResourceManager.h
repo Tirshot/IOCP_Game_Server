@@ -38,6 +38,7 @@ public:
 
 	vector<vector<wstring>> GetDataFromCSV(const string& filename);
 	vector<vector<wstring>> GetItemTable() { return _itemTable; }
+	vector<vector<wstring>> GetQuestTable() { return _questTable; }
 
 private:
 	HWND _hwnd = {};
@@ -49,5 +50,6 @@ private:
 	unordered_map<wstring, Tilemap*> _tilemaps;
 	unordered_map<wstring, Sound*> _sounds;
 	vector<vector<wstring>> _itemTable;
+	vector<vector<wstring>> _questTable;
 };
 

@@ -913,13 +913,14 @@ class QuestInfo final :
   enum : int {
     kObjectidFieldNumber = 2,
     kQuestidFieldNumber = 1,
-    kTargettypeFieldNumber = 3,
-    kTargetnumsFieldNumber = 4,
-    kProcessFieldNumber = 5,
-    kQueststateFieldNumber = 6,
-    kRewardGoldFieldNumber = 7,
-    kRewardItemFieldNumber = 8,
-    kRewardItemNumFieldNumber = 9,
+    kTargetidFieldNumber = 3,
+    kTargettypeFieldNumber = 4,
+    kTargetnumsFieldNumber = 5,
+    kProcessFieldNumber = 6,
+    kQueststateFieldNumber = 7,
+    kRewardGoldFieldNumber = 8,
+    kRewardItemFieldNumber = 9,
+    kRewardItemNumFieldNumber = 10,
   };
   // uint64 objectid = 2;
   void clear_objectid();
@@ -939,7 +940,16 @@ class QuestInfo final :
   void _internal_set_questid(int32_t value);
   public:
 
-  // .Protocol.OBJECT_TYPE targettype = 3;
+  // int32 targetid = 3;
+  void clear_targetid();
+  int32_t targetid() const;
+  void set_targetid(int32_t value);
+  private:
+  int32_t _internal_targetid() const;
+  void _internal_set_targetid(int32_t value);
+  public:
+
+  // .Protocol.OBJECT_TYPE targettype = 4;
   void clear_targettype();
   ::Protocol::OBJECT_TYPE targettype() const;
   void set_targettype(::Protocol::OBJECT_TYPE value);
@@ -948,7 +958,7 @@ class QuestInfo final :
   void _internal_set_targettype(::Protocol::OBJECT_TYPE value);
   public:
 
-  // int32 targetnums = 4;
+  // int32 targetnums = 5;
   void clear_targetnums();
   int32_t targetnums() const;
   void set_targetnums(int32_t value);
@@ -957,7 +967,7 @@ class QuestInfo final :
   void _internal_set_targetnums(int32_t value);
   public:
 
-  // int32 process = 5;
+  // int32 process = 6;
   void clear_process();
   int32_t process() const;
   void set_process(int32_t value);
@@ -966,7 +976,7 @@ class QuestInfo final :
   void _internal_set_process(int32_t value);
   public:
 
-  // .Protocol.QUEST_STATE queststate = 6;
+  // .Protocol.QUEST_STATE queststate = 7;
   void clear_queststate();
   ::Protocol::QUEST_STATE queststate() const;
   void set_queststate(::Protocol::QUEST_STATE value);
@@ -975,7 +985,7 @@ class QuestInfo final :
   void _internal_set_queststate(::Protocol::QUEST_STATE value);
   public:
 
-  // int32 rewardGold = 7;
+  // int32 rewardGold = 8;
   void clear_rewardgold();
   int32_t rewardgold() const;
   void set_rewardgold(int32_t value);
@@ -984,7 +994,7 @@ class QuestInfo final :
   void _internal_set_rewardgold(int32_t value);
   public:
 
-  // int32 rewardItem = 8;
+  // int32 rewardItem = 9;
   void clear_rewarditem();
   int32_t rewarditem() const;
   void set_rewarditem(int32_t value);
@@ -993,7 +1003,7 @@ class QuestInfo final :
   void _internal_set_rewarditem(int32_t value);
   public:
 
-  // int32 rewardItemNum = 9;
+  // int32 rewardItemNum = 10;
   void clear_rewarditemnum();
   int32_t rewarditemnum() const;
   void set_rewarditemnum(int32_t value);
@@ -1012,6 +1022,7 @@ class QuestInfo final :
   struct Impl_ {
     uint64_t objectid_;
     int32_t questid_;
+    int32_t targetid_;
     int targettype_;
     int32_t targetnums_;
     int32_t process_;
@@ -1694,7 +1705,27 @@ inline void QuestInfo::set_objectid(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.objectid)
 }
 
-// .Protocol.OBJECT_TYPE targettype = 3;
+// int32 targetid = 3;
+inline void QuestInfo::clear_targetid() {
+  _impl_.targetid_ = 0;
+}
+inline int32_t QuestInfo::_internal_targetid() const {
+  return _impl_.targetid_;
+}
+inline int32_t QuestInfo::targetid() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.targetid)
+  return _internal_targetid();
+}
+inline void QuestInfo::_internal_set_targetid(int32_t value) {
+  
+  _impl_.targetid_ = value;
+}
+inline void QuestInfo::set_targetid(int32_t value) {
+  _internal_set_targetid(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.targetid)
+}
+
+// .Protocol.OBJECT_TYPE targettype = 4;
 inline void QuestInfo::clear_targettype() {
   _impl_.targettype_ = 0;
 }
@@ -1714,7 +1745,7 @@ inline void QuestInfo::set_targettype(::Protocol::OBJECT_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.targettype)
 }
 
-// int32 targetnums = 4;
+// int32 targetnums = 5;
 inline void QuestInfo::clear_targetnums() {
   _impl_.targetnums_ = 0;
 }
@@ -1734,7 +1765,7 @@ inline void QuestInfo::set_targetnums(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.targetnums)
 }
 
-// int32 process = 5;
+// int32 process = 6;
 inline void QuestInfo::clear_process() {
   _impl_.process_ = 0;
 }
@@ -1754,7 +1785,7 @@ inline void QuestInfo::set_process(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.process)
 }
 
-// .Protocol.QUEST_STATE queststate = 6;
+// .Protocol.QUEST_STATE queststate = 7;
 inline void QuestInfo::clear_queststate() {
   _impl_.queststate_ = 0;
 }
@@ -1774,7 +1805,7 @@ inline void QuestInfo::set_queststate(::Protocol::QUEST_STATE value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.queststate)
 }
 
-// int32 rewardGold = 7;
+// int32 rewardGold = 8;
 inline void QuestInfo::clear_rewardgold() {
   _impl_.rewardgold_ = 0;
 }
@@ -1794,7 +1825,7 @@ inline void QuestInfo::set_rewardgold(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardGold)
 }
 
-// int32 rewardItem = 8;
+// int32 rewardItem = 9;
 inline void QuestInfo::clear_rewarditem() {
   _impl_.rewarditem_ = 0;
 }
@@ -1814,7 +1845,7 @@ inline void QuestInfo::set_rewarditem(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardItem)
 }
 
-// int32 rewardItemNum = 9;
+// int32 rewardItemNum = 10;
 inline void QuestInfo::clear_rewarditemnum() {
   _impl_.rewarditemnum_ = 0;
 }

@@ -34,7 +34,6 @@ public:
 	void DragAndMove(RECT* rect);
 
 	void SetRelativePos(Vec2Int pos);
-	void SetChildInvisible();
 
 public:
 	void ResetPos();

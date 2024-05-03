@@ -12,6 +12,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 
+private:
+	void HideUIs();
+
 protected:
 	MerchantUI* _merchantUI = nullptr;
 };

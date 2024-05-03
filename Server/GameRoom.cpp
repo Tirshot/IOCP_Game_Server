@@ -59,21 +59,24 @@ void GameRoom::Init()
 		npc3->info.set_name("Merchant_Sign");
 		AddObject(npc3);
 	}
-	// 뱀 5마리 처치
 	{
-		Quest quest0 = GET_SINGLE(Quest)->CreateQuest(0);
-		AddQuest(quest0);
+		GET_SINGLE(Quest)->CreateQuest();
 	}
-	// 특정 위치에서 동작 수행
-	{
-		Quest quest1 = GET_SINGLE(Quest)->CreateQuest(1);
-		AddQuest(quest1);
-	}
-	// 더미 Quest 생성
-	{
-		Quest quest2 = GET_SINGLE(Quest)->CreateQuest(2);
-		AddQuest(quest2);
-	}
+	//// 뱀 5마리 처치
+	//{
+	//	Quest quest0 = GET_SINGLE(Quest)->CreateQuest(0);
+	//	AddQuest(quest0);
+	//}
+	//// 특정 위치에서 동작 수행
+	//{
+	//	Quest quest1 = GET_SINGLE(Quest)->CreateQuest(1);
+	//	AddQuest(quest1);
+	//}
+	//// 더미 Quest 생성
+	//{
+	//	Quest quest2 = GET_SINGLE(Quest)->CreateQuest(2);
+	//	AddQuest(quest2);
+	//}
 }
 
 void GameRoom::Update()
