@@ -101,7 +101,6 @@ void QuestUI::BeginPlay()
 
 void QuestUI::Tick()
 {
-	Panel::DragAndMove(&_rect);
 	{
 		_rect.left = _pos.x;
 		_rect.top = _pos.y;
@@ -109,16 +108,13 @@ void QuestUI::Tick()
 		_rect.bottom = _pos.y + 450;
 	}
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	_maxPage = 1 + (int)(_quests.size() / 5);
+
 	for (auto& child : _children)
 		child->Tick();
 
-	if (GetVisible() == false)
-		return;
-
-	if (scene)
-		_quests = scene->GetQuests();
-	else
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene == nullptr)
 		return;
 
 	for (auto& child : _children)
@@ -142,6 +138,15 @@ void QuestUI::Tick()
 				}
 			}
 		}
+
+		auto questState = Panel->GetQuestState();
+		if (questState)
+		{
+			if (Panel->GetQuestState() == Protocol::QUEST_STATE_FINISHED)
+			{
+				RemoveChild(Panel);
+			}
+		}
 	}
 }
 
@@ -160,7 +165,7 @@ void QuestUI::Render(HDC hdc)
 	// 페이지 갯수
 	{
 		SetTextColor(hdc, RGB(255, 255, 255));
-		wstring Pages = to_wstring(_page) + L" / " + to_wstring(1 + (int)(_quests.size() / 4));
+		wstring Pages = to_wstring(_page) + L" / " + to_wstring(_maxPage);
 		RECT _textRect = { _pos.x + 435, _pos.y + 290,_textRect.left + 30,_textRect.top + 18 };
 		DrawTextW(hdc, Pages.c_str(), -1, &_textRect, DT_CENTER);
 	}
@@ -175,9 +180,13 @@ void QuestUI::Render(HDC hdc)
 
 			// 보고있는 페이지와 아이템이 있는 페이지가 동일하지 않으면 건너뜀
 			if (_page != page)
+			{
+				child->SetVisible(false);
 				continue;
+			}
 		}
 		// 페이지가 동일하거나 QuestUIPanel이 아니면 렌더링
+		child->SetVisible(true);
 		child->Render(hdc);
 	}
 }
@@ -204,42 +213,60 @@ void QuestUI::OnClickExitButton()
 void QuestUI::OnClickCountMinusButton()
 {
 	_page--;
-	_page = ::clamp(_page, 1, 1 + ((int)_quests.size() / 4));
+	_page = ::clamp(_page, 1, _maxPage);
 }
 
 void QuestUI::OnClickCountPlusButton()
 {
 	_page++;
-	_page = ::clamp(_page, 1, 1 + ((int)_quests.size() / 4));
+	_page = ::clamp(_page, 1, _maxPage);
 }
 
 
 void QuestUI::ResetQuestList()
 {
 	_idx = 0;
+	_quests.clear();
 
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
-		_quests = scene->GetQuests();
-
-	int myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
-	
-	for (auto& child : _children)
 	{
-		auto panel = FindChild<QuestUIPanel>(_children);
-		if (panel)
-			RemoveChild(panel);
+		auto& quests = scene->GetQuests();
+
+		int myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
+
+		for (auto& child : _children)
+		{
+			auto panel = FindChild<QuestUIPanel>(_children);
+			if (panel)
+				RemoveChild(panel);
+		}
+
+		for (auto& questInfo : quests)
+		{
+			// 아직 수주받지 않은 퀘스트를 받아옴
+			auto state = scene->GetPlayerQuestState(myPlayerId, questInfo.first);
+			if (state == Protocol::QUEST_STATE_FINISHED)
+				continue;
+
+			_quests.insert(questInfo);
+			SetQuestPanel(questInfo);
+			_idx++;
+		}
 	}
+}
 
-	for (auto& questInfo : _quests)
+void QuestUI::RepostionPanels()
+{
+	for (int i = 0; i < _children.size(); i++)
 	{
-		// 아직 수주받지 않은 퀘스트를 받아옴
-		auto state = scene->GetPlayerQuestState(myPlayerId, questInfo.first);
-		if (state == Protocol::QUEST_STATE_FINISHED)
-			continue;
+		// 자식 중 패널을 찾음
+		auto panel = dynamic_cast<QuestUIPanel*>(_children[i]);
+		if (panel)
+		{
 
-		SetQuestPanel(questInfo);
-		_idx++;
+		}
+
 	}
 }
 

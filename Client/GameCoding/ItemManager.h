@@ -9,6 +9,7 @@ class ItemManager
 
 public:
 	void Init();
+	void Tick();
 
 public:
 	vector<wstring> FindItemInfo(int itemID);
@@ -31,6 +32,9 @@ public:
 
 	bool IsInventoryFull();
 	int GetEmptySlots();
+
+	ITEM* FindItemFromInventory(int itemId);
+	void SyncToServer();
 
 public:
 	wstring GetName(vector <wstring> row);

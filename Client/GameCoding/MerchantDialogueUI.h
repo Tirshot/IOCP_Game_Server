@@ -15,13 +15,15 @@ public:
 
 public:
 	void SetDialogue(int questID);
-	void SetRewardItem(int itemID);
+	void SetRewardItem(int itemID, int num = 1);
 	void SetRewardGold(int gold);
 	void ResetPage() { _page = 0; }
 
 private:
+	void VisibleButton();
 	void OnClickAcceptButton();
 	void OnClickDeclineButton();
+	void OnClickConfirmButton();
 
 protected:
 	RECT _rect = {};
@@ -34,6 +36,7 @@ protected:
 	int _maxPage = 0;	// ¥Î»≠ √¢ ∆‰¿Ã¡ˆ √— ∞πºˆ
 
 private:
-	class ITEM* _item = nullptr;
-	int _gold = 0;
+	int _rewardItem = 0;
+	int _rewardItemNum = 0;
+	int _rewardGold = 0;
 };

@@ -9,6 +9,7 @@
 #include "Arrow.h"
 #include "Chat.h"
 #include "Quest.h"
+#include "Inventory.h"
 #include <filesystem>
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
@@ -30,6 +31,7 @@ void GameRoom::Init()
 	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
 	_tilemap.LoadFile(relativePath);
 	GET_SINGLE(Quest)->Init();
+	GET_SINGLE(Inventory)->Init();
 	// Sign
 	{
 		SignRef npc1 = GameObject::CreateSign();
@@ -62,21 +64,6 @@ void GameRoom::Init()
 	{
 		GET_SINGLE(Quest)->CreateQuest();
 	}
-	//// 뱀 5마리 처치
-	//{
-	//	Quest quest0 = GET_SINGLE(Quest)->CreateQuest(0);
-	//	AddQuest(quest0);
-	//}
-	//// 특정 위치에서 동작 수행
-	//{
-	//	Quest quest1 = GET_SINGLE(Quest)->CreateQuest(1);
-	//	AddQuest(quest1);
-	//}
-	//// 더미 Quest 생성
-	//{
-	//	Quest quest2 = GET_SINGLE(Quest)->CreateQuest(2);
-	//	AddQuest(quest2);
-	//}
 }
 
 void GameRoom::Update()
@@ -110,6 +97,11 @@ void GameRoom::Update()
 		{
 			_deleteObjects[id] = item.second;
 		}
+	}
+
+	for (auto& inven : _inventorys)
+	{
+		inven.second->Update();
 	}
 
 	for (auto& item : _arrows)
@@ -658,4 +650,9 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 void GameRoom::AddQuest(Quest quest)
 {
 	_quests.insert({ quest.info.questid(), quest.info });
+}
+
+void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts)
+{
+	GetInventory(objectId)->AddItemToInventory(itemId, itemCounts);
 }

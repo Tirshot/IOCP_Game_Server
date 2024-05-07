@@ -8,6 +8,7 @@
 #include "NetworkManager.h"
 #include "ChatManager.h"
 #include "ItemManager.h"
+#include "QuestManager.h"
 
 Game::Game()
 {
@@ -35,11 +36,12 @@ void Game::Init(HWND hwnd)
 	filesystem::path currentPath = filesystem::current_path();
 	filesystem::path resourceDirectory = currentPath / ".." / ".." / "Client" / "Resources";
 	filesystem::path relativePath = filesystem::relative(resourceDirectory, currentPath);
+	filesystem::path Path = "E:\\Cpp\\IOCP\\Server\\Client\\Resources";
 
 	GET_SINGLE(TimeManager)->Init();
 	GET_SINGLE(InputManager)->Init(hwnd);
 
-	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(relativePath));
+	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(Path));
 	GET_SINGLE(SoundManager)->Init(hwnd);
 
 	GET_SINGLE(SceneManager)->Init();
@@ -56,6 +58,7 @@ void Game::Update()
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(NetworkManager)->Update();
+	GET_SINGLE(QuestManager)->Tick();
 	GET_SINGLE(ChatManager)->Tick();
 }
 

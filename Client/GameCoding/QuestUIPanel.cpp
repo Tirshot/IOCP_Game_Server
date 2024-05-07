@@ -58,36 +58,11 @@ QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, Vec2 pos, int idx)
 	_initialPos = _pos;
 
 	// CSV파일을 이용해서 퀘스트 목록을 불러옴 
-	auto questInfo = GET_SINGLE(QuestManager)->GetQuestInfo(_questId);
+	auto questInfo = GET_SINGLE(QuestManager)->GetQuestScriptInfo(_questId);
 
 	_questName = questInfo.questName;
 	_questNPC = questInfo.questNPC;
 	_description = questInfo.description;
-
-	{ // 퀘스트 수락 버튼
-		Button* accept = new Button();
-		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"AcceptButton"), BS_Default);
-		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Pressed);
-		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"AcceptButton"), BS_Hovered);
-		accept->SetPos({ _pos.x + 41, _pos.y + 61 + (_size.y) * (float)_index });
-		accept->SetSize({ 32, 21 });
-		accept->AddOnClickDelegate(this, &QuestUIPanel::OnClickAcceptButton);
-		_accept = accept;
-		AddChild(_accept);
-	}
-
-	{ // 퀘스트 완료 버튼
-		Button* complete = new Button();
-		complete->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Default);
-		complete->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Pressed);
-		complete->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"CompleteButton"), BS_Hovered);
-		complete->SetPos({ _pos.x + 41, _pos.y + 61 + (_size.y) * (float)_index });
-		complete->SetSize({ 32, 21 });
-		complete->AddOnClickDelegate(this, &QuestUIPanel::OnClickCompleteButton);
-		complete->SetVisible(false);
-		_complete = complete;
-		AddChild(_complete);
-	}
 }
 
 QuestUIPanel::~QuestUIPanel()
@@ -111,12 +86,6 @@ void QuestUIPanel::Tick()
 	uint64 myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
 
 	_questState = scene->GetPlayerQuestState(myPlayerId, _questId);
-
-	if (_questState == Protocol::QUEST_STATE_ACCEPT)
-	{
-		RemoveChild(_accept);
-		_complete->SetVisible(true);
-	}
 }
 
 void QuestUIPanel::Render(HDC hdc)
@@ -168,45 +137,4 @@ void QuestUIPanel::Render(HDC hdc)
 
 	for (auto& child : _children)
 		child->Render(hdc);
-}
-
-void QuestUIPanel::OnClickAcceptButton()
-{
-
-}
-
-void QuestUIPanel::OnClickCompleteButton()
-{
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
-	if (scene)
-	{
-		int myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
-		auto state = scene->GetPlayerQuestState(myPlayerId, _questId);
-		if (state == Protocol::QUEST_STATE_COMPLETED)
-		{
-			// 퀘스트 완료
-			{
-				MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-
-				if (myPlayer)
-				{
-					if (GET_SINGLE(ItemManager)->IsInventoryFull())
-					{
-						// 인벤토리가 가득 차(찰 예정이라)서 퀘스트 완료 불가 -> 추후 코드 수정필요
-						return;
-					}
-
-					myPlayer->info.set_gold(myPlayer->info.gold() + _reward);
-					GET_SINGLE(ItemManager)->AddItemToInventory(_rewardItem, _rewardItemNum);
-					// _rewardItem?
-				}
-				_questState = Protocol::QUEST_STATE_FINISHED;
-				scene->SetPlayerQuestState(myPlayerId, _questId, Protocol::QUEST_STATE_FINISHED);
-				RemoveChild(_complete);
-				RemoveChild(_accept);
-				GET_SINGLE(SoundManager)->Play(L"QuestFinished");
-			}
-		}
-	}
 }

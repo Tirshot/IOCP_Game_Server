@@ -53,6 +53,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Heal(session, buffer, len);
 		break;
 
+	case C_AddItem:
+		Handle_C_AddItem(session, buffer, len);
+		break;
+
 	default:
 		break;
 	}
@@ -267,6 +271,28 @@ void ServerPacketHandler::Handle_C_Heal(GameSessionRef session, BYTE* buffer, in
 	
 	PlayerRef healedPlayer = session->player.lock();
 	healedPlayer->info.set_hp(healedPlayer->info.hp() + 1);
+}
+
+void ServerPacketHandler::Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+
+	uint16 size = header->size;
+
+	Protocol::C_AddItem pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	GameRoomRef room = session->gameRoom.lock();
+	PlayerRef myPlayer = session->player.lock();
+
+	int itemId = pkt.itemid();
+	int itemCounts = pkt.itemcounts();
+
+	// 가져온 패킷의 정보를 이용, 플레이어 인벤토리 관리
+	if (room && myPlayer)
+	{
+		room->AddItemToPlayer(myPlayer->GetObjectID(), itemId, itemCounts);
+	}
 }
 
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)

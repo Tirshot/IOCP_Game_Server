@@ -42,6 +42,9 @@
     <Filter Include="소스 파일\Game\Room\Quest">
       <UniqueIdentifier>{2e9cea2d-cdd8-4fe3-a5f5-f7fdb97a2b2e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Game\Room\Inventory">
+      <UniqueIdentifier>{e345f2fa-58bb-4aa4-bef5-f7cd40d45f08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -107,6 +110,9 @@
     <ClCompile Include="Quest.cpp">
       <Filter>소스 파일\Game\Room\Quest</Filter>
     </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>소스 파일\Game\Room\Inventory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -168,6 +174,9 @@
     </ClInclude>
     <ClInclude Include="Quest.h">
       <Filter>소스 파일\Game\Room\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>소스 파일\Game\Room\Inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

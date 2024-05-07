@@ -1,15 +1,18 @@
 #include "pch.h"
 #include "Inventory.h"
 #include "Sprite.h"
+#include "TextBox.h"
+#include "QuickSlot.h"
+#include "DevScene.h"
+#include "MyPlayer.h"
+#include "AlertBox.h"
 #include "ResourceManager.h"
 #include "ChatManager.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "ItemManager.h"
-#include "TextBox.h"
-#include "QuickSlot.h"
-#include "MyPlayer.h"
-#include "AlertBox.h"
+#include "NetworkManager.h"
+#include "ClientPacketHandler.h"
 
 Inventory::Inventory()
 {
@@ -91,14 +94,6 @@ void Inventory::BeginPlay()
     for (auto& child : _children)
         child->BeginPlay();
 
-    // 기본 무기 지급
-    for (int i = 1; i < 5; i++)
-        AddItem(i);
-
-    // 테스트용 장비 지급
-    for (int i = 10; i < 25; i++)
-        AddItem(i);
-
     SetInitialPos(GetPos());
     _initialized = true;
 }
@@ -110,6 +105,14 @@ void Inventory::Tick()
     // 최초 1회만 실행
     if (_initialized)
     {
+        // 기본 무기 지급
+        for (int i = 1; i < 5; i++)
+            AddItem(i);
+
+        // 테스트용 장비 지급
+        for (int i = 10; i < 25; i++)
+            AddItem(i);
+
         // 검 기본 장착
         ITEM* item1 = FindItemFromInventory(1);
         EquipItem(*item1);
@@ -438,7 +441,7 @@ void Inventory::SlotRectsPosUpdate(RECT* rect)
 
 void Inventory::SyncItemToServer(int itemID, int counts)
 {
-    // 서버와 동기화되는 소모품 관리
+    // 서버와 동기화되는 소모품 관리 -> 서버 관리 인벤토리에 추가할 필요가 있음
     {
         MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
         switch (itemID)
@@ -499,6 +502,8 @@ bool Inventory::AddItem(int ItemId)
             }
 
             slot.ItemCount++; // 수량 증가
+
+            // 소모성 아이템 동기화
             SyncItemToServer(ItemId, 1);
             found = true;
             return true;

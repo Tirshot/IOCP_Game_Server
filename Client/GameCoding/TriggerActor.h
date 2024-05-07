@@ -18,6 +18,7 @@ public:
 
 	// ¡¢√À ∆«∫∞
 	bool IsTouched();
+	void SetIsTouched(bool touched) { _isTouched = touched; }
 
 	void FadeOut();
 

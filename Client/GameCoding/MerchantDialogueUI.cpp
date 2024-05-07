@@ -6,6 +6,7 @@
 #include "NamePlate.h"
 #include "DevScene.h"
 #include "QuestUI.h"
+#include "MyPlayer.h"
 #include "ResourceManager.h"
 #include "QuestManager.h"
 #include "InputManager.h"
@@ -58,6 +59,7 @@ void MerchantDialogueUI::BeginPlay()
 		accept->AddOnClickDelegate(this, &MerchantDialogueUI::OnClickAcceptButton);
 		accept->SetInitialPos(accept->GetPos());
 		accept->SetVisible(false);
+		accept->SetButtonName(L"accept");
 		AddChild(accept);
 	}
 
@@ -71,7 +73,36 @@ void MerchantDialogueUI::BeginPlay()
 		decline->AddOnClickDelegate(this, &MerchantDialogueUI::OnClickDeclineButton);
 		decline->SetInitialPos(decline->GetPos());
 		decline->SetVisible(false);
+		decline->SetButtonName(L"decline");
 		AddChild(decline);
+	}
+
+	{ // 확인 버튼
+		Button* confirm = new Button();
+		confirm->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Confirm_Off"), BS_Default);
+		confirm->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Confirm_On"), BS_Pressed);
+		confirm->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Confirm_Hovered"), BS_Hovered);
+		confirm->SetPos(Vec2{ _pos.x + _size.x - 80, _pos.y + (_size.y) - 30 });
+		confirm->SetSize({ 105, 30 });
+		confirm->AddOnClickDelegate(this, &MerchantDialogueUI::OnClickConfirmButton);
+		confirm->SetInitialPos(confirm->GetPos());
+		confirm->SetVisible(false);
+		confirm->SetButtonName(L"confirm");
+		AddChild(confirm);
+	}
+
+	{ // 뒤로 버튼
+		Button* back = new Button();
+		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Off"), BS_Default);
+		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_On"), BS_Pressed);
+		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Hovered"), BS_Hovered);
+		back->SetPos(Vec2{ _pos.x + _size.x - 80, _pos.y + (_size.y) - 30});
+		back->SetSize({ 105, 30 });
+		back->AddOnClickDelegate(this, &MerchantDialogueUI::OnClickDeclineButton);
+		back->SetInitialPos(back->GetPos());
+		back->SetVisible(false);
+		back->SetButtonName(L"back");
+		AddChild(back);
 	}
 
 	for (auto& child : _children)
@@ -85,6 +116,7 @@ void MerchantDialogueUI::Tick()
 
 	_maxPage = _scripts.size();
 
+	// 다이얼로그 진행 로직
 	for (auto& child : _children)
 	{
 		auto textBox = dynamic_cast<TextBox*>(child);
@@ -99,11 +131,12 @@ void MerchantDialogueUI::Tick()
 		// 수락, 거절 버튼 활성화
 		if (_page == _maxPage - 1)
 		{
-			auto button = dynamic_cast<Button*>(child);
-			if (button)
+			auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+			int myPlayerID = GET_SINGLE(SceneManager)->GetMyPlayerId();
+			if (scene && myPlayerID)
 			{
-				button->SetVisible(true);
-				continue;
+				_questState = scene->GetPlayerQuestState(myPlayerID, _questID);
+				VisibleButton();
 			}
 		}
 		else
@@ -165,14 +198,75 @@ void MerchantDialogueUI::SetDialogue(int questID)
 	_scripts = GET_SINGLE(QuestManager)->GetQuestScript(questID);
 }
 
-void MerchantDialogueUI::SetRewardItem(int itemID)
+void MerchantDialogueUI::SetRewardItem(int itemID, int num)
 {
-	_item = &GET_SINGLE(ItemManager)->GetItem(itemID);
+	_rewardItem = itemID;
+	_rewardItemNum = num;
 }
 
 void MerchantDialogueUI::SetRewardGold(int gold)
 {
-	_gold = gold;
+	_rewardGold = gold;
+}
+
+void MerchantDialogueUI::VisibleButton()
+{
+	// 버튼 활성화
+	for (auto& child : _children)
+	{
+		// 처음 수령하는 퀘스트인지 확인
+		auto button = dynamic_cast<Button*>(child);
+		if (button)
+		{
+			switch (_questState)
+			{
+			case Protocol::QUEST_STATE_IDLE:
+			{
+				// 퀘스트 수락, 거절 버튼만 활성화
+				if (button->GetButtonName() == L"accept" || button->GetButtonName() == L"decline")
+				{
+					button->SetVisible(true);
+				}
+				else
+				{
+					button->SetVisible(false);
+				}
+				continue;
+			}
+			case Protocol::QUEST_STATE_ACCEPT:
+			{
+				// 뒤로 버튼 활성화
+				if (button->GetButtonName() == L"back")
+				{
+					button->SetVisible(true);
+				}
+				else
+				{
+					button->SetVisible(false);
+				}
+				continue;
+			}
+			case Protocol::QUEST_STATE_COMPLETED:
+			{
+				// 확인 버튼 활성화
+				if (button->GetButtonName() == L"confirm")
+				{
+					button->SetVisible(true);
+				}
+				else
+				{
+					button->SetVisible(false);
+				}
+				continue;
+			}
+			default:
+			{
+				button->SetVisible(false);
+				continue;
+			}
+			}
+		}
+	}
 }
 
 void MerchantDialogueUI::OnClickAcceptButton()
@@ -201,6 +295,17 @@ void MerchantDialogueUI::OnClickAcceptButton()
 
 	// UI 감추기
 	SetVisible(false);
+	auto* questUI = scene->FindUI<QuestUI>(scene->GetUIs());
+
+	// 다이얼로그 페이지 초기화
+	ResetPage();
+
+	if (questUI)
+	{
+		questUI->SetVisible(true);
+		questUI->ResetPos();
+		questUI->ResetPage();
+	}
 }
 
 void MerchantDialogueUI::OnClickDeclineButton()
@@ -209,7 +314,14 @@ void MerchantDialogueUI::OnClickDeclineButton()
 	SetVisible(false);
 
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (scene == nullptr)
+		return;
+
 	auto* questUI = scene->FindUI<QuestUI>(scene->GetUIs());
+
+	// 다이얼로그 페이지 초기화
+	ResetPage();
 
 	if (questUI)
 	{
@@ -217,5 +329,39 @@ void MerchantDialogueUI::OnClickDeclineButton()
 		questUI->ResetPos();
 		questUI->ResetPage();
 	}
+}
 
+void MerchantDialogueUI::OnClickConfirmButton()
+{
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (scene)
+	{
+		int myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
+		auto state = scene->GetPlayerQuestState(myPlayerId, _questID);
+		if (state == Protocol::QUEST_STATE_COMPLETED)
+		{
+			// 퀘스트 완료
+			{
+				MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+				if (myPlayer)
+				{
+					if (GET_SINGLE(ItemManager)->IsInventoryFull())
+					{
+						// 인벤토리가 가득 차(찰 예정이라)서 퀘스트 완료 불가 -> 추후 코드 수정필요
+						return;
+					}
+
+					myPlayer->info.set_gold(myPlayer->info.gold() + _rewardGold);
+					
+					if (_rewardItem != 0)
+						GET_SINGLE(ItemManager)->AddItemToInventory(_rewardItem, _rewardItemNum);
+				}
+				_questState = Protocol::QUEST_STATE_FINISHED;
+				scene->SetPlayerQuestState(myPlayerId, _questID, Protocol::QUEST_STATE_FINISHED);
+				GET_SINGLE(SoundManager)->Play(L"QuestFinished");
+			}
+		}
+	}
 }

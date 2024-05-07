@@ -7,6 +7,8 @@
 #include "MyPlayer.h"
 #include "Inventory.h"
 #include "QuickSlot.h"
+#include "NetworkManager.h"
+#include "ClientPacketHandler.h"
 
 void ItemManager::Init()
 {
@@ -16,6 +18,11 @@ void ItemManager::Init()
 
     _inventory = scene->FindUI<Inventory>(scene->GetUIs());
     _quickSlot = scene->FindUI<QuickSlot>(scene->GetUIs());
+}
+
+void ItemManager::Tick()
+{
+
 }
 
 vector<wstring> ItemManager::FindItemInfo(int itemID)
@@ -91,6 +98,19 @@ bool ItemManager::AddItemToInventory(int itemId, int counts)
     if (itemId == 0)
         return false;
 
+    //DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+    //MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    //int myPlayerID = GET_SINGLE(SceneManager)->GetMyPlayerId();
+
+    //if (scene == nullptr || myPlayer == nullptr)
+    //    return false;
+
+    //// 인벤토리 아이템 서버와 동기화
+    //{
+    //    SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(myPlayerID, itemId, counts);
+    //    GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+    //}
+
     return GetInventory()->AddItem(itemId, counts);
 }
 
@@ -144,6 +164,28 @@ int ItemManager::GetEmptySlots()
     }
 
     return emptySlots;
+}
+
+ITEM* ItemManager::FindItemFromInventory(int itemId)
+{
+    return _inventory->FindItemFromInventory(itemId);
+}
+
+void ItemManager::SyncToServer()
+{
+    auto slots = _inventory->GetSlots();
+
+    for (auto& slot : slots)
+    {
+        if (slot.ItemId != 0)
+        {
+            slot.ItemId;
+            slot.ItemCount;
+            slot.Type;
+            slot.SubType;
+        }
+    }
+
 }
 
 wstring ItemManager::GetName(vector<wstring> row)

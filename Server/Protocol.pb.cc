@@ -389,8 +389,23 @@ struct C_HealDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_HealDefaultTypeInternal _C_Heal_default_instance_;
+PROTOBUF_CONSTEXPR C_AddItem::C_AddItem(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.objectid_)*/uint64_t{0u}
+  , /*decltype(_impl_.itemid_)*/uint64_t{0u}
+  , /*decltype(_impl_.itemcounts_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct C_AddItemDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_AddItemDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_AddItemDefaultTypeInternal() {}
+  union {
+    C_AddItem _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_AddItemDefaultTypeInternal _C_AddItem_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[27];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[28];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -600,6 +615,15 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_Heal, _impl_.objectid_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.objectid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.itemid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.itemcounts_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::S_TEST)},
@@ -629,6 +653,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 184, -1, -1, sizeof(::Protocol::S_QuestList)},
   { 191, -1, -1, sizeof(::Protocol::S_Reset)},
   { 198, -1, -1, sizeof(::Protocol::C_Heal)},
+  { 205, -1, -1, sizeof(::Protocol::C_AddItem)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -659,6 +684,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_S_QuestList_default_instance_._instance,
   &::Protocol::_S_Reset_default_instance_._instance,
   &::Protocol::_C_Heal_default_instance_._instance,
+  &::Protocol::_C_AddItem_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -698,7 +724,8 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "st\022&\n\tquestinfo\030\001 \001(\0132\023.Protocol.QuestIn"
   "fo\"3\n\007S_Reset\022(\n\nobjectinfo\030\001 \001(\0132\024.Prot"
   "ocol.ObjectInfo\"\032\n\006C_Heal\022\020\n\010objectId\030\001 "
-  "\001(\004b\006proto3"
+  "\001(\004\"A\n\tC_AddItem\022\020\n\010objectId\030\001 \001(\004\022\016\n\006it"
+  "emId\030\002 \001(\004\022\022\n\nitemCounts\030\003 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -706,9 +733,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1451, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1518, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 27,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 28,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -6337,6 +6364,241 @@ void C_Heal::InternalSwap(C_Heal* other) {
       file_level_metadata_Protocol_2eproto[26]);
 }
 
+// ===================================================================
+
+class C_AddItem::_Internal {
+ public:
+};
+
+C_AddItem::C_AddItem(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_AddItem)
+}
+C_AddItem::C_AddItem(const C_AddItem& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C_AddItem* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.objectid_){}
+    , decltype(_impl_.itemid_){}
+    , decltype(_impl_.itemcounts_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.itemcounts_) -
+    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.itemcounts_));
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_AddItem)
+}
+
+inline void C_AddItem::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.objectid_){uint64_t{0u}}
+    , decltype(_impl_.itemid_){uint64_t{0u}}
+    , decltype(_impl_.itemcounts_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+C_AddItem::~C_AddItem() {
+  // @@protoc_insertion_point(destructor:Protocol.C_AddItem)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C_AddItem::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_AddItem::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C_AddItem::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_AddItem)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.itemcounts_) -
+      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.itemcounts_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_AddItem::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 objectId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.objectid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 itemId = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.itemid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 itemCounts = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          _impl_.itemcounts_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C_AddItem::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_AddItem)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 objectId = 1;
+  if (this->_internal_objectid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_objectid(), target);
+  }
+
+  // uint64 itemId = 2;
+  if (this->_internal_itemid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_itemid(), target);
+  }
+
+  // uint64 itemCounts = 3;
+  if (this->_internal_itemcounts() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_itemcounts(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_AddItem)
+  return target;
+}
+
+size_t C_AddItem::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_AddItem)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 objectId = 1;
+  if (this->_internal_objectid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objectid());
+  }
+
+  // uint64 itemId = 2;
+  if (this->_internal_itemid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_itemid());
+  }
+
+  // uint64 itemCounts = 3;
+  if (this->_internal_itemcounts() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_itemcounts());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_AddItem::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C_AddItem::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_AddItem::GetClassData() const { return &_class_data_; }
+
+
+void C_AddItem::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_AddItem*>(&to_msg);
+  auto& from = static_cast<const C_AddItem&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_AddItem)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_objectid() != 0) {
+    _this->_internal_set_objectid(from._internal_objectid());
+  }
+  if (from._internal_itemid() != 0) {
+    _this->_internal_set_itemid(from._internal_itemid());
+  }
+  if (from._internal_itemcounts() != 0) {
+    _this->_internal_set_itemcounts(from._internal_itemcounts());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C_AddItem::CopyFrom(const C_AddItem& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_AddItem)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_AddItem::IsInitialized() const {
+  return true;
+}
+
+void C_AddItem::InternalSwap(C_AddItem* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(C_AddItem, _impl_.itemcounts_)
+      + sizeof(C_AddItem::_impl_.itemcounts_)
+      - PROTOBUF_FIELD_OFFSET(C_AddItem, _impl_.objectid_)>(
+          reinterpret_cast<char*>(&_impl_.objectid_),
+          reinterpret_cast<char*>(&other->_impl_.objectid_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_AddItem::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[27]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
@@ -6447,6 +6709,10 @@ Arena::CreateMaybeMessage< ::Protocol::S_Reset >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::C_Heal*
 Arena::CreateMaybeMessage< ::Protocol::C_Heal >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::C_Heal >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_AddItem*
+Arena::CreateMaybeMessage< ::Protocol::C_AddItem >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_AddItem >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

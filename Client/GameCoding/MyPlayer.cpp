@@ -190,20 +190,6 @@ void MyPlayer::TickInput()
 	else
 		_keyPressed = false;
 
-	//// 무기 선택, UI 연동 필요 -> 퀵슬롯으로 대체됨
-	//if (GET_SINGLE(ItemManager)->GetQuickSlotSelectedSubType() == L"Sword")
-	//{
-	//	SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
-	//}
-	//else if (GET_SINGLE(ItemManager)->GetQuickSlotSelectedSubType() == L"Bow")
-	//{
-	//	SetWeaponType(Protocol::WEAPON_TYPE_BOW);
-	//}
-	//else if (GET_SINGLE(ItemManager)->GetQuickSlotSelectedSubType() == L"Staff")
-	//{
-	//	SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
-	//}
-
 	// Debug - 보유 화살 개수 증가
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::Z))
 	{

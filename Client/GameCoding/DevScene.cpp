@@ -161,6 +161,9 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 230, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 230, 230, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 430, 230, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Confirm_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 630, 230, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Confirm_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 830, 230, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Confirm_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 1030, 230, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 330, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 230, 330, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 430, 330, 140, 40);

@@ -20,10 +20,13 @@ public:
 	virtual void Tick();
 
 public:
-	QuestInfo GetQuestInfo(int questID);
+	QuestInfo GetQuestScriptInfo(int questID);
 	vector<wstring> GetQuestScript(int questID);
+
 private:
 	// 퀘스트 트래커
+	// 수락한 퀘스트
+	map<int, Protocol::QuestInfo> _quests;
 
 };
 

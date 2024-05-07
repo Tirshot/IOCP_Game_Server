@@ -41,6 +41,8 @@ enum
 
 	C_Heal = 49,
 
+	C_AddItem = 70,
+
 	S_Reset = 99,
 };
 
@@ -64,6 +66,7 @@ public:
 	static void Handle_C_Quest(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_QuestList(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Heal(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len);
 
 	
 	// º¸³»±â

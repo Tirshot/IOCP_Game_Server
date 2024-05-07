@@ -17,15 +17,14 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
 
-	void OnClickAcceptButton();
-	void OnClickCompleteButton();
-
 public:
 	int GetQuestId() { return _questId; }
 	void SetQuestId(int id) { _questId = id; }
 
 	int GetIndex() { return _index; }
 	RECT GetRect() { return _rect; }
+
+	Protocol::QUEST_STATE GetQuestState() { if (this != nullptr) return _questState; }
 
 protected:
 	Texture* _background = nullptr;

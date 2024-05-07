@@ -16,6 +16,7 @@ using ArrowRef = shared_ptr<class Arrow>;
 using ChatRef = shared_ptr<class Chat>;
 using QuestRef = shared_ptr<class Quest>;
 using ShopItemRef = shared_ptr<class ShopItem>;
+using InventoryRef = shared_ptr<class Inventory>;
 
 #include "Enum.pb.h"
 using Dir = Protocol::DIR_TYPE;

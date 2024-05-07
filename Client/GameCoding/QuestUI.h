@@ -20,6 +20,7 @@ public:
 
 	void ResetQuestList();
 	void ResetPage() { _page = 1; }
+	void RepostionPanels();
 
 private:
 	void SetQuestPanel(pair<int, Protocol::QuestInfo> questInfo);
@@ -30,5 +31,6 @@ protected:
 	map<int, Protocol::QuestInfo> _quests;
 	int _idx = 1;
 	int _page = 1;
+	int _maxPage = 1;
 };
 
