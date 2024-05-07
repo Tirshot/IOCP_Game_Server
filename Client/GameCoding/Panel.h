@@ -30,12 +30,18 @@ public:
 	bool RemoveChild(UI* ui);
 	auto& GetChildren() { return _children; }
 
+	void UpdateChildPos(Panel* parent, int deltaX, int deltaY);
 	void DragAndMove(RECT* rect);
+
+	void SetRelativePos(Vec2Int pos);
+
+public:
+	void ResetPos();
 
 protected:
 	vector<UI*> _children;
 	bool _isDragging = false;
-	POINT _initialPos;
+	POINT _initialMousePos;
 	POINT _mousePos;
 	int _offsetX;
 	int _offsetY;

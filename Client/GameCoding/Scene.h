@@ -41,9 +41,12 @@ public:
 		return nullptr;
 	}
 
+	vector<UI*> GetVisibleUIs();
+
 public:
 	vector<Actor*> _actors[LAYER_MAXCOUNT];
 	vector<UI*> _uis;
+	vector<UI*> _visibleUIs;
 
 private:
 	bool _isPaused = false;

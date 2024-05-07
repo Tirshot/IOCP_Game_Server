@@ -140,3 +140,16 @@ Player* Scene::GetPlayerByID(uint64 objectId)
 		}
 	}
 }
+
+vector<UI*> Scene::GetVisibleUIs()
+{
+	_visibleUIs.clear();
+
+	for (UI* ui : _uis)
+	{
+		if (ui->GetVisible() == true)
+			_visibleUIs.push_back(ui);
+	}
+
+	return _visibleUIs;
+}

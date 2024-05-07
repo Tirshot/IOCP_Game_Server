@@ -20,6 +20,7 @@ struct PlayerQuestState
 };
 
 class Arrow;
+class Quest;
 class GameRoom : public enable_shared_from_this<GameRoom>
 {
 public:
@@ -56,9 +57,10 @@ public:
 public:
 	Protocol::QuestInfo& GetQuest(int questId);
 	void SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state);
+
 private:
 	// 몬스터 스폰 숫자
-	const int32 DESIRED_MONSTER_COUNT = 15;
+	const int32 DESIRED_MONSTER_COUNT = 10;
 	int32 _monsterCount = 0;
 
 public:
@@ -74,6 +76,10 @@ public:
 	map<uint64, NPCRef> GetNPCs() { return _npcs; }
 	map<uint64, ArrowRef> GetArrows() { return _arrows; }
 	map<uint64, Protocol::QuestInfo> GetQuests() { return _quests; }
+	map<uint64, InventoryRef> GetInventorys() { return _inventorys; }
+	InventoryRef GetInventory(int objectId) { return _inventorys[objectId]; }
+	void AddQuest(class Quest quest);
+	void AddItemToPlayer(int objectId, int itemId, int itemCounts);
 
 
 private:
@@ -85,6 +91,7 @@ private:
 	map<uint64, ArrowRef> _arrows;
 	map<uint64, ItemRef> _items;
 	map<uint64, Protocol::QuestInfo> _quests;
+	map<uint64, InventoryRef> _inventorys;
 	map<uint64, GameObjectRef> _deleteObjects;
 };
 

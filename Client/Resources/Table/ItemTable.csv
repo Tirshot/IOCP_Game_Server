@@ -1,43 +1,44 @@
-1,SwordItem,검,Wearable,Sword,근접 공격을 한다. 공격 버튼을 길게 눌러 회전 공격을 한다.
-2,BowItem,활,Wearable,Bow,원거리 공격을 한다. 화살을 소모하여 먼 거리의 적을 공격한다.
-3,StaffItem,스태프,Wearable,Staff,3칸 앞으로 순간이동한다. 전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.
-4,ArrowItem,화살,Consumable,Arrow,소모품. 원거리 공격을 하기 위한 화살.
-5,Potion,HP 회복포션,Consumable,Potion,소모품. 체력을 한 칸 회복한다.
-6,MaxHeartItem,Dummy2,Wearable,Helmet,Dummy2
-7,SwordItem,Dummy3,Wearable,Armor,Dummy3
-8,SwordItem,Dummy4,Wearable,Pants,Dummy4
-9,SwordItem,Dummy5,Wearable,Boots,Dummy5
-10,SwordItem,Dummy6,Wearable,Dummy7,Dummy6
-11,SwordItem,Dummy7,Dummy7,Dummy8,Dummy7
-12,SwordItem,Dummy8,Dummy8,Dummy9,Dummy8
-13,SwordItem,Dummy9,Dummy9,Dummy10,Dummy9
-14,BowItem,Dummy10,Dummy10,Dummy11,Dummy10
-15,StaffItem,Dummy11,Dummy11,Dummy12,Dummy11
-16,ArrowItem,Dummy12,Dummy12,Dummy13,Dummy12
-17,Potion,Dummy13,Dummy13,Dummy14,Dummy13
-18,MaxHeartItem,Dummy14,Dummy14,Dummy15,Dummy14
-19,SwordItem,Dummy15,Dummy15,Dummy16,Dummy15
-20,SwordItem,Dummy16,Dummy16,Dummy17,Dummy16
-21,SwordItem,Dummy17,Dummy17,Dummy18,Dummy17
-22,SwordItem,Dummy18,Dummy18,Dummy19,Dummy18
-23,SwordItem,Dummy19,Dummy19,Dummy20,Dummy19
-24,SwordItem,Dummy20,Dummy20,Dummy21,Dummy20
-25,SwordItem,Dummy21,Dummy21,Dummy22,Dummy21
-26,BowItem,Dummy22,Dummy22,Dummy23,Dummy22
-27,StaffItem,Dummy23,Dummy23,Dummy24,Dummy23
-28,ArrowItem,Dummy24,Dummy24,Dummy25,Dummy24
-29,Potion,Dummy25,Dummy25,Dummy26,Dummy25
-30,MaxHeartItem,Dummy26,Dummy26,Dummy27,Dummy26
-31,SwordItem,Dummy27,Dummy27,Dummy28,Dummy27
-32,SwordItem,Dummy28,Dummy28,Dummy29,Dummy28
-33,SwordItem,Dummy29,Dummy29,Dummy30,Dummy29
-34,SwordItem,Dummy30,Dummy30,Dummy31,Dummy30
-35,SwordItem,Dummy31,Dummy31,Dummy32,Dummy31
-36,SwordItem,Dummy32,Dummy32,Dummy33,Dummy32
-37,SwordItem,Dummy33,Dummy33,Dummy34,Dummy33
-38,BowItem,Dummy34,Dummy34,Dummy35,Dummy34
-39,StaffItem,Dummy35,Dummy35,Dummy36,Dummy35
-40,ArrowItem,Dummy36,Dummy36,Dummy37,Dummy36
-41,ArrowItem,Dummy37,Dummy37,Dummy38,Dummy37
-42,ArrowItem,Dummy38,Dummy38,Dummy39,Dummy38
-43,ArrowItem,Dummy39,Dummy39,Dummy40,Dummy39
+아이템 ID,Item Name,아이템 이름,타입,보조 타입,설명,가격,효과
+1,SwordItem,검,Wearable,Sword,근접 공격을 한다.;공격 버튼을 길게 눌러 회전 공격을 한다.,0,
+2,BowItem,활,Wearable,Bow,원거리 공격을 한다.;화살을 소모하여 먼 거리의 적을 공격한다.,0,
+3,StaffItem,스태프,Wearable,Staff,3칸 앞으로 순간이동한다.;전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.,0,
+4,ArrowItem,화살,Consumable,Arrow,소모품.;원거리 공격을 하기 위한 화살.,5,
+5,Potion,HP 회복포션,Consumable,Potion,소모품.;체력을 한 칸 회복한다.,15,
+6,MaxHeartItem,맥스 하트,Consumable,MaxHeartItem,즉시 최대 체력을 1 증가시킨다.;최대 체력은 10을 넘을 수 없다.,1000,
+7,,,,,,,
+8,,,,,,,
+9,,,,,,,
+10,Helmet00,강철 투구,Wearable,Helmet,강철 투구,20,
+11,Helmet01,워리어 투구,Wearable,Helmet,워리어 투구,50,
+12,Helmet02,기사의 투구,Wearable,Helmet,기사의 투구,100,
+13,Helmet03,장군의 투구,Wearable,Helmet,장군의 투구,200,
+14,Armor00,강철 갑옷,Wearable,Armor,강철 갑옷,50,
+15,Armor01,워리어 갑옷,Wearable,Armor,워리어 갑옷,100,
+16,Armor02,기사의 갑옷,Wearable,Armor,기사의 갑옷,200,
+17,Armor03,장군의 갑옷,Wearable,Armor,장군의 갑옷,300,
+18,Pants00,작은 허리가방,Wearable,Pants,작은 허리가방,30,
+19,Pants01,허리가방,Wearable,Pants,허리가방,60,
+20,Pants02,큰 허리가방,Wearable,Pants,큰 허리가방,90,
+21,Pants03,전술 허리가방,Wearable,Pants,전술 허리가방,120,
+22,Boots00,가죽신발,Wearable,Boots,가죽신발,20,
+23,Boots01,튼튼한 가죽신발,Wearable,Boots,튼튼한 가죽신발,50,
+24,Boots02,강철신발,Wearable,Boots,강철신발,100,
+25,Boots03,튼튼한 강철신발,Wearable,Boots,튼튼한 강철신발,200,
+26,Helmet00,Dummy1,Wearable,Helmet,강철 투구,20,
+27,Helmet00,Dummy2,Wearable,Helmet,워리어 투구,50,
+28,Helmet00,Dummy3,Wearable,Helmet,기사의 투구,100,
+29,Helmet00,Dummy4,Wearable,Helmet,장군의 투구,200,
+30,Helmet00,Dummy5,Wearable,Armor,강철 갑옷,50,
+31,Helmet00,Dummy6,Wearable,Armor,워리어 갑옷,100,
+32,Helmet00,Dummy7,Wearable,Armor,기사의 갑옷,200,
+33,Helmet00,Dummy8,Wearable,Armor,장군의 갑옷,300,
+34,Helmet00,Dummy9,Wearable,Pants,작은 허리가방,30,
+35,Helmet00,Dummy10,Wearable,Pants,허리가방,60,
+36,Helmet00,Dummy11,Wearable,Pants,큰 허리가방,90,
+37,Helmet00,Dummy12,Wearable,Pants,전술 허리가방,120,
+38,Helmet00,Dummy13,Wearable,Boots,가죽신발,20,
+39,Helmet00,Dummy14,Wearable,Boots,튼튼한 가죽신발,50,
+40,Helmet00,Dummy15,Wearable,Boots,강철신발,100,
+41,Helmet00,Dummy16,Wearable,Boots,튼튼한 강철신발,200,
+42,,,,,,,
+43,,,,,,,

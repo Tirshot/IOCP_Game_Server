@@ -9,8 +9,10 @@ public:
 	virtual void Tick();
 	virtual void Render(HDC hdc);
 
-	void SetPos(Vec2 pos) { _pos = pos; }
+	void SetPos(Vec2 pos) { _pos = pos;/*	_initialPos = _pos;*/}
 	Vec2 GetPos(){ return _pos; }
+	void SetInitialPos(Vec2 pos) { _initialPos = pos; }
+	Vec2 GetInitialPos() { return _initialPos; }
 
 	void SetSize(Vec2Int size) { _size = size; }
 	Vec2Int GetSize() { return _size; }
@@ -18,14 +20,26 @@ public:
 	void SetVisible(bool visible) { if (_visible == visible) return; _visible = visible; }
 	bool GetVisible() const { return _visible; }
 
+	void SetParent(UI* ui) { _parent = ui; }
+	UI* GetParent() { return _parent; }
+
 	// UI를 사각형이라고 가정
 	RECT GetRect();
 	bool IsMouseInRect();
 	bool IsMouseInRect(RECT rect);
+	bool IsMouseOutRect(RECT rect);
+
+	int GetUIID() { return _id; }
 
 protected:
 	Vec2	_pos = { 0, 0 };
+	Vec2 _initialPos;
 	Vec2Int _size = { 150, 150 };
 	bool _visible = true;
+	UI* _parent = nullptr;
+	int _id = 0;
+
+	// id 부여
+	static int ui_idGenerator;
 };
 

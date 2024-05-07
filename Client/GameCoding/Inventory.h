@@ -18,22 +18,28 @@ private:
 	void SetItemSlot(ITEM& slot);
 	void SetEquipSlotRects();
 	void SlotRectsPosUpdate(RECT* rect);
+	void SyncItemToServer(int itemID, int counts);
 
 public:
 	bool AddItem(int ItemId);
 	bool AddItem(int ItemId, int ItemCount);
+	bool RemoveItem(ITEM* item);
+	bool RemoveItem(ITEM* item, int ItemCount);
 	bool RemoveItem(int itemId);
 	bool RemoveItem(int itemId, int ItemCount);
 	void SetItemCount(int itemId, int ItemCount);
+	vector<ITEM> GetSlots() { return _slots; }
 
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 
-	ITEM* FindItem(int itemId);
+	ITEM* FindItemFromInventory(int itemId);
 	
 	ITEM* GetEquippedItem(wstring wstr);
 
 	void EquipItem(ITEM& item);
 	void PressToSetQuickItem(ITEM& slot);
+
+	void OnPopClickAcceptDelegate();
 
 protected:
 	// nums : 8 x 5, slot : 28 x 28px
@@ -54,11 +60,14 @@ protected:
 private:
 	int _slotSize = 28;
 	bool _initialized = false;
+	bool _isItemDropped = false;
 
 	// 드래그 앤 드랍
 	ITEM* _selectedItem;
+	ITEM* _deleteItem = {};
 	ITEM* _destinatedItem;
 	RECT _invenRect;	// 인벤토리 영역 체크용 Rect
 	RECT _dragRect;		// 인벤토리 드래그 Rect
+	class AlertBox* _alert = nullptr;
 };
 

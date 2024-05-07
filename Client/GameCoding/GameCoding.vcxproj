@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="AlertBox.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="ArrowItem.h" />
     <ClInclude Include="ArrowUI.h" />
@@ -170,8 +171,11 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemCountBox.h" />
+    <ClInclude Include="ItemCountsPopUp.h" />
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="Merchant.h" />
+    <ClInclude Include="MerchantDialogueUI.h" />
     <ClInclude Include="MerchantTrigger.h" />
     <ClInclude Include="MerchantTutorial.h" />
     <ClInclude Include="MerchantTutorialTrigger.h" />
@@ -182,6 +186,7 @@
     <ClInclude Include="NamePlate.h" />
     <ClInclude Include="Potion.h" />
     <ClInclude Include="Quest.h" />
+    <ClInclude Include="QuestManager.h" />
     <ClInclude Include="QuestUI.h" />
     <ClInclude Include="QuestUIPanel.h" />
     <ClInclude Include="QuickSlot.h" />
@@ -190,6 +195,7 @@
     <ClInclude Include="StatusPanel.h" />
     <ClInclude Include="TeleportEffect.h" />
     <ClInclude Include="TextBox.h" />
+    <ClInclude Include="Trigger.h" />
     <ClInclude Include="TutorialTrigger.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="NPC.h" />
@@ -225,6 +231,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="AlertBox.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="ArrowItem.cpp" />
     <ClCompile Include="ArrowUI.cpp" />
@@ -256,8 +263,11 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemCountBox.cpp" />
+    <ClCompile Include="ItemCountsPopUp.cpp" />
     <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Merchant.cpp" />
+    <ClCompile Include="MerchantDialogueUI.cpp" />
     <ClCompile Include="MerchantTrigger.cpp" />
     <ClCompile Include="MerchantTutorial.cpp" />
     <ClCompile Include="MerchantTutorialTrigger.cpp" />
@@ -268,6 +278,7 @@
     <ClCompile Include="NamePlate.cpp" />
     <ClCompile Include="Potion.cpp" />
     <ClCompile Include="Quest.cpp" />
+    <ClCompile Include="QuestManager.cpp" />
     <ClCompile Include="QuestUI.cpp" />
     <ClCompile Include="QuestUIPanel.cpp" />
     <ClCompile Include="QuickSlot.cpp" />
@@ -276,6 +287,7 @@
     <ClCompile Include="StatusPanel.cpp" />
     <ClCompile Include="TeleportEffect.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TutorialTrigger.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="NPC.cpp" />

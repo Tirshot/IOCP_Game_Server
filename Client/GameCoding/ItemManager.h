@@ -9,6 +9,7 @@ class ItemManager
 
 public:
 	void Init();
+	void Tick();
 
 public:
 	vector<wstring> FindItemInfo(int itemID);
@@ -18,6 +19,7 @@ public:
 
 	class Inventory* GetInventory() { return _inventory; }
 	bool AddItemToInventory(int itemId);
+	bool AddItemToInventory(int itemId, int counts);
 	bool RemoveItemFromInventory(int itemId);
 
 	class QuickSlot* GetQuickSlot() { return _quickSlot; }
@@ -28,12 +30,19 @@ public:
 
 	void EquipItem(ITEM& item);
 
+	bool IsInventoryFull();
+	int GetEmptySlots();
+
+	ITEM* FindItemFromInventory(int itemId);
+	void SyncToServer();
+
 public:
 	wstring GetName(vector <wstring> row);
 	wstring GetKorName(vector <wstring> row);
 	wstring GetType(vector <wstring> row);
 	wstring GetSubType(vector <wstring> row);
 	wstring GetDescription(vector <wstring> row);
+	int GetPrice(vector <wstring> row);
 	Sprite* GetSprite(wstring wstr);
 
 private:

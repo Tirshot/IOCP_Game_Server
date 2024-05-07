@@ -9,6 +9,7 @@
 #include "Arrow.h"
 #include "Chat.h"
 #include "Quest.h"
+#include "Inventory.h"
 #include <filesystem>
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
@@ -29,7 +30,8 @@ void GameRoom::Init()
 	filesystem::path tilemapDirectory = currentPath / ".." / "Client" / "Resources" / "Tilemap" / "Tilemap01.txt";
 	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
 	_tilemap.LoadFile(relativePath);
-
+	GET_SINGLE(Quest)->Init();
+	GET_SINGLE(Inventory)->Init();
 	// Sign
 	{
 		SignRef npc1 = GameObject::CreateSign();
@@ -59,27 +61,8 @@ void GameRoom::Init()
 		npc3->info.set_name("Merchant_Sign");
 		AddObject(npc3);
 	}
-	// Quest »ý¼º
 	{
-		QuestRef quest0 = Quest::CreateQuest();
-		quest0->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-		quest0->info.set_targetnums(5);
-		quest0->info.set_rewardgold(150);
-		_quests.insert({ quest0->info.questid(), quest0->info});
-	}
-	{
-		QuestRef quest1 = Quest::CreateQuest();
-		quest1->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
-		quest1->info.set_targetnums(1);
-		quest1->info.set_rewardgold(100);
-		_quests.insert({ quest1->info.questid(), quest1->info });
-	}
-	{
-		QuestRef quest2 = Quest::CreateQuest();
-		quest2->info.set_targettype(Protocol::OBJECT_TYPE_MONSTER);
-		quest2->info.set_targetnums(0);
-		quest2->info.set_rewardgold(0);
-		_quests.insert({ quest2->info.questid(), quest2->info });
+		GET_SINGLE(Quest)->CreateQuest();
 	}
 }
 
@@ -114,6 +97,11 @@ void GameRoom::Update()
 		{
 			_deleteObjects[id] = item.second;
 		}
+	}
+
+	for (auto& inven : _inventorys)
+	{
+		inven.second->Update();
 	}
 
 	for (auto& item : _arrows)
@@ -657,4 +645,14 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
 		Broadcast(sendBuffer);
 	}
+}
+
+void GameRoom::AddQuest(Quest quest)
+{
+	_quests.insert({ quest.info.questid(), quest.info });
+}
+
+void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts)
+{
+	GetInventory(objectId)->AddItemToInventory(itemId, itemCounts);
 }

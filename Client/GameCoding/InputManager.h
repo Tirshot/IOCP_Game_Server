@@ -11,9 +11,12 @@ enum class KeyType
     Right = VK_RIGHT,
 
     SpaceBar = VK_SPACE,
+    ESC = VK_ESCAPE,
     Enter = VK_RETURN,
+    
     LeftShift = VK_LSHIFT,
     RightShift = VK_RSHIFT,
+
 
     W = 'W',
     A = 'A',

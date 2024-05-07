@@ -33,6 +33,7 @@
 #include "ChatInput.h"
 #include "ChatManager.h"
 #include "NetworkManager.h"
+#include "QuestManager.h"
 #include "ClientPacketHandler.h"
 #include "Arrow.h"
 #include "ArrowItem.h"
@@ -44,6 +45,8 @@
 #include "Quest.h"
 #include "Inventory.h"
 #include "QuickSlot.h"
+#include "AlertBox.h"
+#include "MerchantDialogueUI.h"
 #include <filesystem>
 
 DevScene::DevScene()
@@ -68,15 +71,6 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Potion", L"Sprite\\Item\\Potion.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Heart", L"Sprite\\UI\\Heart.bmp", RGB(128,128,128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"HeartItem", L"Sprite\\Item\\HeartItem.bmp", RGB(128,128,128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"FullHeartItem", L"Sprite\\Item\\FullHeartItem.bmp", RGB(128,128,128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"MaxHeartItem", L"Sprite\\Item\\MaxHeartItem.bmp", RGB(128,128,128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"SwordItem", L"Sprite\\Item\\SwordItem.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"BowItem", L"Sprite\\Item\\BowItem.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"StaffItem", L"Sprite\\Item\\StaffItem.bmp", RGB(128, 128, 128));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowItem", L"Sprite\\Item\\ArrowItem.bmp", RGB(255,0,255));
-	GET_SINGLE(ResourceManager)->LoadTexture(L"BlackMp", L"Sprite\\UI\\BlackMp.bmp");
-	GET_SINGLE(ResourceManager)->LoadTexture(L"MP", L"Sprite\\UI\\MP.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerUp", L"Sprite\\Player\\PlayerUp.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerLeft", L"Sprite\\Player\\PlayerLeft.bmp", RGB(128, 128, 128));
@@ -90,7 +84,19 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Sign", L"Sprite\\NPC\\Sign.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Merchant", L"Sprite\\NPC\\Merchant.bmp", RGB(255, 0, 255));
 	
+	// 아이템 텍스쳐
+	GET_SINGLE(ResourceManager)->LoadTexture(L"HeartItem", L"Sprite\\Item\\HeartItem.bmp", RGB(128,128,128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"FullHeartItem", L"Sprite\\Item\\FullHeartItem.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MaxHeartItem", L"Sprite\\Item\\MaxHeartItem.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"SwordItem", L"Sprite\\Item\\SwordItem.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"BowItem", L"Sprite\\Item\\BowItem.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"StaffItem", L"Sprite\\Item\\StaffItem.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowItem", L"Sprite\\Item\\ArrowItem.bmp", RGB(255, 0, 255));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"EquipItem", L"Sprite\\Item\\Equips.bmp", RGB(255, 0, 255));
+
 	// UI 텍스쳐
+	GET_SINGLE(ResourceManager)->LoadTexture(L"BlackMp", L"Sprite\\UI\\BlackMp.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MP", L"Sprite\\UI\\MP.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"GameOver", L"Sprite\\UI\\GameOver.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Sword", L"Sprite\\Item\\Sword.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Bow", L"Sprite\\Item\\Bow.bmp", RGB(128, 128, 128));
@@ -111,6 +117,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"MerchantTutorial", L"Sprite\\UI\\MerchantTutorial.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ShopUIBackground", L"Sprite\\UI\\ShopUI.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Inventory", L"Sprite\\UI\\inventory.bmp", RGB(255, 0, 255));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Icon", L"Sprite\\UI\\Icon.bmp", RGB(255, 0, 255));
 
 	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
@@ -126,6 +133,23 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"SwordItem", GET_SINGLE(ResourceManager)->GetTexture(L"SwordItem"), 0, 0, 48, 48);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"BowItem", GET_SINGLE(ResourceManager)->GetTexture(L"BowItem"), 0, 0, 51, 51);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"StaffItem", GET_SINGLE(ResourceManager)->GetTexture(L"StaffItem"), 0, 0, 39, 42);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Helmet00", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 0, 0, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Helmet01", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 42, 0, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Helmet02", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 83, 0, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Helmet03", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 127, 0, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Armor00", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 0, 30, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Armor01", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 42, 30, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Armor02", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 83, 30, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Armor03", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 127, 30, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Pants00", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 0, 60, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Pants01", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 42, 60, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Pants02", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 83, 60, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Pants03", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 127, 60, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots00", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 0, 90, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots01", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 42, 90, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots02", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 83, 90, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots03", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 127, 90, 30, 30);
+
 
 	// UI 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Revive_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 30, 140, 40);
@@ -137,12 +161,21 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 230, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 230, 230, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Back_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 430, 230, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Confirm_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 630, 230, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Confirm_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 830, 230, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Confirm_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 1030, 230, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 330, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 230, 330, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Shop_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 430, 330, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 30, 430, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 230, 430, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 430, 430, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Accept_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 630, 330, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Accept_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 830, 330, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Accept_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 1030, 330, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Decline_Off", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 630, 430, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Decline_Hovered", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 830, 430, 140, 40);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Quest_Decline_On", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 1030, 430, 140, 40);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"GameOver", GET_SINGLE(ResourceManager)->GetTexture(L"GameOver"), 0, 0, 400, 100);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"BlackHeart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Heart", GET_SINGLE(ResourceManager)->GetTexture(L"Heart"), 25, 0, 50, 21);
@@ -168,8 +201,13 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"PurchaseButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 484, 540, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"AcceptButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 84, 640, 32, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"CompleteButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 184, 640, 32, 21);
-	GET_SINGLE(ResourceManager)->CreateSprite(L"FinishedButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 284, 640, 32, 21);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"PopAcceptButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 615, 30, 60, 35);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"PopDenyButton", GET_SINGLE(ResourceManager)->GetTexture(L"Buttons"), 615, 130, 60, 35);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Inventory", GET_SINGLE(ResourceManager)->GetTexture(L"Inventory"), 0, 0, 290, 356);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"DangerIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 0, 0, 34, 34);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"AlertIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 34, 0, 34, 34);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"InformationIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 68, 0, 34, 34);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"MerchantSprite", GET_SINGLE(ResourceManager)->GetTexture(L"Merchant"), 0, 0, 60, 100);
 
 	LoadMap();
 	LoadPlayer();
@@ -669,16 +707,6 @@ void DevScene::LoadTilemap()
 
 void DevScene::LoadUI()
 {
-	//{	// 무기 슬롯, pivot은 중앙 하단
-	//	WeaponSlot* ws = new WeaponSlot();
-	//	if (ws)
-	//	{
-	//		ws->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-	//		
-	//		ws->SetVisible(true);
-	//		AddUI(ws);
-	//	}
-	//}
 	{	// 퀵 슬롯
 		QuickSlot* qs = GET_SINGLE(QuickSlot);
 		if (qs)
@@ -687,7 +715,6 @@ void DevScene::LoadUI()
 			qs->SetVisible(true);
 			AddUI(qs);
 		}
-
 	}
 	{  // 채팅 창
 		Chat* chat = new Chat(Vec2{ 10,320 } /*Texts*/);
@@ -734,6 +761,16 @@ void DevScene::LoadUI()
 			AddUI(tu);
 		}
 	}
+	{
+		// 상인 대화 창
+		MerchantDialogueUI* talk = new MerchantDialogueUI();
+		if (talk)
+		{
+			talk->SetDialogue(0);
+			talk->SetVisible(false);
+			AddUI(talk);
+		}
+	}
 	{	// 상인 - 상점 UI
 		ShopUI* shopUI = new ShopUI();
 		if (shopUI)
@@ -749,6 +786,7 @@ void DevScene::LoadUI()
 		if (questUI)
 		{
 			questUI->SetPos({ 135,80 });
+			questUI->SetInitialPos({ 135,80 });
 			questUI->SetSize({ 535,450 });
 			questUI->SetVisible(false);
 			AddUI(questUI);

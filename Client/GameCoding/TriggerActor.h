@@ -18,11 +18,15 @@ public:
 
 	// ¡¢√À ∆«∫∞
 	bool IsTouched();
+	void SetIsTouched(bool touched) { _isTouched = touched; }
 
 	void FadeOut();
+
+	void SetExpTime(float time) { _exptime = time; }
 
 protected:
 	bool _visiblity = false;
 	float _exptime = 0.f; // Exposure time
+	bool _isTouched = false;
 };
 

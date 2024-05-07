@@ -196,12 +196,14 @@ enum ITEM_TYPE : int {
   ITEM_TYPE_MAXHEART = 3,
   ITEM_TYPE_ARROW = 4,
   ITEM_TYPE_POTION = 5,
+  ITEM_TYPE_CONSUMABLE = 11,
+  ITEM_TYPE_WEARABLE = 12,
   ITEM_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ITEM_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ITEM_TYPE_IsValid(int value);
 constexpr ITEM_TYPE ITEM_TYPE_MIN = ITEM_TYPE_NONE;
-constexpr ITEM_TYPE ITEM_TYPE_MAX = ITEM_TYPE_POTION;
+constexpr ITEM_TYPE ITEM_TYPE_MAX = ITEM_TYPE_WEARABLE;
 constexpr int ITEM_TYPE_ARRAYSIZE = ITEM_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ITEM_TYPE_descriptor();
@@ -217,6 +219,35 @@ inline bool ITEM_TYPE_Parse(
     ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ITEM_TYPE* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ITEM_TYPE>(
     ITEM_TYPE_descriptor(), name, value);
+}
+enum CONSUMABLE_TYPE : int {
+  CONSUMABLE_TYPE_NONE = 0,
+  CONSUMABLE_TYPE_HEART = 1,
+  CONSUMABLE_TYPE_FULLHEART = 2,
+  CONSUMABLE_TYPE_MAXHEART = 3,
+  CONSUMABLE_TYPE_ARROW = 4,
+  CONSUMABLE_TYPE_POTION = 5,
+  CONSUMABLE_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  CONSUMABLE_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool CONSUMABLE_TYPE_IsValid(int value);
+constexpr CONSUMABLE_TYPE CONSUMABLE_TYPE_MIN = CONSUMABLE_TYPE_NONE;
+constexpr CONSUMABLE_TYPE CONSUMABLE_TYPE_MAX = CONSUMABLE_TYPE_POTION;
+constexpr int CONSUMABLE_TYPE_ARRAYSIZE = CONSUMABLE_TYPE_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CONSUMABLE_TYPE_descriptor();
+template<typename T>
+inline const std::string& CONSUMABLE_TYPE_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, CONSUMABLE_TYPE>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function CONSUMABLE_TYPE_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    CONSUMABLE_TYPE_descriptor(), enum_t_value);
+}
+inline bool CONSUMABLE_TYPE_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CONSUMABLE_TYPE* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CONSUMABLE_TYPE>(
+    CONSUMABLE_TYPE_descriptor(), name, value);
 }
 enum NPC_TYPE : int {
   NPC_TYPE_SIGN = 0,
@@ -321,6 +352,11 @@ template <> struct is_proto_enum< ::Protocol::ITEM_TYPE> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::ITEM_TYPE>() {
   return ::Protocol::ITEM_TYPE_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::CONSUMABLE_TYPE> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CONSUMABLE_TYPE>() {
+  return ::Protocol::CONSUMABLE_TYPE_descriptor();
 }
 template <> struct is_proto_enum< ::Protocol::NPC_TYPE> : ::std::true_type {};
 template <>

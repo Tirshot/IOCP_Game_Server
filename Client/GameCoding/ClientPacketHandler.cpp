@@ -519,3 +519,14 @@ SendBufferRef ClientPacketHandler::Make_C_Heal(uint64 objectId)
 
 	return MakeSendBuffer(pkt, C_Heal);
 }
+
+SendBufferRef ClientPacketHandler::Make_C_AddItem(uint64 objectId, int itemId, int itemCounts)
+{
+	Protocol::C_AddItem pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_itemid(itemId);
+	pkt.set_itemcounts(itemCounts);
+
+	return MakeSendBuffer(pkt, C_AddItem);
+}

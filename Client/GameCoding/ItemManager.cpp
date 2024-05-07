@@ -7,6 +7,8 @@
 #include "MyPlayer.h"
 #include "Inventory.h"
 #include "QuickSlot.h"
+#include "NetworkManager.h"
+#include "ClientPacketHandler.h"
 
 void ItemManager::Init()
 {
@@ -16,6 +18,11 @@ void ItemManager::Init()
 
     _inventory = scene->FindUI<Inventory>(scene->GetUIs());
     _quickSlot = scene->FindUI<QuickSlot>(scene->GetUIs());
+}
+
+void ItemManager::Tick()
+{
+
 }
 
 vector<wstring> ItemManager::FindItemInfo(int itemID)
@@ -72,6 +79,7 @@ ITEM& ItemManager::GetItem(int itemID)
     item->Name = GET_SINGLE(ItemManager)->GetName(ItemInfo);
     item->KorName = GET_SINGLE(ItemManager)->GetKorName(ItemInfo);
     item->Description = GET_SINGLE(ItemManager)->GetDescription(ItemInfo);
+    item->Price = GET_SINGLE(ItemManager)->GetPrice(ItemInfo);
     item->Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
     item->SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
     item->Sprite = GET_SINGLE(ItemManager)->GetSprite(item->Name);
@@ -83,6 +91,27 @@ ITEM& ItemManager::GetItem(int itemID)
 bool ItemManager::AddItemToInventory(int itemId)
 {
     return GetInventory()->AddItem(itemId);
+}
+
+bool ItemManager::AddItemToInventory(int itemId, int counts)
+{
+    if (itemId == 0)
+        return false;
+
+    //DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+    //MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    //int myPlayerID = GET_SINGLE(SceneManager)->GetMyPlayerId();
+
+    //if (scene == nullptr || myPlayer == nullptr)
+    //    return false;
+
+    //// 인벤토리 아이템 서버와 동기화
+    //{
+    //    SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(myPlayerID, itemId, counts);
+    //    GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+    //}
+
+    return GetInventory()->AddItem(itemId, counts);
 }
 
 bool ItemManager::RemoveItemFromInventory(int itemId)
@@ -110,6 +139,55 @@ void ItemManager::EquipItem(ITEM& item)
     _inventory->EquipItem(item);
 }
 
+bool ItemManager::IsInventoryFull()
+{
+    auto slots = _inventory->GetSlots();
+
+    for (auto& slot : slots)
+    {
+        if (slot.ItemId == 0)
+            return false;
+    }
+
+    return true;
+}
+
+int ItemManager::GetEmptySlots()
+{
+    auto slots = _inventory->GetSlots();
+    int emptySlots = 0;
+
+    for (auto& slot : slots)
+    {
+        if (slot.ItemId == 0)
+            emptySlots++;
+    }
+
+    return emptySlots;
+}
+
+ITEM* ItemManager::FindItemFromInventory(int itemId)
+{
+    return _inventory->FindItemFromInventory(itemId);
+}
+
+void ItemManager::SyncToServer()
+{
+    auto slots = _inventory->GetSlots();
+
+    for (auto& slot : slots)
+    {
+        if (slot.ItemId != 0)
+        {
+            slot.ItemId;
+            slot.ItemCount;
+            slot.Type;
+            slot.SubType;
+        }
+    }
+
+}
+
 wstring ItemManager::GetName(vector<wstring> row)
 {
     return row[1];
@@ -133,6 +211,11 @@ wstring ItemManager::GetSubType(vector<wstring> row)
 wstring ItemManager::GetDescription(vector<wstring> row)
 {
     return row[5];
+}
+
+int ItemManager::GetPrice(vector<wstring> row)
+{
+    return stoi(row[6]);
 }
 
 Sprite* ItemManager::GetSprite(wstring wstr)

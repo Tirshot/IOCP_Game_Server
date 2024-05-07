@@ -74,8 +74,8 @@ void QuickSlot::Render(HDC hdc)
 			_slotSize / 1.5f,
 			_slotSize / 1.5f,
 			_slots[i].Sprite->GetDC(),
-			0,
-			0,
+			_slots[i].Sprite->GetPos().x,
+			_slots[i].Sprite->GetPos().y,
 			_slots[i].Sprite->GetSize().x,
 			_slots[i].Sprite->GetSize().y,
 			_slots[i].Sprite->GetTransparent());

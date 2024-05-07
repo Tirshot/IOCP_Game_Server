@@ -353,6 +353,24 @@
     <ClInclude Include="ItemManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
+    <ClInclude Include="ItemCountBox.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="AlertBox.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemCountsPopUp.h">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger.h">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestManager.h">
+      <Filter>소스 파일\01. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MerchantDialogueUI.h">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -599,6 +617,24 @@
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemCountBox.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="AlertBox.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemCountsPopUp.cpp">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger.cpp">
+      <Filter>소스 파일\03. Objects\Game\Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestManager.cpp">
+      <Filter>소스 파일\01. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MerchantDialogueUI.cpp">
+      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
