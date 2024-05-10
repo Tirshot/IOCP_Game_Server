@@ -12,7 +12,7 @@ public:
 	QuestUIPanel(Protocol::QuestInfo& info, Vec2 pos, int idx);
 
 	virtual ~QuestUIPanel();
-	
+
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
@@ -23,6 +23,10 @@ public:
 
 	int GetIndex() { return _index; }
 	RECT GetRect() { return _rect; }
+
+	int GetRewardGold() { return _reward; }
+	int GetRewardItem() { return _rewardItem; }
+	int GetRewardItemNum() { return _rewardItemNum; }
 
 	Protocol::QUEST_STATE GetQuestState() { if (this != nullptr) return _questState; }
 

@@ -34,6 +34,7 @@ public:
 protected:
 	Vec2	_pos = { 0, 0 };
 	Vec2 _initialPos;
+	RECT _rect = {};
 	Vec2Int _size = { 150, 150 };
 	bool _visible = true;
 	UI* _parent = nullptr;

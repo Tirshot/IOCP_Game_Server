@@ -18,6 +18,5 @@ protected:
 	MyPlayer* _myPlayer = nullptr;
 	Sprite* _arrows= nullptr;
 	int32 _arrowsCount = 0;
-	RECT _rect = {};
 };
 

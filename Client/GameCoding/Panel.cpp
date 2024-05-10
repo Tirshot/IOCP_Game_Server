@@ -201,6 +201,13 @@ void Panel::SetRelativePos(Vec2Int pos)
 	SetPos({ (int)Pos.x + ((float)Size.x / 2) + (int)pos.x, (int)Pos.y + ((float)Size.y / 2) + (int)pos.y});
 }
 
+bool Panel::IsOverlapped(RECT& thisRect, RECT& other)
+{
+	// 두 사각형이 겹치는지 여부를 판단
+	return !(thisRect.right < other.left || thisRect.left > other.right ||
+		thisRect.bottom < other.top || thisRect.top > other.bottom);
+}
+
 void Panel::ResetPos()
 {
 	// 기본 위치로 리셋

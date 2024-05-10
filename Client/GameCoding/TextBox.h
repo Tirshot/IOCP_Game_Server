@@ -15,10 +15,12 @@ public:
 	virtual void Render(HDC hdc);
 
 public:
+	RECT GetRect() { return _rect; }
 	void SetText(wstring text);
 	void AlignText(TextAlign align) { _textAlign = align; }
 	void SetFloating(bool floating) { _isFloating = floating; }
 	void SetPadding(float x, float y);
+	bool IsOverlapped(RECT other);
 
 protected:
 	Sprite* _backGround = nullptr;
@@ -31,6 +33,6 @@ private:
 	bool _isFloating = false;
 	TextAlign _textAlign = TextAlign::Left;
 	bool _initialized = false;
-
+	bool _isOverlapped = false;
 };
 

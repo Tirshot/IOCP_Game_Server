@@ -18,9 +18,11 @@ private:
 	void SetItemSlot(ITEM& slot);
 	void SetEquipSlotRects();
 	void SlotRectsPosUpdate(RECT* rect);
+	void SyncUseableItemToServer(int itemID, int counts);
 	void SyncItemToServer(int itemID, int counts);
 
 public:
+	bool AddItem(ITEM* item);
 	bool AddItem(int ItemId);
 	bool AddItem(int ItemId, int ItemCount);
 	bool RemoveItem(ITEM* item);
@@ -36,7 +38,7 @@ public:
 	
 	ITEM* GetEquippedItem(wstring wstr);
 
-	void EquipItem(ITEM& item);
+	void EquipItem(ITEM* item);
 	void PressToSetQuickItem(ITEM& slot);
 
 	void OnPopClickAcceptDelegate();
@@ -48,7 +50,7 @@ protected:
 	vector<RECT> _rects;
 
 	// ÀåÂø ½½·Ô
-	map<int, ITEM> _equips;
+	vector<::pair<RECT, ITEM>> _equips;
 	vector<RECT> _equipRects;
 	
 	class TextBox* _itemName = nullptr;

@@ -5,6 +5,16 @@ class Panel : public UI
 {
 	using Super = UI;
 
+	enum class OverlapDir
+	{
+		None,
+		Left,
+		Right,
+		Top,
+		Bottom,
+		Full
+	};
+
 public:
 	Panel();
 	virtual ~Panel();
@@ -34,6 +44,8 @@ public:
 	void DragAndMove(RECT* rect);
 
 	void SetRelativePos(Vec2Int pos);
+
+	bool IsOverlapped(RECT& thisRect, RECT& other);
 
 public:
 	void ResetPos();
