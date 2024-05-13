@@ -84,8 +84,8 @@ void MerchantUI::BeginPlay()
 void MerchantUI::Tick()
 {
 	for (auto& child : _children)
-		child->Tick();
-
+		child->Tick(); 
+	
 	{	// 퀘스트 리스트 받아오기
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_QuestList();
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);

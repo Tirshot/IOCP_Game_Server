@@ -119,6 +119,8 @@ void ItemCountsPopUp::BeginPlay()
 
 void ItemCountsPopUp::Tick()
 {
+	Super::Tick();
+
 	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
 
 	Panel::DragAndMove(&_rect);

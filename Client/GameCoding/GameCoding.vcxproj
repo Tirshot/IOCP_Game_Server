@@ -184,6 +184,7 @@
     <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="NamePlate.h" />
+    <ClInclude Include="PopUp.h" />
     <ClInclude Include="Potion.h" />
     <ClInclude Include="Quest.h" />
     <ClInclude Include="QuestManager.h" />
@@ -276,6 +277,7 @@
     <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="NamePlate.cpp" />
+    <ClCompile Include="PopUp.cpp" />
     <ClCompile Include="Potion.cpp" />
     <ClCompile Include="Quest.cpp" />
     <ClCompile Include="QuestManager.cpp" />

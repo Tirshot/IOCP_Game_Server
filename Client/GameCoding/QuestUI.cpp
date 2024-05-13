@@ -97,6 +97,8 @@ void QuestUI::BeginPlay()
 
 	for (auto& child : _children)
 		child->BeginPlay();
+
+	ResetQuestList();
 }
 
 void QuestUI::Tick()

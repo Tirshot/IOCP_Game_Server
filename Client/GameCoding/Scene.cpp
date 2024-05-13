@@ -3,12 +3,14 @@
 #include "Actor.h"
 #include "UI.h"
 #include "SceneManager.h"
+#include "InputManager.h"
 #include "TimeManager.h"
 #include "Creature.h"
 #include "Panel.h"
 #include "Chat.h"
 #include "Player.h"
 #include "Inventory.h"
+#include "ShopUI.h"
 
 Scene::Scene()
 {
@@ -54,7 +56,7 @@ void Scene::Update()
 		chat->Tick();
 
 	Inventory* inven = FindUI<Inventory>(_uis);
-	if (inven)
+	if (inven && inven->GetVisible() == false)
 		inven->Tick();
 }
 
@@ -65,6 +67,12 @@ void Scene::Render(HDC hdc)
 	std::sort(actors.begin(), actors.end(), [=](Actor* a, Actor* b)
 		{
 			return a->GetPos().y < b->GetPos().y;
+		});
+
+	// UIID가 더 높은 쪽이 위로 오도록 설정
+	std::sort(_uis.begin(), _uis.end(), [=](UI* a, UI* b)
+		{
+			return a->GetUIID() < b->GetUIID();
 		});
 
 	for (const vector<Actor*>& actors : _actors)

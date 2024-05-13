@@ -28,6 +28,7 @@ public:
 	Creature* GetCreatureAt(Vec2Int cellPos);
 	Player* GetPlayerByID(uint64 objectId);
 	vector<UI*> GetUIs() { return _uis; }
+	vector<UI*>& GetUIRef() { return _uis; }
 
 	template<typename T>
 	T* FindUI(const std::vector<UI*>& _uis)

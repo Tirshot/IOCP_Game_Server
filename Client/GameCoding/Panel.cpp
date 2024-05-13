@@ -39,6 +39,31 @@ void Panel::Tick()
 
 	for (UI* child : _children)
 		child->Tick();
+
+	//DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	//if (scene)
+	//{
+	//	for (UI* ui : scene->_uis)
+	//	{
+	//		Panel* panel = dynamic_cast<Panel*>(ui);
+	//		if (panel)
+	//		{
+	//			RECT panelRect = panel->GetRect();
+
+	//			if (IsMouseInRect(panelRect))
+	//			{
+	//				if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
+	//				{
+	//					if (index < scene->_uis.size() - 1)
+	//					{ // 벡터의 맨 끝 요소가 아닐 때만
+	//						// 중간 요소를 끝으로 이동
+	//						std::rotate(scene->_uis.begin() + index, scene->_uis.begin() + index + 1, scene->_uis.end());
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void Panel::Render(HDC hdc)
@@ -57,6 +82,11 @@ void Panel::AddChild(UI* ui)
 	ui->SetParent(this);
 
 	_children.push_back(ui);
+}
+
+RECT Panel::GetRect()
+{
+	return _rect;
 }
 
 bool Panel::RemoveChild(UI* ui)
@@ -109,34 +139,17 @@ void Panel::DragAndMove(RECT* rect)
 		for (auto& child : _children)
 		{
 			Panel* panel = dynamic_cast<Panel*>(child);
-			if (panel)
+			if (panel && panel->GetVisible() == true && panel->_isDragging)
 			{
-				if (panel->_isDragging)
-				{
-					this->_isDragging = false;
-					return;
-				}
+				this->_isDragging = false;
+				return;
 			}
 		}
-		if (scene)
-		{
-			auto visibleUIs = scene->GetVisibleUIs();
 
-			if (visibleUIs.empty() == false)
-			{
-				for (auto& ui : visibleUIs)
-				{
-					Panel* panel = dynamic_cast<Panel*>(ui);
-					if (panel)
-					{
-						if (panel->_isDragging && panel->GetUIID() > this->GetUIID())
-						{
-							this->_isDragging = false;
-							return;
-						}
-					}
-				}
-			}
+		if (IsAnyPopUpVisible())
+		{
+			this->_isDragging = false;
+			return;
 		}
 	}
 
@@ -201,11 +214,128 @@ void Panel::SetRelativePos(Vec2Int pos)
 	SetPos({ (int)Pos.x + ((float)Size.x / 2) + (int)pos.x, (int)Pos.y + ((float)Size.y / 2) + (int)pos.y});
 }
 
-bool Panel::IsOverlapped(RECT& thisRect, RECT& other)
+void Panel::MoveUIToFront(UI* ui)
+{
+	int index = 0;
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene == nullptr)
+		return;
+
+	auto& vec = scene->GetUIRef();
+
+	for (auto& v : vec)
+	{
+		index++;
+
+		if (v == ui)
+			break;
+	}
+
+	if (index < vec.size())
+	{
+		// 중간 요소를 끝으로 이동
+		::rotate(vec.begin() + index, vec.begin() + index + 1, vec.end());
+	}
+}
+
+bool Panel::IsOverlappedWithVisibleUIRect(RECT& thisRect)
+{
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		auto visibleUIs = scene->GetVisibleUIs();
+		int visibleUICount = visibleUIs.size();
+
+		if (visibleUIs.empty() == false)
+		{
+			for (int i = 0; i < visibleUICount; i++)
+			{
+				Panel* panel = dynamic_cast<Panel*>(visibleUIs[i]);
+				if (panel)
+				{
+					if (this == panel)
+						continue;
+
+					const auto& other = panel->GetRect();
+
+					// 두 사각형이 겹치는지 여부를 판단
+					return !(thisRect.right < other.left || thisRect.left > other.right ||
+						thisRect.bottom < other.top || thisRect.top > other.bottom);
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+bool Panel::IsRectOverlapped(RECT& thisRect, RECT& other)
 {
 	// 두 사각형이 겹치는지 여부를 판단
 	return !(thisRect.right < other.left || thisRect.left > other.right ||
 		thisRect.bottom < other.top || thisRect.top > other.bottom);
+}
+
+bool Panel::IsChildPopUpVisible()
+{
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		if (_children.empty() == false)
+		{
+			for (auto& panel : _children)
+			{
+				PopUp* popUp = dynamic_cast<PopUp*>(panel);
+				if (popUp && popUp->GetVisible())
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+bool Panel::IsAnyPopUpVisible()
+{
+	if (_visible)
+	{
+		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		if (scene)
+		{
+			auto visibleUIs = scene->GetVisibleUIs();
+			if (visibleUIs.empty() == false)
+			{
+				for (auto& ui : visibleUIs)
+				{
+					Panel* panel = dynamic_cast<Panel*>(ui);
+					if (panel == nullptr)
+						continue;
+
+					auto& children = panel->GetChildren();
+
+					if (children.empty())
+						continue;
+
+					for (auto& child : children)
+					{
+						auto* popUp = dynamic_cast<PopUp*>(child);
+
+						if (popUp == nullptr)
+							continue;
+
+						if (popUp == this)
+							continue;
+
+						if (popUp->GetVisible())
+							return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void Panel::ResetPos()

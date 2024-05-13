@@ -371,6 +371,7 @@
     <ClInclude Include="MerchantDialogueUI.h">
       <Filter>소스 파일\06. UI\InGame\NPC</Filter>
     </ClInclude>
+    <ClInclude Include="PopUp.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -635,6 +636,9 @@
     </ClCompile>
     <ClCompile Include="MerchantDialogueUI.cpp">
       <Filter>소스 파일\06. UI\InGame\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="PopUp.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

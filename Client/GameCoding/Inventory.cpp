@@ -6,6 +6,7 @@
 #include "DevScene.h"
 #include "MyPlayer.h"
 #include "AlertBox.h"
+#include "ShopUI.h"
 #include "ResourceManager.h"
 #include "ChatManager.h"
 #include "InputManager.h"
@@ -41,6 +42,14 @@ void Inventory::BeginPlay()
         _dragRect.top = (int)_pos.y;
         _dragRect.right = _dragRect.left + 290;
         _dragRect.bottom = _dragRect.top + 35;
+    }
+
+    _equipRect = {};
+    {
+        _equipRect.left = (int)_pos.x + 5;
+        _equipRect.top = (int)_pos.y + 220;
+        _equipRect.right = _equipRect.left + 110;
+        _equipRect.bottom = _equipRect.top + 110;
     }
 
     _slots.assign(40, { 0 });
@@ -154,8 +163,12 @@ void Inventory::Tick()
     // ESC를 누르면 인벤토리 끄기
     if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::ESC))
     {
-        _visible = false;
-        ResetPos();
+        // 팝업이 켜져있으면 끌 수 없음
+        if (IsChildPopUpVisible() == false)
+        {
+            ResetPos();
+            SetVisible(false);
+        }
     }
 
     // 아이템 슬롯 초기화
@@ -179,14 +192,37 @@ void Inventory::Tick()
         SetItemCount(5, myPlayer->info.potion());
     }
 
+    for (auto& child : _children)
+        if (child->GetVisible())
+            child->Tick();
+
     // UI 관련 코드 //
     if (_visible)
     {
+        // 창 드래그로 이동
+        Panel::DragAndMove(&_dragRect);
+        if (_isDragging)
+        {
+            // 인벤토리 영역 RECT 이동
+            _invenRect.left = (int)_pos.x + 5;
+            _invenRect.top = (int)_pos.y;
+            _invenRect.right = _invenRect.left + 285;
+            _invenRect.bottom = _invenRect.top + 335;
+        }
+
+        // 자식의 팝업이 켜져있을 때 상호작용 불가
+        if (IsChildPopUpVisible())
+            return;
+
+        if (IsAnyPopUpVisible())
+            return;
+
         // 인벤토리
         for (auto& slot : _slots)
         {
             // 아이템 드래그 앤 드랍
-            if (IsMouseInRect(slot.Rect))
+            if (IsMouseInRect(slot.Rect) &&
+                IsOverlappedWithVisibleUIRect(slot.Rect) == false)
             {
                 _mousePos = GET_SINGLE(InputManager)->GetMousePos();
 
@@ -194,15 +230,11 @@ void Inventory::Tick()
                 _itemName->SetText(slot.KorName);
                 _itemDescription->SetText(slot.Description);
 
-                if (_itemName->IsOverlapped(_itemDescription->GetRect()))
-                {
-                    
-                }
-
                 // 아이템 장착
                 if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))
                 {
                     EquipItem(&slot);
+                    return;
                 }
 
                 // 드래그 시작
@@ -220,9 +252,22 @@ void Inventory::Tick()
                     if (_selectedItem != nullptr)
                     {
                         _destinatedItem = &slot;
-                        ChangeItem(*_selectedItem, *_destinatedItem);
-                        _selectedItem = nullptr;
-                        return;
+
+                        // 장비창의 아이템을 인벤토리의 아이템에게로 드래그 & 드랍 했을 때
+                        if (_isEquipedItem == true)
+                        {
+                            // 같은 종류일 때만 교환
+                            if (_selectedItem->SubType == _destinatedItem->SubType)
+                            {
+                                ChangeItem(*_selectedItem, *_destinatedItem);
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            ChangeItem(*_selectedItem, *_destinatedItem);
+                            break;
+                        }
                     }
                 }
 
@@ -240,6 +285,16 @@ void Inventory::Tick()
                     _itemCount->SetVisible(false);
                 }
             }
+            // 슬롯에서 장비창으로 드래그
+            else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+            {
+                // 장비창으로 드래그 하면 장착
+                if (IsMouseInRect(_equipRect))
+                {
+                    EquipItem(_selectedItem);
+                    break;
+                }
+            }
 
             // 인벤토리 바깥으로 드랍
             if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect)
@@ -247,6 +302,18 @@ void Inventory::Tick()
             {
                 if (_selectedItem != nullptr)
                 {
+                    DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+                    if (scene)
+                    {
+                        ShopUI* shop = scene->FindUI<ShopUI>(scene->GetUIs());
+                        if (shop && shop->GetVisible())
+                        {
+                            shop->SellItemToShop(_selectedItem);
+                            _selectedItem = nullptr;
+                            break;
+                        }
+                    }
+
                     _deleteItem = _selectedItem;
 
                     int deleteItemID = _deleteItem->ItemId;
@@ -264,6 +331,7 @@ void Inventory::Tick()
                     _alert->SetVisible(true);
                     continue;
                 }
+
                 _selectedItem = nullptr;
             }
         }
@@ -300,6 +368,7 @@ void Inventory::Tick()
                     if (slot.second.ItemId <= 0)
                         return;
 
+                    _isEquipedItem = true;
                     _selectedItem = &slot.second;
                 }
 
@@ -315,50 +384,19 @@ void Inventory::Tick()
                 }
             }
 
-            // 인벤토리 바깥으로 드랍
+            // 인벤토리 바깥으로 드랍 -> 아이템 장착 해제
             if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect)
                 && GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
             {
-
                 if (_selectedItem != nullptr)
                 {
-                    _deleteItem = _selectedItem;
-
-                    int deleteItemID = _deleteItem->ItemId;
-
-                    if (deleteItemID == 1 || deleteItemID == 2 || deleteItemID == 3)
-                    {
-                        _alert->SetText(L"기본 무기는 버릴 수 없습니다.");
-                        _alert->SetIcon(L"Alert");
-                    }
-                    else
-                    {
-                        _alert->SetText(L"아이템을 모두 버리겠습니까?\n다시 주울 수 없습니다.");
-                        _alert->SetIcon(L"Danger");
-                    }
-                    _alert->SetVisible(true);
-                    continue;
+                    AddItem(&slot.second);
+                    slot.second = {};
+                    _isEquipedItem = false;
                 }
-
-                _selectedItem = nullptr;
             }
         }
-
-        // 창 드래그로 이동
-        Panel::DragAndMove(&_dragRect);
-        if (_isDragging)
-        {
-            // 인벤토리 영역 RECT 이동
-            _invenRect.left = (int)_pos.x + 5;
-            _invenRect.top = (int)_pos.y;
-            _invenRect.right = _invenRect.left + 285;
-            _invenRect.bottom = _invenRect.top + 335;
-        }
     }
-
-    for (auto& child : _children)
-        if (child->GetVisible())
-            child->Tick();
 }
 
 void Inventory::Render(HDC hdc)
@@ -544,8 +582,8 @@ void Inventory::SyncItemToServer(int itemID, int counts)
         return;
     }
 
-    SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(objectID, itemID, counts);
-    GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+    //SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(objectID, itemID, counts);
+    //GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 }
 
 bool Inventory::AddItem(ITEM* item)
@@ -788,14 +826,23 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == 0)
                     {
-                        slot.ItemId = ItemId;
-                        slot.ItemCount = 1;
-                        SyncItemToServer(ItemId, 1);
-                        SetItemSlot(slot);
-                        continue;
+                        int addItemCount = 0;
+
+                        for (int i = 0; i < ItemCount; i++)
+                        {
+                            addItemCount++;
+                            slot.ItemId = ItemId;
+                            slot.ItemCount = 1;
+                            SyncItemToServer(ItemId, 1);
+                            SetItemSlot(slot);
+                        }
+
+                        if (addItemCount <= ItemCount)
+                            return true;
+                        else
+                            return false;
                     }
                 }
-                return true;
             }
             else if (itemType == L"Consumable")
             {
@@ -842,11 +889,21 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == 0)
                     {
-                        slot.ItemId = ItemId;
-                        slot.ItemCount = 1;
-                        SyncItemToServer(ItemId, 1);
-                        SetItemSlot(slot);
-                        continue;
+                        int addItemCount = 0;
+
+                        for (int i = 0; i < ItemCount; i++)
+                        {
+                            addItemCount++;
+                            slot.ItemId = ItemId;
+                            slot.ItemCount = 1;
+                            SyncItemToServer(ItemId, 1);
+                            SetItemSlot(slot);
+                        }
+
+                        if (addItemCount <= ItemCount)
+                            return true;
+                        else
+                            return false;
                     }
                 }
                 return true;
@@ -1060,6 +1117,16 @@ ITEM* Inventory::FindItemFromInventory(int itemId)
     return nullptr;
 }
 
+ITEM* Inventory::FindItemFromInventory(ITEM* item)
+{
+    for (auto& slot : _slots)
+    {
+        if (slot == item)
+            return &slot;
+    }
+    return nullptr;
+}
+
 ITEM* Inventory::GetEquippedItem(wstring wstr)
 {
     if (wstr == L"Weapon")
@@ -1080,6 +1147,9 @@ ITEM* Inventory::GetEquippedItem(wstring wstr)
 
 void Inventory::EquipItem(ITEM* item)
 {
+    if (item == nullptr)
+        return;
+
     if (item->Type != L"Wearable")
         return;
 

@@ -31,10 +31,12 @@ public:
 	bool RemoveItem(int itemId, int ItemCount);
 	void SetItemCount(int itemId, int ItemCount);
 	vector<ITEM> GetSlots() { return _slots; }
+	RECT GetInvenRect() { return _invenRect; }
 
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 
 	ITEM* FindItemFromInventory(int itemId);
+	ITEM* FindItemFromInventory(ITEM* item);
 	
 	ITEM* GetEquippedItem(wstring wstr);
 
@@ -70,6 +72,8 @@ private:
 	ITEM* _destinatedItem;
 	RECT _invenRect;	// 인벤토리 영역 체크용 Rect
 	RECT _dragRect;		// 인벤토리 드래그 Rect
+	RECT _equipRect;	// 장비창 영역 체크용 Rect
 	class AlertBox* _alert = nullptr;
+	bool _isEquipedItem = false;
 };
 

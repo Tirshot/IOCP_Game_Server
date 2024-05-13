@@ -17,11 +17,16 @@ public:
 	void AddSellItem(ITEM* item);
 	void AddSellItem(int itemID);
 
+	void SellItemToShop(ITEM* item);
+
 	void ResetInitializingTime() { _initializeTime = 0.f; }
 	void ResetPage() { _page = 1; }
 
+	RECT GetShopRect() { return _rect; }
+
 private:
 	void OnPopClickAcceptDelegate();
+	void OnPopClickAlertAcceptDelegate();
 	void OnClickBackButton();
 	void OnClickExitButton();
 
@@ -43,6 +48,7 @@ protected:
 	class	AlertBox* _alert = {};
 	vector<ITEM*> _items = {};	// 판매할 아이템이 저장되어 있음
 	ITEM* _sellItem = {};
+	ITEM* _sellToShop = {};
 	int _counts = 1;	// 아이템 구매 갯수
 	int _price = 0;
 	int _allCost = 0;

@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "DevScene.h"
 #include "Chat.h"
+#include "PopUp.h"
 
 int UI::ui_idGenerator = 1;
 

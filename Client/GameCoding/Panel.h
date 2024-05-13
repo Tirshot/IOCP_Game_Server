@@ -36,16 +36,20 @@ public:
 		}
 		return nullptr;
 	}
-
+	virtual RECT GetRect() override;
 	bool RemoveChild(UI* ui);
 	auto& GetChildren() { return _children; }
 
 	void UpdateChildPos(Panel* parent, int deltaX, int deltaY);
 	void DragAndMove(RECT* rect);
-
 	void SetRelativePos(Vec2Int pos);
 
-	bool IsOverlapped(RECT& thisRect, RECT& other);
+	void MoveUIToFront(UI* ui);
+
+	bool IsOverlappedWithVisibleUIRect(RECT& thisRect);
+	bool IsRectOverlapped(RECT& thisRect, RECT& other);
+	bool IsChildPopUpVisible();
+	bool IsAnyPopUpVisible();
 
 public:
 	void ResetPos();

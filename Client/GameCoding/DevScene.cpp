@@ -219,6 +219,7 @@ void DevScene::Init()
 	LoadTilemap();
 	LoadUI();
 	LoadSound();
+	LoadQuest();
 
 	Super::Init();
 }
@@ -796,7 +797,7 @@ void DevScene::LoadUI()
 		Inventory* Inven = new Inventory();
 		if (Inven)
 		{
-			Inven->SetPos({ 480, 125 });
+			Inven->SetPos({ 510, 125 });
 			Inven->SetVisible(false);
 			AddUI(Inven);
 		}
@@ -824,6 +825,15 @@ void DevScene::LoadSound()
 	GET_SINGLE(ResourceManager)->LoadSound(L"PlayerOnDamaged", L"Sound\\PlayerOnDamaged.wav");
 	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav");
 	GET_SINGLE(ResourceManager)->LoadSound(L"Merchant", L"Sound\\Merchant.wav");
+}
+
+void DevScene::LoadQuest()
+{
+	{	// 퀘스트 리스트 받아오기
+		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_QuestList();
+		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+	}
+	_questInitialized = true;
 }
 
 GameObject* DevScene::GetObjects(uint64 id)
