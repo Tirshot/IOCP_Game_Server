@@ -146,3 +146,13 @@ void TextBox::SetPadding(float x, float y)
 	_leftPadding = x;
 	_topPadding = y;
 }
+
+bool TextBox::IsOverlapped(RECT other)
+{
+	RECT thisRect = _rect;
+
+	return !(thisRect.right < other.left || thisRect.left > other.right ||
+		thisRect.bottom < other.top || thisRect.top > other.bottom);
+
+	return false;
+}

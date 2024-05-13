@@ -97,6 +97,8 @@ void QuestUI::BeginPlay()
 
 	for (auto& child : _children)
 		child->BeginPlay();
+
+	ResetQuestList();
 }
 
 void QuestUI::Tick()
@@ -132,7 +134,8 @@ void QuestUI::Tick()
 				{
 					DialoguePanel->SetDialogue(questID);
 					DialoguePanel->SetVisible(true);
-					//DialoguePanel->SetRewardItem();
+					DialoguePanel->SetRewardGold(Panel->GetRewardGold());
+					DialoguePanel->SetRewardItem(Panel->GetRewardItem(), Panel->GetRewardItemNum());
 					this->SetVisible(false);
 					break;
 				}
@@ -145,6 +148,7 @@ void QuestUI::Tick()
 			if (Panel->GetQuestState() == Protocol::QUEST_STATE_FINISHED)
 			{
 				RemoveChild(Panel);
+				ResetQuestList();
 			}
 		}
 	}

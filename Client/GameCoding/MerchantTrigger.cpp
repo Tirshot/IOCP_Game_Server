@@ -75,7 +75,6 @@ void MerchantTrigger::HideUIs()
 		if (shopUI)
 		{
 			shopUI->SetVisible(false);
-			shopUI->ResetPos();
 			shopUI->ResetInitializingTime();
 			shopUI->ResetPage();
 		}

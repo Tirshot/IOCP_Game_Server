@@ -51,6 +51,7 @@ public:
 	void LoadTilemap();
 	void LoadUI();
 	void LoadSound();
+	void LoadQuest();
 
 	template<typename T>
 	T* SpawnObject(Vec2Int pos)
@@ -107,4 +108,5 @@ private:
 	int32 _monsterCount = 0;
 	class TilemapActor* _tilemapActor = nullptr;
 	map<int, Protocol::QuestInfo> _quests;
+	bool _questInitialized = false;
 };

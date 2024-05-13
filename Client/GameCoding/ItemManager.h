@@ -28,7 +28,7 @@ public:
 	int GetQuickSlotSelectedIndex();
 	wstring GetQuickSlotSelectedSubType();
 
-	void EquipItem(ITEM& item);
+	void EquipItem(ITEM item);
 
 	bool IsInventoryFull();
 	int GetEmptySlots();

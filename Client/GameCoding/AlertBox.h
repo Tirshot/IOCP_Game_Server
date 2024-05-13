@@ -1,8 +1,8 @@
 #pragma once
-#include "Panel.h"
-class AlertBox :  public Panel
+#include "PopUp.h"
+class AlertBox :  public PopUp
 {
-	using Super = Panel;
+	using Super = PopUp;
 
 public:
 	AlertBox();
@@ -11,18 +11,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
-
-	template<typename T>
-	void AddParentDelegate(T* parent, void(T::* parentFunc)())
-	{
-		_parentCallback = [parent, parentFunc]()
-			{
-				(parent->*parentFunc)();
-			};
-	}
-	std::function<void(void)>_parentCallback = nullptr;
-
-	void SetPos(Vec2 pos) { _pos = { pos.x - (int)_size.x / 2, pos.y - (int)_size.y / 2 }; }
 
 private:
 	void OnClickAcceptButton();
@@ -37,5 +25,6 @@ private:
 	class Sprite* _icon = nullptr;
 	RECT _rect = {};
 	Vec2 _initialPos = {};
+	bool _result = false;
 };
 

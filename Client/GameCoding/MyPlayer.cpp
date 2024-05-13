@@ -21,6 +21,7 @@
 #include "Chat.h"
 #include "GameOver.h"
 #include "Inventory.h"
+#include "PopUp.h"
 #include "ItemManager.h"
 
 
@@ -109,12 +110,21 @@ void MyPlayer::OpenInventory()
 	if (Inven == nullptr)
 		return;
 
-	if (Inven->GetVisible())
-		Inven->SetVisible(false);
-	else
-		Inven->SetVisible(true);
+	// 팝업이 켜져있을 때 끌 수 없음
+	if (Inven->IsChildPopUpVisible())
+		return;
 
-	Inven->ResetPos();
+	if (Inven->GetVisible())
+	{
+		Inven->SetVisible(false);
+		return;
+	}
+	else
+	{
+		Inven->ResetPos();
+		Inven->SetVisible(true);
+		return;
+	}
 }
 
 void MyPlayer::TickInput()

@@ -18,9 +18,11 @@ private:
 	void SetItemSlot(ITEM& slot);
 	void SetEquipSlotRects();
 	void SlotRectsPosUpdate(RECT* rect);
+	void SyncUseableItemToServer(int itemID, int counts);
 	void SyncItemToServer(int itemID, int counts);
 
 public:
+	bool AddItem(ITEM* item);
 	bool AddItem(int ItemId);
 	bool AddItem(int ItemId, int ItemCount);
 	bool RemoveItem(ITEM* item);
@@ -29,14 +31,16 @@ public:
 	bool RemoveItem(int itemId, int ItemCount);
 	void SetItemCount(int itemId, int ItemCount);
 	vector<ITEM> GetSlots() { return _slots; }
+	RECT GetInvenRect() { return _invenRect; }
 
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 
 	ITEM* FindItemFromInventory(int itemId);
+	ITEM* FindItemFromInventory(ITEM* item);
 	
 	ITEM* GetEquippedItem(wstring wstr);
 
-	void EquipItem(ITEM& item);
+	void EquipItem(ITEM* item);
 	void PressToSetQuickItem(ITEM& slot);
 
 	void OnPopClickAcceptDelegate();
@@ -48,7 +52,7 @@ protected:
 	vector<RECT> _rects;
 
 	// 장착 슬롯
-	map<int, ITEM> _equips;
+	vector<::pair<RECT, ITEM>> _equips;
 	vector<RECT> _equipRects;
 	
 	class TextBox* _itemName = nullptr;
@@ -68,6 +72,8 @@ private:
 	ITEM* _destinatedItem;
 	RECT _invenRect;	// 인벤토리 영역 체크용 Rect
 	RECT _dragRect;		// 인벤토리 드래그 Rect
+	RECT _equipRect;	// 장비창 영역 체크용 Rect
 	class AlertBox* _alert = nullptr;
+	bool _isEquipedItem = false;
 };
 

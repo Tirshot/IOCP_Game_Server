@@ -1,8 +1,8 @@
 #pragma once
-#include "Panel.h"
-class ItemCountsPopUp : public Panel
+#include "PopUp.h"
+class ItemCountsPopUp : public PopUp
 {
-	using Super = Panel;
+	using Super = PopUp;
 
 public:
 	ItemCountsPopUp();
@@ -11,16 +11,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
-
-	template<typename T>
-	void AddParentDelegate(T* parent, void(T::* parentFunc)())
-	{
-		_parentCallback = [parent, parentFunc]()
-			{
-				(parent->*parentFunc)();
-			};
-	}
-	std::function<void(void)>_parentCallback = nullptr;
 
 	void SetPos(Vec2 pos) { _pos = { pos.x - (int)_size.x / 2, pos.y - (int)_size.y / 2 }; }
 
@@ -36,7 +26,7 @@ private:
 public:
 	void SetIcon(wstring wstr);
 	void SetText(wstring wstr);
-	RECT* GetRect() { return &_rect; }
+	RECT GetRect() { return _rect; }
 	int GetCounts() { return _counts; }
 	void SetPrice(int price) { _price = price; }
 	int GetPrice() { return _price; }

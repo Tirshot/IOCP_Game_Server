@@ -134,9 +134,9 @@ wstring ItemManager::GetQuickSlotSelectedSubType()
     return _quickSlot->GetSelectedSubType();
 }
 
-void ItemManager::EquipItem(ITEM& item)
+void ItemManager::EquipItem(ITEM item)
 {
-    _inventory->EquipItem(item);
+    _inventory->EquipItem(&item);
 }
 
 bool ItemManager::IsInventoryFull()
