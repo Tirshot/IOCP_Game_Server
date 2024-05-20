@@ -119,20 +119,6 @@ void ShopUI::BeginPlay()
 		AddSellItem(23);
 		AddSellItem(25);
 		AddSellItem(26);
-		AddSellItem(27);
-		AddSellItem(28);
-		AddSellItem(29);
-		AddSellItem(30);
-		AddSellItem(31);
-		AddSellItem(32);
-		AddSellItem(33);
-		AddSellItem(34);
-		AddSellItem(35);
-		AddSellItem(36);
-		AddSellItem(37);
-		AddSellItem(38);
-		AddSellItem(39);
-		AddSellItem(40);
 		AddSellItem(1);
 		AddSellItem(2);
 		AddSellItem(3);
@@ -239,6 +225,7 @@ void ShopUI::Tick()
 					_price = _sellItem->Price;
 					_countsPopUp->SetText(_sellItem->KorName + L"을(를) 몇 개 구입하시겠습니까?");
 					_countsPopUp->SetPrice(_price);
+					_countsPopUp->SetMaxCounts(99);
 					_countsPopUp->SetVisible(true);
 					_initializeTime = 0.f;
 				}
@@ -303,8 +290,19 @@ void ShopUI::AddSellItem(int itemID)
 void ShopUI::SellItemToShop(ITEM* item)
 {
 	_sellToShop = item;
-	_alert->SetText(item->KorName + L"을(를) 판매하시겠습니까?");
-	_alert->SetIcon(L"Warning");
+
+	int itemID = _sellToShop->ItemId;
+	if (itemID == 1 || itemID == 2 || itemID == 3)
+	{
+		_alert->SetText(L"기본 무기는 판매할 수 없습니다.");
+		_alert->SetIcon(L"Alert");
+	}
+	else
+	{
+		_alert->SetText(item->KorName + L"을(를) 개당 " + to_wstring(_sellToShop->Price / _buyPriceDivider) +L"골드에 판매하시겠습니까 ? ");
+		_alert->SetIcon(L"Warning");
+	}
+
 	_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
 	_alert->SetVisible(true);
 }
@@ -430,15 +428,16 @@ void ShopUI::OnPopClickAcceptDelegate()
 
 void ShopUI::OnPopClickAlertAcceptDelegate()
 {
-	int gold = _sellToShop->Price / 5;
+	if (_sellToShop == nullptr)
+		return;
+
+	int gold = _sellToShop->Price / _buyPriceDivider;
+	int counts = _sellToShop->ItemCount;
 
 	// 구매 확인
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 	Inventory* inventory = GET_SINGLE(ItemManager)->GetInventory();
-
-	if (!_sellToShop)
-		return;
 
 	if (!myPlayer)
 		return;
@@ -450,9 +449,41 @@ void ShopUI::OnPopClickAlertAcceptDelegate()
 	if (!sellingItem)
 		return;
 
-	inventory->RemoveItem(sellingItem);
-	myPlayer->info.set_gold(myPlayer->info.gold() + gold);
+	int itemID = sellingItem->ItemId;
+	if (itemID == 1 || itemID == 2 || itemID == 3)
+		return;
+
+	if (counts == 1)
+	{
+		inventory->RemoveItem(sellingItem);
+		myPlayer->info.set_gold(myPlayer->info.gold() + gold);
+		_sellToShop = nullptr;
+	}
+	else
+	{
+		_countsPopUp->SetText(sellingItem->KorName + L"을(를) 몇 개 판매하시겠습니까?");
+		_countsPopUp->SetPrice(gold);
+		_countsPopUp->SetMaxCounts(counts);
+		_countsPopUp->AddParentDelegate(this, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate);
+		_countsPopUp->SetVisible(true);
+	}
+}
+
+void ShopUI::OnClickSellItemToShopAlertAcceptDelegate()
+{
+	int gold = _sellToShop->Price / 5;
+	int counts = _sellToShop->ItemCount;
+
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	Inventory* inventory = GET_SINGLE(ItemManager)->GetInventory();
+
+	auto sellingItem = inventory->FindItemFromInventory(_sellToShop);
+
+	inventory->RemoveItem(sellingItem, counts);
+	myPlayer->info.set_gold(myPlayer->info.gold() + (gold * counts));
 	_sellToShop = nullptr;
+
+	_countsPopUp->AddParentDelegate(this, &ShopUI::OnPopClickAcceptDelegate);
 }
 
 void ShopUI::OnClickBackButton()

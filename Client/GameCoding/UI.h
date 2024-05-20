@@ -17,7 +17,7 @@ public:
 	void SetSize(Vec2Int size) { _size = size; }
 	Vec2Int GetSize() { return _size; }
 
-	virtual void SetVisible(bool visible) { if (_visible == visible) return; _visible = visible; }
+	virtual void SetVisible(bool visible) { _visible = visible; }
 	bool GetVisible() const { return _visible; }
 
 	void SetParent(UI* ui) { _parent = ui; }

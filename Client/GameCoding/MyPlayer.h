@@ -40,7 +40,7 @@ public:
 	map<int, pair<Protocol::QUEST_STATE, int>>& GetQuestStates() { return _questsStates; }
 	Protocol::QUEST_STATE& GetQuestState(int questId) { return _questsStates[questId].first; }
 	void SetQuestState(int questId, Protocol::QUEST_STATE state, int progress) { _questsStates[questId] = { state, progress }; }
-
+	void SetQuestState(int questId, Protocol::QUEST_STATE state) { _questsStates[questId].first = state; }
 	int GetQuestProgress(int questId);
 	void SetQuestProgress(int questId, int progress);
 	void AddQuestProgress(int questId) { _questsStates[questId].second += 1; }

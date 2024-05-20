@@ -223,6 +223,29 @@ void Player::UpdateTeleport()
 	SetState(IDLE);
 }
 
+void Player::OnDamaged(CreatureRef attacker, bool debug)
+{
+	Super::OnDamaged(attacker);
+
+	if (info.hp() <= 0)
+	{
+		if (room)
+		{
+			room->RemoveObject(GetObjectID());
+
+			wstring objectType = GChat->StringToWStr(info.name());
+			wstring attackerType = GChat->StringToWStr(attacker->info.name());
+
+			// 채팅 출력
+			GChat->AddText(format(L"{0} {1}이(가) {2} {3}에 의해 쓰러짐",
+				objectType,
+				GetObjectID(),
+				attackerType,
+				attacker->GetObjectID()));
+		}
+	}
+}
+
 void Player::MakeArrow()
 {
 	if (info.arrows() <= 0)
@@ -335,6 +358,21 @@ void Player::QuestProgress(int questid)
 		}
 	}
 	return;
+}
+
+map<int, pair<Protocol::QUEST_STATE, int>> Player::GetAcceptedQuests()
+{
+	map<int, pair<Protocol::QUEST_STATE, int>> acceptQuests;
+
+	for (auto& questState : _questsStates)
+	{
+		if (questState.second.first == Protocol::QUEST_STATE_ACCEPT)
+		{
+			acceptQuests.insert(questState);
+		}
+	}
+
+	return acceptQuests;
 }
 
 int Player::GetQuestProgress(int questId)

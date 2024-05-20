@@ -28,6 +28,9 @@ Inventory::~Inventory()
 
 void Inventory::BeginPlay()
 {
+    if (_revive == true)
+        return;
+
     _invenRect = {};        // 485, 160, 770, 460
     {
         _invenRect.left = (int)_pos.x + 5;
@@ -106,6 +109,7 @@ void Inventory::BeginPlay()
 
     SetInitialPos(GetPos());
     _initialized = true;
+    _revive = true;
 }
 
 void Inventory::Tick()
@@ -275,7 +279,7 @@ void Inventory::Tick()
                 PressToSetQuickItem(slot);
 
                 // 아이템 개수 표시
-                if (slot.Type == L"Consumable")
+                if (slot.Type == L"Consumable" || slot.Type == L"ETC")
                 {
                     _itemCount->SetVisible(true);
                     _itemCount->SetText(to_wstring(slot.ItemCount) + L"개");
@@ -300,6 +304,7 @@ void Inventory::Tick()
             if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect)
                 && GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
             {
+                // Shop UI가 켜져있으면 판매
                 if (_selectedItem != nullptr)
                 {
                     DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
@@ -313,7 +318,7 @@ void Inventory::Tick()
                             break;
                         }
                     }
-
+                    // 일반적으로는 아이템 버리기
                     _deleteItem = _selectedItem;
 
                     int deleteItemID = _deleteItem->ItemId;
@@ -756,10 +761,13 @@ bool Inventory::AddItem(int ItemId)
             {
                 for (auto& slot : _slots)
                 {
-                    slot.ItemCount++; // 수량 증가
-                    SyncItemToServer(ItemId, 1);
-                    SetItemSlot(slot);
-                    return true;
+                    if (slot.ItemId == ItemId)
+                    {
+                        slot.ItemCount++; // 수량 증가
+                        SyncItemToServer(ItemId, 1);
+                        SetItemSlot(slot);
+                        return true;
+                    }
                 }
             }
         }
@@ -774,7 +782,7 @@ bool Inventory::AddItem(int ItemId)
                 if (slot.ItemId == 0)
                 {
                     slot.ItemId = ItemId;
-                    slot.ItemCount = 1;
+                    slot.ItemCount += 1;
                     SyncItemToServer(ItemId, 1);
                     SetItemSlot(slot);
                     return true;
@@ -821,26 +829,22 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                     // 추가하려는 양이 빈 슬롯보다 더 많음
                     return false;
                 }
+
+                int addItemCount = 0;
+
                 // 빈 슬롯을 찾아 아이템 추가
                 for (auto& slot : _slots)
                 {
                     if (slot.ItemId == 0)
                     {
-                        int addItemCount = 0;
+                        addItemCount++;
+                        slot.ItemId = ItemId;
+                        slot.ItemCount = 1;
+                        SyncItemToServer(ItemId, 1);
+                        SetItemSlot(slot);
 
-                        for (int i = 0; i < ItemCount; i++)
-                        {
-                            addItemCount++;
-                            slot.ItemId = ItemId;
-                            slot.ItemCount = 1;
-                            SyncItemToServer(ItemId, 1);
-                            SetItemSlot(slot);
-                        }
-
-                        if (addItemCount <= ItemCount)
+                        if (addItemCount == ItemCount)
                             return true;
-                        else
-                            return false;
                     }
                 }
             }
@@ -884,28 +888,25 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                     // 추가하려는 양이 빈 슬롯보다 더 많음
                     return false;
                 }
+
+                int addItemCount = 0;
+
                 // 빈 슬롯을 찾아 아이템 추가
                 for (auto& slot : _slots)
                 {
                     if (slot.ItemId == 0)
                     {
-                        int addItemCount = 0;
+                        addItemCount++;
+                        slot.ItemId = ItemId;
+                        slot.ItemCount = 1;
+                        SyncItemToServer(ItemId, 1);
+                        SetItemSlot(slot);
 
-                        for (int i = 0; i < ItemCount; i++)
-                        {
-                            addItemCount++;
-                            slot.ItemId = ItemId;
-                            slot.ItemCount = 1;
-                            SyncItemToServer(ItemId, 1);
-                            SetItemSlot(slot);
-                        }
-
-                        if (addItemCount <= ItemCount)
+                        if (addItemCount == ItemCount)
                             return true;
-                        else
-                            return false;
                     }
                 }
+                
                 return true;
             }
             else if (itemType == L"Consumable")

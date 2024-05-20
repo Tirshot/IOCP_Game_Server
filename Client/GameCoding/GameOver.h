@@ -24,5 +24,6 @@ private:
 	Sprite* _gameOver = nullptr;
 	int _alpha = 0;
 	float _sumTime = 0.f;
+	bool _invisibleUIs = false;
 };
 

@@ -5,6 +5,7 @@ class Actor;
 class UI;
 class GameObject;
 class Player;
+class Item;
 
 struct PQNode
 {
@@ -76,8 +77,11 @@ public:
 		return SpawnObject<T>(randPos);
 	}
 
+	void SpawnItem(Protocol::ItemInfo info);
+
 public:
 	GameObject* GetObjects(uint64 id);
+	class Monster* GetMonster();
 
 	// 패킷 핸들
 	void Handle_S_AddObject(Protocol::S_AddObject& pkt);

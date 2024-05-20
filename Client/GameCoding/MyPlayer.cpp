@@ -103,30 +103,6 @@ void MyPlayer::UsePotion()
 	scene->SpawnObject<HealEffect>({ GetCellPos() });
 }
 
-void MyPlayer::OpenInventory()
-{
-	Inventory* Inven = GET_SINGLE(ItemManager)->GetInventory();
-
-	if (Inven == nullptr)
-		return;
-
-	// 팝업이 켜져있을 때 끌 수 없음
-	if (Inven->IsChildPopUpVisible())
-		return;
-
-	if (Inven->GetVisible())
-	{
-		Inven->SetVisible(false);
-		return;
-	}
-	else
-	{
-		Inven->ResetPos();
-		Inven->SetVisible(true);
-		return;
-	}
-}
-
 void MyPlayer::TickInput()
 {
 	_keyPressed = true;
@@ -163,7 +139,25 @@ void MyPlayer::TickInput()
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::I))
 	{
-		OpenInventory();
+		Inventory* Inven = GET_SINGLE(ItemManager)->GetInventory();
+
+		if (Inven == nullptr)
+			return;
+
+		// 팝업이 켜져있을 때 끌 수 없음
+		if (Inven->IsChildPopUpVisible())
+			return;
+
+		if (Inven->GetVisible() == true)
+		{
+			Inven->ResetPos();
+			Inven->SetVisible(false);
+		}
+		else
+		{
+			Inven->ResetPos();
+			Inven->SetVisible(true);
+		}
 	}
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
@@ -240,8 +234,23 @@ void MyPlayer::TickInput()
 		GET_SINGLE(ChatManager)->AddMessage(format(L"위치 : ({0}, {1})", CellPos.x, CellPos.y));
 	}
 
-	// Debug - 사망
+	// Debug - 랜덤 위치의 몬스터 킬
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::B))
+	{
+		Monster* monster = scene->GetMonster();
+		Creature* creature = dynamic_cast<Creature*>(monster);
+
+		if (monster)
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Hit(monster->info.objectid(), info.objectid());
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+
+			GET_SINGLE(ChatManager)->AddMessage(format(L"({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y));
+		}
+	}
+
+	// Debug - 사망
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::M))
 	{
 		info.set_hp(0);
 		{

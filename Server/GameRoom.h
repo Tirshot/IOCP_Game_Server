@@ -79,6 +79,7 @@ public:
 	map<uint64, InventoryRef> GetInventorys() { return _inventorys; }
 	InventoryRef GetInventory(int objectId) { return _inventorys[objectId]; }
 	void AddQuest(class Quest quest);
+	int GetQuestsSize() { return _quests.size(); }
 	void AddItemToPlayer(int objectId, int itemId, int itemCounts);
 
 

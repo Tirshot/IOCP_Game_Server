@@ -30,13 +30,18 @@ public:
 	int GetCounts() { return _counts; }
 	void SetPrice(int price) { _price = price; }
 	int GetPrice() { return _price; }
+	void SetSellingToShop(bool state) { _isSellingToShop = state; }
+	bool GetSellingToShop() { return _isSellingToShop; }
+	void SetMaxCounts(int maxCount) { _maxCounts = maxCount; }
 
 private:
 	class Sprite* _background = nullptr;
 	class Sprite* _icon = nullptr;
 	RECT _rect = {};
 	int _counts = 1;
+	int _maxCounts = 99;
 	int _price = 0;
 	int _totalPrice = 0;
+	bool _isSellingToShop = false;
 };
 

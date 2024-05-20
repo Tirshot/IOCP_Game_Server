@@ -10,6 +10,7 @@
 #include "Flipbook.h"
 #include "Tutorial.h"
 #include "Player.h"
+#include "Item.h"
 #include "HitEffect.h"
 #include "HealEffect.h"
 #include "Sign.h"
@@ -28,7 +29,6 @@
 #include "HeartItem.h"
 #include "StatusPanel.h"
 #include "SceneManager.h"
-#include "WeaponSlot.h"
 #include "Chat.h"
 #include "ChatInput.h"
 #include "ChatManager.h"
@@ -93,6 +93,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"StaffItem", L"Sprite\\Item\\StaffItem.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowItem", L"Sprite\\Item\\ArrowItem.bmp", RGB(255, 0, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"EquipItem", L"Sprite\\Item\\Equips.bmp", RGB(255, 0, 255));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"SnakeSkin", L"Sprite\\Item\\SnakeSkin.bmp", RGB(128, 128, 128));
 
 	// UI 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"BlackMp", L"Sprite\\UI\\BlackMp.bmp");
@@ -149,6 +150,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots01", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 42, 90, 30, 30);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots02", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 83, 90, 30, 30);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots03", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 127, 90, 30, 30);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"SnakeSkin", GET_SINGLE(ResourceManager)->GetTexture(L"SnakeSkin"), 0, 0, 64, 62);
 
 
 	// UI 스프라이트
@@ -836,6 +838,19 @@ void DevScene::LoadQuest()
 	_questInitialized = true;
 }
 
+void DevScene::SpawnItem(Protocol::ItemInfo info)
+{
+	Item* ret = new Item();
+
+	ret->SetItemInfo(info);
+
+	ret->SetCellPos({info.posx(), info.posy()}, true);
+	ret->SetState(IDLE);
+	AddActor(ret);
+
+	ret->BeginPlay();
+}
+
 GameObject* DevScene::GetObjects(uint64 id)
 {
 	for (Actor* actor : _actors[LAYER_OBJECT])
@@ -843,6 +858,18 @@ GameObject* DevScene::GetObjects(uint64 id)
 		GameObject* gameObject = dynamic_cast<GameObject*>(actor);
 		if (gameObject && gameObject->info.objectid() == id)
 			return gameObject;
+	}
+
+	return nullptr;
+}
+
+Monster* DevScene::GetMonster()
+{
+	for (Actor* actor : _actors[LAYER_OBJECT])
+	{
+		Monster* monster = dynamic_cast<Monster*>(actor);
+		if (monster)
+			return monster;
 	}
 
 	return nullptr;
@@ -902,52 +929,10 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 				npc->SetState(info.state());
 			}
 				break;
-			}
-		}
-		else if (info.objecttype() == Protocol::OBJECT_TYPE_ITEM)
-		{
-			switch (info.itemtype())
-			{
-			case Protocol::ITEM_TYPE_HEART:
-			{
-				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
-				// 애니메이션을 위해
-				item->info = info;
-				item->SetState(IDLE);
-			}
-				break;
-
-			case Protocol::ITEM_TYPE_FULLHEART:
-			{
-				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
-				// 애니메이션을 위해
-				item->info = info;
-				item->SetState(IDLE);
-			}
-				break;
-
-			case Protocol::ITEM_TYPE_MAXHEART:
-			{
-				HeartItem* item = SpawnObject<HeartItem>(Vec2Int{ info.posx(), info.posy() });
-				// 애니메이션을 위해
-				item->info = info;
-				item->SetState(IDLE);
-			}
-			break;
-
-			case Protocol::ITEM_TYPE_ARROW:
-			{
-				ArrowItem* item = SpawnObject<ArrowItem>(Vec2Int{ info.posx(), info.posy() });
-				// 애니메이션을 위해
-				item->info = info;
-				item->SetState(IDLE);
-			}
-			break;
 
 			default:
 				return;
 			}
-
 		}
 	}
 }

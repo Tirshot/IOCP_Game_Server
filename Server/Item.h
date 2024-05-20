@@ -4,6 +4,7 @@ class Player;
 class Item : public GameObject
 {
 	using Super = GameObject;
+
 public:
 	Item();
 	virtual ~Item() override;
@@ -15,6 +16,7 @@ public:
 	uint64 GetOwner() { return _ownerId; }
 
 	bool IsTouched(uint64 playerId);
+	Protocol::ItemInfo GetItemInfo() { return itemInfo; }
 
 protected:
 	virtual void TickIdle();
@@ -26,5 +28,8 @@ protected:
 	// 삭제를 위한 습득 여부
 	bool _get = false;
 	uint64 _ownerId = 0;
+
+public:
+	Protocol::ItemInfo itemInfo;
 };
 

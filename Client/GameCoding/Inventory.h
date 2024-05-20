@@ -64,6 +64,7 @@ protected:
 private:
 	int _slotSize = 28;
 	bool _initialized = false;
+	bool _revive = false;
 	bool _isItemDropped = false;
 
 	// 드래그 앤 드랍

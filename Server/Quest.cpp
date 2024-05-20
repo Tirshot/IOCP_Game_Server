@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "Quest.h"
 #include "GameRoom.h"
-
+#include "Chat.h"
+#include "Player.h"
+#include "GameSession.h"
 #include <fstream>
 #include <sstream>
 
@@ -15,8 +17,9 @@ void Quest::Init()
 	_questTable = GetDataFromCSV("E:\\Cpp\\IOCP\\Server\\Server\\QuestTable.csv");
 }
 
-void Quest::Accept()
+void Quest::Update()
 {
+
 }
 
 void Quest::Completed()
@@ -73,8 +76,68 @@ vector<wstring> Quest::GetQuestInfo(int questID)
 		}
 	}
 
-	// 실패하면 무엇을 반환할까
 	return {};
+}
+
+vector<wstring> Quest::GetQuestInfoByTargetID(wstring targetType, int targetID)
+{
+	for (auto& row : _questTable)
+	{
+		if (row.empty())
+			return {};
+
+		int id;
+		wstring type;
+		std::wistringstream(row[2]) >> type;
+		std::wistringstream(row[1]) >> id;
+
+		if (type == targetType)
+		{
+			if (id == targetID)
+			{
+				return row;
+			}
+			continue;
+		}
+	}
+
+	return {};
+}
+
+void Quest::ItemQuestCheck(int objectID, int itemID)
+{
+	// 타겟 타입이 아이템인지 체크
+	// 타겟 ID와 아이템 ID가 같은지 체크
+	auto questInfo = GET_SINGLE(Quest)->GetQuestInfoByTargetID(L"Item", itemID);
+
+	if (questInfo.empty())
+		return;
+
+	auto questTargetCounts = GET_SINGLE(Quest)->GetTargetCounts(questInfo);
+	auto questTargetID = GET_SINGLE(Quest)->GetTargetID(questInfo);
+
+	int questID = GET_SINGLE(Quest)->GetID(questInfo);
+
+	PlayerRef player = dynamic_pointer_cast<Player>(GRoom->FindObject(objectID));
+	if (player)
+	{
+		auto questState = player->GetQuestState(questID);
+		auto questProgressCounts = player->GetQuestProgress(questID);
+
+		if (questState.first == Protocol::QUEST_STATE_ACCEPT)
+		{
+			if (questTargetID == itemID)
+				player->SetQuestProgress(questID, questProgressCounts + 1);
+		}
+
+		if (questProgressCounts == questTargetCounts)
+		{
+			player->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
+
+			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(objectID, questID, questTargetCounts);
+			player->session->Send(sendBuffer);
+		}
+	}
 }
 
 void Quest::CreateQuest()

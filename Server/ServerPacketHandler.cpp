@@ -25,9 +25,9 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Move(session, buffer, len);
 		break;
 
-	//case C_Hit:
-	//	Handle_C_Hit(session, buffer, len);
-	//	break;
+	case C_Hit:
+		Handle_C_Hit(session, buffer, len);
+		break;
 
 	case C_Fire:
 		Handle_C_Fire(session, buffer, len);
@@ -77,10 +77,30 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 		room->Handle_C_Move(pkt);
 }
 
-//void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
-//{
-//
-//}
+void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	// DEBUG!!!
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_Hit pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	int attackerID = pkt.attackerid();
+	int objectID = pkt.objectid();
+
+	GameRoomRef room = session->gameRoom.lock();
+	if (room)
+	{
+		MonsterRef monster = dynamic_pointer_cast<Monster>(room->FindObject(objectID));
+		PlayerRef player = dynamic_pointer_cast<Player>(room->FindObject(attackerID));
+
+		if (monster && player)
+			monster->OnDamaged(player, true);
+
+	}
+}
 
 void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len)
 {
@@ -452,6 +472,16 @@ SendBufferRef ServerPacketHandler::Make_S_QuestList(uint64 objectid, const Proto
 	questInfo->set_objectid(objectid);
 
 	return MakeSendBuffer(pkt, S_QuestList);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_ItemDrop(const Protocol::ItemInfo& info)
+{
+	Protocol::S_ItemDrop pkt;
+
+	Protocol::ItemInfo* itemInfo = pkt.mutable_iteminfo();
+	*itemInfo = info;
+
+	return MakeSendBuffer(pkt, S_ItemDrop);
 }
 
 SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)

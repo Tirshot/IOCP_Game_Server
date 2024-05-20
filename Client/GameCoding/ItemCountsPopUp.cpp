@@ -243,14 +243,17 @@ void ItemCountsPopUp::OnClickDenyButton()
 void ItemCountsPopUp::OnClickCountPlusButton()
 {
 	_counts++;
+
+	if (_counts > _maxCounts)
+		_counts = _maxCounts;
 }
 
 void ItemCountsPopUp::OnClickCountDoublePlusButton()
 {
 	_counts += 10;
 
-	if (_counts > 99)
-		_counts = 99;
+	if (_counts > _maxCounts)
+		_counts = _maxCounts;
 }
 
 void ItemCountsPopUp::OnClickCountMinusButton()

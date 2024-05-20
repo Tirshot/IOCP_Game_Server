@@ -2,6 +2,7 @@
 #include "QuickSlot.h"
 #include "ResourceManager.h"
 #include "Sprite.h"
+#include "MyPlayer.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "ItemManager.h"
@@ -26,6 +27,8 @@ void QuickSlot::BeginPlay()
 	_slots[1] = GET_SINGLE(ItemManager)->GetItem(1);
 	_slots[2] = GET_SINGLE(ItemManager)->GetItem(2);
 	_slots[3] = GET_SINGLE(ItemManager)->GetItem(3);
+
+	_pressedButton = 1;
 }
 
 void QuickSlot::Tick()
@@ -92,7 +95,7 @@ void QuickSlot::SetQuickSlot(ITEM* item, int index)
 		return;
 
 	// 몬스터 고유 아이템은 등록 불가
-	if (item->Type == L"Trophy")
+	if (item->Type == L"ETC")
 		return;
 
 	// 화살은 등록 불가
@@ -119,6 +122,14 @@ void QuickSlot::SetQuickSlot(ITEM* item, int index)
 
 void QuickSlot::SetPressedButton()
 {
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	if (myPlayer)
+	{
+		if (myPlayer->GetState() != IDLE && myPlayer->GetState() != MOVE)
+			return;
+	}
+
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
 	{
 		_pressedButton = 1;

@@ -68,6 +68,27 @@ void GameOver::Tick()
 
 	if (_alpha >= 220)
 	{
+		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+		if (_invisibleUIs == false)
+		{
+			_invisibleUIs = true;
+
+			if (scene)
+			{
+				auto uis = scene->GetUIs();
+
+				if (uis.empty() == false)
+				{
+					for (auto& ui : uis)
+					{
+						ui->SetVisible(false);
+					}
+				}
+			}
+		}
+
+		SetVisible(true);
 		for (auto& child : _children)
 		{
 			if (child == nullptr)
@@ -136,7 +157,6 @@ void GameOver::FadeIn()
 
 void GameOver::OnClickReviveButton()
 {
-
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene == nullptr)
@@ -149,6 +169,7 @@ void GameOver::OnClickReviveButton()
 
 	// 수행 후
 	SetVisible(false);
+	_invisibleUIs = false;
 
 	// 부활 패킷 전송
 	{
@@ -167,11 +188,6 @@ void GameOver::OnClickExitButton()
 		{
 			scene->RemoveUI(this);
 		}
-
-		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-
-		if (myPlayer == nullptr)
-			return;
 
 		// 프로그램 종료
 		PostQuitMessage(0);

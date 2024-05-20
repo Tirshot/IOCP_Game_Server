@@ -84,6 +84,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 		case S_Reset:
 			Handle_S_Reset(session, buffer, len);
 			break;
+
+		case S_ItemDrop:
+			Handle_S_ItemDrop(session, buffer, len);
+			break;
 	}
 }
 
@@ -440,6 +444,25 @@ void ClientPacketHandler::Handle_S_QuestList(ServerSessionRef session, BYTE* buf
 	}
 }
 
+void ClientPacketHandler::Handle_S_ItemDrop(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_ItemDrop pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	Protocol::ItemInfo info = pkt.iteminfo();
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		scene->SpawnItem(info);
+	}
+}
+
 // 패킷 보내기
 SendBufferRef ClientPacketHandler::Make_C_Move()
 {
@@ -463,6 +486,17 @@ SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
 	pkt.set_ownerid(ownerid);
 
 	return MakeSendBuffer(pkt, C_Fire);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_Hit(uint64 objectId, uint64 attackerId)
+{
+	// 패킷 생성
+	Protocol::C_Hit pkt;
+
+	pkt.set_attackerid(attackerId);
+	pkt.set_objectid(objectId);
+
+	return MakeSendBuffer(pkt, C_Hit);
 }
 
 SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t time, string str)

@@ -12,9 +12,10 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 
-	void OnDamaged(CreatureRef attacker);
+	virtual void OnDamaged(CreatureRef attacker, bool debug = false);
 	void KnockBack(CreatureRef attacker);
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
+	wstring GetName();
 
 protected:
 	uint64 _waitUntil = 0;

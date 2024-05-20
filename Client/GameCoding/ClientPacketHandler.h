@@ -44,6 +44,8 @@ enum
 
 	C_AddItem = 70,
 
+	S_ItemDrop = 80,
+
 	S_Reset = 99,
 };
 class Creature;
@@ -69,6 +71,7 @@ public:
 	static void Handle_S_QuestProcess(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_QuestComplete(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_QuestList(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_ItemDrop(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// º¸³»±â
 	static SendBufferRef Make_C_Move();
@@ -90,7 +93,7 @@ public:
 	}
 
 	static SendBufferRef Make_C_Fire(uint64 ownerid);
-	//static SendBufferRef Make_C_Hit(uint64 objectId, uint64 attackerId);
+	static SendBufferRef Make_C_Hit(uint64 objectId, uint64 attackerId);
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
 	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);

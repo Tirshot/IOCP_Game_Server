@@ -144,13 +144,12 @@ void Player::TickSkill()
 
 			if (monster)
 			{
-				// 몬스터에 피격 이펙트 출력
-				//scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				//GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
-
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
 				if (monster->info.hp() <=0)
+				{
+					monster->SetState(HIT);
 					return;
+				}
 
 				monster->SetWait(50);
 				monster->SetState(HIT);
@@ -159,11 +158,7 @@ void Player::TickSkill()
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{
-			// 화살 생성 패킷 전송
-			MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
-
 			// 화살 버그 수정 - 패킷 생성시 플레이어 수 만큼 나감 주의!!
-			if (myPlayer)
 			{
 				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(GetObjectID());
 				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);

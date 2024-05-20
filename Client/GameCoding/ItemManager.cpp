@@ -98,19 +98,6 @@ bool ItemManager::AddItemToInventory(int itemId, int counts)
     if (itemId == 0)
         return false;
 
-    //DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-    //MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-    //int myPlayerID = GET_SINGLE(SceneManager)->GetMyPlayerId();
-
-    //if (scene == nullptr || myPlayer == nullptr)
-    //    return false;
-
-    //// 인벤토리 아이템 서버와 동기화
-    //{
-    //    SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(myPlayerID, itemId, counts);
-    //    GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-    //}
-
     return GetInventory()->AddItem(itemId, counts);
 }
 

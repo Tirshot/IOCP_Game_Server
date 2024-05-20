@@ -10,6 +10,7 @@
 #include "Chat.h"
 #include "Quest.h"
 #include "Inventory.h"
+#include "ItemManager.h"
 #include <filesystem>
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
@@ -32,6 +33,7 @@ void GameRoom::Init()
 	_tilemap.LoadFile(relativePath);
 	GET_SINGLE(Quest)->Init();
 	GET_SINGLE(Inventory)->Init();
+	GET_SINGLE(ItemManager)->Init();
 	// Sign
 	{
 		SignRef npc1 = GameObject::CreateSign();
@@ -96,6 +98,13 @@ void GameRoom::Update()
 		if (item.second->IsGet())
 		{
 			_deleteObjects[id] = item.second;
+
+			int itemID = item.second.get()->GetItemInfo().itemid();
+
+			wstring itemStr = to_wstring(itemID);
+
+			// 제거 후 로그
+			GChat->AddText(L"Item ID : " + itemStr + L" 아이템 서버에서 제거.");
 		}
 	}
 
@@ -197,7 +206,7 @@ void GameRoom::LeaveRoom(GameSessionRef session)
 	uint64 id = session->player.lock()->info.objectid();
 	RemoveObject(id);
 
-	GChat->SaveLogFile();
+	//GChat->SaveLogFile();
 }
 
 GameObjectRef GameRoom::FindObject(uint64 id)

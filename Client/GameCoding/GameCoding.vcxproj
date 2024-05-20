@@ -154,7 +154,6 @@
     <ClInclude Include="DeathEffect.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DevScene.h" />
-    <ClInclude Include="Enum.pb.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="FlipBook.h" />
     <ClInclude Include="FlipbookActor.h" />
@@ -188,6 +187,7 @@
     <ClInclude Include="Potion.h" />
     <ClInclude Include="Quest.h" />
     <ClInclude Include="QuestManager.h" />
+    <ClInclude Include="QuestTrackerUI.h" />
     <ClInclude Include="QuestUI.h" />
     <ClInclude Include="QuestUIPanel.h" />
     <ClInclude Include="QuickSlot.h" />
@@ -204,7 +204,6 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Projectile.h" />
-    <ClInclude Include="Protocol.pb.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourceBase.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -216,7 +215,6 @@
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="SpriteActor.h" />
-    <ClInclude Include="Struct.pb.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tilemap.h" />
@@ -228,7 +226,6 @@
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Values.h" />
-    <ClInclude Include="WeaponSlot.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
@@ -279,14 +276,21 @@
     <ClCompile Include="NamePlate.cpp" />
     <ClCompile Include="PopUp.cpp" />
     <ClCompile Include="Potion.cpp" />
+    <ClCompile Include="Protocol.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Quest.cpp" />
     <ClCompile Include="QuestManager.cpp" />
+    <ClCompile Include="QuestTrackerUI.cpp" />
     <ClCompile Include="QuestUI.cpp" />
     <ClCompile Include="QuestUIPanel.cpp" />
     <ClCompile Include="QuickSlot.cpp" />
     <ClCompile Include="ShopItemPanel.cpp" />
     <ClCompile Include="ShopUI.cpp" />
     <ClCompile Include="StatusPanel.cpp" />
+    <ClCompile Include="Struct.pb.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="TeleportEffect.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="Trigger.cpp" />
@@ -299,9 +303,6 @@
     </ClCompile>
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Projectile.cpp" />
-    <ClCompile Include="Protocol.pb.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="ResourceBase.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -312,9 +313,6 @@
     <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteActor.cpp" />
-    <ClCompile Include="Struct.pb.cc">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tilemap.cpp" />
     <ClCompile Include="TilemapActor.cpp" />
@@ -324,7 +322,6 @@
     <ClCompile Include="Types.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="WeaponSlot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="GameCoding.ico" />

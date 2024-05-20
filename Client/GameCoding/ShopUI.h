@@ -27,6 +27,7 @@ public:
 private:
 	void OnPopClickAcceptDelegate();
 	void OnPopClickAlertAcceptDelegate();
+	void OnClickSellItemToShopAlertAcceptDelegate();
 	void OnClickBackButton();
 	void OnClickExitButton();
 
@@ -54,4 +55,7 @@ protected:
 	int _allCost = 0;
 	float _initializeTime = 0.f;	// 판매창 품목 구입 대기시간
 	int _page = 1;	// 열린 페이지
+
+private:
+	int _buyPriceDivider = 5;
 };

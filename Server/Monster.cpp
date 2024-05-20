@@ -2,12 +2,17 @@
 #include "Monster.h"
 #include "GameRoom.h"
 #include "Player.h"
+#include "Item.h"
+#include "Chat.h"
 #include "GameSession.h"
+#include "GameObject.h"
+#include "ItemManager.h"
 
 Monster::Monster()
 {
 	info.set_name("Snake");
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
+	info.set_monstertype(Protocol::MONSTER_TYPE_SNAKE);
 	info.set_hp(50);
 	info.set_maxhp(50);
 	info.set_attack(1);
@@ -143,4 +148,109 @@ void Monster::UpdateHit()
 		return;
 
 	SetState(IDLE);
+}
+
+void Monster::ItemDrop(CreatureRef owner)
+{
+	// 몬스터 타입에 따른 아이템 드랍 그룹 테이블 가져오기
+	auto monsterType = info.monstertype();
+	auto groupInfo = GET_SINGLE(ItemManager)->GetMonsterDropItemGroupInfo(monsterType);
+
+	if (groupInfo.empty())
+		return;
+
+	// 그룹 테이블에서 아이템 그룹 별 확률 가져오기
+	int WearableProbablity = GET_SINGLE(ItemManager)->GetWearableProbablity(groupInfo);
+	int ConsumableProbablity = WearableProbablity + GET_SINGLE(ItemManager)->GetConsumableProbablity(groupInfo);
+	int ETCProbablity = ConsumableProbablity + GET_SINGLE(ItemManager)->GetETCProbablity(groupInfo);
+	int NoneProbablity = ETCProbablity + GET_SINGLE(ItemManager)->GetNoneProbablity(groupInfo);
+
+	// 주사위 던지기
+	int randValue = rand() % 100 + 1; // 1 ~ 100
+
+	// 해당 몬스터 타입에 유효한 개별 아이템 드랍 테이블 가져오기
+	auto dropTable = GET_SINGLE(ItemManager)->GetItemDropTableByMonsterType(monsterType);
+
+	vector<vector<wstring>> group;
+
+	// 그룹 확률에 따라 아이템 드랍
+	if (randValue <= WearableProbablity)
+	{
+		// 장비 아이템 드랍
+		group = GET_SINGLE(ItemManager)->GetItemDropTableByGroup(dropTable, L"Wearable");
+	}
+	else if (randValue > WearableProbablity && randValue <= ConsumableProbablity)
+	{
+		// 소모품 아이템 드랍
+		group = GET_SINGLE(ItemManager)->GetItemDropTableByGroup(dropTable, L"Consumable");
+	}
+	else if (randValue > ConsumableProbablity && randValue <= ETCProbablity)
+	{
+		// 기타 아이템 드랍 - 퀘스트 아이템 등
+		group = GET_SINGLE(ItemManager)->GetItemDropTableByGroup(dropTable, L"ETC");
+	}
+	else if (randValue > ETCProbablity && randValue <= NoneProbablity)
+	{
+		// 아무 아이템도 드랍되지 않음
+		return;
+	}
+
+	// 아이템 생성, 패킷 전송
+	GET_SINGLE(ItemManager)->MakeItem(group, owner, {GetCellPos().x, GetCellPos().y});
+}
+
+void Monster::OnDamaged(CreatureRef attacker, bool debug)
+{
+	Super::OnDamaged(attacker);
+
+	if (debug)
+	{
+		// 아이템 드랍
+		ItemDrop(attacker);
+
+		// 사망 처리
+		if (room)
+		{
+			room->RemoveObject(GetObjectID());
+
+			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
+			if (player)
+				player->QuestProgress(0);
+
+			// 채팅 출력
+			GChat->AddText(format(L"{0} {1}이(가) {2}에 의해 처치됨.",
+				GetName(),
+				GetObjectID(),
+				attacker->GetName()));
+
+			return;
+		}
+	}
+
+	if (info.hp() == 0)
+	{
+		// 아이템 드랍
+		ItemDrop(attacker);
+
+		// 사망 처리
+		if (room)
+		{
+			room->RemoveObject(GetObjectID());
+
+			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
+			if (player)
+				player->QuestProgress(0);
+
+			// 채팅 출력
+			GChat->AddText(format(L"{0} {1}이(가) {2}에 의해 처치됨.",
+				GetName(),
+				GetObjectID(),
+				attacker->GetName()));
+		}
+	}
+}
+
+wstring Monster::GetName()
+{
+	return GET_SINGLE(ItemManager)->StringToWString(info.name());
 }

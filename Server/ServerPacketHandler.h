@@ -43,6 +43,8 @@ enum
 
 	C_AddItem = 70,
 
+	S_ItemDrop = 80,
+
 	S_Reset = 99,
 };
 
@@ -59,7 +61,7 @@ public:
 
 	// 받기
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
-	//static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Revive(GameSessionRef session, BYTE* buffer, int32 len);
@@ -84,6 +86,7 @@ public:
 	static SendBufferRef Make_S_QuestProcess(uint64 objectid, uint64 questid, uint64 process);
 	static SendBufferRef Make_S_QuestComplete(uint64 objectid, uint64 questid, uint64 process);
 	static SendBufferRef Make_S_QuestList(uint64 objectid, const Protocol::QuestInfo& info);
+	static SendBufferRef Make_S_ItemDrop(const Protocol::ItemInfo& info);
 
 	// Arrow의 info를 넘김
 	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id);

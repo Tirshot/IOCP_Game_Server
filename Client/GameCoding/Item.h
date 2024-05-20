@@ -12,8 +12,14 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
+	void SetItemInfo(Protocol::ItemInfo info) { itemInfo = info; }
+
 protected:
 	virtual void TickIdle();
 	Sprite* _sprite = nullptr;
+	wstring _name = L"";
+
+private:
+	Protocol::ItemInfo itemInfo;
 };
 

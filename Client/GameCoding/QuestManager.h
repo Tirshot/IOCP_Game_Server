@@ -27,6 +27,6 @@ private:
 	// 퀘스트 트래커
 	// 수락한 퀘스트
 	map<int, Protocol::QuestInfo> _quests;
-
+	bool _announce = false;
 };
 

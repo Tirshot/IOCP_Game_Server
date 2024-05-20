@@ -6,7 +6,6 @@
 #include "Button.h"
 #include "TextBox.h"
 #include "NamePlate.h"
-#include "WeaponSlot.h"
 #include "ItemManager.h"
 #include "DevScene.h"
 #include "MerchantUI.h"

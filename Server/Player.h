@@ -19,13 +19,18 @@ private:
 	virtual void UpdateTeleport();
 
 public:
+	virtual void OnDamaged(CreatureRef attacker, bool debug = false) override;
+
+public:
 	void MakeArrow();
 	void Teleport();
 
 public:
 	void QuestProgress(int questid);
 	pair<Protocol::QUEST_STATE, int > GetQuestState(int questid) { return _questsStates[questid]; }
+	map<int, pair<Protocol::QUEST_STATE, int>> GetAcceptedQuests();
 	void SetQuestState(int questid, Protocol::QUEST_STATE state, int progress) { _questsStates[questid] = { state, progress }; }
+	void SetQuestState(int questid, Protocol::QUEST_STATE state) { _questsStates[questid].first = { state }; }
 	
 	int GetQuestProgress(int questId);
 	void SetQuestProgress(int questId, int progress);
