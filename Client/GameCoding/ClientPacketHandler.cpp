@@ -15,6 +15,7 @@
 #include "ChatManager.h"
 #include "NetworkManager.h"
 #include "SoundManager.h"
+#include "ItemManager.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -554,13 +555,17 @@ SendBufferRef ClientPacketHandler::Make_C_Heal(uint64 objectId)
 	return MakeSendBuffer(pkt, C_Heal);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_AddItem(uint64 objectId, int itemId, int itemCounts)
+SendBufferRef ClientPacketHandler::Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index)
 {
 	Protocol::C_AddItem pkt;
 
-	pkt.set_objectid(objectId);
-	pkt.set_itemid(itemId);
-	pkt.set_itemcounts(itemCounts);
+	auto* item = pkt.mutable_iteminfo();
+
+	item->set_objectid(objectId);
+	item->set_itemid(itemId);
+	item->set_itemcount(itemCounts);
+	item->set_itemtype(itemType);
+	pkt.set_index(index);
 
 	return MakeSendBuffer(pkt, C_AddItem);
 }

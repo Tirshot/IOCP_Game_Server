@@ -20,6 +20,11 @@ void ItemManager::Init()
     _quickSlot = scene->FindUI<QuickSlot>(scene->GetUIs());
 }
 
+void ItemManager::Clear()
+{
+    SAFE_DELETE(_inventory);
+}
+
 void ItemManager::Tick()
 {
 
@@ -168,11 +173,21 @@ void ItemManager::SyncToServer()
         {
             slot.ItemId;
             slot.ItemCount;
-            slot.Type;
-            slot.SubType;
         }
     }
 
+}
+
+void ItemManager::OpenInventory()
+{
+    if (_inventory->GetVisible())
+    {
+        _inventory->SetVisible(false);
+    }
+    else
+    {
+        _inventory->SetVisible(true);
+    }
 }
 
 wstring ItemManager::GetName(vector<wstring> row)
@@ -187,7 +202,10 @@ wstring ItemManager::GetKorName(vector<wstring> row)
 
 wstring ItemManager::GetType(vector<wstring> row)
 {
-    return row[3];
+    if (!row.empty())
+        return row[3];
+
+    return L"";
 }
 
 wstring ItemManager::GetSubType(vector<wstring> row)

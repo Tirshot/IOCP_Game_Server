@@ -7,6 +7,7 @@
 #include "Item.h"
 #include "GameRoom.h"
 #include "Arrow.h"
+#include "Inventory.h"
 
 atomic<uint64> GameObject::s_idGenerator = 1;
 
@@ -82,6 +83,16 @@ ArrowRef GameObject::CreateArrow()
 	arrow->info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 
 	return arrow->weak_from_this().lock();
+}
+
+InventoryRef GameObject::CreateInventory(PlayerRef player)
+{
+	InventoryRef inventory = make_shared<Inventory>();
+	inventory->Init();
+	inventory->SetOwner(player->GetObjectID());
+	inventory->info.set_objecttype(Protocol::OBJECT_TYPE_INVENTORY);
+	inventory->SetObjectID(player->GetObjectID());
+	return inventory;
 }
 
 void GameObject::SetState(ObjectState state, bool broadcast)

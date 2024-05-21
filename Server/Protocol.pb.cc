@@ -391,9 +391,8 @@ struct C_HealDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_HealDefaultTypeInternal _C_Heal_default_instance_;
 PROTOBUF_CONSTEXPR C_AddItem::C_AddItem(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.objectid_)*/uint64_t{0u}
-  , /*decltype(_impl_.itemid_)*/uint64_t{0u}
-  , /*decltype(_impl_.itemcounts_)*/uint64_t{0u}
+    /*decltype(_impl_.iteminfo_)*/nullptr
+  , /*decltype(_impl_.index_)*/0u
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_AddItemDefaultTypeInternal {
   PROTOBUF_CONSTEXPR C_AddItemDefaultTypeInternal()
@@ -634,9 +633,8 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.objectid_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.itemid_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.itemcounts_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.iteminfo_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_AddItem, _impl_.index_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_ItemDrop, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -674,7 +672,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 191, -1, -1, sizeof(::Protocol::S_Reset)},
   { 198, -1, -1, sizeof(::Protocol::C_Heal)},
   { 205, -1, -1, sizeof(::Protocol::C_AddItem)},
-  { 214, -1, -1, sizeof(::Protocol::S_ItemDrop)},
+  { 213, -1, -1, sizeof(::Protocol::S_ItemDrop)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -746,10 +744,10 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "st\022&\n\tquestinfo\030\001 \001(\0132\023.Protocol.QuestIn"
   "fo\"3\n\007S_Reset\022(\n\nobjectinfo\030\001 \001(\0132\024.Prot"
   "ocol.ObjectInfo\"\032\n\006C_Heal\022\020\n\010objectId\030\001 "
-  "\001(\004\"A\n\tC_AddItem\022\020\n\010objectId\030\001 \001(\004\022\016\n\006it"
-  "emId\030\002 \001(\004\022\022\n\nitemCounts\030\003 \001(\004\"2\n\nS_Item"
-  "Drop\022$\n\010itemInfo\030\001 \001(\0132\022.Protocol.ItemIn"
-  "fob\006proto3"
+  "\001(\004\"@\n\tC_AddItem\022$\n\010ItemInfo\030\001 \001(\0132\022.Pro"
+  "tocol.ItemInfo\022\r\n\005index\030\002 \001(\r\"2\n\nS_ItemD"
+  "rop\022$\n\010itemInfo\030\001 \001(\0132\022.Protocol.ItemInf"
+  "ob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -757,7 +755,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1570, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1569, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 29,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -6392,8 +6390,19 @@ void C_Heal::InternalSwap(C_Heal* other) {
 
 class C_AddItem::_Internal {
  public:
+  static const ::Protocol::ItemInfo& iteminfo(const C_AddItem* msg);
 };
 
+const ::Protocol::ItemInfo&
+C_AddItem::_Internal::iteminfo(const C_AddItem* msg) {
+  return *msg->_impl_.iteminfo_;
+}
+void C_AddItem::clear_iteminfo() {
+  if (GetArenaForAllocation() == nullptr && _impl_.iteminfo_ != nullptr) {
+    delete _impl_.iteminfo_;
+  }
+  _impl_.iteminfo_ = nullptr;
+}
 C_AddItem::C_AddItem(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -6404,15 +6413,15 @@ C_AddItem::C_AddItem(const C_AddItem& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   C_AddItem* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.objectid_){}
-    , decltype(_impl_.itemid_){}
-    , decltype(_impl_.itemcounts_){}
+      decltype(_impl_.iteminfo_){nullptr}
+    , decltype(_impl_.index_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.itemcounts_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.itemcounts_));
+  if (from._internal_has_iteminfo()) {
+    _this->_impl_.iteminfo_ = new ::Protocol::ItemInfo(*from._impl_.iteminfo_);
+  }
+  _this->_impl_.index_ = from._impl_.index_;
   // @@protoc_insertion_point(copy_constructor:Protocol.C_AddItem)
 }
 
@@ -6421,9 +6430,8 @@ inline void C_AddItem::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.objectid_){uint64_t{0u}}
-    , decltype(_impl_.itemid_){uint64_t{0u}}
-    , decltype(_impl_.itemcounts_){uint64_t{0u}}
+      decltype(_impl_.iteminfo_){nullptr}
+    , decltype(_impl_.index_){0u}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -6439,6 +6447,7 @@ C_AddItem::~C_AddItem() {
 
 inline void C_AddItem::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  if (this != internal_default_instance()) delete _impl_.iteminfo_;
 }
 
 void C_AddItem::SetCachedSize(int size) const {
@@ -6451,9 +6460,11 @@ void C_AddItem::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.itemcounts_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.itemcounts_));
+  if (GetArenaForAllocation() == nullptr && _impl_.iteminfo_ != nullptr) {
+    delete _impl_.iteminfo_;
+  }
+  _impl_.iteminfo_ = nullptr;
+  _impl_.index_ = 0u;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -6463,26 +6474,18 @@ const char* C_AddItem::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint64 objectId = 1;
+      // .Protocol.ItemInfo ItemInfo = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.objectid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
+          ptr = ctx->ParseMessage(_internal_mutable_iteminfo(), ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // uint64 itemId = 2;
+      // uint32 index = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
-          _impl_.itemid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // uint64 itemCounts = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.itemcounts_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.index_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -6516,22 +6519,17 @@ uint8_t* C_AddItem::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint64 objectId = 1;
-  if (this->_internal_objectid() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_objectid(), target);
+  // .Protocol.ItemInfo ItemInfo = 1;
+  if (this->_internal_has_iteminfo()) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(1, _Internal::iteminfo(this),
+        _Internal::iteminfo(this).GetCachedSize(), target, stream);
   }
 
-  // uint64 itemId = 2;
-  if (this->_internal_itemid() != 0) {
+  // uint32 index = 2;
+  if (this->_internal_index() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_itemid(), target);
-  }
-
-  // uint64 itemCounts = 3;
-  if (this->_internal_itemcounts() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(3, this->_internal_itemcounts(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(2, this->_internal_index(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -6550,19 +6548,16 @@ size_t C_AddItem::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // uint64 objectId = 1;
-  if (this->_internal_objectid() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objectid());
+  // .Protocol.ItemInfo ItemInfo = 1;
+  if (this->_internal_has_iteminfo()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *_impl_.iteminfo_);
   }
 
-  // uint64 itemId = 2;
-  if (this->_internal_itemid() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_itemid());
-  }
-
-  // uint64 itemCounts = 3;
-  if (this->_internal_itemcounts() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_itemcounts());
+  // uint32 index = 2;
+  if (this->_internal_index() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_index());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -6583,14 +6578,12 @@ void C_AddItem::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_objectid() != 0) {
-    _this->_internal_set_objectid(from._internal_objectid());
+  if (from._internal_has_iteminfo()) {
+    _this->_internal_mutable_iteminfo()->::Protocol::ItemInfo::MergeFrom(
+        from._internal_iteminfo());
   }
-  if (from._internal_itemid() != 0) {
-    _this->_internal_set_itemid(from._internal_itemid());
-  }
-  if (from._internal_itemcounts() != 0) {
-    _this->_internal_set_itemcounts(from._internal_itemcounts());
+  if (from._internal_index() != 0) {
+    _this->_internal_set_index(from._internal_index());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -6610,11 +6603,11 @@ void C_AddItem::InternalSwap(C_AddItem* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(C_AddItem, _impl_.itemcounts_)
-      + sizeof(C_AddItem::_impl_.itemcounts_)
-      - PROTOBUF_FIELD_OFFSET(C_AddItem, _impl_.objectid_)>(
-          reinterpret_cast<char*>(&_impl_.objectid_),
-          reinterpret_cast<char*>(&other->_impl_.objectid_));
+      PROTOBUF_FIELD_OFFSET(C_AddItem, _impl_.index_)
+      + sizeof(C_AddItem::_impl_.index_)
+      - PROTOBUF_FIELD_OFFSET(C_AddItem, _impl_.iteminfo_)>(
+          reinterpret_cast<char*>(&_impl_.iteminfo_),
+          reinterpret_cast<char*>(&other->_impl_.iteminfo_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata C_AddItem::GetMetadata() const {

@@ -305,13 +305,16 @@ void ServerPacketHandler::Handle_C_AddItem(GameSessionRef session, BYTE* buffer,
 	GameRoomRef room = session->gameRoom.lock();
 	PlayerRef myPlayer = session->player.lock();
 
-	int itemId = pkt.itemid();
-	int itemCounts = pkt.itemcounts();
+	auto* item = pkt.mutable_iteminfo();
+	int itemId = item->itemid();
+	int itemCounts = item->itemcount();
+	Protocol::ITEM_TYPE itemType = item->itemtype();
+	int index = pkt.index();
 
 	// 가져온 패킷의 정보를 이용, 플레이어 인벤토리 관리
 	if (room && myPlayer)
 	{
-		room->AddItemToPlayer(myPlayer->GetObjectID(), itemId, itemCounts);
+		room->AddItemToPlayer(myPlayer->GetObjectID(), itemId, itemCounts, itemType, index);
 	}
 }
 

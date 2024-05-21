@@ -9,6 +9,7 @@ class ItemManager
 
 public:
 	void Init();
+	void Clear();
 	void Tick();
 
 public:
@@ -35,6 +36,7 @@ public:
 
 	ITEM* FindItemFromInventory(int itemId);
 	void SyncToServer();
+	void OpenInventory();
 
 public:
 	wstring GetName(vector <wstring> row);

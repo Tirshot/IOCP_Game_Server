@@ -19,6 +19,7 @@ Game::~Game()
 {
 	GET_SINGLE(SceneManager)->Clear();
 	GET_SINGLE(ResourceManager)->Clear();
+	GET_SINGLE(ItemManager)->Clear();
 }
 
 void Game::Init(HWND hwnd)
@@ -89,4 +90,13 @@ void Game::Render()
 	// 복사 이후 백 버퍼 클리어
 	::PatBlt(_hdcBack, 0, 0, _rect.right, _rect.bottom, WHITENESS);
 
+}
+
+void Game::Restart()
+{
+	GET_SINGLE(SceneManager)->Clear();
+	GET_SINGLE(ResourceManager)->Clear();
+	GET_SINGLE(ItemManager)->Clear();
+
+	Init(_hwnd);
 }

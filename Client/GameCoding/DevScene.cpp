@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "DevScene.h"
 #include "Utils.h"
+#include "ItemManager.h"
 #include "InputManager.h"
 #include "TimeManager.h"
 #include "ResourceManager.h"
@@ -26,7 +27,6 @@
 #include "Monster.h"
 #include "MyPlayer.h"
 #include "Item.h"
-#include "HeartItem.h"
 #include "StatusPanel.h"
 #include "SceneManager.h"
 #include "Chat.h"
@@ -36,7 +36,6 @@
 #include "QuestManager.h"
 #include "ClientPacketHandler.h"
 #include "Arrow.h"
-#include "ArrowItem.h"
 #include "GameOver.h"
 #include "DeathEffect.h"
 #include "ShopUI.h"
@@ -802,6 +801,8 @@ void DevScene::LoadUI()
 			Inven->SetPos({ 510, 125 });
 			Inven->SetVisible(false);
 			AddUI(Inven);
+
+			GET_SINGLE(ItemManager)->Init();
 		}
 	}
 }

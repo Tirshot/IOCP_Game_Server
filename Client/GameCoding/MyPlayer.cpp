@@ -137,27 +137,9 @@ void MyPlayer::TickInput()
 		UsePotion();
 	}
 
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::I))
+	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::I))
 	{
-		Inventory* Inven = GET_SINGLE(ItemManager)->GetInventory();
-
-		if (Inven == nullptr)
-			return;
-
-		// 팝업이 켜져있을 때 끌 수 없음
-		if (Inven->IsChildPopUpVisible())
-			return;
-
-		if (Inven->GetVisible() == true)
-		{
-			Inven->ResetPos();
-			Inven->SetVisible(false);
-		}
-		else
-		{
-			Inven->ResetPos();
-			Inven->SetVisible(true);
-		}
+		GET_SINGLE(ItemManager)->OpenInventory();
 	}
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)

@@ -44,6 +44,11 @@ void ResourceManager::Clear()
 		SAFE_DELETE(item.second);
 
 	_tilemaps.clear();
+
+	for (auto& item : _sounds)
+		SAFE_DELETE(item.second);
+
+	_sounds.clear();
 }
 
 Texture* ResourceManager::LoadTexture(const wstring& key, const wstring& path, uint32 transparent)

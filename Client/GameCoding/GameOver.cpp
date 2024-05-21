@@ -1,10 +1,12 @@
 #include "pch.h"
+#include "Game.h"
 #include "GameOver.h"
 #include "Sprite.h"
 #include "Button.h"
 #include "DevScene.h"
 #include "MyPlayer.h"
 #include "ResourceManager.h"
+#include "ItemManager.h"
 #include "TimeManager.h"
 #include "SceneManager.h"
 #include "SoundManager.h"
@@ -176,6 +178,7 @@ void GameOver::OnClickReviveButton()
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Revive(myPlayer->info);
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
+	GET_SINGLE(ItemManager)->Init();
 }
 
 void GameOver::OnClickExitButton()

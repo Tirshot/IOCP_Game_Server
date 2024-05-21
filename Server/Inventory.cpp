@@ -1,6 +1,10 @@
 #include "pch.h"
 #include "Inventory.h"
 
+Inventory::Inventory()
+{
+}
+
 Inventory::~Inventory()
 {
 }
@@ -13,29 +17,21 @@ void Inventory::Init()
 
 void Inventory::Update()
 {
-    // _slots를 순회하면서 itemCounts가 0인 슬롯을 제거
-    if (_slots.size() == 0)
-        return;
 
-    //for (auto it = _slots.begin(); it != _slots.end();)
-    //{
-    //    if (it->itemCounts == 0)
-    //    {
-    //        it = _slots.erase(it);
-    //    }
-    //    else
-    //    {
-    //        ++it;
-    //    }
-    //}
 }
 
-void Inventory::AddItemToInventory(int itemID, int itemCounts)
+void Inventory::AddItemToInventory(int itemID, int itemCounts, Protocol::ITEM_TYPE itemType, int index)
 {
-    Item item = {};
-    item.itemID = itemID;
-    item.itemCounts = itemCounts;
+    if (itemID <= 0)
+        return;
 
-	_slots.push_back(item);
+    bool found = false;
+    int emptySlot = 0;
+
+    _slots[index].itemID = itemID;
+    _slots[index].itemCounts = itemCounts;
+
+    if (_slots[index].itemCounts <= 0)
+        _slots[index] = {};
 }
 

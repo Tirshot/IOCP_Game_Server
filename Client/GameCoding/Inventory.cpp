@@ -14,11 +14,15 @@
 #include "ItemManager.h"
 #include "NetworkManager.h"
 #include "ClientPacketHandler.h"
+#include "TimeManager.h"
 
 Inventory::Inventory()
 {
     _background = GET_SINGLE(ResourceManager)->GetSprite(L"Inventory");
     _itemSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
+
+    _slots.assign(40, { 0 });
+    _equips.assign(5, make_pair(RECT{}, ITEM{}));
 }
 
 Inventory::~Inventory()
@@ -28,9 +32,6 @@ Inventory::~Inventory()
 
 void Inventory::BeginPlay()
 {
-    if (_revive == true)
-        return;
-
     _invenRect = {};        // 485, 160, 770, 460
     {
         _invenRect.left = (int)_pos.x + 5;
@@ -54,9 +55,6 @@ void Inventory::BeginPlay()
         _equipRect.right = _equipRect.left + 110;
         _equipRect.bottom = _equipRect.top + 110;
     }
-
-    _slots.assign(40, { 0 });
-    _equips.assign(5, make_pair(RECT{}, ITEM{}));
 
     // _pos = 480, 125
 
@@ -109,7 +107,6 @@ void Inventory::BeginPlay()
 
     SetInitialPos(GetPos());
     _initialized = true;
-    _revive = true;
 }
 
 void Inventory::Tick()
@@ -195,6 +192,9 @@ void Inventory::Tick()
         SetItemCount(4, myPlayer->info.arrows());
         SetItemCount(5, myPlayer->info.potion());
     }
+
+    //  5초 마다 서버와 연동
+    AutoSyncInventory();
 
     for (auto& child : _children)
         if (child->GetVisible())
@@ -362,7 +362,7 @@ void Inventory::Tick()
                 // 아이템 장착 해제
                 if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::RightMouse))
                 {
-                    AddItem(&slot.second);
+                    //AddItem(&slot.second);
                     slot.second = {};
                 }
 
@@ -395,7 +395,7 @@ void Inventory::Tick()
             {
                 if (_selectedItem != nullptr)
                 {
-                    AddItem(&slot.second);
+                    /*AddItem(&slot.second);*/
                     slot.second = {};
                     _isEquipedItem = false;
                 }
@@ -582,13 +582,48 @@ void Inventory::SyncItemToServer(int itemID, int counts)
     int objectID = -1;
     objectID = GET_SINGLE(SceneManager)->GetMyPlayerId();
 
-    if (objectID == -1)
-    {
+    if (objectID == -1 || _initialized == true)
         return;
+
+    auto iteminfo = GET_SINGLE(ItemManager)->FindItemInfo(itemID);
+    auto itemType = GET_SINGLE(ItemManager)->GetType(iteminfo);
+
+    Protocol::ITEM_TYPE protoItemType = Protocol::ITEM_TYPE_NONE;
+
+    if (itemType == L"Wearable")
+    {
+        protoItemType = Protocol::ITEM_TYPE_WEARABLE;
+    }
+    else if (itemType == L"Consumable")
+    {
+        protoItemType = Protocol::ITEM_TYPE_CONSUMABLE;
+    }
+    else if (itemType == L"ETC")
+    {
+        protoItemType = Protocol::ITEM_TYPE_ETC;
     }
 
-    //SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(objectID, itemID, counts);
-    //GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+    int itemIndex = FindItemFromInventory(itemID)->index;
+
+    SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(objectID, itemID, counts, protoItemType, itemIndex);
+    GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+}
+
+void Inventory::AutoSyncInventory()
+{
+    auto deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+
+    _sumTime += deltaTime;
+
+    if (_sumTime >= 5.f)
+    {
+        // 인벤토리 정보 서버로 송신
+        for (auto& slot : _slots)
+        {
+            SyncItemToServer(slot.ItemId, slot.ItemCount);
+        }
+        _sumTime = 0.f;
+    }
 }
 
 bool Inventory::AddItem(ITEM* item)
@@ -730,44 +765,56 @@ bool Inventory::AddItem(int ItemId)
                 if (emptySlot < 1)
                     return false;
 
+                int index = 0;
+
                 // 빈 슬롯을 앞에서부터 찾아 추가
                 for (auto& slot : _slots)
                 {
                     if (slot.ItemId == 0)
                     {
+                        slot.index = index;
                         slot.ItemId = ItemId;
                         slot.ItemCount = 1;
                         SyncItemToServer(ItemId, 1);
                         SetItemSlot(slot);
                         return true;
                     }
+                    index++;
                 }
             }
             else if (itemType == L"Consumable")
             {
+                int index = 0;
+
                 for (auto& slot : _slots)
                 {
                     if (slot.ItemId == ItemId)
                     {
+                        slot.index = index;
                         slot.ItemCount++; // 수량 증가
                         // 소모성 아이템 동기화
                         SyncUseableItemToServer(ItemId, 1);
                         SetItemSlot(slot);
                         return true;
                     }
+                    index++;
                 }
             }
             else // 스택이 되며, 장비와 소모품이 아닌 아이템
             {
+                int index = 0;
+
                 for (auto& slot : _slots)
                 {
                     if (slot.ItemId == ItemId)
                     {
+                        slot.index = index;
                         slot.ItemCount++; // 수량 증가
                         SyncItemToServer(ItemId, 1);
                         SetItemSlot(slot);
                         return true;
                     }
+                    index++;
                 }
             }
         }
@@ -777,16 +824,20 @@ bool Inventory::AddItem(int ItemId)
             if (emptySlot < 1)
                 return false;
 
+            int index = 0;
+
             for (auto& slot : _slots)
             {
                 if (slot.ItemId == 0)
                 {
+                    slot.index = index;
                     slot.ItemId = ItemId;
                     slot.ItemCount += 1;
                     SyncItemToServer(ItemId, 1);
                     SetItemSlot(slot);
                     return true;
                 }
+                index++;
             }
         }
     }
@@ -821,6 +872,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
         // 아이템이 이미 존재하는 경우
         if (found)
         {
+            int index = 0;
             // 장비류는 슬롯을 따로 차지함
             if (itemType == L"Wearable")
             {
@@ -837,6 +889,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == 0)
                     {
+                        slot.index = index;
                         addItemCount++;
                         slot.ItemId = ItemId;
                         slot.ItemCount = 1;
@@ -846,6 +899,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                         if (addItemCount == ItemCount)
                             return true;
                     }
+                    index++;
                 }
             }
             else if (itemType == L"Consumable")
@@ -855,11 +909,13 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == ItemId)
                     {
+                        slot.index = index;
                         // 수량 증가
                         slot.ItemCount += ItemCount;
                         SyncUseableItemToServer(ItemId, ItemCount);
                         return true;
                     }
+                    index++;
                 }
             }
             else
@@ -869,17 +925,21 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == ItemId)
                     {
+                        slot.index = index;
                         // 수량 증가
                         slot.ItemCount += ItemCount;
                         SyncItemToServer(ItemId, ItemCount);
                         return true;
                     }
+                    index++;
                 }
             }
         }
         // 아이템이 존재하지 않는 경우
         else if (found == false)
         {
+            int index = 0;
+
             // 장비류는 슬롯을 따로 차지함
             if (itemType == L"Wearable")
             {
@@ -896,6 +956,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == 0)
                     {
+                        slot.index = index;
                         addItemCount++;
                         slot.ItemId = ItemId;
                         slot.ItemCount = 1;
@@ -905,6 +966,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                         if (addItemCount == ItemCount)
                             return true;
                     }
+                    index++;
                 }
                 
                 return true;
@@ -922,12 +984,14 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == 0)
                     {
+                        slot.index = index;
                         slot.ItemId = ItemId;
                         slot.ItemCount += ItemCount;
                         SyncUseableItemToServer(ItemId, ItemCount);
                         SetItemSlot(slot);
                         return true;
                     }
+                    index++;
                 }
             }
             else
@@ -943,12 +1007,14 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot.ItemId == 0)
                     {
+                        slot.index = index;
                         slot.ItemId = ItemId;
                         slot.ItemCount += ItemCount;
                         SyncItemToServer(ItemId, ItemCount);
                         SetItemSlot(slot);
                         return true;
                     }
+                    index++;
                 }
             }
         }
@@ -962,13 +1028,18 @@ bool Inventory::RemoveItem(ITEM* item)
     if (itemId == 1 || itemId == 2 || itemId == 3)
         return false;
 
+    int index = 0;
+
     for (auto& slot : _slots)
     {
         if (slot == item)
         {
+            slot.index = index;
             slot.ItemCount--;
 
             SyncUseableItemToServer(item->ItemId, -1);
+
+            SyncItemToServer(itemId, -1);
 
             if (slot.ItemCount <= 0)
             {
@@ -978,6 +1049,7 @@ bool Inventory::RemoveItem(ITEM* item)
                 return true;
             }
         }
+        index++;
     }
     return false;
 }
@@ -989,13 +1061,17 @@ bool Inventory::RemoveItem(ITEM* item, int ItemCount)
     if (itemId == 1 || itemId == 2 || itemId == 3)
         return false;
 
+    int index = 0;
+
     for (auto& slot : _slots)
     {
         if (slot == item)
         {
+            slot.index = index;
             slot.ItemCount = 0;
 
             SyncUseableItemToServer(item->ItemId, 0);
+            SyncItemToServer(itemId, -ItemCount);
 
             if (slot.ItemCount <= 0)
             {
@@ -1005,6 +1081,7 @@ bool Inventory::RemoveItem(ITEM* item, int ItemCount)
                 return true;
             }
         }
+        index++;
     }
     return false;
 }
@@ -1016,6 +1093,8 @@ bool Inventory::RemoveItem(int itemId)
     if (itemId == 1 || itemId == 2 || itemId == 3)
         return false;
     
+    int index = 0;
+
     // 아이템이 이미 존재하는 경우
     for (auto& slot : _slots)
     {
@@ -1026,9 +1105,11 @@ bool Inventory::RemoveItem(int itemId)
 
         if (found == true)
         {
+            slot.index = index;
             slot.ItemCount--; // 수량 감소
 
             SyncUseableItemToServer(itemId, -1);
+            SyncItemToServer(itemId, -1);
 
             if (slot.ItemCount <= 0)
             {
@@ -1038,6 +1119,7 @@ bool Inventory::RemoveItem(int itemId)
                 return true;
             }
         }
+        index++;
     }
 
     // 아이템이 없는 경우
@@ -1050,6 +1132,8 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
     // 기본 무기는 제거 불가
     if (itemId == 1 || itemId == 2 || itemId == 3)
         return false;
+
+    int index = 0;
 
     // 아이템이 이미 존재하는 경우
     for (auto& slot : _slots)
@@ -1065,9 +1149,11 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
             if (slot.ItemCount < ItemCount)
                 return false;
 
+            slot.index = index;
             slot.ItemCount -= ItemCount; // 수량 감소
 
             SyncUseableItemToServer(itemId, -ItemCount);
+            SyncItemToServer(itemId, -ItemCount);
 
             if (slot.ItemCount <= 0)
             {
@@ -1077,6 +1163,7 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
                 return true;
             }
         }
+        index++;
     }
 
     // 아이템이 없는 경우
@@ -1116,6 +1203,20 @@ ITEM* Inventory::FindItemFromInventory(int itemId)
             return &slot;
     }
     return nullptr;
+}
+
+int Inventory::FindItemIndexFromInventory(int itemId)
+{
+    int index = 0;
+
+    for (auto& slot : _slots)
+    {
+        if (slot.ItemId == itemId)
+            return index;
+
+        index++;
+    }
+    return -1;
 }
 
 ITEM* Inventory::FindItemFromInventory(ITEM* item)

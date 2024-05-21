@@ -140,7 +140,6 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="AlertBox.h" />
     <ClInclude Include="Arrow.h" />
-    <ClInclude Include="ArrowItem.h" />
     <ClInclude Include="ArrowUI.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="CameraComponent.h" />
@@ -164,7 +163,6 @@
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="Gold.h" />
     <ClInclude Include="HealEffect.h" />
-    <ClInclude Include="HeartItem.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="HP.h" />
     <ClInclude Include="InputManager.h" />
@@ -231,7 +229,6 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="AlertBox.cpp" />
     <ClCompile Include="Arrow.cpp" />
-    <ClCompile Include="ArrowItem.cpp" />
     <ClCompile Include="ArrowUI.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
@@ -255,7 +252,6 @@
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="Gold.cpp" />
     <ClCompile Include="HealEffect.cpp" />
-    <ClCompile Include="HeartItem.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="HP.cpp" />
     <ClCompile Include="InputManager.cpp" />

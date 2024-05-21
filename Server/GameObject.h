@@ -40,6 +40,7 @@ public:
 	static SignRef CreateSign();
 	static ItemRef CreateItem();
 	static ArrowRef CreateArrow();
+	static InventoryRef CreateInventory(PlayerRef player);
 
 public:
 	Protocol::ObjectInfo info;

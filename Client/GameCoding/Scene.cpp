@@ -56,7 +56,7 @@ void Scene::Update()
 		chat->Tick();
 
 	Inventory* inven = FindUI<Inventory>(_uis);
-	if (inven && inven->GetVisible() == false)
+	if (inven)
 		inven->Tick();
 }
 
@@ -151,13 +151,14 @@ Player* Scene::GetPlayerByID(uint64 objectId)
 
 vector<UI*> Scene::GetVisibleUIs()
 {
-	_visibleUIs.clear();
+	vector<UI*> visibleUIs;
+
+	auto _uis = GetUIs();
 
 	for (UI* ui : _uis)
 	{
-		if (ui->GetVisible() == true)
-			_visibleUIs.push_back(ui);
+		if (ui->GetVisible())
+			visibleUIs.push_back(ui);
 	}
-
-	return _visibleUIs;
+	return visibleUIs;
 }

@@ -32,7 +32,6 @@ void GameRoom::Init()
 	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
 	_tilemap.LoadFile(relativePath);
 	GET_SINGLE(Quest)->Init();
-	GET_SINGLE(Inventory)->Init();
 	GET_SINGLE(ItemManager)->Init();
 	// Sign
 	{
@@ -140,6 +139,8 @@ void GameRoom::EnterRoom(GameSessionRef session)
 {
 	// 플레이어 초기화
 	PlayerRef player = GameObject::CreatePlayer();
+	InventoryRef inventory = GameObject::CreateInventory(player);
+	AddObject(inventory);
 
 	player->info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 	SetName(player);
@@ -285,6 +286,10 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 
 	case Protocol::OBJECT_TYPE_ITEM:
 		_items[id] = static_pointer_cast<Item>(gameObject);
+		return;
+
+	case Protocol::OBJECT_TYPE_INVENTORY:
+		_inventorys[id] = static_pointer_cast<Inventory>(gameObject);
 		return;
 
 	default:
@@ -661,7 +666,7 @@ void GameRoom::AddQuest(Quest quest)
 	_quests.insert({ quest.info.questid(), quest.info });
 }
 
-void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts)
+void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index)
 {
-	GetInventory(objectId)->AddItemToInventory(itemId, itemCounts);
+	GetInventory(objectId)->AddItemToInventory(itemId, itemCounts, itemType, index);
 }

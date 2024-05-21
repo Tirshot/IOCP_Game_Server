@@ -13,6 +13,8 @@ public:
 	HDC GetDC() { return _hdc; }
 	HDC GetBackDC() { return _hdcBack; }
 
+	void Restart();
+
 private:
 	HWND _hwnd = {};
 	HDC _hdc = {};

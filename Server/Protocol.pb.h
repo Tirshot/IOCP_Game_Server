@@ -4621,35 +4621,34 @@ class C_AddItem final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectIdFieldNumber = 1,
-    kItemIdFieldNumber = 2,
-    kItemCountsFieldNumber = 3,
+    kItemInfoFieldNumber = 1,
+    kIndexFieldNumber = 2,
   };
-  // uint64 objectId = 1;
-  void clear_objectid();
-  uint64_t objectid() const;
-  void set_objectid(uint64_t value);
+  // .Protocol.ItemInfo ItemInfo = 1;
+  bool has_iteminfo() const;
   private:
-  uint64_t _internal_objectid() const;
-  void _internal_set_objectid(uint64_t value);
+  bool _internal_has_iteminfo() const;
   public:
-
-  // uint64 itemId = 2;
-  void clear_itemid();
-  uint64_t itemid() const;
-  void set_itemid(uint64_t value);
+  void clear_iteminfo();
+  const ::Protocol::ItemInfo& iteminfo() const;
+  PROTOBUF_NODISCARD ::Protocol::ItemInfo* release_iteminfo();
+  ::Protocol::ItemInfo* mutable_iteminfo();
+  void set_allocated_iteminfo(::Protocol::ItemInfo* iteminfo);
   private:
-  uint64_t _internal_itemid() const;
-  void _internal_set_itemid(uint64_t value);
+  const ::Protocol::ItemInfo& _internal_iteminfo() const;
+  ::Protocol::ItemInfo* _internal_mutable_iteminfo();
   public:
+  void unsafe_arena_set_allocated_iteminfo(
+      ::Protocol::ItemInfo* iteminfo);
+  ::Protocol::ItemInfo* unsafe_arena_release_iteminfo();
 
-  // uint64 itemCounts = 3;
-  void clear_itemcounts();
-  uint64_t itemcounts() const;
-  void set_itemcounts(uint64_t value);
+  // uint32 index = 2;
+  void clear_index();
+  uint32_t index() const;
+  void set_index(uint32_t value);
   private:
-  uint64_t _internal_itemcounts() const;
-  void _internal_set_itemcounts(uint64_t value);
+  uint32_t _internal_index() const;
+  void _internal_set_index(uint32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.C_AddItem)
@@ -4660,9 +4659,8 @@ class C_AddItem final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint64_t objectid_;
-    uint64_t itemid_;
-    uint64_t itemcounts_;
+    ::Protocol::ItemInfo* iteminfo_;
+    uint32_t index_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -6775,64 +6773,109 @@ inline void C_Heal::set_objectid(uint64_t value) {
 
 // C_AddItem
 
-// uint64 objectId = 1;
-inline void C_AddItem::clear_objectid() {
-  _impl_.objectid_ = uint64_t{0u};
+// .Protocol.ItemInfo ItemInfo = 1;
+inline bool C_AddItem::_internal_has_iteminfo() const {
+  return this != internal_default_instance() && _impl_.iteminfo_ != nullptr;
 }
-inline uint64_t C_AddItem::_internal_objectid() const {
-  return _impl_.objectid_;
+inline bool C_AddItem::has_iteminfo() const {
+  return _internal_has_iteminfo();
 }
-inline uint64_t C_AddItem::objectid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_AddItem.objectId)
-  return _internal_objectid();
+inline const ::Protocol::ItemInfo& C_AddItem::_internal_iteminfo() const {
+  const ::Protocol::ItemInfo* p = _impl_.iteminfo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ItemInfo&>(
+      ::Protocol::_ItemInfo_default_instance_);
 }
-inline void C_AddItem::_internal_set_objectid(uint64_t value) {
+inline const ::Protocol::ItemInfo& C_AddItem::iteminfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_AddItem.ItemInfo)
+  return _internal_iteminfo();
+}
+inline void C_AddItem::unsafe_arena_set_allocated_iteminfo(
+    ::Protocol::ItemInfo* iteminfo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.iteminfo_);
+  }
+  _impl_.iteminfo_ = iteminfo;
+  if (iteminfo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_AddItem.ItemInfo)
+}
+inline ::Protocol::ItemInfo* C_AddItem::release_iteminfo() {
   
-  _impl_.objectid_ = value;
+  ::Protocol::ItemInfo* temp = _impl_.iteminfo_;
+  _impl_.iteminfo_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
 }
-inline void C_AddItem::set_objectid(uint64_t value) {
-  _internal_set_objectid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_AddItem.objectId)
+inline ::Protocol::ItemInfo* C_AddItem::unsafe_arena_release_iteminfo() {
+  // @@protoc_insertion_point(field_release:Protocol.C_AddItem.ItemInfo)
+  
+  ::Protocol::ItemInfo* temp = _impl_.iteminfo_;
+  _impl_.iteminfo_ = nullptr;
+  return temp;
+}
+inline ::Protocol::ItemInfo* C_AddItem::_internal_mutable_iteminfo() {
+  
+  if (_impl_.iteminfo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::ItemInfo>(GetArenaForAllocation());
+    _impl_.iteminfo_ = p;
+  }
+  return _impl_.iteminfo_;
+}
+inline ::Protocol::ItemInfo* C_AddItem::mutable_iteminfo() {
+  ::Protocol::ItemInfo* _msg = _internal_mutable_iteminfo();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_AddItem.ItemInfo)
+  return _msg;
+}
+inline void C_AddItem::set_allocated_iteminfo(::Protocol::ItemInfo* iteminfo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.iteminfo_);
+  }
+  if (iteminfo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(iteminfo));
+    if (message_arena != submessage_arena) {
+      iteminfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, iteminfo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.iteminfo_ = iteminfo;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_AddItem.ItemInfo)
 }
 
-// uint64 itemId = 2;
-inline void C_AddItem::clear_itemid() {
-  _impl_.itemid_ = uint64_t{0u};
+// uint32 index = 2;
+inline void C_AddItem::clear_index() {
+  _impl_.index_ = 0u;
 }
-inline uint64_t C_AddItem::_internal_itemid() const {
-  return _impl_.itemid_;
+inline uint32_t C_AddItem::_internal_index() const {
+  return _impl_.index_;
 }
-inline uint64_t C_AddItem::itemid() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_AddItem.itemId)
-  return _internal_itemid();
+inline uint32_t C_AddItem::index() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_AddItem.index)
+  return _internal_index();
 }
-inline void C_AddItem::_internal_set_itemid(uint64_t value) {
+inline void C_AddItem::_internal_set_index(uint32_t value) {
   
-  _impl_.itemid_ = value;
+  _impl_.index_ = value;
 }
-inline void C_AddItem::set_itemid(uint64_t value) {
-  _internal_set_itemid(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_AddItem.itemId)
-}
-
-// uint64 itemCounts = 3;
-inline void C_AddItem::clear_itemcounts() {
-  _impl_.itemcounts_ = uint64_t{0u};
-}
-inline uint64_t C_AddItem::_internal_itemcounts() const {
-  return _impl_.itemcounts_;
-}
-inline uint64_t C_AddItem::itemcounts() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_AddItem.itemCounts)
-  return _internal_itemcounts();
-}
-inline void C_AddItem::_internal_set_itemcounts(uint64_t value) {
-  
-  _impl_.itemcounts_ = value;
-}
-inline void C_AddItem::set_itemcounts(uint64_t value) {
-  _internal_set_itemcounts(value);
-  // @@protoc_insertion_point(field_set:Protocol.C_AddItem.itemCounts)
+inline void C_AddItem::set_index(uint32_t value) {
+  _internal_set_index(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_AddItem.index)
 }
 
 // -------------------------------------------------------------------

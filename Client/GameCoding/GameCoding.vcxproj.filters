@@ -254,14 +254,8 @@
     <ClInclude Include="Item.h">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClInclude>
-    <ClInclude Include="HeartItem.h">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
-    </ClInclude>
     <ClInclude Include="TeleportEffect.h">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrowItem.h">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClInclude>
     <ClInclude Include="DeathEffect.h">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
@@ -513,14 +507,8 @@
     <ClCompile Include="Item.cpp">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClCompile>
-    <ClCompile Include="HeartItem.cpp">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
-    </ClCompile>
     <ClCompile Include="TeleportEffect.cpp">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrowItem.cpp">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClCompile>
     <ClCompile Include="DeathEffect.cpp">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>

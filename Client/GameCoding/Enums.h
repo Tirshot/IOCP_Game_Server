@@ -106,6 +106,7 @@ struct ITEM
 	int Price = 0;
 	class Sprite* Sprite = nullptr;
 	RECT Rect = {};
+	int index = 0;
 
 	bool operator== (ITEM* other)
 	{

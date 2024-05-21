@@ -20,6 +20,7 @@ private:
 	void SlotRectsPosUpdate(RECT* rect);
 	void SyncUseableItemToServer(int itemID, int counts);
 	void SyncItemToServer(int itemID, int counts);
+	void AutoSyncInventory();
 
 public:
 	bool AddItem(ITEM* item);
@@ -36,6 +37,7 @@ public:
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 
 	ITEM* FindItemFromInventory(int itemId);
+	int FindItemIndexFromInventory(int itemId);
 	ITEM* FindItemFromInventory(ITEM* item);
 	
 	ITEM* GetEquippedItem(wstring wstr);
@@ -76,5 +78,7 @@ private:
 	RECT _equipRect;	// 장비창 영역 체크용 Rect
 	class AlertBox* _alert = nullptr;
 	bool _isEquipedItem = false;
+
+	float _sumTime = 0.f;
 };
 

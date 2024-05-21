@@ -100,6 +100,6 @@ public:
 	static SendBufferRef Make_C_Quest(uint64 objectId, uint64 questId);
 	static SendBufferRef Make_C_QuestList();
 	static SendBufferRef Make_C_Heal(uint64 objectId);
-	static SendBufferRef Make_C_AddItem(uint64 objectId, int itemId, int itemCounts);
+	static SendBufferRef Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
 };
 

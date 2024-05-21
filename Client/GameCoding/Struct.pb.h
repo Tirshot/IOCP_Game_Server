@@ -1180,6 +1180,7 @@ class ItemInfo final :
     kPosXFieldNumber = 5,
     kPosYFieldNumber = 6,
     kItemSubTypeFieldNumber = 7,
+    kObjectIdFieldNumber = 8,
   };
   // string ItemName = 4;
   void clear_itemname();
@@ -1249,6 +1250,15 @@ class ItemInfo final :
   void _internal_set_itemsubtype(::Protocol::ITEM_SUBTYPE value);
   public:
 
+  // uint64 objectId = 8;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
+  private:
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ItemInfo)
  private:
   class _Internal;
@@ -1264,6 +1274,7 @@ class ItemInfo final :
     int32_t posx_;
     int32_t posy_;
     int itemsubtype_;
+    uint64_t objectid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2291,6 +2302,26 @@ inline void ItemInfo::_internal_set_itemsubtype(::Protocol::ITEM_SUBTYPE value) 
 inline void ItemInfo::set_itemsubtype(::Protocol::ITEM_SUBTYPE value) {
   _internal_set_itemsubtype(value);
   // @@protoc_insertion_point(field_set:Protocol.ItemInfo.itemSubType)
+}
+
+// uint64 objectId = 8;
+inline void ItemInfo::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
+}
+inline uint64_t ItemInfo::_internal_objectid() const {
+  return _impl_.objectid_;
+}
+inline uint64_t ItemInfo::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.objectId)
+  return _internal_objectid();
+}
+inline void ItemInfo::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
+}
+inline void ItemInfo::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.objectId)
 }
 
 #ifdef __GNUC__

@@ -80,7 +80,7 @@ public:
 	InventoryRef GetInventory(int objectId) { return _inventorys[objectId]; }
 	void AddQuest(class Quest quest);
 	int GetQuestsSize() { return _quests.size(); }
-	void AddItemToPlayer(int objectId, int itemId, int itemCounts);
+	void AddItemToPlayer(int objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
 
 
 private:
