@@ -62,6 +62,7 @@ protected:
 	class TextBox* _itemDescription = nullptr;
 	class Sprite* _background = nullptr;
 	class Sprite* _itemSprite = nullptr;
+	class Sprite* _descriptionSprite = nullptr;
 	
 private:
 	int _slotSize = 28;

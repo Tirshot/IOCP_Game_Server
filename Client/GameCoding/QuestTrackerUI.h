@@ -5,6 +5,20 @@ class QuestTrackerUI :	 public Panel
 {
 	using Super = Panel;
 
+	struct QUEST
+	{
+		int questID = -1;
+		wstring questName = L"";
+		wstring description = L"";
+		int target = 0;
+		int progress = 0;
+		bool complete = false;
+		bool changed = false;
+		class TextBox* textBox;
+
+		void SetProgress(int progressing) { progress = progressing; }
+	};
+
 public:
 	QuestTrackerUI();
 	virtual ~QuestTrackerUI();
@@ -13,10 +27,21 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
 
+	void AddQuestToTracking(int questID, wstring name, wstring description, int target);
+	bool IsQuestInTracker(int questID);
+
+	void SetProgress(int questID, int progress);
+
+public:
+	void AddQuestToTracker(QUEST* quest);
+	void RemoveQuestFromTracker(int questID);
+
 private:
-	wstring _questName = L"";
-	int _progress = 0;
-	int _target = 0;
-	Sprite* _backGround = nullptr;
+	Sprite* _background = nullptr;
+	int _alpha = 128;
+	RECT _calcRect = {};
+
+private:
+	vector<QUEST*> _quests;
 };
 

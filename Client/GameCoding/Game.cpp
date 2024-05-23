@@ -50,6 +50,7 @@ void Game::Init(HWND hwnd)
 
 	GET_SINGLE(ItemManager)->Init();
 	GET_SINGLE(NetworkManager)->Init();
+	GET_SINGLE(QuestManager)->BeginPlay();
 }
 
 void Game::Update()

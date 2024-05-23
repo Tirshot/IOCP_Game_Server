@@ -23,6 +23,7 @@ MerchantUI::MerchantUI()
 	_rect.bottom = 600;
 	{ // 2D 스프라이트
 		_merchantSprite = GET_SINGLE(ResourceManager)->GetSprite(L"MerchantSprite");
+		_backGround = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
 	}
 	{ // 대화 내용
 		wstring wstr = L"어서오세요!\n최고 품질의 아이템만 제공하는 언덕 집 상인입니다.\n저렴한 가격에 모시고 있습니다.";
@@ -105,6 +106,18 @@ void MerchantUI::Render(HDC hdc)
 		_merchantSprite->GetSize().x,
 		_merchantSprite->GetSize().y,
 		_merchantSprite->GetTransparent());
+
+	::StretchBlt(hdc,
+		135,
+		342,
+		535,
+		178,
+		_backGround->GetDC(),
+		50,
+		50,
+		100,
+		100,
+		SRCCOPY);
 
 	for (auto& child : _children)
 		child->Render(hdc);

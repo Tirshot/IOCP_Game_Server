@@ -46,6 +46,7 @@ public:
 	wstring GetDescription(vector <wstring> row);
 	int GetPrice(vector <wstring> row);
 	Sprite* GetSprite(wstring wstr);
+	Sprite* GetSprite(int itemID);
 
 private:
 	Inventory* _inventory = nullptr;

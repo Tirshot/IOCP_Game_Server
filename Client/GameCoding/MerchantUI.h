@@ -22,5 +22,6 @@ protected:
 	int _alpha = 0;
 	float _sumTime = 0.f;
 	class Sprite* _merchantSprite = nullptr;
+	class Sprite* _backGround = nullptr;
 };
 // AddChild를 통해 버튼, ui, textbox를 _children에 추가하여 사용한다.

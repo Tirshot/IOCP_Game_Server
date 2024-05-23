@@ -21,11 +21,17 @@ public:
 	void SetFloating(bool floating) { _isFloating = floating; }
 	void SetPadding(float x, float y);
 	bool IsOverlapped(RECT other);
+	void SetBackground(Sprite* sprite) { _backGround = sprite; }
+	void SetTransparent(bool transparent) { _transparent = transparent; }
+	void SetAlpha(int alpha) { _alpha = alpha; }
+	void SetRect(int left, int top, int right, int bottom) { _rect.left = left; _rect.top = top; _rect.right = right; _rect.bottom = bottom; }
 
 protected:
 	Sprite* _backGround = nullptr;
 	RECT _rect = {};
 	wstring _text = L"";
+	int _alpha = 255;
+	bool _transparent = false;
 
 private:
 	float _leftPadding = 15.f;

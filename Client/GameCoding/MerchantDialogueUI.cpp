@@ -33,6 +33,7 @@ void MerchantDialogueUI::BeginPlay()
 	
 	{ // 2D 스프라이트
 		_merchantSprite = GET_SINGLE(ResourceManager)->GetSprite(L"MerchantSprite");
+		_backGround = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
 	}
 	{ // 대화 내용
 		wstring wstr = L"퀘스트 대화 내용입니다.";
@@ -187,6 +188,18 @@ void MerchantDialogueUI::Render(HDC hdc)
 		_merchantSprite->GetSize().x,
 		_merchantSprite->GetSize().y,
 		_merchantSprite->GetTransparent());
+
+	::StretchBlt(hdc,
+		135,
+		342,
+		535,
+		178,
+		_backGround->GetDC(),
+		50,
+		50,
+		100,
+		100,
+		SRCCOPY);
 
 	for (auto& child : _children)
 		child->Render(hdc);

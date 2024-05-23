@@ -30,9 +30,8 @@ void Item::Tick()
 	{
 		int itemID = itemInfo.itemid();
 		wstring itemIDwstr = to_wstring(itemInfo.itemid());
-		GET_SINGLE(Quest)->ItemQuestCheck(_ownerId, itemID);
 
-		GChat->AddText(L"player " + to_wstring(_ownerId) + L"가 ItemID" + to_wstring(itemID) + L" 를 습득.");
+		GChat->AddText(::format(L"player{0}가 위치 ({1}, {2})에서 ItemID {3}를 습득.", _ownerId, info.posx(), info.posy(), itemID));
 	}
 }
 

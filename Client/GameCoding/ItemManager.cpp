@@ -73,7 +73,7 @@ int ItemManager::FindItemIDByName(wstring Name)
 ITEM& ItemManager::GetItem(int itemID)
 {
     // 아이템 정보를 찾음
-    vector<wstring> ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(itemID);
+    vector<wstring> ItemInfo = FindItemInfo(itemID);
 
     // ITEM 객체를 동적으로 할당
     ITEM* item = new ITEM;
@@ -81,13 +81,13 @@ ITEM& ItemManager::GetItem(int itemID)
     // 아이템 정보 할당
     item->ItemId = itemID;
     item->ItemCount = 1;
-    item->Name = GET_SINGLE(ItemManager)->GetName(ItemInfo);
-    item->KorName = GET_SINGLE(ItemManager)->GetKorName(ItemInfo);
-    item->Description = GET_SINGLE(ItemManager)->GetDescription(ItemInfo);
-    item->Price = GET_SINGLE(ItemManager)->GetPrice(ItemInfo);
-    item->Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
-    item->SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
-    item->Sprite = GET_SINGLE(ItemManager)->GetSprite(item->Name);
+    item->Name = GetName(ItemInfo);
+    item->KorName = GetKorName(ItemInfo);
+    item->Description = GetDescription(ItemInfo);
+    item->Price = GetPrice(ItemInfo);
+    item->Type = GetType(ItemInfo);
+    item->SubType = GetSubType(ItemInfo);
+    item->Sprite = GetSprite(item->Name);
 
     // 동적으로 할당한 ITEM 객체의 참조를 반환
     return *item;
@@ -226,4 +226,21 @@ int ItemManager::GetPrice(vector<wstring> row)
 Sprite* ItemManager::GetSprite(wstring wstr)
 {
     return GET_SINGLE(ResourceManager)->GetSprite(wstr);
+}
+
+Sprite* ItemManager::GetSprite(int itemID)
+{
+    const auto ItemTable = GET_SINGLE(ResourceManager)->GetItemTable();
+
+    for (auto& row : ItemTable)
+    {
+        if (row.empty())
+            return nullptr;
+
+        if (stoi(row[0]) == itemID)
+        {
+            return GET_SINGLE(ResourceManager)->GetSprite(row[1]);
+        }
+    }
+
 }

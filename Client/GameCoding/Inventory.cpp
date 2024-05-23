@@ -20,6 +20,7 @@ Inventory::Inventory()
 {
     _background = GET_SINGLE(ResourceManager)->GetSprite(L"Inventory");
     _itemSprite = GET_SINGLE(ResourceManager)->GetSprite(L"Sword");
+    _descriptionSprite = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
 
     _slots.assign(40, { 0 });
     _equips.assign(5, make_pair(RECT{}, ITEM{}));
@@ -158,6 +159,7 @@ void Inventory::Tick()
     {   // 마우스가 슬롯 밖에 있음
         // 아이템 설명 초기화
         _itemName->SetText(L"");
+        _itemCount->SetText(L"");
         _itemDescription->SetText(L"");
     }
 
@@ -224,6 +226,13 @@ void Inventory::Tick()
         // 인벤토리
         for (auto& slot : _slots)
         {
+            if (slot.ItemCount <= 0)
+            {
+                RECT rect = slot.Rect;
+                slot = {};
+                slot.Rect = rect;
+            }
+
             // 아이템 드래그 앤 드랍
             if (IsMouseInRect(slot.Rect) &&
                 IsOverlappedWithVisibleUIRect(slot.Rect) == false)
@@ -417,6 +426,18 @@ void Inventory::Render(HDC hdc)
         _background->GetSize().x,
         _background->GetSize().y,
         _background->GetTransparent());
+
+    ::StretchBlt(hdc,
+        _pos.x + 125,
+        _pos.y + 225,
+        155,
+        100,
+        _descriptionSprite->GetDC(),
+        50,
+        50,
+        100,
+        100,
+        SRCCOPY);
 
     for (int i = 0; i < 40; i++)
     {
@@ -620,7 +641,7 @@ void Inventory::AutoSyncInventory()
         // 인벤토리 정보 서버로 송신
         for (auto& slot : _slots)
         {
-            SyncItemToServer(slot.ItemId, slot.ItemCount);
+             SyncItemToServer(slot.ItemId, slot.ItemCount);
         }
         _sumTime = 0.f;
     }
@@ -674,6 +695,7 @@ bool Inventory::AddItem(ITEM* item)
                         slot.Type = item->Type;
 
                         SyncItemToServer(ItemId, 1);
+                        SetItemSlot(slot);
                         return true;
                     }
                 }
@@ -723,6 +745,7 @@ bool Inventory::AddItem(ITEM* item)
                     slot.SubType = item->SubType;
                     slot.Type = item->Type;
                     SyncItemToServer(ItemId, 1);
+                    SetItemSlot(slot);
                     return true;
                 }
             }
@@ -833,6 +856,7 @@ bool Inventory::AddItem(int ItemId)
                     slot.index = index;
                     slot.ItemId = ItemId;
                     slot.ItemCount += 1;
+                    SyncUseableItemToServer(ItemId, 1);
                     SyncItemToServer(ItemId, 1);
                     SetItemSlot(slot);
                     return true;
@@ -913,6 +937,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                         // 수량 증가
                         slot.ItemCount += ItemCount;
                         SyncUseableItemToServer(ItemId, ItemCount);
+                        SetItemSlot(slot);
                         return true;
                     }
                     index++;
@@ -929,6 +954,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                         // 수량 증가
                         slot.ItemCount += ItemCount;
                         SyncItemToServer(ItemId, ItemCount);
+                        SetItemSlot(slot);
                         return true;
                     }
                     index++;

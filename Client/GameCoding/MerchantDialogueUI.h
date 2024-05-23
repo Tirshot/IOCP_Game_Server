@@ -32,6 +32,7 @@ protected:
 	Protocol::QUEST_STATE _questState;
 	int _alpha = 0;
 	class Sprite* _merchantSprite = nullptr;
+	class Sprite* _backGround = nullptr;
 	int _page = 0;		// 대화 창 페이지
 	int _maxPage = 0;	// 대화 창 페이지 총 갯수
 

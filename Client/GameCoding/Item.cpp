@@ -21,14 +21,6 @@ Item::~Item()
 void Item::BeginPlay()
 {
 	Super::BeginPlay();
-
-	int itemID = itemInfo.itemid();
-	int count = itemInfo.itemcount();
-
-	auto& item = GET_SINGLE(ItemManager)->GetItem(itemID);
-
-	_sprite = item.Sprite;
-	_name = item.KorName;
 }
 
 void Item::Tick()
@@ -44,7 +36,14 @@ void Item::Tick()
 	if (myPlayer == nullptr)
 		return;
 
+
 	int itemID = itemInfo.itemid();
+	auto& item = GET_SINGLE(ItemManager)->GetItem(itemID);
+
+	_name = item.KorName;
+	_sprite = GET_SINGLE(ItemManager)->GetSprite(itemID);
+
+	int count = itemInfo.itemcount();
 	string name = myPlayer->info.name();
 	wstring nameWstr = GET_SINGLE(ChatManager)->StringToWStr(name);
 

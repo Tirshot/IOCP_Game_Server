@@ -103,7 +103,7 @@ void GameRoom::Update()
 			wstring itemStr = to_wstring(itemID);
 
 			// 제거 후 로그
-			GChat->AddText(L"Item ID : " + itemStr + L" 아이템 서버에서 제거.");
+			GChat->AddText(L"ItemID : " + itemStr + L" 아이템 서버에서 제거.");
 		}
 	}
 

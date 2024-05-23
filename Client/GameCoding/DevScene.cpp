@@ -42,6 +42,7 @@
 #include "MerchantUI.h"
 #include "QuestUI.h"
 #include "Quest.h"
+#include "QuestTrackerUI.h"
 #include "Inventory.h"
 #include "QuickSlot.h"
 #include "AlertBox.h"
@@ -127,6 +128,7 @@ void DevScene::Init()
 	// Item 스프라이트
 	// 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Potion", GET_SINGLE(ResourceManager)->GetTexture(L"Potion"), 0, 0, 32, 32);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"HeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"HeartItem"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"FullHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"FullHeartItem"), 50, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"MaxHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"MaxHeartItem"), 0, 0, 48, 20);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"ArrowItem", GET_SINGLE(ResourceManager)->GetTexture(L"ArrowItem"), 0, 0, 24, 23);
@@ -744,6 +746,14 @@ void DevScene::LoadUI()
 		{
 			statusPanel->SetVisible(true);
 			AddUI(statusPanel);
+		}
+	}
+	{	// 퀘스트 트래커
+		QuestTrackerUI* tracker = new QuestTrackerUI();
+		if (tracker)
+		{
+			tracker->SetVisible(true);
+			AddUI(tracker);
 		}
 	}
 	{	// Game Over

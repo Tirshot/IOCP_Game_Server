@@ -25,7 +25,7 @@ public:
 
 public:
 	void CreateQuest();
-	void ItemQuestCheck(int objectID, int itemID);
+	//void ItemQuestCheck(int objectID, int itemID);
 
 public:
 	Protocol::QuestInfo info;
