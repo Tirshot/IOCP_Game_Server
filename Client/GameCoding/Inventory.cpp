@@ -114,6 +114,11 @@ void Inventory::Tick()
 {
     MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
+    if (myPlayer)
+    {
+        _owner = myPlayer;
+    }
+
     // 최초 1회만 실행
     if (_initialized)
     {
@@ -371,8 +376,9 @@ void Inventory::Tick()
                 // 아이템 장착 해제
                 if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::RightMouse))
                 {
-                    //AddItem(&slot.second);
+                    AddItem(&slot.second);
                     slot.second = {};
+                    SyncEquips(_owner->GetObjectID(), false);
                 }
 
                 // 드래그 시작
@@ -399,15 +405,13 @@ void Inventory::Tick()
             }
 
             // 인벤토리 바깥으로 드랍 -> 아이템 장착 해제
-            if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect)
+            if (GET_SINGLE(InputManager)->IsMouseOutRect(_equipRect)
                 && GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
             {
-                if (_selectedItem != nullptr)
-                {
-                    /*AddItem(&slot.second);*/
-                    slot.second = {};
-                    _isEquipedItem = false;
-                }
+                AddItem(&slot.second);
+                slot.second = {};
+                SyncEquips(_owner->GetObjectID(), false);
+                _isEquipedItem = false;
             }
         }
     }
@@ -644,6 +648,23 @@ void Inventory::AutoSyncInventory()
              SyncItemToServer(slot.ItemId, slot.ItemCount);
         }
         _sumTime = 0.f;
+    }
+}
+
+void Inventory::SyncEquips(int itemID, bool equip)
+{
+    if (_owner == nullptr)
+        return;
+
+    if (equip)
+    {
+        SendBufferRef sendBuffer = ClientPacketHandler::Make_C_EquipItem(_owner->GetObjectID(), itemID);
+        GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+    }
+    else
+    {
+        SendBufferRef sendBuffer = ClientPacketHandler::Make_C_EquipItem(_owner->GetObjectID(), itemID , false);
+        GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
     }
 }
 
@@ -1318,6 +1339,7 @@ void Inventory::EquipItem(ITEM* item)
         if (_equips[1].second.ItemId == 0)
         {
             _equips[1].second = *item;
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
         else
@@ -1325,6 +1347,7 @@ void Inventory::EquipItem(ITEM* item)
             ITEM temp = _equips[1].second;
             _equips[1].second = *item;
             AddItem(&temp);
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
     }
@@ -1337,6 +1360,7 @@ void Inventory::EquipItem(ITEM* item)
         if (_equips[2].second.ItemId == 0)
         {
             _equips[2].second = *item;
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
         else
@@ -1344,6 +1368,7 @@ void Inventory::EquipItem(ITEM* item)
             ITEM temp = _equips[2].second;
             _equips[2].second = *item;
             AddItem(&temp);
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
     }
@@ -1352,6 +1377,7 @@ void Inventory::EquipItem(ITEM* item)
         if (_equips[3].second.ItemId == 0)
         {
             _equips[3].second = *item;
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
         else
@@ -1359,6 +1385,7 @@ void Inventory::EquipItem(ITEM* item)
             ITEM temp = _equips[3].second;
             _equips[3].second = *item;
             AddItem(&temp);
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
     }
@@ -1367,6 +1394,7 @@ void Inventory::EquipItem(ITEM* item)
         if (_equips[4].second.ItemId == 0)
         {
             _equips[4].second = *item;
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
         else
@@ -1374,6 +1402,7 @@ void Inventory::EquipItem(ITEM* item)
             ITEM temp = _equips[4].second;
             _equips[4].second = *item;
             AddItem(&temp);
+            SyncEquips(item->ItemId);
             RemoveItem(item);
         }
     }

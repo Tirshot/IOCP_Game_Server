@@ -28,8 +28,6 @@ enum
 	C_Teleport = 33,
 	S_Teleport = 34,
 
-	S_Gold = 36,
-
 	C_Quest = 40,
 	S_Quest = 41,
 
@@ -39,12 +37,15 @@ enum
 
 	C_QuestList = 46,
 	S_QuestList = 47,
+	S_QuestState = 48,	// 부활 후 진행도 재계산
 
 	C_Heal = 49,
 
 	C_AddItem = 70,
+	C_EquipItem = 71,
 
 	S_ItemDrop = 80,
+	S_Gold = 81,
 
 	S_Reset = 99,
 };
@@ -71,6 +72,7 @@ public:
 	static void Handle_S_QuestProcess(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_QuestComplete(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_QuestList(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_QuestState(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_ItemDrop(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// 보내기
@@ -101,5 +103,6 @@ public:
 	static SendBufferRef Make_C_QuestList();
 	static SendBufferRef Make_C_Heal(uint64 objectId);
 	static SendBufferRef Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
+	static SendBufferRef Make_C_EquipItem(uint64 objectId, int itemId, bool equip = true);
 };
 

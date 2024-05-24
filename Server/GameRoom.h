@@ -57,6 +57,7 @@ public:
 public:
 	Protocol::QuestInfo& GetQuest(int questId);
 	void SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state);
+	Protocol::QUEST_STATE GetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state);
 
 private:
 	// 몬스터 스폰 숫자
@@ -77,11 +78,14 @@ public:
 	map<uint64, ArrowRef> GetArrows() { return _arrows; }
 	map<uint64, Protocol::QuestInfo> GetQuests() { return _quests; }
 	map<uint64, InventoryRef> GetInventorys() { return _inventorys; }
+	map<uint64, ItemRef> GetItems() { return _items; }
 	InventoryRef GetInventory(int objectId) { return _inventorys[objectId]; }
 	void AddQuest(class Quest quest);
 	int GetQuestsSize() { return _quests.size(); }
 	void AddItemToPlayer(int objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
-
+	void EquipItemToPlayer(int objectId, int itemId, bool equip);
+	void SetQuestsStates(uint64 objectId, map<int, pair<Protocol::QUEST_STATE, int>> quest) { _questsStates[objectId] = quest; }
+	map<int, pair<Protocol::QUEST_STATE, int>> GetQuestsStates(uint64 objectId) { return _questsStates[objectId]; }
 
 private:
 	// ID를 발급받아 활용
@@ -92,6 +96,7 @@ private:
 	map<uint64, ArrowRef> _arrows;
 	map<uint64, ItemRef> _items;
 	map<uint64, Protocol::QuestInfo> _quests;
+	map<uint64, map<int, pair<Protocol::QUEST_STATE, int>>> _questsStates;
 	map<uint64, InventoryRef> _inventorys;
 	map<uint64, GameObjectRef> _deleteObjects;
 };

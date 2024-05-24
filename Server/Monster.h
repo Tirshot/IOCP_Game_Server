@@ -19,6 +19,7 @@ private:
 	virtual void UpdateHit();
 
 	void ItemDrop(CreatureRef owner);
+	void GoldDrop(CreatureRef owner);
 
 public:
 	virtual void OnDamaged(CreatureRef attacker, bool debug = false) override;

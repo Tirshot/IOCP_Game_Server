@@ -18,6 +18,7 @@ protected:
 	virtual void TickIdle();
 	Sprite* _sprite = nullptr;
 	wstring _name = L"";
+	wstring _korName = L"";
 
 private:
 	Protocol::ItemInfo itemInfo;

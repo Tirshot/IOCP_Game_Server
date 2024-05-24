@@ -199,15 +199,37 @@ void Monster::ItemDrop(CreatureRef owner)
 	GET_SINGLE(ItemManager)->MakeItem(group, owner, {GetCellPos().x, GetCellPos().y});
 }
 
+void Monster::GoldDrop(CreatureRef owner)
+{
+	// 그룹 테이블에서 최소 골드, 최대 골드를 추출
+	auto itemGroupinfo = GET_SINGLE(ItemManager)->GetMonsterDropItemGroupInfo(info.monstertype());
+	int minGold = GET_SINGLE(ItemManager)->GetMinGold(itemGroupinfo);
+	int maxGold = GET_SINGLE(ItemManager)->GetMaxGold(itemGroupinfo);
+
+	// 최대와 최소의 차를 통해 몇 개의 기대값이 있는지 추출
+	int step = maxGold - minGold;
+
+	// 최소 ~ 최대 사이의 값을 추출
+	int randValue = rand() % step + 1;
+
+	// 골드 생성 후 패킷 전송
+	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Gold(owner->GetObjectID(), randValue);
+	PlayerRef player = static_pointer_cast<Player>(GRoom->FindObject(owner->GetObjectID()));
+
+	if (player)
+	{
+		player->session->Send(sendBuffer);
+		GChat->AddText(format(L"Player{0}, {1} gold 획득.", owner->GetObjectID(), randValue));
+	}
+}
+
 void Monster::OnDamaged(CreatureRef attacker, bool debug)
 {
 	Super::OnDamaged(attacker);
 
+	// 인 게임 디버그 커맨드로 몬스터가 처치당했을 때
 	if (debug)
 	{
-		// 아이템 드랍
-		ItemDrop(attacker);
-
 		// 사망 처리
 		if (room)
 		{
@@ -218,10 +240,14 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 				player->QuestProgress(0);
 
 			// 채팅 출력
-			GChat->AddText(format(L"{0} {1}이(가) {2}에 의해 처치됨.",
+			GChat->AddText(format(L"debug : {0} {1}이(가) {2}에 의해 처치됨.",
 				GetName(),
 				GetObjectID(),
 				attacker->GetName()));
+
+			// 아이템 드랍
+			ItemDrop(attacker);
+			GoldDrop(attacker);
 
 			return;
 		}
@@ -229,9 +255,6 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 
 	if (info.hp() == 0)
 	{
-		// 아이템 드랍
-		ItemDrop(attacker);
-
 		// 사망 처리
 		if (room)
 		{
@@ -246,6 +269,10 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 				GetName(),
 				GetObjectID(),
 				attacker->GetName()));
+
+			// 아이템 드랍
+			ItemDrop(attacker);
+			GoldDrop(attacker);
 		}
 	}
 }

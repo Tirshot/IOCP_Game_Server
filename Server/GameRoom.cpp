@@ -150,6 +150,8 @@ void GameRoom::EnterRoom(GameSessionRef session)
 	session->player = player;
 	player->session = session;
 
+	GChat->AddText(::format(L"Player {0} 게임 입장.", player->GetObjectID()));
+
 	// Player Character Spawn
 	Vec2Int randCellPos = GetRandomEmptySpawnCellPos();
 	player->info.set_posx(5);
@@ -641,6 +643,13 @@ void GameRoom::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_ST
 		player->SetQuestState(questId, state, 0);
 }
 
+Protocol::QUEST_STATE GameRoom::GetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
+{
+	PlayerRef player = dynamic_pointer_cast<Player>(FindObject(playerId));
+	if (player)
+		return player->GetQuestState(questId).first;
+}
+
 
 void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 {
@@ -669,4 +678,9 @@ void GameRoom::AddQuest(Quest quest)
 void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index)
 {
 	GetInventory(objectId)->AddItemToInventory(itemId, itemCounts, itemType, index);
+}
+
+void GameRoom::EquipItemToPlayer(int objectId, int itemId, bool equip)
+{
+	GetInventory(objectId)->EquipItem(itemId, equip);
 }

@@ -21,6 +21,23 @@ Item::~Item()
 void Item::BeginPlay()
 {
 	Super::BeginPlay();
+
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	if (scene == nullptr)
+		return;
+
+	if (myPlayer == nullptr)
+		return;
+
+
+	int itemID = itemInfo.itemid();
+	auto& item = GET_SINGLE(ItemManager)->GetItem(itemID);
+
+	_name = GET_SINGLE(ChatManager)->StringToWStr(itemInfo.itemname());
+	_sprite = GET_SINGLE(ItemManager)->GetSprite(itemID);
+	_korName = item.KorName;
 }
 
 void Item::Tick()
@@ -36,22 +53,13 @@ void Item::Tick()
 	if (myPlayer == nullptr)
 		return;
 
-
-	int itemID = itemInfo.itemid();
-	auto& item = GET_SINGLE(ItemManager)->GetItem(itemID);
-
-	_name = item.KorName;
-	_sprite = GET_SINGLE(ItemManager)->GetSprite(itemID);
-
-	int count = itemInfo.itemcount();
-	string name = myPlayer->info.name();
-	wstring nameWstr = GET_SINGLE(ChatManager)->StringToWStr(name);
+	auto sprites = GET_SINGLE(ResourceManager)->GetSprites();
 
 	// 플레이어와 드랍된 이 아이템과 접촉하면
 	if (myPlayer->GetCellPos() == GetCellPos())
 	{
 		// 아이템 효과 적용
-		switch (itemID)
+		switch (itemInfo.itemid())
 		{
 		case 6:	// MaxHeart
 			myPlayer->info.set_maxhp(clamp(myPlayer->info.maxhp() + 1, 0, 10));
@@ -64,8 +72,8 @@ void Item::Tick()
 			break;
 
 		default:	// 습득 가능한 아이템
-			GET_SINGLE(ItemManager)->AddItemToInventory(itemID);
-			GET_SINGLE(ChatManager)->AddMessage(_name + L" 아이템 획득");
+			GET_SINGLE(ItemManager)->AddItemToInventory(itemInfo.itemid(), itemInfo.itemcount());
+			GET_SINGLE(ChatManager)->AddMessage(_korName + L" 아이템 "+ to_wstring(itemInfo.itemcount()) + L"개 획득");
 			break;
 		}
 
@@ -89,8 +97,8 @@ void Item::Render(HDC hdc)
 		32,
 		32,
 		_sprite->GetDC(),
-		0,
-		0,
+		_sprite->GetPos().x,
+		_sprite->GetPos().y,
 		_sprite->GetSize().x,
 		_sprite->GetSize().y,
 		_sprite->GetTransparent());

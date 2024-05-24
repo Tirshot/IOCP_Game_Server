@@ -40,6 +40,8 @@ public:
 	vector<vector<wstring>> GetItemTable() { return _itemTable; }
 	vector<vector<wstring>> GetQuestTable() { return _questTable; }
 
+	unordered_map<wstring, Sprite*> GetSprites() { return _sprites; }
+
 private:
 	HWND _hwnd = {};
 	fs::path _resourcePath;

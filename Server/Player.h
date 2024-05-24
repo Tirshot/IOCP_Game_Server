@@ -31,8 +31,9 @@ public:
 	map<int, pair<Protocol::QUEST_STATE, int>> GetAcceptedQuests();
 	void SetQuestState(int questid, Protocol::QUEST_STATE state, int progress) { _questsStates[questid] = { state, progress }; }
 	void SetQuestState(int questid, Protocol::QUEST_STATE state) { _questsStates[questid].first = { state }; }
-	
+
 	int GetQuestProgress(int questId);
+	map<int, pair<Protocol::QUEST_STATE, int>> GetQuestsStates() { return _questsStates; }
 	void SetQuestProgress(int questId, int progress);
 	void AddQuestProgress(int questId) { _questsStates[questId].second += 1; }
 

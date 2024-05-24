@@ -82,6 +82,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 			Handle_S_QuestList(session, buffer, len);
 			break;
 
+		case S_QuestState:
+			Handle_S_QuestState(session, buffer, len);
+			break;
+
 		case S_Reset:
 			Handle_S_Reset(session, buffer, len);
 			break;
@@ -342,11 +346,10 @@ void ClientPacketHandler::Handle_S_Gold(ServerSessionRef session, BYTE* buffer, 
 	uint64 objectId = pkt.objectid();
 	int32 gold = pkt.gold();
 
-	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
-	if (player)
+	if (myPlayer)
 	{
-		MyPlayer* myPlayer = static_cast<MyPlayer*>(player);
 		myPlayer->info.set_gold(myPlayer->info.gold() + gold);
 		GET_SINGLE(ChatManager)->AddMessage(format(L"{0} °ñµå È¹µæ", gold));
 	}
@@ -427,7 +430,6 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 
 void ClientPacketHandler::Handle_S_QuestList(ServerSessionRef session, BYTE* buffer, int32 len)
 {
-
 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
@@ -442,6 +444,31 @@ void ClientPacketHandler::Handle_S_QuestList(ServerSessionRef session, BYTE* buf
 	if (scene)
 	{
 		scene->SetQuests( info.questid(), info);
+	}
+}
+
+void ClientPacketHandler::Handle_S_QuestState(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_QuestList pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	Protocol::QuestInfo info = pkt.questinfo();
+
+	int questID = info.questid();
+	Protocol::QUEST_STATE questState = info.queststate();
+	int progress = info.process();
+
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	if (myPlayer)
+	{
+		myPlayer->SetQuestState(questID, questState);
+		myPlayer->SetQuestProgress(questID, progress);
 	}
 }
 
@@ -568,4 +595,15 @@ SendBufferRef ClientPacketHandler::Make_C_AddItem(uint64 objectId, int itemId, i
 	pkt.set_index(index);
 
 	return MakeSendBuffer(pkt, C_AddItem);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_EquipItem(uint64 objectId, int itemId, bool equip)
+{
+	Protocol::C_EquipItem pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_itemid(itemId);
+	pkt.set_equip(equip);
+
+	return MakeSendBuffer(pkt, C_EquipItem);
 }

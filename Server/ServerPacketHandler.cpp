@@ -10,6 +10,7 @@
 #include "Monster.h"
 #include "NPC.h"
 #include "Arrow.h"
+#include "Item.h"
 
 void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int32 len)
 {
@@ -55,6 +56,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 
 	case C_AddItem:
 		Handle_C_AddItem(session, buffer, len);
+		break;
+
+	case C_EquipItem:
+		Handle_C_EquipItem(session, buffer, len);
 		break;
 
 	default:
@@ -173,8 +178,9 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 		// 플레이어 초기화
 		PlayerRef player = GameObject::CreatePlayer();
 		player->info = info;
+		player->info.set_objectid(id);
 		player->info.set_hp(info.maxhp());
-		player->info.set_mp(info.maxhp());
+		player->info.set_mp(info.maxmp());
 		player->info.set_posx(5);
 		player->info.set_posy(5);
 		player->info.set_weapontype(Protocol::WEAPON_TYPE_SWORD);
@@ -225,6 +231,40 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 			{
 				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info);
 				session->Send(sendBuffer);
+			}
+		}
+		{
+			// 드랍 아이템 재생성
+			Protocol::S_ItemDrop pkt;
+			for (auto& item : room->GetItems())
+			{
+				Protocol::ItemInfo* info = pkt.mutable_iteminfo();
+				*info = item.second->itemInfo;
+
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_ItemDrop(*info);
+				session->Send(sendBuffer);
+			}
+		}
+		{
+			// 퀘스트 정보 재전송
+			auto questsStates = room->GetQuestsStates(id);
+
+			Protocol::S_QuestState pkt;
+			for (auto& state : questsStates)
+			{
+				int questID = state.first;
+				Protocol::QUEST_STATE questState = state.second.first;
+				int progress = state.second.second;
+
+				{	// 퀘스트 진행도 패킷 전송
+					Protocol::QuestInfo* info = pkt.mutable_questinfo();
+					info->set_questid(questID);
+					info->set_queststate(questState);
+					info->set_process(progress);
+
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestState(*info);
+					session->Send(sendBuffer);
+				}
 			}
 		}
 		room->AddObject(player);
@@ -315,6 +355,28 @@ void ServerPacketHandler::Handle_C_AddItem(GameSessionRef session, BYTE* buffer,
 	if (room && myPlayer)
 	{
 		room->AddItemToPlayer(myPlayer->GetObjectID(), itemId, itemCounts, itemType, index);
+	}
+}
+
+void ServerPacketHandler::Handle_C_EquipItem(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+
+	uint16 size = header->size;
+
+	Protocol::C_EquipItem pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	GameRoomRef room = session->gameRoom.lock();
+	PlayerRef myPlayer = session->player.lock();
+
+	int itemId = pkt.itemid();
+	bool equip = pkt.equip();
+
+	// 가져온 패킷의 정보를 이용, 플레이어 인벤토리 관리
+	if (room && myPlayer)
+	{
+		room->EquipItemToPlayer(myPlayer->GetObjectID(), itemId, equip);
 	}
 }
 
@@ -449,6 +511,7 @@ SendBufferRef ServerPacketHandler::Make_S_QuestProcess(uint64 objectid, uint64 q
 	questInfo->set_questid(questid);
 	questInfo->set_process(process);
 	questInfo->set_queststate(Protocol::QUEST_STATE_ACCEPT);
+	GChat->AddText(::format(L"player {0}, quest {1} [{2} / {3}] 진행.", objectid, questid, process, questInfo->targetnums()));
 
 	return MakeSendBuffer(pkt, S_QuestProcess);
 }
@@ -462,6 +525,7 @@ SendBufferRef ServerPacketHandler::Make_S_QuestComplete(uint64 objectid, uint64 
 	questInfo->set_questid(questid);
 	questInfo->set_process(process);
 	questInfo->set_queststate(Protocol::QUEST_STATE_COMPLETED);
+	GChat->AddText(::format(L"player {0}, quest {1} 완료.", objectid, questid));
 
 	return MakeSendBuffer(pkt, S_QuestComplete);
 }
@@ -473,8 +537,19 @@ SendBufferRef ServerPacketHandler::Make_S_QuestList(uint64 objectid, const Proto
 	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
 	*questInfo = info;
 	questInfo->set_objectid(objectid);
+	GChat->AddText(::format(L"player {0}, 퀘스트 목록 갱신.", objectid));
 
 	return MakeSendBuffer(pkt, S_QuestList);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_QuestState(const Protocol::QuestInfo& info)
+{
+	Protocol::S_QuestState pkt;
+
+	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
+	*questInfo = info;
+
+	return MakeSendBuffer(pkt, S_QuestState);
 }
 
 SendBufferRef ServerPacketHandler::Make_S_ItemDrop(const Protocol::ItemInfo& info)

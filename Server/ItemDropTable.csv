@@ -3,8 +3,8 @@
 1,Wearable,14,Armor00,5,0.165
 1,Wearable,18,Pants00,10,0.33
 1,Wearable,22,Boots00,5,0.165
-1,Consumable,4,ArrowItem,130,0.353
-1,Consumable,5,Potion,15,0.176
+1,Consumable,4,ArrowItem,40,0.353
+1,Consumable,5,Potion,20,0.176
 1,Consumable,7,HeartItem,30,0.353
 1,Consumable,6,MaxHeartItem,10,0.118
-1,ETC,26,SnakeSkin,10,1
+1,ETC,26,SnakeSkin,20,1

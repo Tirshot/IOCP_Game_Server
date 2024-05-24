@@ -238,6 +238,7 @@ void ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec
 			itemInfo.set_itemid(itemID);
 			itemInfo.set_itemcount(1);
 			itemInfo.set_itemtype(type);
+			itemInfo.set_itemname(name);
 
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_ItemDrop(itemInfo);
 			PlayerRef player = static_pointer_cast<Player>(GRoom->FindObject(owner->GetObjectID()));
@@ -296,6 +297,30 @@ Protocol::ITEM_TYPE ItemManager::GetItemTypeByID(int itemID)
 	else
 	{
 		return Protocol::ITEM_TYPE_NONE;
+	}
+}
+
+Protocol::ITEM_SUBTYPE ItemManager::GetItemSubType(int itemID)
+{
+	auto info = GetItemInfo(itemID);
+
+	wstring subType = info[4];
+
+	if (subType == L"Helmet")
+	{
+		return Protocol::WEARABLE_TYPE_HELMET;
+	}
+	else if (subType == L"Armor")
+	{
+		return Protocol::WEARABLE_TYPE_ARMOR;
+	}
+	else if (subType == L"Pants")
+	{
+		return Protocol::WEARABLE_TYPE_PANTS;
+	}
+	else if (subType == L"Boots")
+	{
+		return Protocol::WEARABLE_TYPE_BOOTS;
 	}
 }
 

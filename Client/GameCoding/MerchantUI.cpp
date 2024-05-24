@@ -80,6 +80,8 @@ void MerchantUI::BeginPlay()
 {
 	for (auto& child : _children)
 		child->BeginPlay();
+
+	_initialized = true;
 }
 
 void MerchantUI::Tick()
@@ -87,9 +89,11 @@ void MerchantUI::Tick()
 	for (auto& child : _children)
 		child->Tick(); 
 	
+	if (_initialized)
 	{	// 퀘스트 리스트 받아오기
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_QuestList();
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		_initialized = false;
 	}
 }
 
@@ -133,16 +137,13 @@ void MerchantUI::OnClickShopButton()
 
 	if (shopui)
 		shopui->SetVisible(true);
-
-	// item count reset
-	//auto* child = shopui->FindChild<ShopItemPanel>(shopui->GetChildren());
-	//if (child)
-	//	child->ResetItemCount();
 }
 
 void MerchantUI::OnClickQuestButton()
 {
 	SetVisible(false);
+
+	_initialized = true;
 
 	// 퀘스트 Panel 활성화
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();

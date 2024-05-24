@@ -177,5 +177,6 @@ void Quest::CreateQuest()
 		quest->info.set_rewarditemnum(ItemCounts);
 
 		GRoom->AddQuest(*quest);
+		GChat->AddText(::format(L"quest {0} »ý¼º Áß...", quest->info.questid()));
 	}
 }

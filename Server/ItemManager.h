@@ -18,6 +18,8 @@ public:
 	int GetConsumableProbablity(vector<wstring> row) { return stoi(row[2]); }
 	int GetETCProbablity(vector<wstring> row) { return stoi(row[3]); }
 	int GetNoneProbablity(vector<wstring> row) { return stoi(row[4]); }
+	int GetMinGold(vector <wstring> row) { return stoi(row[5]); }
+	int GetMaxGold(vector <wstring> row) { return stoi(row[6]); }
 	vector<wstring> GetMonsterDropItemGroupInfo(Protocol::MONSTER_TYPE monsterType);
 
 public:
@@ -44,6 +46,7 @@ public:
 	vector<wstring> GetItemInfo(int itemID);
 	string GetItemNameByID(int itemID);
 	Protocol::ITEM_TYPE GetItemTypeByID(int itemID);
+	Protocol::ITEM_SUBTYPE GetItemSubType(int itemID);
 	string GetItemSubTypeByID(int itemID);
 
 

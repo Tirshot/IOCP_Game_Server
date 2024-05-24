@@ -50,6 +50,9 @@ namespace Protocol {
 class C_AddItem;
 struct C_AddItemDefaultTypeInternal;
 extern C_AddItemDefaultTypeInternal _C_AddItem_default_instance_;
+class C_EquipItem;
+struct C_EquipItemDefaultTypeInternal;
+extern C_EquipItemDefaultTypeInternal _C_EquipItem_default_instance_;
 class C_Fire;
 struct C_FireDefaultTypeInternal;
 extern C_FireDefaultTypeInternal _C_Fire_default_instance_;
@@ -119,6 +122,9 @@ extern S_QuestListDefaultTypeInternal _S_QuestList_default_instance_;
 class S_QuestProcess;
 struct S_QuestProcessDefaultTypeInternal;
 extern S_QuestProcessDefaultTypeInternal _S_QuestProcess_default_instance_;
+class S_QuestState;
+struct S_QuestStateDefaultTypeInternal;
+extern S_QuestStateDefaultTypeInternal _S_QuestState_default_instance_;
 class S_RemoveObject;
 struct S_RemoveObjectDefaultTypeInternal;
 extern S_RemoveObjectDefaultTypeInternal _S_RemoveObject_default_instance_;
@@ -137,6 +143,7 @@ extern S_TeleportDefaultTypeInternal _S_Teleport_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::C_AddItem* Arena::CreateMaybeMessage<::Protocol::C_AddItem>(Arena*);
+template<> ::Protocol::C_EquipItem* Arena::CreateMaybeMessage<::Protocol::C_EquipItem>(Arena*);
 template<> ::Protocol::C_Fire* Arena::CreateMaybeMessage<::Protocol::C_Fire>(Arena*);
 template<> ::Protocol::C_Heal* Arena::CreateMaybeMessage<::Protocol::C_Heal>(Arena*);
 template<> ::Protocol::C_Hit* Arena::CreateMaybeMessage<::Protocol::C_Hit>(Arena*);
@@ -160,6 +167,7 @@ template<> ::Protocol::S_Quest* Arena::CreateMaybeMessage<::Protocol::S_Quest>(A
 template<> ::Protocol::S_QuestComplete* Arena::CreateMaybeMessage<::Protocol::S_QuestComplete>(Arena*);
 template<> ::Protocol::S_QuestList* Arena::CreateMaybeMessage<::Protocol::S_QuestList>(Arena*);
 template<> ::Protocol::S_QuestProcess* Arena::CreateMaybeMessage<::Protocol::S_QuestProcess>(Arena*);
+template<> ::Protocol::S_QuestState* Arena::CreateMaybeMessage<::Protocol::S_QuestState>(Arena*);
 template<> ::Protocol::S_RemoveObject* Arena::CreateMaybeMessage<::Protocol::S_RemoveObject>(Arena*);
 template<> ::Protocol::S_Reset* Arena::CreateMaybeMessage<::Protocol::S_Reset>(Arena*);
 template<> ::Protocol::S_SendMessage* Arena::CreateMaybeMessage<::Protocol::S_SendMessage>(Arena*);
@@ -4195,6 +4203,163 @@ class S_QuestList final :
 };
 // -------------------------------------------------------------------
 
+class S_QuestState final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_QuestState) */ {
+ public:
+  inline S_QuestState() : S_QuestState(nullptr) {}
+  ~S_QuestState() override;
+  explicit PROTOBUF_CONSTEXPR S_QuestState(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_QuestState(const S_QuestState& from);
+  S_QuestState(S_QuestState&& from) noexcept
+    : S_QuestState() {
+    *this = ::std::move(from);
+  }
+
+  inline S_QuestState& operator=(const S_QuestState& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_QuestState& operator=(S_QuestState&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_QuestState& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_QuestState* internal_default_instance() {
+    return reinterpret_cast<const S_QuestState*>(
+               &_S_QuestState_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    25;
+
+  friend void swap(S_QuestState& a, S_QuestState& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_QuestState* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_QuestState* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_QuestState* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_QuestState>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_QuestState& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_QuestState& from) {
+    S_QuestState::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_QuestState* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_QuestState";
+  }
+  protected:
+  explicit S_QuestState(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kQuestinfoFieldNumber = 1,
+  };
+  // .Protocol.QuestInfo questinfo = 1;
+  bool has_questinfo() const;
+  private:
+  bool _internal_has_questinfo() const;
+  public:
+  void clear_questinfo();
+  const ::Protocol::QuestInfo& questinfo() const;
+  PROTOBUF_NODISCARD ::Protocol::QuestInfo* release_questinfo();
+  ::Protocol::QuestInfo* mutable_questinfo();
+  void set_allocated_questinfo(::Protocol::QuestInfo* questinfo);
+  private:
+  const ::Protocol::QuestInfo& _internal_questinfo() const;
+  ::Protocol::QuestInfo* _internal_mutable_questinfo();
+  public:
+  void unsafe_arena_set_allocated_questinfo(
+      ::Protocol::QuestInfo* questinfo);
+  ::Protocol::QuestInfo* unsafe_arena_release_questinfo();
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_QuestState)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::Protocol::QuestInfo* questinfo_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class S_Reset final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_Reset) */ {
  public:
@@ -4243,7 +4408,7 @@ class S_Reset final :
                &_S_Reset_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    26;
 
   friend void swap(S_Reset& a, S_Reset& b) {
     a.Swap(&b);
@@ -4400,7 +4565,7 @@ class C_Heal final :
                &_C_Heal_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    27;
 
   friend void swap(C_Heal& a, C_Heal& b) {
     a.Swap(&b);
@@ -4548,7 +4713,7 @@ class C_AddItem final :
                &_C_AddItem_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    28;
 
   friend void swap(C_AddItem& a, C_AddItem& b) {
     a.Swap(&b);
@@ -4668,6 +4833,176 @@ class C_AddItem final :
 };
 // -------------------------------------------------------------------
 
+class C_EquipItem final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_EquipItem) */ {
+ public:
+  inline C_EquipItem() : C_EquipItem(nullptr) {}
+  ~C_EquipItem() override;
+  explicit PROTOBUF_CONSTEXPR C_EquipItem(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_EquipItem(const C_EquipItem& from);
+  C_EquipItem(C_EquipItem&& from) noexcept
+    : C_EquipItem() {
+    *this = ::std::move(from);
+  }
+
+  inline C_EquipItem& operator=(const C_EquipItem& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_EquipItem& operator=(C_EquipItem&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_EquipItem& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_EquipItem* internal_default_instance() {
+    return reinterpret_cast<const C_EquipItem*>(
+               &_C_EquipItem_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    29;
+
+  friend void swap(C_EquipItem& a, C_EquipItem& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_EquipItem* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_EquipItem* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_EquipItem* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_EquipItem>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_EquipItem& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_EquipItem& from) {
+    C_EquipItem::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_EquipItem* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_EquipItem";
+  }
+  protected:
+  explicit C_EquipItem(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectIdFieldNumber = 1,
+    kItemidFieldNumber = 2,
+    kEquipFieldNumber = 3,
+  };
+  // uint64 objectId = 1;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
+  private:
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
+  public:
+
+  // uint32 itemid = 2;
+  void clear_itemid();
+  uint32_t itemid() const;
+  void set_itemid(uint32_t value);
+  private:
+  uint32_t _internal_itemid() const;
+  void _internal_set_itemid(uint32_t value);
+  public:
+
+  // bool equip = 3;
+  void clear_equip();
+  bool equip() const;
+  void set_equip(bool value);
+  private:
+  bool _internal_equip() const;
+  void _internal_set_equip(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_EquipItem)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t objectid_;
+    uint32_t itemid_;
+    bool equip_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
+// -------------------------------------------------------------------
+
 class S_ItemDrop final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_ItemDrop) */ {
  public:
@@ -4716,7 +5051,7 @@ class S_ItemDrop final :
                &_S_ItemDrop_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    30;
 
   friend void swap(S_ItemDrop& a, S_ItemDrop& b) {
     a.Swap(&b);
@@ -6658,6 +6993,95 @@ inline void S_QuestList::set_allocated_questinfo(::Protocol::QuestInfo* questinf
 
 // -------------------------------------------------------------------
 
+// S_QuestState
+
+// .Protocol.QuestInfo questinfo = 1;
+inline bool S_QuestState::_internal_has_questinfo() const {
+  return this != internal_default_instance() && _impl_.questinfo_ != nullptr;
+}
+inline bool S_QuestState::has_questinfo() const {
+  return _internal_has_questinfo();
+}
+inline const ::Protocol::QuestInfo& S_QuestState::_internal_questinfo() const {
+  const ::Protocol::QuestInfo* p = _impl_.questinfo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::QuestInfo&>(
+      ::Protocol::_QuestInfo_default_instance_);
+}
+inline const ::Protocol::QuestInfo& S_QuestState::questinfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_QuestState.questinfo)
+  return _internal_questinfo();
+}
+inline void S_QuestState::unsafe_arena_set_allocated_questinfo(
+    ::Protocol::QuestInfo* questinfo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.questinfo_);
+  }
+  _impl_.questinfo_ = questinfo;
+  if (questinfo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_QuestState.questinfo)
+}
+inline ::Protocol::QuestInfo* S_QuestState::release_questinfo() {
+  
+  ::Protocol::QuestInfo* temp = _impl_.questinfo_;
+  _impl_.questinfo_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::Protocol::QuestInfo* S_QuestState::unsafe_arena_release_questinfo() {
+  // @@protoc_insertion_point(field_release:Protocol.S_QuestState.questinfo)
+  
+  ::Protocol::QuestInfo* temp = _impl_.questinfo_;
+  _impl_.questinfo_ = nullptr;
+  return temp;
+}
+inline ::Protocol::QuestInfo* S_QuestState::_internal_mutable_questinfo() {
+  
+  if (_impl_.questinfo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::QuestInfo>(GetArenaForAllocation());
+    _impl_.questinfo_ = p;
+  }
+  return _impl_.questinfo_;
+}
+inline ::Protocol::QuestInfo* S_QuestState::mutable_questinfo() {
+  ::Protocol::QuestInfo* _msg = _internal_mutable_questinfo();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_QuestState.questinfo)
+  return _msg;
+}
+inline void S_QuestState::set_allocated_questinfo(::Protocol::QuestInfo* questinfo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.questinfo_);
+  }
+  if (questinfo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(questinfo));
+    if (message_arena != submessage_arena) {
+      questinfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, questinfo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.questinfo_ = questinfo;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_QuestState.questinfo)
+}
+
+// -------------------------------------------------------------------
+
 // S_Reset
 
 // .Protocol.ObjectInfo objectinfo = 1;
@@ -6880,6 +7304,70 @@ inline void C_AddItem::set_index(uint32_t value) {
 
 // -------------------------------------------------------------------
 
+// C_EquipItem
+
+// uint64 objectId = 1;
+inline void C_EquipItem::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
+}
+inline uint64_t C_EquipItem::_internal_objectid() const {
+  return _impl_.objectid_;
+}
+inline uint64_t C_EquipItem::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_EquipItem.objectId)
+  return _internal_objectid();
+}
+inline void C_EquipItem::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
+}
+inline void C_EquipItem::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_EquipItem.objectId)
+}
+
+// uint32 itemid = 2;
+inline void C_EquipItem::clear_itemid() {
+  _impl_.itemid_ = 0u;
+}
+inline uint32_t C_EquipItem::_internal_itemid() const {
+  return _impl_.itemid_;
+}
+inline uint32_t C_EquipItem::itemid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_EquipItem.itemid)
+  return _internal_itemid();
+}
+inline void C_EquipItem::_internal_set_itemid(uint32_t value) {
+  
+  _impl_.itemid_ = value;
+}
+inline void C_EquipItem::set_itemid(uint32_t value) {
+  _internal_set_itemid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_EquipItem.itemid)
+}
+
+// bool equip = 3;
+inline void C_EquipItem::clear_equip() {
+  _impl_.equip_ = false;
+}
+inline bool C_EquipItem::_internal_equip() const {
+  return _impl_.equip_;
+}
+inline bool C_EquipItem::equip() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_EquipItem.equip)
+  return _internal_equip();
+}
+inline void C_EquipItem::_internal_set_equip(bool value) {
+  
+  _impl_.equip_ = value;
+}
+inline void C_EquipItem::set_equip(bool value) {
+  _internal_set_equip(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_EquipItem.equip)
+}
+
+// -------------------------------------------------------------------
+
 // S_ItemDrop
 
 // .Protocol.ItemInfo itemInfo = 1;
@@ -6970,6 +7458,10 @@ inline void S_ItemDrop::set_allocated_iteminfo(::Protocol::ItemInfo* iteminfo) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

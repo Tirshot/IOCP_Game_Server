@@ -21,6 +21,7 @@ private:
 	void SyncUseableItemToServer(int itemID, int counts);
 	void SyncItemToServer(int itemID, int counts);
 	void AutoSyncInventory();
+	void SyncEquips(int itemID, bool equip = true);
 
 public:
 	bool AddItem(ITEM* item);
@@ -79,7 +80,7 @@ private:
 	RECT _equipRect;	// 장비창 영역 체크용 Rect
 	class AlertBox* _alert = nullptr;
 	bool _isEquipedItem = false;
-
+	class MyPlayer* _owner = nullptr;
 	float _sumTime = 0.f;
 };
 

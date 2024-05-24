@@ -231,6 +231,9 @@ void Player::OnDamaged(CreatureRef attacker, bool debug)
 	{
 		if (room)
 		{
+			// 퀘스트 내용 임시 전달
+			auto questStates = GetQuestsStates();
+			room->SetQuestsStates(GetObjectID(), questStates);
 			room->RemoveObject(GetObjectID());
 
 			wstring objectType = GChat->StringToWStr(info.name());
