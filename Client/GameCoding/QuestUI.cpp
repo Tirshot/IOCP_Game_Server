@@ -139,15 +139,11 @@ void QuestUI::Tick()
 				}
 			}
 		}
-
 		auto questState = Panel->GetQuestState();
-		if (questState)
+		if (questState && questState == Protocol::QUEST_STATE_FINISHED)
 		{
-			if (Panel->GetQuestState() == Protocol::QUEST_STATE_FINISHED)
-			{
-				RemoveChild(Panel);
-				ResetQuestList();
-			}
+			RemoveChild(Panel);
+			ResetQuestList();
 		}
 	}
 }
@@ -251,7 +247,9 @@ void QuestUI::ResetQuestList()
 			if (state == Protocol::QUEST_STATE_FINISHED)
 				continue;
 
-			_quests.insert(questInfo);
+			int questId = questInfo.second.questid();
+
+			_quests[questId] = questInfo.second;
 			SetQuestPanel(questInfo);
 			_idx++;
 		}

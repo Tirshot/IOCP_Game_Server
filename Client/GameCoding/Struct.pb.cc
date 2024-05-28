@@ -97,6 +97,8 @@ PROTOBUF_CONSTEXPR QuestInfo::QuestInfo(
   , /*decltype(_impl_.rewardgold_)*/0
   , /*decltype(_impl_.rewarditem_)*/0
   , /*decltype(_impl_.rewarditemnum_)*/0
+  , /*decltype(_impl_.posx_)*/0
+  , /*decltype(_impl_.posy_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct QuestInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR QuestInfoDefaultTypeInternal()
@@ -194,6 +196,8 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.rewardgold_),
   PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.rewarditem_),
   PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.rewarditemnum_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.posx_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.posy_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::ItemInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -214,7 +218,7 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 9, -1, -1, sizeof(::Protocol::ObjectInfo)},
   { 36, -1, -1, sizeof(::Protocol::Text)},
   { 45, -1, -1, sizeof(::Protocol::QuestInfo)},
-  { 61, -1, -1, sizeof(::Protocol::ItemInfo)},
+  { 63, -1, -1, sizeof(::Protocol::ItemInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -242,25 +246,26 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "pe\030\023 \001(\0162\022.Protocol.NPC_TYPE\022\016\n\006potion\030\024"
   " \001(\005\022+\n\013monsterType\030\025 \001(\0162\026.Protocol.MON"
   "STER_TYPE\"3\n\004Text\022\020\n\010objectId\030\001 \001(\004\022\014\n\004t"
-  "ime\030\002 \001(\004\022\013\n\003str\030\003 \001(\t\"\372\001\n\tQuestInfo\022\017\n\007"
+  "ime\030\002 \001(\004\022\013\n\003str\030\003 \001(\t\"\226\002\n\tQuestInfo\022\017\n\007"
   "questid\030\001 \001(\005\022\020\n\010objectid\030\002 \001(\004\022\020\n\010targe"
   "tid\030\003 \001(\005\022)\n\ntargettype\030\004 \001(\0162\025.Protocol"
   ".OBJECT_TYPE\022\022\n\ntargetnums\030\005 \001(\005\022\017\n\007proc"
   "ess\030\006 \001(\005\022)\n\nqueststate\030\007 \001(\0162\025.Protocol"
   ".QUEST_STATE\022\022\n\nrewardGold\030\010 \001(\005\022\022\n\nrewa"
-  "rdItem\030\t \001(\005\022\025\n\rrewardItemNum\030\n \001(\005\"\301\001\n\010"
-  "ItemInfo\022\016\n\006ItemId\030\001 \001(\004\022\021\n\tItemCount\030\002 "
-  "\001(\004\022%\n\010itemType\030\003 \001(\0162\023.Protocol.ITEM_TY"
-  "PE\022\020\n\010ItemName\030\004 \001(\t\022\014\n\004posX\030\005 \001(\005\022\014\n\004po"
-  "sY\030\006 \001(\005\022+\n\013itemSubType\030\007 \001(\0162\026.Protocol"
-  ".ITEM_SUBTYPE\022\020\n\010objectId\030\010 \001(\004b\006proto3"
+  "rdItem\030\t \001(\005\022\025\n\rrewardItemNum\030\n \001(\005\022\014\n\004p"
+  "osX\030\013 \001(\005\022\014\n\004posY\030\014 \001(\005\"\301\001\n\010ItemInfo\022\016\n\006"
+  "ItemId\030\001 \001(\004\022\021\n\tItemCount\030\002 \001(\004\022%\n\010itemT"
+  "ype\030\003 \001(\0162\023.Protocol.ITEM_TYPE\022\020\n\010ItemNa"
+  "me\030\004 \001(\t\022\014\n\004posX\030\005 \001(\005\022\014\n\004posY\030\006 \001(\005\022+\n\013"
+  "itemSubType\030\007 \001(\0162\026.Protocol.ITEM_SUBTYP"
+  "E\022\020\n\010objectId\030\010 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 1119, descriptor_table_protodef_Struct_2eproto,
+    false, false, 1147, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -1553,12 +1558,14 @@ QuestInfo::QuestInfo(const QuestInfo& from)
     , decltype(_impl_.rewardgold_){}
     , decltype(_impl_.rewarditem_){}
     , decltype(_impl_.rewarditemnum_){}
+    , decltype(_impl_.posx_){}
+    , decltype(_impl_.posy_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.rewarditemnum_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.rewarditemnum_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.posy_) -
+    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.posy_));
   // @@protoc_insertion_point(copy_constructor:Protocol.QuestInfo)
 }
 
@@ -1577,6 +1584,8 @@ inline void QuestInfo::SharedCtor(
     , decltype(_impl_.rewardgold_){0}
     , decltype(_impl_.rewarditem_){0}
     , decltype(_impl_.rewarditemnum_){0}
+    , decltype(_impl_.posx_){0}
+    , decltype(_impl_.posy_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1605,8 +1614,8 @@ void QuestInfo::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.rewarditemnum_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.rewarditemnum_));
+      reinterpret_cast<char*>(&_impl_.posy_) -
+      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.posy_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1694,6 +1703,22 @@ const char* QuestInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
       case 10:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
           _impl_.rewarditemnum_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 posX = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
+          _impl_.posx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 posY = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+          _impl_.posy_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1789,6 +1814,18 @@ uint8_t* QuestInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(10, this->_internal_rewarditemnum(), target);
   }
 
+  // int32 posX = 11;
+  if (this->_internal_posx() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(11, this->_internal_posx(), target);
+  }
+
+  // int32 posY = 12;
+  if (this->_internal_posy() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(12, this->_internal_posy(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1857,6 +1894,16 @@ size_t QuestInfo::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_rewarditemnum());
   }
 
+  // int32 posX = 11;
+  if (this->_internal_posx() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_posx());
+  }
+
+  // int32 posY = 12;
+  if (this->_internal_posy() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_posy());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1905,6 +1952,12 @@ void QuestInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   if (from._internal_rewarditemnum() != 0) {
     _this->_internal_set_rewarditemnum(from._internal_rewarditemnum());
   }
+  if (from._internal_posx() != 0) {
+    _this->_internal_set_posx(from._internal_posx());
+  }
+  if (from._internal_posy() != 0) {
+    _this->_internal_set_posy(from._internal_posy());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1923,8 +1976,8 @@ void QuestInfo::InternalSwap(QuestInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(QuestInfo, _impl_.rewarditemnum_)
-      + sizeof(QuestInfo::_impl_.rewarditemnum_)
+      PROTOBUF_FIELD_OFFSET(QuestInfo, _impl_.posy_)
+      + sizeof(QuestInfo::_impl_.posy_)
       - PROTOBUF_FIELD_OFFSET(QuestInfo, _impl_.objectid_)>(
           reinterpret_cast<char*>(&_impl_.objectid_),
           reinterpret_cast<char*>(&other->_impl_.objectid_));

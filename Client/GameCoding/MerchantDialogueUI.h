@@ -21,6 +21,7 @@ public:
 
 private:
 	void VisibleButton();
+	void VisibleReward();
 	void OnClickAcceptButton();
 	void OnClickDeclineButton();
 	void OnClickConfirmButton();

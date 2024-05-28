@@ -50,6 +50,23 @@ void MerchantDialogueUI::BeginPlay()
 		AddChild(namePlate);
 	}
 
+	{ // 보상
+		NamePlate* reward = new NamePlate(L"보상");
+		auto posX = reward->GetSize().x;
+		reward->SetPos(Vec2{ _pos.x - 2 - (posX / 2), _pos.y - 100 });
+		reward->SetVisible(false);
+		AddChild(reward);
+	}
+
+	{ // 대화 내용
+		wstring wstr = L"퀘스트 대화 내용입니다.";
+		TextBox* textBox = new TextBox(wstr);
+		textBox->SetPos({ _pos.x, _pos.y });
+		textBox->SetPadding(15, 15);
+		textBox->SetSize({ _size.x, _size.y });
+		AddChild(textBox);
+	}
+
 	{ // 퀘스트 수락
 		Button* accept = new Button();
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Accept_Off"), BS_Default);
@@ -138,6 +155,7 @@ void MerchantDialogueUI::Tick()
 			{
 				_questState = scene->GetPlayerQuestState(myPlayerID, _questID);
 				VisibleButton();
+				VisibleReward();
 			}
 		}
 		else
@@ -202,7 +220,8 @@ void MerchantDialogueUI::Render(HDC hdc)
 		SRCCOPY);
 
 	for (auto& child : _children)
-		child->Render(hdc);
+		if (child->GetVisible())
+			child->Render(hdc);
 }
 
 void MerchantDialogueUI::SetDialogue(int questID)
@@ -280,6 +299,55 @@ void MerchantDialogueUI::VisibleButton()
 			}
 		}
 	}
+}
+
+void MerchantDialogueUI::VisibleReward()
+{
+	// 버튼 활성화
+	for (auto& child : _children)
+	{
+		// 처음 수령하는 퀘스트인지 확인
+		auto namePlate = dynamic_cast<NamePlate*>(child);
+		if (namePlate)
+		{
+			switch (_questState)
+			{
+			case Protocol::QUEST_STATE_IDLE:
+			{
+				if (namePlate->GetText() == L"보상")
+				{
+					namePlate->SetVisible(true);
+				}
+				continue;
+			}
+			case Protocol::QUEST_STATE_ACCEPT:
+			{
+				if (namePlate->GetText() == L"보상")
+				{
+					namePlate->SetVisible(false);
+				}
+				continue;
+			}
+			case Protocol::QUEST_STATE_COMPLETED:
+			{
+				if (namePlate->GetText() == L"보상")
+				{
+					namePlate->SetVisible(true);
+				}
+				continue;
+			}
+			default:
+			{
+				if (namePlate->GetText() == L"보상")
+				{
+					namePlate->SetVisible(false);
+				}
+				continue;
+			}
+			}
+		}
+	}
+
 }
 
 void MerchantDialogueUI::OnClickAcceptButton()
@@ -374,6 +442,12 @@ void MerchantDialogueUI::OnClickConfirmButton()
 				_questState = Protocol::QUEST_STATE_FINISHED;
 				scene->SetPlayerQuestState(myPlayerId, _questID, Protocol::QUEST_STATE_FINISHED);
 				GET_SINGLE(SoundManager)->Play(L"QuestFinished");
+
+				// 퀘스트 완료됨 상태 전송
+				{
+					SendBufferRef sendBuffer = ClientPacketHandler::Make_C_QuestFinish(myPlayerId, _questID);
+					GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+				}
 			}
 		}
 	}

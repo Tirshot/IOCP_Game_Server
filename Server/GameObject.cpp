@@ -8,6 +8,8 @@
 #include "GameRoom.h"
 #include "Arrow.h"
 #include "Inventory.h"
+#include "Trigger.h"
+#include "Quest1Trigger.h"
 
 atomic<uint64> GameObject::s_idGenerator = 1;
 
@@ -93,6 +95,27 @@ InventoryRef GameObject::CreateInventory(PlayerRef player)
 	inventory->info.set_objecttype(Protocol::OBJECT_TYPE_INVENTORY);
 	inventory->SetObjectID(player->GetObjectID());
 	return inventory;
+}
+
+TriggerRef GameObject::CreateTrigger(uint64 questId)
+{
+	TriggerRef trigger;
+	switch (questId)
+	{
+	case 1:
+		trigger = make_shared<Quest1Trigger>();
+		break;
+
+	default:
+		trigger = make_shared<Trigger>();
+		break;
+	}
+
+	trigger->info.set_objectid(s_idGenerator++);
+	trigger->info.set_objecttype(Protocol::OBJECT_TYPE_TRIGGER);
+	trigger->SetQuestID(questId);
+	return trigger;
+
 }
 
 void GameObject::SetState(ObjectState state, bool broadcast)

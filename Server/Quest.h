@@ -19,6 +19,8 @@ public:
 	int GetRewardGold(vector<wstring> row) { return stoi(row[4]); }
 	int GetRewardItemID(vector<wstring> row) { if (row[5] != L"") return stoi(row[5]); else return 0; }
 	int GetRewardItemCounts(vector<wstring> row) { if (row[6] != L"") return stoi(row[6]); else return 0; }
+	Vec2Int GetTargetCellPos(vector<wstring> row);
+	
 	vector<wstring> GetQuestInfo(int questID);
 	vector<wstring> GetQuestInfoByTargetID(wstring targetType, int targetID);
 

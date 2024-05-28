@@ -13,6 +13,8 @@ public:
 	virtual void Tick();
 	virtual void Render(HDC hdc);
 
+	wstring GetText() { return _name; }
+
 protected:
 	Sprite* _sprite = nullptr;
 	RECT _rect = {};

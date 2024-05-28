@@ -60,7 +60,7 @@ void Player::Update()
 	// 매 5초마다 플레이어의 mp를 회복시킴
 	if (_now - _prev >= 5000)
 	{
-		info.set_mp(clamp(info.mp() + 5, 0, info.maxmp()));
+		info.set_mp(clamp(info.mp() + 10, 0, info.maxmp()));
 		_prev = _now;
 	}
 }
@@ -204,11 +204,6 @@ void Player::UpdateSpin()
 			creature4->SetWait(50);
 			creature4->KnockBack(shared_from_this());
 		}
-		if (GetQuestState(1).first == Protocol::QUEST_STATE_ACCEPT)
-		{
-			if (GetCellPos() == Vec2Int {44,18})
-				QuestProgress(1);
-		}
 	}
 	SetState(MOVE);
 }
@@ -231,9 +226,6 @@ void Player::OnDamaged(CreatureRef attacker, bool debug)
 	{
 		if (room)
 		{
-			// 퀘스트 내용 임시 전달
-			auto questStates = GetQuestsStates();
-			room->SetQuestsStates(GetObjectID(), questStates);
 			room->RemoveObject(GetObjectID());
 
 			wstring objectType = GChat->StringToWStr(info.name());
@@ -320,10 +312,12 @@ void Player::Teleport()
 
 void Player::QuestProgress(int questid)
 {
-	Protocol::QUEST_STATE state = GetQuestState(questid).first;
+	auto questsStates = room->GetQuestsStates(GetObjectID(), questid);
+
+	Protocol::QUEST_STATE state = questsStates.state;
 	Protocol::QuestInfo questInfo = room->GetQuest(questid);
 	int targetNums = questInfo.targetnums();
-	int newProcess = GetQuestProgress(questid) + 1;
+	int newProgress = questsStates.progress + 1;
 
 	if (state == Protocol::QUEST_STATE_FINISHED || state == Protocol::QUEST_STATE_COMPLETED)
 		return;
@@ -332,29 +326,19 @@ void Player::QuestProgress(int questid)
 	{
 		// 몬스터 처치 카운트 
 		{
-			SetQuestProgress(questid,newProcess);
-			// Process ++
+			room->SetQuestStateProgress(GetObjectID(), questid, newProgress);
+			// newProgress ++
 			{
-				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), questid, newProcess);
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), questid, newProgress);
 				session->Send(sendBuffer);
 			}
 
-			auto it = _questsStates.find(questid);
-			if (it != _questsStates.end())
-			{
-				it->second.second = newProcess; // 진행도 업데이트
-			}
-			else
-			{
-				return;
-			}
-
-			if (newProcess >= targetNums)
+			if (newProgress >= targetNums)
 			{
 				{
-					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), questid, newProcess);
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), questid, newProgress);
 					session->Send(sendBuffer);
-					SetQuestState(questid, Protocol::QUEST_STATE_COMPLETED, targetNums);
+					room->SetQuestStates(GetObjectID(), questid, Protocol::QUEST_STATE_COMPLETED);
 					return;
 				}
 			}
@@ -363,27 +347,26 @@ void Player::QuestProgress(int questid)
 	return;
 }
 
-map<int, pair<Protocol::QUEST_STATE, int>> Player::GetAcceptedQuests()
+map<int, PlayerQuestState> Player::GetAcceptedQuests()
 {
-	map<int, pair<Protocol::QUEST_STATE, int>> acceptQuests;
+	map<int, PlayerQuestState> playerQuestsStates;
 
-	for (auto& questState : _questsStates)
+	int objectId = GetObjectID();
+	auto questsStates = GRoom->GetQuestsStates(objectId);
+	for (auto& questState : questsStates)
 	{
-		if (questState.second.first == Protocol::QUEST_STATE_ACCEPT)
+		if (questState.second.state == Protocol::QUEST_STATE_ACCEPT)
 		{
-			acceptQuests.insert(questState);
+			playerQuestsStates.insert(questState);
 		}
 	}
 
-	return acceptQuests;
+	return playerQuestsStates;
 }
 
-int Player::GetQuestProgress(int questId)
+Protocol::QUEST_STATE Player::GetQuestState(int questId)
 {
-	return _questsStates[questId].second;
-}
+	auto questState = GRoom->GetQuestsStates(GetObjectID(), questId);
 
-void Player::SetQuestProgress(int questId, int progress)
-{
-	_questsStates[questId].second = progress;
+	return questState.state;
 }

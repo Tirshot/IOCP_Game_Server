@@ -15,8 +15,9 @@ struct PQNode
 
 struct PlayerQuestState
 {
-	int questId;
+	int target;
 	Protocol::QUEST_STATE state;
+	int progress;
 };
 
 class Arrow;
@@ -56,8 +57,6 @@ public:
 
 public:
 	Protocol::QuestInfo& GetQuest(int questId);
-	void SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state);
-	Protocol::QUEST_STATE GetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state);
 
 private:
 	// 몬스터 스폰 숫자
@@ -72,6 +71,7 @@ private:
 
 public:
 	map<uint64, PlayerRef> GetPlayers() { return _players; }
+	PlayerRef GetPlayer(uint64 objectId) { return _players[objectId]; }
 	map<uint64, weak_ptr<Player>> GetTemps() { return _temps; }
 	map<uint64, MonsterRef> GetMonsters() { return _monsters; }
 	map<uint64, NPCRef> GetNPCs() { return _npcs; }
@@ -79,13 +79,17 @@ public:
 	map<uint64, Protocol::QuestInfo> GetQuests() { return _quests; }
 	map<uint64, InventoryRef> GetInventorys() { return _inventorys; }
 	map<uint64, ItemRef> GetItems() { return _items; }
+	map<uint64, TriggerRef> GetTriggers() { return _triggers; }
 	InventoryRef GetInventory(int objectId) { return _inventorys[objectId]; }
 	void AddQuest(class Quest quest);
 	int GetQuestsSize() { return _quests.size(); }
 	void AddItemToPlayer(int objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
 	void EquipItemToPlayer(int objectId, int itemId, bool equip);
-	void SetQuestsStates(uint64 objectId, map<int, pair<Protocol::QUEST_STATE, int>> quest) { _questsStates[objectId] = quest; }
-	map<int, pair<Protocol::QUEST_STATE, int>> GetQuestsStates(uint64 objectId) { return _questsStates[objectId]; }
+	void SetQuestStates(uint64 objectId, int questId, Protocol::QUEST_STATE state);
+	map<int, PlayerQuestState> GetQuestsStatesByID(uint64 objectId);
+	PlayerQuestState GetQuestsStates(uint64 objectId, int questId) { return _questsStates[objectId][questId]; }
+	map<int, PlayerQuestState> GetQuestsStates(uint64 objectId) { return _questsStates[objectId]; }
+	void SetQuestStateProgress(uint64 objectId, int questId, int progress);
 
 private:
 	// ID를 발급받아 활용
@@ -95,9 +99,10 @@ private:
 	map<uint64, NPCRef> _npcs;
 	map<uint64, ArrowRef> _arrows;
 	map<uint64, ItemRef> _items;
-	map<uint64, Protocol::QuestInfo> _quests;
-	map<uint64, map<int, pair<Protocol::QUEST_STATE, int>>> _questsStates;
+	map<uint64, Protocol::QuestInfo> _quests;		// 퀘스트 관리
+	map<uint64, map<int, PlayerQuestState>> _questsStates;	// 플레이어 별 퀘스트 상태 관리
 	map<uint64, InventoryRef> _inventorys;
+	map<uint64, TriggerRef> _triggers;
 	map<uint64, GameObjectRef> _deleteObjects;
 };
 

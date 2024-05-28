@@ -10,6 +10,8 @@
 #include "Chat.h"
 #include "Quest.h"
 #include "Inventory.h"
+#include "Trigger.h"
+#include "Quest1Trigger.h"
 #include "ItemManager.h"
 #include <filesystem>
 
@@ -105,6 +107,11 @@ void GameRoom::Update()
 			// 제거 후 로그
 			GChat->AddText(L"ItemID : " + itemStr + L" 아이템 서버에서 제거.");
 		}
+	}
+
+	for (auto& item : _triggers)
+	{
+		item.second->Tick();
 	}
 
 	for (auto& inven : _inventorys)
@@ -294,6 +301,10 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 		_inventorys[id] = static_pointer_cast<Inventory>(gameObject);
 		return;
 
+	case Protocol::OBJECT_TYPE_TRIGGER:
+		_triggers[id] = static_pointer_cast<Trigger>(gameObject);
+		return;
+
 	default:
 		return;
 	}
@@ -307,11 +318,11 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 		Protocol::ObjectInfo* info = pkt.add_objects();
 		*info = gameObject->info;
 
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-
 		// 아이템은 개별 드랍
 		if (info->objecttype() == Protocol::OBJECT_TYPE_ITEM)
 			return;
+
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 
 		Broadcast(sendBuffer);
 	}
@@ -636,21 +647,6 @@ Protocol::QuestInfo& GameRoom::GetQuest(int questId)
 	}
 }
 
-void GameRoom::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
-{
-	PlayerRef player = dynamic_pointer_cast<Player>(FindObject(playerId));
-	if (player)
-		player->SetQuestState(questId, state, 0);
-}
-
-Protocol::QUEST_STATE GameRoom::GetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
-{
-	PlayerRef player = dynamic_pointer_cast<Player>(FindObject(playerId));
-	if (player)
-		return player->GetQuestState(questId).first;
-}
-
-
 void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 {
 	// 이동 패킷을 받았을 때 처리
@@ -683,4 +679,19 @@ void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts, Protoco
 void GameRoom::EquipItemToPlayer(int objectId, int itemId, bool equip)
 {
 	GetInventory(objectId)->EquipItem(itemId, equip);
+}
+
+void GameRoom::SetQuestStates(uint64 objectId, int questId, Protocol::QUEST_STATE state)
+{
+	_questsStates[objectId][questId].state = state;
+}
+
+map<int, PlayerQuestState> GameRoom::GetQuestsStatesByID(uint64 objectId)
+{
+	return _questsStates[objectId];
+}
+
+void GameRoom::SetQuestStateProgress(uint64 objectId, int questId, int progress)
+{
+	_questsStates[objectId][questId].progress = progress;
 }

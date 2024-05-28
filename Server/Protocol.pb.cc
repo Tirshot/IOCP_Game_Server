@@ -337,6 +337,20 @@ struct S_QuestCompleteDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_QuestCompleteDefaultTypeInternal _S_QuestComplete_default_instance_;
+PROTOBUF_CONSTEXPR C_QuestFinish::C_QuestFinish(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.objectid_)*/uint64_t{0u}
+  , /*decltype(_impl_.questid_)*/uint64_t{0u}
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct C_QuestFinishDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR C_QuestFinishDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~C_QuestFinishDefaultTypeInternal() {}
+  union {
+    C_QuestFinish _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_QuestFinishDefaultTypeInternal _C_QuestFinish_default_instance_;
 PROTOBUF_CONSTEXPR C_QuestList::C_QuestList(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.questinfo_)*/nullptr
@@ -445,7 +459,7 @@ struct S_ItemDropDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_ItemDropDefaultTypeInternal _S_ItemDrop_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Protocol_2eproto[31];
+static ::_pb::Metadata file_level_metadata_Protocol_2eproto[32];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Protocol_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Protocol_2eproto = nullptr;
 
@@ -628,6 +642,14 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_QuestComplete, _impl_.questinfo_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_QuestFinish, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_QuestFinish, _impl_.objectid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_QuestFinish, _impl_.questid_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_QuestList, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -711,14 +733,15 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 156, -1, -1, sizeof(::Protocol::S_Quest)},
   { 163, -1, -1, sizeof(::Protocol::S_QuestProcess)},
   { 170, -1, -1, sizeof(::Protocol::S_QuestComplete)},
-  { 177, -1, -1, sizeof(::Protocol::C_QuestList)},
-  { 184, -1, -1, sizeof(::Protocol::S_QuestList)},
-  { 191, -1, -1, sizeof(::Protocol::S_QuestState)},
-  { 198, -1, -1, sizeof(::Protocol::S_Reset)},
-  { 205, -1, -1, sizeof(::Protocol::C_Heal)},
-  { 212, -1, -1, sizeof(::Protocol::C_AddItem)},
-  { 220, -1, -1, sizeof(::Protocol::C_EquipItem)},
-  { 229, -1, -1, sizeof(::Protocol::S_ItemDrop)},
+  { 177, -1, -1, sizeof(::Protocol::C_QuestFinish)},
+  { 185, -1, -1, sizeof(::Protocol::C_QuestList)},
+  { 192, -1, -1, sizeof(::Protocol::S_QuestList)},
+  { 199, -1, -1, sizeof(::Protocol::S_QuestState)},
+  { 206, -1, -1, sizeof(::Protocol::S_Reset)},
+  { 213, -1, -1, sizeof(::Protocol::C_Heal)},
+  { 220, -1, -1, sizeof(::Protocol::C_AddItem)},
+  { 228, -1, -1, sizeof(::Protocol::C_EquipItem)},
+  { 237, -1, -1, sizeof(::Protocol::S_ItemDrop)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -745,6 +768,7 @@ static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_S_Quest_default_instance_._instance,
   &::Protocol::_S_QuestProcess_default_instance_._instance,
   &::Protocol::_S_QuestComplete_default_instance_._instance,
+  &::Protocol::_C_QuestFinish_default_instance_._instance,
   &::Protocol::_C_QuestList_default_instance_._instance,
   &::Protocol::_S_QuestList_default_instance_._instance,
   &::Protocol::_S_QuestState_default_instance_._instance,
@@ -787,18 +811,19 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "tocol.QuestInfo\"8\n\016S_QuestProcess\022&\n\tque"
   "stinfo\030\001 \001(\0132\023.Protocol.QuestInfo\"9\n\017S_Q"
   "uestComplete\022&\n\tquestinfo\030\001 \001(\0132\023.Protoc"
-  "ol.QuestInfo\"5\n\013C_QuestList\022&\n\tquestinfo"
-  "\030\001 \001(\0132\023.Protocol.QuestInfo\"5\n\013S_QuestLi"
-  "st\022&\n\tquestinfo\030\001 \001(\0132\023.Protocol.QuestIn"
-  "fo\"6\n\014S_QuestState\022&\n\tquestinfo\030\001 \001(\0132\023."
-  "Protocol.QuestInfo\"3\n\007S_Reset\022(\n\nobjecti"
-  "nfo\030\001 \001(\0132\024.Protocol.ObjectInfo\"\032\n\006C_Hea"
-  "l\022\020\n\010objectId\030\001 \001(\004\"@\n\tC_AddItem\022$\n\010Item"
-  "Info\030\001 \001(\0132\022.Protocol.ItemInfo\022\r\n\005index\030"
-  "\002 \001(\r\">\n\013C_EquipItem\022\020\n\010objectId\030\001 \001(\004\022\016"
-  "\n\006itemid\030\002 \001(\r\022\r\n\005equip\030\003 \001(\010\"2\n\nS_ItemD"
-  "rop\022$\n\010itemInfo\030\001 \001(\0132\022.Protocol.ItemInf"
-  "ob\006proto3"
+  "ol.QuestInfo\"2\n\rC_QuestFinish\022\020\n\010objectI"
+  "d\030\001 \001(\004\022\017\n\007questId\030\002 \001(\004\"5\n\013C_QuestList\022"
+  "&\n\tquestinfo\030\001 \001(\0132\023.Protocol.QuestInfo\""
+  "5\n\013S_QuestList\022&\n\tquestinfo\030\001 \001(\0132\023.Prot"
+  "ocol.QuestInfo\"6\n\014S_QuestState\022&\n\tquesti"
+  "nfo\030\001 \001(\0132\023.Protocol.QuestInfo\"3\n\007S_Rese"
+  "t\022(\n\nobjectinfo\030\001 \001(\0132\024.Protocol.ObjectI"
+  "nfo\"\032\n\006C_Heal\022\020\n\010objectId\030\001 \001(\004\"@\n\tC_Add"
+  "Item\022$\n\010ItemInfo\030\001 \001(\0132\022.Protocol.ItemIn"
+  "fo\022\r\n\005index\030\002 \001(\r\">\n\013C_EquipItem\022\020\n\010obje"
+  "ctId\030\001 \001(\004\022\016\n\006itemid\030\002 \001(\r\022\r\n\005equip\030\003 \001("
+  "\010\"2\n\nS_ItemDrop\022$\n\010itemInfo\030\001 \001(\0132\022.Prot"
+  "ocol.ItemInfob\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -806,9 +831,9 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1689, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1741, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
-    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 31,
+    &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 32,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
     file_level_metadata_Protocol_2eproto, file_level_enum_descriptors_Protocol_2eproto,
     file_level_service_descriptors_Protocol_2eproto,
@@ -5664,6 +5689,217 @@ void S_QuestComplete::InternalSwap(S_QuestComplete* other) {
 
 // ===================================================================
 
+class C_QuestFinish::_Internal {
+ public:
+};
+
+C_QuestFinish::C_QuestFinish(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.C_QuestFinish)
+}
+C_QuestFinish::C_QuestFinish(const C_QuestFinish& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  C_QuestFinish* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.objectid_){}
+    , decltype(_impl_.questid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.questid_) -
+    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.questid_));
+  // @@protoc_insertion_point(copy_constructor:Protocol.C_QuestFinish)
+}
+
+inline void C_QuestFinish::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.objectid_){uint64_t{0u}}
+    , decltype(_impl_.questid_){uint64_t{0u}}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+}
+
+C_QuestFinish::~C_QuestFinish() {
+  // @@protoc_insertion_point(destructor:Protocol.C_QuestFinish)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void C_QuestFinish::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+}
+
+void C_QuestFinish::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void C_QuestFinish::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.C_QuestFinish)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.questid_) -
+      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.questid_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* C_QuestFinish::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint64 objectId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.objectid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 questId = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
+          _impl_.questid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* C_QuestFinish::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.C_QuestFinish)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint64 objectId = 1;
+  if (this->_internal_objectid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_objectid(), target);
+  }
+
+  // uint64 questId = 2;
+  if (this->_internal_questid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(2, this->_internal_questid(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.C_QuestFinish)
+  return target;
+}
+
+size_t C_QuestFinish::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.C_QuestFinish)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // uint64 objectId = 1;
+  if (this->_internal_objectid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objectid());
+  }
+
+  // uint64 questId = 2;
+  if (this->_internal_questid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_questid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData C_QuestFinish::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    C_QuestFinish::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*C_QuestFinish::GetClassData() const { return &_class_data_; }
+
+
+void C_QuestFinish::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<C_QuestFinish*>(&to_msg);
+  auto& from = static_cast<const C_QuestFinish&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.C_QuestFinish)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from._internal_objectid() != 0) {
+    _this->_internal_set_objectid(from._internal_objectid());
+  }
+  if (from._internal_questid() != 0) {
+    _this->_internal_set_questid(from._internal_questid());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void C_QuestFinish::CopyFrom(const C_QuestFinish& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.C_QuestFinish)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool C_QuestFinish::IsInitialized() const {
+  return true;
+}
+
+void C_QuestFinish::InternalSwap(C_QuestFinish* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(C_QuestFinish, _impl_.questid_)
+      + sizeof(C_QuestFinish::_impl_.questid_)
+      - PROTOBUF_FIELD_OFFSET(C_QuestFinish, _impl_.objectid_)>(
+          reinterpret_cast<char*>(&_impl_.objectid_),
+          reinterpret_cast<char*>(&other->_impl_.objectid_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata C_QuestFinish::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
+      file_level_metadata_Protocol_2eproto[23]);
+}
+
+// ===================================================================
+
 class C_QuestList::_Internal {
  public:
   static const ::Protocol::QuestInfo& questinfo(const C_QuestList* msg);
@@ -5858,7 +6094,7 @@ void C_QuestList::InternalSwap(C_QuestList* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_QuestList::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[23]);
+      file_level_metadata_Protocol_2eproto[24]);
 }
 
 // ===================================================================
@@ -6057,7 +6293,7 @@ void S_QuestList::InternalSwap(S_QuestList* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_QuestList::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[24]);
+      file_level_metadata_Protocol_2eproto[25]);
 }
 
 // ===================================================================
@@ -6256,7 +6492,7 @@ void S_QuestState::InternalSwap(S_QuestState* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_QuestState::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[25]);
+      file_level_metadata_Protocol_2eproto[26]);
 }
 
 // ===================================================================
@@ -6455,7 +6691,7 @@ void S_Reset::InternalSwap(S_Reset* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_Reset::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[26]);
+      file_level_metadata_Protocol_2eproto[27]);
 }
 
 // ===================================================================
@@ -6633,7 +6869,7 @@ void C_Heal::InternalSwap(C_Heal* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_Heal::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[27]);
+      file_level_metadata_Protocol_2eproto[28]);
 }
 
 // ===================================================================
@@ -6863,7 +7099,7 @@ void C_AddItem::InternalSwap(C_AddItem* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_AddItem::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[28]);
+      file_level_metadata_Protocol_2eproto[29]);
 }
 
 // ===================================================================
@@ -7098,7 +7334,7 @@ void C_EquipItem::InternalSwap(C_EquipItem* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata C_EquipItem::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[29]);
+      file_level_metadata_Protocol_2eproto[30]);
 }
 
 // ===================================================================
@@ -7297,7 +7533,7 @@ void S_ItemDrop::InternalSwap(S_ItemDrop* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata S_ItemDrop::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Protocol_2eproto_getter, &descriptor_table_Protocol_2eproto_once,
-      file_level_metadata_Protocol_2eproto[30]);
+      file_level_metadata_Protocol_2eproto[31]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -7394,6 +7630,10 @@ Arena::CreateMaybeMessage< ::Protocol::S_QuestProcess >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::Protocol::S_QuestComplete*
 Arena::CreateMaybeMessage< ::Protocol::S_QuestComplete >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::S_QuestComplete >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::C_QuestFinish*
+Arena::CreateMaybeMessage< ::Protocol::C_QuestFinish >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::C_QuestFinish >(arena);
 }
 template<> PROTOBUF_NOINLINE ::Protocol::C_QuestList*
 Arena::CreateMaybeMessage< ::Protocol::C_QuestList >(Arena* arena) {

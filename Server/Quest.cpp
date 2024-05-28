@@ -3,6 +3,7 @@
 #include "GameRoom.h"
 #include "Chat.h"
 #include "Player.h"
+#include "Trigger.h"
 #include "GameSession.h"
 #include <fstream>
 #include <sstream>
@@ -77,6 +78,14 @@ vector<wstring> Quest::GetQuestInfo(int questID)
 	}
 
 	return {};
+}
+
+Vec2Int Quest::GetTargetCellPos(vector<wstring> row)
+{
+	int posX = stoi(row[7]);
+	int posY = stoi(row[8]);
+
+	return { posX, posY };
 }
 
 vector<wstring> Quest::GetQuestInfoByTargetID(wstring targetType, int targetID)
@@ -161,6 +170,13 @@ void Quest::CreateQuest()
 		if (TargetType == L"None")
 		{
 			quest->info.set_targettype(Protocol::OBJECT_TYPE_NONE);
+			quest->info.set_posx(GetTargetCellPos(questTable).x);
+			quest->info.set_posy(GetTargetCellPos(questTable).y);
+
+			TriggerRef trigger = GameObject::CreateTrigger(Questid);
+			trigger->info.set_posx(GetTargetCellPos(questTable).x);
+			trigger->info.set_posy(GetTargetCellPos(questTable).y);
+			GRoom->AddObject(trigger);
 		}
 		else if (TargetType == L"Monster")
 		{

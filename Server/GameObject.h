@@ -41,6 +41,7 @@ public:
 	static ItemRef CreateItem();
 	static ArrowRef CreateArrow();
 	static InventoryRef CreateInventory(PlayerRef player);
+	static TriggerRef CreateTrigger(uint64 questId);
 
 public:
 	Protocol::ObjectInfo info;

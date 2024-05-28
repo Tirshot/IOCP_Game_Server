@@ -936,6 +936,8 @@ class QuestInfo final :
     kRewardGoldFieldNumber = 8,
     kRewardItemFieldNumber = 9,
     kRewardItemNumFieldNumber = 10,
+    kPosXFieldNumber = 11,
+    kPosYFieldNumber = 12,
   };
   // uint64 objectid = 2;
   void clear_objectid();
@@ -1027,6 +1029,24 @@ class QuestInfo final :
   void _internal_set_rewarditemnum(int32_t value);
   public:
 
+  // int32 posX = 11;
+  void clear_posx();
+  int32_t posx() const;
+  void set_posx(int32_t value);
+  private:
+  int32_t _internal_posx() const;
+  void _internal_set_posx(int32_t value);
+  public:
+
+  // int32 posY = 12;
+  void clear_posy();
+  int32_t posy() const;
+  void set_posy(int32_t value);
+  private:
+  int32_t _internal_posy() const;
+  void _internal_set_posy(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.QuestInfo)
  private:
   class _Internal;
@@ -1045,6 +1065,8 @@ class QuestInfo final :
     int32_t rewardgold_;
     int32_t rewarditem_;
     int32_t rewarditemnum_;
+    int32_t posx_;
+    int32_t posy_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2128,6 +2150,46 @@ inline void QuestInfo::_internal_set_rewarditemnum(int32_t value) {
 inline void QuestInfo::set_rewarditemnum(int32_t value) {
   _internal_set_rewarditemnum(value);
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardItemNum)
+}
+
+// int32 posX = 11;
+inline void QuestInfo::clear_posx() {
+  _impl_.posx_ = 0;
+}
+inline int32_t QuestInfo::_internal_posx() const {
+  return _impl_.posx_;
+}
+inline int32_t QuestInfo::posx() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.posX)
+  return _internal_posx();
+}
+inline void QuestInfo::_internal_set_posx(int32_t value) {
+  
+  _impl_.posx_ = value;
+}
+inline void QuestInfo::set_posx(int32_t value) {
+  _internal_set_posx(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.posX)
+}
+
+// int32 posY = 12;
+inline void QuestInfo::clear_posy() {
+  _impl_.posy_ = 0;
+}
+inline int32_t QuestInfo::_internal_posy() const {
+  return _impl_.posy_;
+}
+inline int32_t QuestInfo::posy() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.posY)
+  return _internal_posy();
+}
+inline void QuestInfo::_internal_set_posy(int32_t value) {
+  
+  _impl_.posy_ = value;
+}
+inline void QuestInfo::set_posy(int32_t value) {
+  _internal_set_posy(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.posY)
 }
 
 // -------------------------------------------------------------------

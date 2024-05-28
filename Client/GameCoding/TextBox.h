@@ -17,6 +17,7 @@ public:
 public:
 	RECT GetRect() { return _rect; }
 	void SetText(wstring text);
+	wstring GetText() { return _text; }
 	void AlignText(TextAlign align) { _textAlign = align; }
 	void SetFloating(bool floating) { _isFloating = floating; }
 	void SetPadding(float x, float y);

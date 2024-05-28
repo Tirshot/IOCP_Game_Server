@@ -568,6 +568,17 @@ SendBufferRef ClientPacketHandler::Make_C_Quest(uint64 objectId, uint64 questId)
 	return MakeSendBuffer(pkt, C_Quest);
 }
 
+SendBufferRef ClientPacketHandler::Make_C_QuestFinish(uint64 objectId, uint64 questId)
+{
+	Protocol::C_QuestFinish pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_questid(questId);
+	GET_SINGLE(ChatManager)->AddMessage(L"퀘스트를 완료했습니다.");
+
+	return MakeSendBuffer(pkt, C_QuestFinish);
+}
+
 SendBufferRef ClientPacketHandler::Make_C_QuestList()
 {
 	Protocol::C_QuestList pkt;

@@ -33,6 +33,7 @@ enum
 	C_QuestAccept = 42,
 	S_QuestProcess = 43,
 	S_QuestComplete = 44,
+	C_QuestFinish = 45,
 
 	C_QuestList = 46,
 	S_QuestList = 47,
@@ -67,6 +68,7 @@ public:
 	static void Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Revive(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Quest(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_QuestFinish(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_QuestList(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Heal(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len);

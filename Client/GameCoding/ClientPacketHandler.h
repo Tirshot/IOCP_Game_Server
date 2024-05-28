@@ -34,6 +34,7 @@ enum
 	C_QuestAccept = 42,
 	S_QuestProcess = 43,
 	S_QuestComplete = 44,
+	C_QuestFinish = 45,
 
 	C_QuestList = 46,
 	S_QuestList = 47,
@@ -100,6 +101,7 @@ public:
 	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
 	static SendBufferRef Make_C_Quest(uint64 objectId, uint64 questId);
+	static SendBufferRef Make_C_QuestFinish(uint64 objectId, uint64 questId);
 	static SendBufferRef Make_C_QuestList();
 	static SendBufferRef Make_C_Heal(uint64 objectId);
 	static SendBufferRef Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);

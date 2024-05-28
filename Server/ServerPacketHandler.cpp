@@ -46,6 +46,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_Quest(session, buffer, len);
 		break;
 
+	case C_QuestFinish:
+		Handle_C_QuestFinish(session, buffer, len);
+		break;
+
 	case C_QuestList:
 		Handle_C_QuestList(session, buffer, len);
 		break;
@@ -247,14 +251,14 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 		}
 		{
 			// 퀘스트 정보 재전송
-			auto questsStates = room->GetQuestsStates(id);
+			auto questsStates = room->GetQuestsStatesByID(id);
 
 			Protocol::S_QuestState pkt;
 			for (auto& state : questsStates)
 			{
 				int questID = state.first;
-				Protocol::QUEST_STATE questState = state.second.first;
-				int progress = state.second.second;
+				Protocol::QUEST_STATE questState = state.second.state;
+				int progress = state.second.progress;
 
 				{	// 퀘스트 진행도 패킷 전송
 					Protocol::QuestInfo* info = pkt.mutable_questinfo();
@@ -287,12 +291,31 @@ void ServerPacketHandler::Handle_C_Quest(GameSessionRef session, BYTE* buffer, i
 
 	if (room)
 	{
-		room->SetPlayerQuestState(objectid, questid, Protocol::QUEST_STATE_ACCEPT);
+		room->SetQuestStates(objectid, questid, Protocol::QUEST_STATE_ACCEPT);
+	}
+}
+
+void ServerPacketHandler::Handle_C_QuestFinish(GameSessionRef session, BYTE* buffer, int32 len)
+{   // 퀘스트 완료 처리
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_Quest pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+	//
+	uint64 objectid = pkt.objectid();
+	uint64 questid = pkt.questid();
+	GameRoomRef room = session->gameRoom.lock();
+
+	if (room)
+	{
+		room->SetQuestStates(objectid, questid, Protocol::QUEST_STATE_FINISHED);
 	}
 }
 
 void ServerPacketHandler::Handle_C_QuestList(GameSessionRef session, BYTE* buffer, int32 len)
-{
+{	// 퀘스트 리스트 요청 처리
 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
