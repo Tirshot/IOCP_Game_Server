@@ -8,6 +8,7 @@
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "ChatManager.h"
+#include "TimeManager.h"
 #include "SoundManager.h"
 
 QuestManager::~QuestManager()
@@ -22,9 +23,19 @@ void QuestManager::BeginPlay()
 		_tracker = scene->FindUI<QuestTrackerUI>(scene->GetUIs());
 	}
 }
-
+float sumTime = 0.f;
 void QuestManager::Tick()
 {
+    // 0.5초 마다 실행
+    float now = GET_SINGLE(TimeManager)->GetDeltaTime();
+
+    sumTime += now;
+
+    if (sumTime <= 0.5)
+        return;
+
+    sumTime = 0.f;
+    
     // 필수 객체 가져오기
     auto scene = GET_SINGLE(SceneManager)->GetDevScene();
     auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
@@ -55,9 +66,11 @@ void QuestManager::Tick()
         _tracker->SetProgress(questID, progress);
 
         // 퀘스트가 트래커에 추가되지 않았으면 추가
-        if (state == Protocol::QUEST_STATE_ACCEPT && !_tracker->IsQuestInTracker(questID))
+        if (state == Protocol::QUEST_STATE_ACCEPT ||
+            state == Protocol::QUEST_STATE_COMPLETED)
         {
-            _tracker->AddQuestToTracking(questID, questName, description, targetNums);
+            if (!_tracker->IsQuestInTracker(questID))
+                _tracker->AddQuestToTracking(questID, questName, description, targetNums);
         }
 
         bool questComplete = false;

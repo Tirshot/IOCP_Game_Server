@@ -140,6 +140,9 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::I))
 	{
 		GET_SINGLE(ItemManager)->OpenInventory();
+
+		//  열 때마다 서버와 연동
+		GET_SINGLE(ItemManager)->GetInventory()->AutoSyncInventory();
 	}
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
@@ -185,6 +188,7 @@ void MyPlayer::TickInput()
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 보유 화살 증가");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 보유 화살 증가", false);
 	}
 
 	// Debug - 보유 골드 증가
@@ -196,6 +200,7 @@ void MyPlayer::TickInput()
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 보유 골드 증가");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 보유 골드 증가", false);
 	}
 
 	// Debug -	Move
@@ -206,7 +211,8 @@ void MyPlayer::TickInput()
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
-		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : Move");
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 상인에게 순간이동");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 상인에게 순간이동", false);
 	}
 
 	// Debug - CellPos 확인
@@ -227,7 +233,8 @@ void MyPlayer::TickInput()
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Hit(monster->info.objectid(), info.objectid());
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 
-			GET_SINGLE(ChatManager)->AddMessage(format(L"({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y));
+			GET_SINGLE(ChatManager)->AddMessage(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y));
+			GET_SINGLE(ChatManager)->SendMessageToServer(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y), false);
 		}
 	}
 
@@ -235,6 +242,10 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::M))
 	{
 		info.set_hp(0);
+
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 사망");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 사망", false);
+
 		{
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
@@ -335,7 +346,6 @@ void MyPlayer::TickSpinReady()
 }
 void MyPlayer::TickTeleport()
 {
-	/*Super::TickTeleport();*/
 	if (info.mp() >= 25)
 	{
 		info.set_mp(clamp(info.mp() - 25, 0, info.maxmp()));
@@ -362,6 +372,26 @@ void MyPlayer::SyncToServer()
 int MyPlayer::GetQuestProgress(int questId)
 {
 	return _questsStates[questId].second;
+}
+
+map<int, pair<Protocol::QUEST_STATE, int>> MyPlayer::GetActiveQuests()
+{
+	map<int, pair<Protocol::QUEST_STATE, int>> activeQuests;
+
+	for (auto& quest : _questsStates)
+	{
+		int questID = quest.first;
+		auto state = quest.second.first;
+		int questProgress = quest.second.second;
+
+		if (state == Protocol::QUEST_STATE_ACCEPT ||
+			state == Protocol::QUEST_STATE_COMPLETED)
+		{
+			activeQuests.insert(quest);
+		}
+	}
+
+	return activeQuests;
 }
 
 void MyPlayer::SetQuestProgress(int questId, int progress)

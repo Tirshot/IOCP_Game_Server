@@ -3,6 +3,7 @@
 #include "MyPlayer.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
+#include "ItemManager.h"
 #include "Flipbook.h"
 #include "TimeManager.h"
 #include "SoundManager.h"
@@ -81,7 +82,11 @@ void Player::Tick()
 	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (info.hp() <= 0)
+	{
+		auto inventory = GET_SINGLE(ItemManager)->GetInventory();
 		scene->RemoveActor(this);
+		// 인벤토리를 파일로 저장??
+	}
 }
 
 void Player::Render(HDC hdc)

@@ -57,10 +57,14 @@ void Player::Update()
 		break;
 	}
 
-	// 매 5초마다 플레이어의 mp를 회복시킴
-	if (_now - _prev >= 5000)
+	// 매 1.5초마다 플레이어의 mp를 회복시킴
+	if (_now - _prev >= 1500 && info.mp() < info.maxmp())
 	{
-		info.set_mp(clamp(info.mp() + 10, 0, info.maxmp()));
+		info.set_mp(clamp(info.mp() + 5, 0, info.maxmp()));
+
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MPRecover(info.objectid(), info.mp());
+		session->Send(sendBuffer);
+
 		_prev = _now;
 	}
 }

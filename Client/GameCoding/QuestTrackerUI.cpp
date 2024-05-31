@@ -1,7 +1,10 @@
 #include "pch.h"
 #include "TextBox.h"
+#include "DevScene.h"
+#include "MyPlayer.h"
 #include "QuestTrackerUI.h"
 #include "QuestManager.h"
+#include "SceneManager.h"
 #include "ResourceManager.h"
 #include "Sprite.h"
 
@@ -142,5 +145,28 @@ void QuestTrackerUI::RemoveQuestFromTracker(int questID)
 	{
 		_quests.erase(it, _quests.end());
 	}
+
+}
+
+void QuestTrackerUI::GetActiveQuests()
+{
+	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	if (scene == nullptr || myPlayer == nullptr)
+		return;
+
+	auto activeQuest = myPlayer->GetActiveQuests();
+
+	if (activeQuest.empty())
+		return;
+
+	for (auto& quest : activeQuest)
+	{
+		int questID = quest.first;
+		auto state = quest.second.first;
+		int progress = quest.second.second;
+	}
+
 
 }

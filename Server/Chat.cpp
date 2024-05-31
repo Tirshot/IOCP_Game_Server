@@ -23,7 +23,7 @@ Chat::~Chat()
 
 void Chat::BeginPlay()
 {
-	AddText(L"채팅이 활성화됨.");
+	AddText(L"System : 채팅이 활성화됨.");
 }
 
 void Chat::Tick()
@@ -141,20 +141,24 @@ wstring Chat::StringToWStr(string str)
 
 void Chat::SaveLogFile()
 {
-	fs::path _logPath = fs::path(L"..\..\..\\Server\\Log");
+	fs::path _logPath = fs::path(L"E:\\Cpp\\IOCP\\Server\\Server\\Log");
 	// C++ 스타일
 	{
 		wofstream ofs;
-		ofs.open(_logPath / "test.txt", ios_base::out | ios_base::app);
+
+		wstring logFilename = L"Log_" + GetDateForLogName() + L".txt";
+		fs::path logFilePath = _logPath / logFilename;
+
+		ofs.open(logFilePath, ios_base::out | ios_base::app);
 		if (ofs.is_open())
 		{
 			// _log 순회
 			for (auto& log : _log)
 			{
-				int objectId = log.first;
+				/*int objectId = log.first;*/
 				list<pair<time_t, wstring>>& logList = log.second;
 
-				ofs << "Object ID: " << objectId << endl;
+				/*ofs << L"Object ID: " << objectId << endl;*/
 
 				// log 순회
 				for (auto& texts : logList)
@@ -162,11 +166,10 @@ void Chat::SaveLogFile()
 					time_t time = texts.first;
 					wstring wstr = texts.second;
 
-					// 시간을 문자열로 변환
-					char timeStr[26];
-					ctime_s(timeStr, sizeof(timeStr), &time);
+					// 시간 표기
+					wstring timeStr = SetTimeFormat(time);
 
-					ofs << "  Time: " << timeStr << " Message: " << wstr << endl;
+					ofs << timeStr << wstr << endl;
 				}
 				ofs << endl;
 			}
@@ -177,4 +180,26 @@ void Chat::SaveLogFile()
 			cout << "로그파일 열기 실패" << endl;
 		}
 	}
+	_log.clear();
+}
+
+wstring Chat::GetDateForLogName()
+{
+	auto now = std::time(nullptr);
+	std::tm nowTm;
+	localtime_s(&nowTm, &now);
+
+	std::wstringstream wss;
+	wss << std::put_time(&nowTm, L"%Y%m%d");
+	return wss.str();
+}
+
+wstring Chat::SetTimeFormat(time_t time)
+{
+	std::tm timeInfo;
+	localtime_s(&timeInfo, &time);
+
+	std::wstringstream wss;
+	wss << std::put_time(&timeInfo, L"[%H:%M:%S] ");
+	return wss.str();
 }

@@ -36,6 +36,9 @@ public:
 	void AddQuestToTracker(QUEST* quest);
 	void RemoveQuestFromTracker(int questID);
 
+public:
+	void GetActiveQuests();
+
 private:
 	Sprite* _background = nullptr;
 	int _alpha = 128;

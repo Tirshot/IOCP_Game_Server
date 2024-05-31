@@ -27,6 +27,7 @@ enum
 	C_Revive = 32,
 	C_Teleport = 33,
 	S_Teleport = 34,
+	C_SyncInventory = 35,
 
 	C_Quest = 40,
 	S_Quest = 41,
@@ -41,9 +42,13 @@ enum
 	S_QuestState = 48,	// 부활 후 진행도 재계산
 
 	C_Heal = 49,
+	C_MPRecover = 50,
+	S_MPRecover = 51,
 
 	C_AddItem = 70,
 	C_EquipItem = 71,
+	S_AddItem = 72,
+	S_EquipItem = 73,
 
 	S_ItemDrop = 80,
 	S_Gold = 81,
@@ -66,6 +71,7 @@ public:
 	static void Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Hit(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_MPRecover(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Teleport(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_Gold(ServerSessionRef session, BYTE* buffer, int32 len);
@@ -75,6 +81,7 @@ public:
 	static void Handle_S_QuestList(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_QuestState(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_ItemDrop(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_AddItem(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// 보내기
 	static SendBufferRef Make_C_Move();
@@ -97,7 +104,7 @@ public:
 
 	static SendBufferRef Make_C_Fire(uint64 ownerid);
 	static SendBufferRef Make_C_Hit(uint64 objectId, uint64 attackerId);
-	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str);
+	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str, bool broadcast = true);
 	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
 	static SendBufferRef Make_C_Quest(uint64 objectId, uint64 questId);
@@ -106,5 +113,6 @@ public:
 	static SendBufferRef Make_C_Heal(uint64 objectId);
 	static SendBufferRef Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
 	static SendBufferRef Make_C_EquipItem(uint64 objectId, int itemId, bool equip = true);
+	static SendBufferRef Make_C_SyncInventory(uint64 objectID);
 };
 

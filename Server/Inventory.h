@@ -20,6 +20,7 @@ public:
 public:
 	void AddItemToInventory(int itemID, int itemCounts, Protocol::ITEM_TYPE itemType, int index, bool reset = false);
 	void EquipItem(int itemID, bool equip);
+	void SyncToClient(uint64 objectID);
 
 private:
 	vector<Item> _slots;

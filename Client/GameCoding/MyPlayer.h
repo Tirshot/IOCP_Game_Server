@@ -40,6 +40,7 @@ public:
 	void SetQuestState(int questId, Protocol::QUEST_STATE state, int progress) { _questsStates[questId] = { state, progress }; }
 	void SetQuestState(int questId, Protocol::QUEST_STATE state) { _questsStates[questId].first = state; }
 	int GetQuestProgress(int questId);
+	map<int, pair<Protocol::QUEST_STATE, int>> GetActiveQuests();
 	void SetQuestProgress(int questId, int progress);
 	void AddQuestProgress(int questId) { _questsStates[questId].second += 1; }
 

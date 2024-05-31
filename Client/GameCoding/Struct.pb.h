@@ -754,6 +754,7 @@ class Text final :
     kStrFieldNumber = 3,
     kObjectIdFieldNumber = 1,
     kTimeFieldNumber = 2,
+    kBroadcastFieldNumber = 4,
   };
   // string str = 3;
   void clear_str();
@@ -787,6 +788,15 @@ class Text final :
   void _internal_set_time(uint64_t value);
   public:
 
+  // bool broadcast = 4;
+  void clear_broadcast();
+  bool broadcast() const;
+  void set_broadcast(bool value);
+  private:
+  bool _internal_broadcast() const;
+  void _internal_set_broadcast(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.Text)
  private:
   class _Internal;
@@ -798,6 +808,7 @@ class Text final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
     uint64_t objectid_;
     uint64_t time_;
+    bool broadcast_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1946,6 +1957,26 @@ inline void Text::set_allocated_str(std::string* str) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Protocol.Text.str)
+}
+
+// bool broadcast = 4;
+inline void Text::clear_broadcast() {
+  _impl_.broadcast_ = false;
+}
+inline bool Text::_internal_broadcast() const {
+  return _impl_.broadcast_;
+}
+inline bool Text::broadcast() const {
+  // @@protoc_insertion_point(field_get:Protocol.Text.broadcast)
+  return _internal_broadcast();
+}
+inline void Text::_internal_set_broadcast(bool value) {
+  
+  _impl_.broadcast_ = value;
+}
+inline void Text::set_broadcast(bool value) {
+  _internal_set_broadcast(value);
+  // @@protoc_insertion_point(field_set:Protocol.Text.broadcast)
 }
 
 // -------------------------------------------------------------------

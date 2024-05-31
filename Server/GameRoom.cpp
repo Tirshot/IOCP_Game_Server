@@ -157,7 +157,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 	session->player = player;
 	player->session = session;
 
-	GChat->AddText(::format(L"Player {0} 게임 입장.", player->GetObjectID()));
+	GChat->AddText(::format(L"System : Player {0} 게임 입장.", player->GetObjectID()));
 
 	// Player Character Spawn
 	Vec2Int randCellPos = GetRandomEmptySpawnCellPos();
@@ -216,7 +216,7 @@ void GameRoom::LeaveRoom(GameSessionRef session)
 	uint64 id = session->player.lock()->info.objectid();
 	RemoveObject(id);
 
-	//GChat->SaveLogFile();
+	GChat->SaveLogFile();
 }
 
 GameObjectRef GameRoom::FindObject(uint64 id)

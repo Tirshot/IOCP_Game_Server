@@ -59,6 +59,16 @@ void Inventory::BeginPlay()
 
     // _pos = 480, 125
 
+    { // 아이템 설명
+        wstring wstr = L"아이템 설명";
+        _itemDescription = new TextBox(wstr);
+        _itemDescription->SetPos({ _pos.x + 125, _pos.y + 225 });     // 605, 375
+        _itemDescription->SetSize({ 155, 100 });
+        _itemDescription->SetInitialPos(_itemDescription->GetPos());
+        _itemDescription->SetPadding(5, 10);
+        AddChild(_itemDescription);
+    }
+
     { // 아이템 이름
         wstring wstr = L"아이템 이름";
         _itemName = new TextBox(wstr);
@@ -69,15 +79,7 @@ void Inventory::BeginPlay()
         _itemName->SetFloating(true);
         AddChild(_itemName);
     }
-    { // 아이템 설명
-        wstring wstr = L"아이템 설명";
-        _itemDescription = new TextBox(wstr);
-        _itemDescription->SetPos({ _pos.x + 125, _pos.y + 225 });     // 605, 375
-        _itemDescription->SetSize({ 155, 100 });
-        _itemDescription->SetInitialPos(_itemDescription->GetPos());
-        _itemDescription->SetPadding(5, 10);
-        AddChild(_itemDescription);
-    }
+
     { // 아이템 개수
         wstring wstr = L"개수";
         _itemCount = new TextBox(wstr);
@@ -107,6 +109,15 @@ void Inventory::BeginPlay()
         child->BeginPlay();
 
     SetInitialPos(GetPos());
+
+    //// 기본 무기 지급
+    //for (int i = 1; i < 5; i++)
+    //    AddItem(i);
+
+    //// 테스트용 장비 지급
+    //for (int i = 10; i < 25; i++)
+    //    AddItem(i);
+
     _initialized = true;
 }
 
@@ -122,14 +133,6 @@ void Inventory::Tick()
     // 최초 1회만 실행
     if (_initialized)
     {
-        // 기본 무기 지급
-        for (int i = 1; i < 5; i++)
-            AddItem(i);
-
-        // 테스트용 장비 지급
-        for (int i = 10; i < 25; i++)
-            AddItem(i);
-
         // 검 기본 장착
         ITEM* item1 = FindItemFromInventory(1);
         EquipItem(item1);
@@ -199,9 +202,6 @@ void Inventory::Tick()
         SetItemCount(4, myPlayer->info.arrows());
         SetItemCount(5, myPlayer->info.potion());
     }
-
-    //  5초 마다 서버와 연동
-    AutoSyncInventory();
 
     for (auto& child : _children)
         if (child->GetVisible())
@@ -636,18 +636,10 @@ void Inventory::SyncItemToServer(int itemID, int counts)
 
 void Inventory::AutoSyncInventory()
 {
-    auto deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
-    _sumTime += deltaTime;
-
-    if (_sumTime >= 5.f)
+    // 인벤토리 정보 서버로 송신
+    for (auto& slot : _slots)
     {
-        // 인벤토리 정보 서버로 송신
-        for (auto& slot : _slots)
-        {
-             SyncItemToServer(slot.ItemId, slot.ItemCount);
-        }
-        _sumTime = 0.f;
+        SyncItemToServer(slot.ItemId, slot.ItemCount);
     }
 }
 
@@ -1220,14 +1212,13 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
 void Inventory::SetItemCount(int itemId, int ItemCount)
 {
     ITEM* item = FindItemFromInventory(itemId);
-    if (item)
-    {
-        item->ItemCount = ItemCount;
-    }
-    else
+    if (item == nullptr)
     {
         AddItem(itemId, ItemCount);
+        return;
     }
+
+    item->ItemCount = ItemCount;
 }
 
 void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
@@ -1451,4 +1442,25 @@ void Inventory::OnPopClickAcceptDelegate()
         _deleteItem = nullptr;
 
     _isItemDropped = true;
+}
+
+void Inventory::ResetInventory()
+{
+    // 부활 이후 인벤토리의 모든 정보를 서버에서 가져옴
+    for (auto& slot : _slots)
+    {
+        auto tempRect = slot.Rect;
+        slot = {};
+        slot.Rect = tempRect;
+    }
+
+    for (auto& slot : _equips)
+    {
+        auto tempRect = slot.first;
+        slot = {};
+        slot.first = tempRect;
+    }
+
+    // 서버와 동기화
+
 }

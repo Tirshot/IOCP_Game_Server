@@ -90,7 +90,6 @@ void Game::Render()
 
 	// 복사 이후 백 버퍼 클리어
 	::PatBlt(_hdcBack, 0, 0, _rect.right, _rect.bottom, WHITENESS);
-
 }
 
 void Game::Restart()

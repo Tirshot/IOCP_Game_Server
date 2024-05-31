@@ -100,10 +100,20 @@ bool ItemManager::AddItemToInventory(int itemId)
 
 bool ItemManager::AddItemToInventory(int itemId, int counts)
 {
-    if (itemId == 0)
+    if (itemId <= 0)
         return false;
 
     return GetInventory()->AddItem(itemId, counts);
+}
+
+bool ItemManager::SetItemToInventory(int itemId, int counts)
+{
+    if (itemId <= 0)
+        return false;
+
+    GetInventory()->SetItemCount(itemId, counts);
+
+    return true;
 }
 
 bool ItemManager::RemoveItemFromInventory(int itemId)
@@ -188,6 +198,13 @@ void ItemManager::OpenInventory()
     {
         _inventory->SetVisible(true);
     }
+}
+
+void ItemManager::ResetInventory()
+{
+    // 부활 했을 경우에만 사용
+    // 초기화된 인벤토리를 지우고 서버에서 받을 것
+    _inventory->ResetInventory();
 }
 
 wstring ItemManager::GetName(vector<wstring> row)

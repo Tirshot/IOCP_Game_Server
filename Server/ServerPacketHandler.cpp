@@ -11,6 +11,7 @@
 #include "NPC.h"
 #include "Arrow.h"
 #include "Item.h"
+#include "Inventory.h"
 
 void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int32 len)
 {
@@ -64,6 +65,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 
 	case C_EquipItem:
 		Handle_C_EquipItem(session, buffer, len);
+		break;
+
+	case C_SyncInventory:
+		Handle_C_SyncInventory(session, buffer, len);
 		break;
 
 	default:
@@ -149,15 +154,20 @@ void ServerPacketHandler::Handle_C_SendMessage(GameSessionRef session, BYTE* buf
 	uint64 objectId = texts.objectid();
 	time_t now = texts.time();
 	string str = texts.str();
+	bool broadcast = texts.broadcast();
 
 	GameRoomRef room = session->gameRoom.lock();
 
 	if (room)
 	{
 		wstring wstr = GChat->StringToWStr(str);
-		GChat->AddChatToLog(objectId, now, wstr);
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendMessage(objectId, now, str);
-		room->Broadcast(sendBuffer);
+		GChat->AddText(::format(L"[{0}] Player {1} :{2}", now, objectId, wstr));
+
+		if (broadcast)
+		{
+			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_SendMessage(objectId, now, str);
+			room->Broadcast(sendBuffer);
+		}
 	}
 }
 
@@ -233,7 +243,7 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 			}
 			// 입장한 클라이언트에게 정보 전송
 			{
-				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info);
+				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info, true);
 				session->Send(sendBuffer);
 			}
 		}
@@ -273,6 +283,7 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 		}
 		room->AddObject(player);
 		room->RemoveTemp(id);
+		GChat->AddText(format(L"Player {0}이 부활함.", id));
 	}
 }
 
@@ -403,6 +414,24 @@ void ServerPacketHandler::Handle_C_EquipItem(GameSessionRef session, BYTE* buffe
 	}
 }
 
+void ServerPacketHandler::Handle_C_SyncInventory(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+
+	uint16 size = header->size;
+
+	Protocol::C_SyncInventory pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	GameRoomRef room = session->gameRoom.lock();
+
+	int objectID = pkt.objectid();
+
+	auto inventory = room->GetInventory(objectID);
+
+	inventory->SyncToClient(objectID);
+}
+
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
 	Protocol::S_TEST pkt;
@@ -459,13 +488,14 @@ SendBufferRef ServerPacketHandler::Make_S_EnterGame()
 	return MakeSendBuffer(pkt, S_EnterGame);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_MyPlayer(const Protocol::ObjectInfo& info)
+SendBufferRef ServerPacketHandler::Make_S_MyPlayer(const Protocol::ObjectInfo& info, bool revive)
 {
 	Protocol::S_MyPlayer pkt;
 
 	// Struct 내의 Struct -> mutable_info, 포인터 반환
 	Protocol::ObjectInfo* objectInfo = pkt.mutable_info();
 	*objectInfo = info;
+	pkt.set_revive(revive);
 
 	return MakeSendBuffer(pkt, S_MyPlayer);
 }
@@ -524,6 +554,17 @@ SendBufferRef ServerPacketHandler::Make_S_Gold(uint64 objectId, int32 gold)
 	return MakeSendBuffer(pkt, S_Gold);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_MPRecover(uint64 objectId, int mp)
+{
+	// 패킷 생성
+	Protocol::S_MPRecover pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_mp(mp);
+
+	return MakeSendBuffer(pkt, S_MPRecover);
+}
+
 
 SendBufferRef ServerPacketHandler::Make_S_QuestProcess(uint64 objectid, uint64 questid, uint64 process)
 {
@@ -534,7 +575,10 @@ SendBufferRef ServerPacketHandler::Make_S_QuestProcess(uint64 objectid, uint64 q
 	questInfo->set_questid(questid);
 	questInfo->set_process(process);
 	questInfo->set_queststate(Protocol::QUEST_STATE_ACCEPT);
-	GChat->AddText(::format(L"player {0}, quest {1} [{2} / {3}] 진행.", objectid, questid, process, questInfo->targetnums()));
+
+	int targetNums = GRoom->GetQuest(questid).targetnums();
+
+	GChat->AddText(::format(L"player {0}, quest {1} [{2} / {3}] 진행.", objectid, questid, process, targetNums));
 
 	return MakeSendBuffer(pkt, S_QuestProcess);
 }
@@ -560,7 +604,6 @@ SendBufferRef ServerPacketHandler::Make_S_QuestList(uint64 objectid, const Proto
 	Protocol::QuestInfo* questInfo = pkt.mutable_questinfo();
 	*questInfo = info;
 	questInfo->set_objectid(objectid);
-	GChat->AddText(::format(L"player {0}, 퀘스트 목록 갱신.", objectid));
 
 	return MakeSendBuffer(pkt, S_QuestList);
 }
@@ -583,6 +626,17 @@ SendBufferRef ServerPacketHandler::Make_S_ItemDrop(const Protocol::ItemInfo& inf
 	*itemInfo = info;
 
 	return MakeSendBuffer(pkt, S_ItemDrop);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_AddItem(uint64 objectID, int itemID, int itemCounts)
+{
+	Protocol::S_AddItem pkt;
+
+	pkt.set_objectid(objectID);
+	pkt.set_itemid(itemID);
+	pkt.set_itemcounts(itemCounts);
+
+	return MakeSendBuffer(pkt, S_AddItem);
 }
 
 SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)

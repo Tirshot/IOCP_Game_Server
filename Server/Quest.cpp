@@ -193,6 +193,6 @@ void Quest::CreateQuest()
 		quest->info.set_rewarditemnum(ItemCounts);
 
 		GRoom->AddQuest(*quest);
-		GChat->AddText(::format(L"quest {0} 积己 吝...", quest->info.questid()));
+		GChat->AddText(::format(L"System : quest {0} 积己 吝...", quest->info.questid()));
 	}
 }

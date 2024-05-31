@@ -91,7 +91,7 @@ void ChatManager::SetVisibleChatInput(bool visible)
 	}
 }
 
-void ChatManager::SendMessageToServer(const wstring text)
+void ChatManager::SendMessageToServer(const wstring text, bool broadcast)
 {
 	uint64 now = time(0);
 	string str = GET_SINGLE(ChatManager)->WStrToString(text);
@@ -100,6 +100,6 @@ void ChatManager::SendMessageToServer(const wstring text)
 	if (myID == 0)
 		return;
 
-	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_SendMessage(myID, now, str);
+	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_SendMessage(myID, now, str, broadcast);
 	GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 }

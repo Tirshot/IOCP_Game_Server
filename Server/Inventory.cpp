@@ -2,6 +2,7 @@
 #include "Inventory.h"
 #include "ItemManager.h"
 #include "GameRoom.h"
+#include "GameSession.h"
 #include "Player.h"
 
 Inventory::Inventory()
@@ -17,11 +18,21 @@ void Inventory::Init()
 	// 플레이어 접속 시 저장된 파일을 읽어 아이템 목록을 불러와 전송
     _slots.assign(40, {0, 0});
     _equips.assign(5, { 0, 0 });
+
+    AddItemToInventory(1, 1, Protocol::ITEM_TYPE_WEARABLE, 0);
+    AddItemToInventory(2, 1, Protocol::ITEM_TYPE_WEARABLE, 0);
+    AddItemToInventory(3, 1, Protocol::ITEM_TYPE_WEARABLE, 0);
 }
 
 void Inventory::Update()
 {
-
+    for (auto& slot : _slots)
+    {
+        if (slot.itemCounts <= 0)
+        {
+            slot = {};
+        }
+    }
 }
 
 void Inventory::AddItemToInventory(int itemID, int itemCounts, Protocol::ITEM_TYPE itemType, int index, bool reset)
@@ -30,13 +41,30 @@ void Inventory::AddItemToInventory(int itemID, int itemCounts, Protocol::ITEM_TY
         return;
 
     bool found = false;
-    int emptySlot = 0;
 
-    _slots[index].itemID = itemID;
-    _slots[index].itemCounts = itemCounts;
+    for (auto& slot : _slots)
+    {
+        if (slot.itemID == itemID)
+        {
+            found = true;
+            slot.itemID = itemID;
+            slot.itemCounts = itemCounts;
+            return;
+        }
+    }
 
-    if (_slots[index].itemCounts <= 0)
-        _slots[index] = {};
+    if (found == false)
+    {
+        for (auto& slot : _slots)
+        {
+            if (slot.itemID == 0)
+            {
+                slot.itemID = itemID;
+                slot.itemCounts = itemCounts;
+                return;
+            }
+        }
+    }
 }
 
 void Inventory::EquipItem(int itemID, bool equip)
@@ -110,6 +138,27 @@ void Inventory::EquipItem(int itemID, bool equip)
         }
         break;
     }
+    }
+}
+
+void Inventory::SyncToClient(uint64 objectID)
+{
+    if (_ownerId != objectID)
+        return;
+
+    // 슬롯을 순회하여 클라이언트와 연동
+    for (const auto& slot : _slots)
+    {
+        int itemID = slot.itemID;
+        int itemCounts = slot.itemCounts;
+
+        {
+            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddItem(objectID, itemID, itemCounts);
+            PlayerRef player = GRoom->GetPlayer(objectID);
+
+            if (player)
+                 player->session->Send(sendBuffer);
+        }
     }
 }
 

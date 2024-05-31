@@ -27,7 +27,7 @@ public:
 	void SetInvisibleChat();
 	void SetVisibleChatInput(bool visible);
 
-	void SendMessageToServer(const wstring text);
+	void SendMessageToServer(const wstring text, bool broadcast = true);
 
 private:
 	Chat* _chat = nullptr;

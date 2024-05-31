@@ -20,18 +20,17 @@ private:
 	void SlotRectsPosUpdate(RECT* rect);
 	void SyncUseableItemToServer(int itemID, int counts);
 	void SyncItemToServer(int itemID, int counts);
-	void AutoSyncInventory();
 	void SyncEquips(int itemID, bool equip = true);
 
 public:
 	bool AddItem(ITEM* item);
 	bool AddItem(int ItemId);
-	bool AddItem(int ItemId, int ItemCount);
+	bool AddItem(int ItemId, int ItemCount);			// 인벤토리에 아이템이 없으면 더하기
 	bool RemoveItem(ITEM* item);
 	bool RemoveItem(ITEM* item, int ItemCount);
 	bool RemoveItem(int itemId);
 	bool RemoveItem(int itemId, int ItemCount);
-	void SetItemCount(int itemId, int ItemCount);
+	void SetItemCount(int itemId, int ItemCount);	// 아이템 개수 조정
 	vector<ITEM> GetSlots() { return _slots; }
 	RECT GetInvenRect() { return _invenRect; }
 
@@ -47,6 +46,9 @@ public:
 	void PressToSetQuickItem(ITEM& slot);
 
 	void OnPopClickAcceptDelegate();
+	
+	void ResetInventory();
+	void AutoSyncInventory();
 
 protected:
 	// nums : 8 x 5, slot : 28 x 28px
