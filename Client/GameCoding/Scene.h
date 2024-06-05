@@ -30,6 +30,21 @@ public:
 	vector<UI*> GetUIs() { return _uis; }
 	vector<UI*>& GetUIRef() { return _uis; }
 
+
+	template<typename T>
+	void SetChildVisible(bool visible)
+	{
+		for (auto& ui : _uis)
+		{
+			T* child = dynamic_cast<T*>(ui);
+			if (child)
+			{
+				child->SetVisible(visible);
+				continue;
+			}
+		}
+	}
+
 	template<typename T>
 	T* FindUI(const std::vector<UI*>& _uis)
 	{

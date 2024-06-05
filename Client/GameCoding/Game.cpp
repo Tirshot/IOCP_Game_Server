@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Game.h"
+#include "TitleScene.h"
+#include "DevScene.h"
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "SceneManager.h"
@@ -46,11 +48,12 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(SoundManager)->Init(hwnd);
 
 	GET_SINGLE(SceneManager)->Init();
-	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TitleScene);
 
-	GET_SINGLE(ItemManager)->Init();
-	GET_SINGLE(NetworkManager)->Init();
-	GET_SINGLE(QuestManager)->BeginPlay();
+
+	//GET_SINGLE(ItemManager)->Init();
+	//GET_SINGLE(NetworkManager)->Init();
+	//GET_SINGLE(QuestManager)->BeginPlay();
 }
 
 void Game::Update()
@@ -59,9 +62,15 @@ void Game::Update()
 	GET_SINGLE(TimeManager)->Update();
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
-	GET_SINGLE(NetworkManager)->Update();
-	GET_SINGLE(QuestManager)->Tick();
-	GET_SINGLE(ChatManager)->Tick();
+
+	DevScene* devScene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+
+	if (devScene)
+	{
+		GET_SINGLE(NetworkManager)->Update();
+		GET_SINGLE(QuestManager)->Tick();
+		GET_SINGLE(ChatManager)->Tick();
+	}
 }
 
 void Game::Render()

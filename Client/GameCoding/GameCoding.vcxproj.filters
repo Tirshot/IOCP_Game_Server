@@ -96,6 +96,9 @@
     <Filter Include="소스 파일\06. UI\InGame\Quest">
       <UniqueIdentifier>{411c386a-1c5b-4764-99a6-628096bcd0c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\06. UI\OutGame">
+      <UniqueIdentifier>{adf79d33-92d3-4fb2-9d29-e521fcc83748}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -359,6 +362,15 @@
     <ClInclude Include="QuestTrackerUI.h">
       <Filter>소스 파일\06. UI\InGame\Quest</Filter>
     </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingPanel.h">
+      <Filter>소스 파일\06. UI\OutGame</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderBar.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -620,6 +632,15 @@
     </ClCompile>
     <ClCompile Include="QuestTrackerUI.cpp">
       <Filter>소스 파일\06. UI\InGame\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingPanel.cpp">
+      <Filter>소스 파일\06. UI\OutGame</Filter>
+    </ClCompile>
+    <ClCompile Include="SliderBar.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

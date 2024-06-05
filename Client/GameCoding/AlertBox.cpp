@@ -100,6 +100,9 @@ void AlertBox::Render(HDC hdc)
 		if (child->GetVisible() == true)
 			child->Render(hdc);
 
+	if (_icon == nullptr)
+		return;
+
 	// 경고 아이콘
 	::TransparentBlt(hdc,
 		_pos.x + 10,

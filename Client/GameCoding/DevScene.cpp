@@ -820,24 +820,24 @@ void DevScene::LoadUI()
 void DevScene::LoadSound()
 {
 	/*GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav");
-	GET_SINGLE(SoundManager)->Play(L"BGM", true);*/
-	GET_SINGLE(ResourceManager)->LoadSound(L"Land", L"Sound\\Land.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Sword", L"Sound\\Sword.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Bow", L"Sound\\Bow.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Staff", L"Sound\\Staff.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Potion", L"Sound\\Potion.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Heart", L"Sound\\Heart.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Teleport", L"Sound\\Teleport.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"SpinAttack", L"Sound\\SpinAttack.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"SpinReady", L"Sound\\SpinReady.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"QuestAccept", L"Sound\\QuestAccept.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"QuestComplete", L"Sound\\QuestComplete.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"QuestFinished", L"Sound\\QuestFinished.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"MonsterOnDamaged", L"Sound\\MonsterOnDamaged.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"PlayerOnDamaged", L"Sound\\PlayerOnDamaged.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav");
-	GET_SINGLE(ResourceManager)->LoadSound(L"Merchant", L"Sound\\Merchant.wav");
+	GET_SINGLE(SoundManager)->Play(L"BGM", true, SoundType::BGM);*/
+	GET_SINGLE(ResourceManager)->LoadSound(L"Land", L"Sound\\Land.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav", SoundType::UI);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Sword", L"Sound\\Sword.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Bow", L"Sound\\Bow.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Staff", L"Sound\\Staff.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Potion", L"Sound\\Potion.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Heart", L"Sound\\Heart.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Teleport", L"Sound\\Teleport.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"SpinAttack", L"Sound\\SpinAttack.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"SpinReady", L"Sound\\SpinReady.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"QuestAccept", L"Sound\\QuestAccept.wav", SoundType::UI);
+	GET_SINGLE(ResourceManager)->LoadSound(L"QuestComplete", L"Sound\\QuestComplete.wav", SoundType::UI);
+	GET_SINGLE(ResourceManager)->LoadSound(L"QuestFinished", L"Sound\\QuestFinished.wav", SoundType::UI);
+	GET_SINGLE(ResourceManager)->LoadSound(L"MonsterOnDamaged", L"Sound\\MonsterOnDamaged.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"PlayerOnDamaged", L"Sound\\PlayerOnDamaged.wav", SoundType::Effect);
+	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav", SoundType::UI);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Merchant", L"Sound\\Merchant.wav", SoundType::UI);
 }
 
 void DevScene::LoadQuest()

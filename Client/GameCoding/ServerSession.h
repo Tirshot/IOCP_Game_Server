@@ -14,7 +14,6 @@ public:
 
 	virtual void OnConnected() override
 	{
-		GET_SINGLE(ChatManager)->AddMessage(L"서버에 연결되었습니다. \nEnter를 눌러 채팅을 시작해보세요.");
 		GET_SINGLE(SceneManager)->SetPause(false);
 	}
 

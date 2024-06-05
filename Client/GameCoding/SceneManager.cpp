@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "DevScene.h"
+#include "TitleScene.h"
 #include "Player.h"
 #include "MyPlayer.h"
 
@@ -41,9 +42,9 @@ void SceneManager::ChangeScene(SceneType sceneType)
 		newScene = new DevScene;
 		break;
 
-	//case SceneType::EditScene:
-	//	newScene = new EditScene;
-	//	break;
+	case SceneType::TitleScene:
+		newScene = new TitleScene;
+		break;
 
 	}
 

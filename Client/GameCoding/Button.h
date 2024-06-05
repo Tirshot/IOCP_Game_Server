@@ -31,6 +31,7 @@ public:
 	void SetButtonName(wstring str) { _name = str; }
 	wstring GetButtonName() { return _name; }
 	void OnClickButton() { }
+	void SetPause(bool pause) { _pause = pause; }
 
 protected:
 	Sprite* _currentSprite = nullptr;
@@ -38,6 +39,7 @@ protected:
 	ButtonState _state = BS_Default;
 	wstring _name = L"";
 	float _sumTime = 0.f;
+	bool _pause = false;
 
 public:
 	static void Test(){}

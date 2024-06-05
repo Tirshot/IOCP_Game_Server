@@ -189,11 +189,14 @@
     <ClInclude Include="QuestUI.h" />
     <ClInclude Include="QuestUIPanel.h" />
     <ClInclude Include="QuickSlot.h" />
+    <ClInclude Include="SettingPanel.h" />
     <ClInclude Include="ShopItemPanel.h" />
     <ClInclude Include="ShopUI.h" />
+    <ClInclude Include="SliderBar.h" />
     <ClInclude Include="StatusPanel.h" />
     <ClInclude Include="TeleportEffect.h" />
     <ClInclude Include="TextBox.h" />
+    <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Trigger.h" />
     <ClInclude Include="TutorialTrigger.h" />
     <ClInclude Include="NetworkManager.h" />
@@ -281,14 +284,17 @@
     <ClCompile Include="QuestUI.cpp" />
     <ClCompile Include="QuestUIPanel.cpp" />
     <ClCompile Include="QuickSlot.cpp" />
+    <ClCompile Include="SettingPanel.cpp" />
     <ClCompile Include="ShopItemPanel.cpp" />
     <ClCompile Include="ShopUI.cpp" />
+    <ClCompile Include="SliderBar.cpp" />
     <ClCompile Include="StatusPanel.cpp" />
     <ClCompile Include="Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TeleportEffect.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Trigger.cpp" />
     <ClCompile Include="TutorialTrigger.cpp" />
     <ClCompile Include="NetworkManager.cpp" />

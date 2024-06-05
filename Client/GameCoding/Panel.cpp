@@ -39,31 +39,6 @@ void Panel::Tick()
 
 	for (UI* child : _children)
 		child->Tick();
-
-	//DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	//if (scene)
-	//{
-	//	for (UI* ui : scene->_uis)
-	//	{
-	//		Panel* panel = dynamic_cast<Panel*>(ui);
-	//		if (panel)
-	//		{
-	//			RECT panelRect = panel->GetRect();
-
-	//			if (IsMouseInRect(panelRect))
-	//			{
-	//				if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
-	//				{
-	//					if (index < scene->_uis.size() - 1)
-	//					{ // 벡터의 맨 끝 요소가 아닐 때만
-	//						// 중간 요소를 끝으로 이동
-	//						std::rotate(scene->_uis.begin() + index, scene->_uis.begin() + index + 1, scene->_uis.end());
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 }
 
 void Panel::Render(HDC hdc)

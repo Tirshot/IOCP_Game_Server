@@ -4,7 +4,17 @@ enum class SceneType
 		None,
 		DevScene,
 		EditScene,
+		TitleScene,
 };
+
+enum class SoundType
+{
+	NONE = 0,
+	BGM,
+	UI,
+	Effect,
+};
+
 enum class CreatureType
 {
 	None,

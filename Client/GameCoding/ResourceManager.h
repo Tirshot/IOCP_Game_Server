@@ -34,7 +34,8 @@ public:
 	Tilemap* LoadTilemap(const wstring& key, const wstring& path);
 
 	Sound* GetSound(const wstring& key) { return _sounds[key]; }
-	Sound* LoadSound(const wstring& key, const wstring& path);
+	unordered_map<wstring, Sound*> GetSounds() { return _sounds; }
+	Sound* LoadSound(const wstring& key, const wstring& path, SoundType type);
 
 	vector<vector<wstring>> GetDataFromCSV(const string& filename);
 	vector<vector<wstring>> GetItemTable() { return _itemTable; }

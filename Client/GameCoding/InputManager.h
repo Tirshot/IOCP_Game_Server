@@ -80,6 +80,7 @@ public:
 	KeyState SetButtonUp(KeyType key) { return _states[static_cast<uint8>(key)] = KeyState::Up; }
 
     bool IsMouseOutRect(RECT& rect);
+    bool IsPressedAnyKey();
 
 private:
 	KeyState GetState(KeyType key) { return _states[static_cast<uint8>(key)]; }

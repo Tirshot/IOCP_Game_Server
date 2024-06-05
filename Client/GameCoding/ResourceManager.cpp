@@ -138,7 +138,7 @@ Tilemap* ResourceManager::LoadTilemap(const wstring& key, const wstring& path)
 	return tm;
 }
 
-Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path)
+Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path, SoundType type)
 {
 	// 이미 존재하면 찾아서 반환
 	if (_sounds.find(key) != _sounds.end())
@@ -149,6 +149,7 @@ Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path)
 
 	Sound* sound = new Sound();
 	sound->LoadWave(fullPath);
+	sound->SetType(type);
 	_sounds[key] = sound;
 
 	return sound;

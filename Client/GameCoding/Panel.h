@@ -5,16 +5,6 @@ class Panel : public UI
 {
 	using Super = UI;
 
-	enum class OverlapDir
-	{
-		None,
-		Left,
-		Right,
-		Top,
-		Bottom,
-		Full
-	};
-
 public:
 	Panel();
 	virtual ~Panel();

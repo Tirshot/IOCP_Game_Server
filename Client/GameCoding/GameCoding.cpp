@@ -150,86 +150,103 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             isChatting = false;
             memset(str1, 0, sizeof(str1));
-            GET_SINGLE(ChatManager)->SetInvisibleChat();
-            GET_SINGLE(ChatManager)->SetVisibleChatInput(false);
 
-            MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-            myPlayer->SetState(IDLE);
+            DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+            
+            if (scene)
+            {
+                GET_SINGLE(ChatManager)->SetInvisibleChat();
+                GET_SINGLE(ChatManager)->SetVisibleChatInput(false);
+
+                MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+                myPlayer->SetState(IDLE);
+            }
         }
 
         // 엔터 키를 누르면 채팅 입력 시작 또는 종료
         if (wParam == VK_RETURN)
         {
-            isChatting = !isChatting;
+            DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
-            // 조합 중인 문자를 출력
-            if (isChatting)
+            if (scene)
             {
-                HIMC hImc = ImmGetContext(hWnd);
-                int compLen = ImmGetCompositionString(hImc, GCS_COMPSTR, NULL, 0);
+                isChatting = !isChatting;
 
-                // 조합 중인 문자열이 있는 경우
-                if (compLen > 0)
+                // 조합 중인 문자를 출력
+                if (isChatting)
                 {
-                    // 조합 중인 문자열을 가져오기
-                    WCHAR* buffer = new WCHAR[compLen + 1];
-                    int length = ImmGetCompositionString(hImc, GCS_COMPSTR, buffer, compLen);
-                    buffer[length] = L'\0';
+                    HIMC hImc = ImmGetContext(hWnd);
+                    int compLen = ImmGetCompositionString(hImc, GCS_COMPSTR, NULL, 0);
 
-                    // 현재까지 입력된 문자열과 조합 중인 문자열을 합쳐서 출력
-                    wcscpy_s(str1 + len, 256 - len, buffer);
-                    len += length;
+                    // 조합 중인 문자열이 있는 경우
+                    if (compLen > 0)
+                    {
+                        // 조합 중인 문자열을 가져오기
+                        WCHAR* buffer = new WCHAR[compLen + 1];
+                        int length = ImmGetCompositionString(hImc, GCS_COMPSTR, buffer, compLen);
+                        buffer[length] = L'\0';
 
-                    delete[] buffer;
+                        // 현재까지 입력된 문자열과 조합 중인 문자열을 합쳐서 출력
+                        wcscpy_s(str1 + len, 256 - len, buffer);
+                        len += length;
 
-                    // 조합 상태 초기화
-                    ImmNotifyIME(hImc, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
+                        delete[] buffer;
+
+                        // 조합 상태 초기화
+                        ImmNotifyIME(hImc, NI_COMPOSITIONSTR, CPS_CANCEL, 0);
+                    }
+
+                    InvalidateRect(hWnd, NULL, FALSE);
+
+                    GET_SINGLE(ChatManager)->SetVisibleChat();
+                    GET_SINGLE(ChatManager)->SetVisibleChatInput(true);
+
+                    ImmReleaseContext(hWnd, hImc);
                 }
-
-                InvalidateRect(hWnd, NULL, FALSE);
-                GET_SINGLE(ChatManager)->SetVisibleChat();
-                GET_SINGLE(ChatManager)->SetVisibleChatInput(true);
-
-                ImmReleaseContext(hWnd, hImc);
             }
         }
         break;
 
     case WM_CHAR:
-        if (isChatting)
+    {
+        DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+        if (scene)
         {
-            if (wParam == VK_BACK)
+            if (isChatting)
             {
-                if (len > 0)
+                if (wParam == VK_BACK)
                 {
-                    len--;
-                    str1[len + 1] = L'\0';
-                    InvalidateRect(hWnd, NULL, FALSE);
-                    GET_SINGLE(ChatManager)->GetChatInput()->RemoveTextChar(str1, len + 1);
-                    return 0;
+                    if (len > 0)
+                    {
+                        len--;
+                        str1[len + 1] = L'\0';
+                        InvalidateRect(hWnd, NULL, FALSE);
+                        GET_SINGLE(ChatManager)->GetChatInput()->RemoveTextChar(str1, len + 1);
+                        return 0;
+                    }
                 }
-            }
-            len = (int)wcslen(str1);
-            str1[len] = static_cast<WCHAR>(wParam);
-            str1[len + 1] = L'\0';
+                len = (int)wcslen(str1);
+                str1[len] = static_cast<WCHAR>(wParam);
+                str1[len + 1] = L'\0';
 
-            // 현재 조합 중인 문자열을 그대로 출력
-            GET_SINGLE(ChatManager)->SetVisibleChat();
-            GET_SINGLE(ChatManager)->GetChatInput()->AddTextChar(str1, len + 1);
-        }
-        else if (isChatting == false && wParam == VK_RETURN)
-        {
-            MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-            if (myPlayer && myPlayer->info.state() == CHAT)
-            {
-                str1[0] = L' ';
-                GET_SINGLE(ChatManager)->SendMessageToServer(str1);
-                memset(str1, 0, sizeof(str1));
+                // 현재 조합 중인 문자열을 그대로 출력
+                GET_SINGLE(ChatManager)->SetVisibleChat();
+                GET_SINGLE(ChatManager)->GetChatInput()->AddTextChar(str1, len + 1);
             }
-            GET_SINGLE(ChatManager)->SetVisibleChatInput(false);
+            else if (isChatting == false && wParam == VK_RETURN)
+            {
+                MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+                if (myPlayer && myPlayer->info.state() == CHAT)
+                {
+                    str1[0] = L' ';
+                    GET_SINGLE(ChatManager)->SendMessageToServer(str1);
+                    memset(str1, 0, sizeof(str1));
+                }
+                GET_SINGLE(ChatManager)->SetVisibleChatInput(false);
+            }
         }
         break;
-    
+    }
     case WM_COMMAND:
     {
         int wmId = LOWORD(wParam);
