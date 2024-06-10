@@ -16,7 +16,7 @@ SliderBar::~SliderBar()
 void SliderBar::BeginPlay()
 {
 	SetSize({ 150,16 });
-	_percentage = 0.5f;
+	_percentage = (_value - _minimum) / (_maximum - _minimum);
 }
 
 void SliderBar::Tick()

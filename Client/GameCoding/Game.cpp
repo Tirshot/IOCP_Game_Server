@@ -19,9 +19,9 @@ Game::Game()
 
 Game::~Game()
 {
-	GET_SINGLE(SceneManager)->Clear();
-	GET_SINGLE(ResourceManager)->Clear();
-	GET_SINGLE(ItemManager)->Clear();
+	//GET_SINGLE(SceneManager)->Clear();
+	//GET_SINGLE(ResourceManager)->Clear();
+	//GET_SINGLE(ItemManager)->Clear();
 }
 
 void Game::Init(HWND hwnd)
@@ -50,10 +50,6 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(SceneManager)->Init();
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TitleScene);
 
-
-	//GET_SINGLE(ItemManager)->Init();
-	//GET_SINGLE(NetworkManager)->Init();
-	//GET_SINGLE(QuestManager)->BeginPlay();
 }
 
 void Game::Update()
@@ -63,10 +59,18 @@ void Game::Update()
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
 
-	DevScene* devScene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	auto devScene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
 	if (devScene)
 	{
+		if (_initialized == false)
+		{
+			GET_SINGLE(ItemManager)->Init();
+			GET_SINGLE(NetworkManager)->Init();
+			GET_SINGLE(QuestManager)->BeginPlay();
+			_initialized = true;
+		}
+
 		GET_SINGLE(NetworkManager)->Update();
 		GET_SINGLE(QuestManager)->Tick();
 		GET_SINGLE(ChatManager)->Tick();

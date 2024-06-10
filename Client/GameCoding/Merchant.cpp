@@ -40,11 +40,11 @@ void Merchant::Render(HDC hdc)
 
 void Merchant::TickIdle()
 {
-	Scene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	
 	if (scene)
 	{
-		MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt(GetFrontCellPos()));
+		auto myPlayer = dynamic_pointer_cast<MyPlayer>(scene->GetCreatureAt(GetFrontCellPos()));
 
 		if (myPlayer)
 		{
@@ -55,11 +55,11 @@ void Merchant::TickIdle()
 
 void Merchant::TickMove()
 {
-	Scene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene)
 	{
-		MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt(GetFrontCellPos()));
+		auto myPlayer = dynamic_pointer_cast<MyPlayer>(scene->GetCreatureAt(GetFrontCellPos()));
 
 		if (myPlayer == nullptr)
 		{

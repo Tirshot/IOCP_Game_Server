@@ -25,7 +25,7 @@ public:
 
 	Vec2Int GetMapSize() { return _mapSize; }
 	int32 GetTileSize() { return _tileSize; }
-	Tile* GetTileAt(Vec2Int pos);
+	shared_ptr<Tile> GetTileAt(Vec2Int pos);
 	vector<vector<Tile>>& GetTiles() { return _tiles; }
 
 	void SetMapSize(Vec2Int size);

@@ -26,10 +26,10 @@ private:
 	// Ã¢ ´Ý±â ¹öÆ°
 
 private:
-	Sprite* _background = nullptr;
-	Sprite* _soundSettings = nullptr;
-	Sprite* _BGM = nullptr;
-	Sprite* _UI = nullptr;
-	Sprite* _SFX = nullptr;
+	shared_ptr<Sprite> _background = nullptr;
+	shared_ptr<Sprite> _soundSettings = nullptr;
+	shared_ptr<Sprite> _BGM = nullptr;
+	shared_ptr<Sprite> _UI = nullptr;
+	shared_ptr<Sprite> _SFX = nullptr;
 };
 

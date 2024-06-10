@@ -14,7 +14,7 @@ class QuestTrackerUI :	 public Panel
 		int progress = 0;
 		bool complete = false;
 		bool changed = false;
-		class TextBox* textBox;
+		shared_ptr<class TextBox> textBox;
 
 		void SetProgress(int progressing) { progress = progressing; }
 	};
@@ -33,18 +33,18 @@ public:
 	void SetProgress(int questID, int progress);
 
 public:
-	void AddQuestToTracker(QUEST* quest);
+	void AddQuestToTracker(shared_ptr<QUEST> quest);
 	void RemoveQuestFromTracker(int questID);
 
 public:
 	void GetActiveQuests();
 
 private:
-	Sprite* _background = nullptr;
+	shared_ptr<Sprite> _background = nullptr;
 	int _alpha = 128;
 	RECT _calcRect = {};
 
 private:
-	vector<QUEST*> _quests;
+	vector<shared_ptr<QUEST>> _quests;
 };
 

@@ -21,8 +21,8 @@ public:
 	void SetText(wstring wstr);
 
 private:
-	class Sprite* _background = nullptr;
-	class Sprite* _icon = nullptr;
+	class shared_ptr<Sprite> _background = nullptr;
+	class shared_ptr<Sprite> _icon = nullptr;
 	RECT _rect = {};
 	Vec2 _initialPos = {};
 	bool _result = false;

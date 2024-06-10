@@ -28,6 +28,6 @@ private:
 	// 수락한 퀘스트
 	map<int, Protocol::QuestInfo> _quests;
 	bool _announce = false;
-	class QuestTrackerUI* _tracker = nullptr;
+	shared_ptr<class QuestTrackerUI> _tracker = nullptr;
 };
 

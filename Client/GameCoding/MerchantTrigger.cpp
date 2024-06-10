@@ -30,9 +30,9 @@ void MerchantTrigger::Tick()
 {
 	Super::Tick();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-	MerchantUI* merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
 
 	if (myPlayer)
 	{
@@ -58,14 +58,14 @@ void MerchantTrigger::Tick()
 
 void MerchantTrigger::HideUIs()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene)
 	{
-		MerchantUI* merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
-		ShopUI* shopUI = scene->FindUI<ShopUI>(scene->GetUIs());
-		MerchantDialogueUI* dialogueUI = scene->FindUI<MerchantDialogueUI>(scene->GetUIs());
-		QuestUI* questUI = scene->FindUI<QuestUI>(scene->GetUIs());
+		auto merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
+		auto shopUI = scene->FindUI<ShopUI>(scene->GetUIs());
+		auto dialogueUI = scene->FindUI<MerchantDialogueUI>(scene->GetUIs());
+		auto questUI = scene->FindUI<QuestUI>(scene->GetUIs());
 
 		if (merchantUI)
 		{

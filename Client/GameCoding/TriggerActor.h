@@ -13,8 +13,8 @@ public:
 	virtual void BeginPlay();
 	virtual void Tick();
 
-	void PressSpaceInteract(UI* ui);
-	void TouchInteract(UI* ui);
+	void PressSpaceInteract(shared_ptr<UI> ui);
+	void TouchInteract(shared_ptr<UI> ui);
 
 	// ¡¢√À ∆«∫∞
 	bool IsTouched();

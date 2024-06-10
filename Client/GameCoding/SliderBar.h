@@ -16,6 +16,7 @@ public:
 public:
 	void SetMaximumValue(float max) { _maximum = max; }
 	void SetMinimumValue(float min) { _minimum = min; }
+	void SetValue(float value) { _value = value; }
 	float GetValue() { return _value; }
 
 	void SetName(wstring wstr) { _name = wstr; }
@@ -32,8 +33,8 @@ public:
 	std::function<void(void)>_callbackFunc = nullptr;
 
 private:
-	Sprite* _background = nullptr;
-	Sprite* _backgroundFill = nullptr;
+	shared_ptr<Sprite> _background = nullptr;
+	shared_ptr<Sprite> _backgroundFill = nullptr;
 
 	float _percentage = 0.f;
 	float _maximum = 100;

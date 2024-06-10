@@ -79,12 +79,12 @@ void Player::Tick()
 {
 	Super::Tick();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (info.hp() <= 0)
 	{
 		auto inventory = GET_SINGLE(ItemManager)->GetInventory();
-		scene->RemoveActor(this);
+		scene->RemoveActor(shared_from_this());
 		// 인벤토리를 파일로 저장??
 	}
 }
@@ -138,14 +138,14 @@ void Player::TickSkill()
 	if (IsAnimationEnded())
 	{
 		// 공격 판정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		if (scene == nullptr)
 			return;
 
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
-			Monster* monster = dynamic_cast<Monster*>(scene->GetCreatureAt(GetFrontCellPos()));
+			auto monster = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetFrontCellPos()));
 
 			if (monster)
 			{
@@ -186,17 +186,17 @@ void Player::TickSpin()
 	if (IsAnimationEnded())
 	{
 		// 공격 판정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		if (scene == nullptr)
 			return;
 
 		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 십자에 있는 좌표
-			Monster* monster = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 })); // up
-			Monster* monster2 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 })); // right
-			Monster* monster3 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 })); // down
-			Monster* monster4 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 })); // left
+			auto monster = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 })); // up
+			auto monster2 = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 })); // right
+			auto monster3 = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 })); // down
+			auto monster4 = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 })); // left
 
 			if (monster)
 			{
@@ -248,7 +248,7 @@ void Player::TickSpin()
 		}
 		SetState(MOVE);
 
-		MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
+		auto myPlayer = dynamic_pointer_cast<MyPlayer>(shared_from_this());
 		if (myPlayer && myPlayer->GetQuestState(1) == Protocol::QUEST_STATE_ACCEPT
 			&& GetCellPos() == Vec2Int{ 44, 18 })
 			scene->SpawnObject<TeleportEffect>(GetCellPos());
@@ -320,15 +320,15 @@ void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 	// 화살 BroadCast로 인해 2발씩 생성되는 버그 수정, 서버에서는 50ms 이후 화살 생성
 	_now = GetTickCount64();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (_now - _prev >= 50)
 	{
 		if (this->info.arrows() <= 0)
 			return;
 
-		Arrow* arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
+		auto arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
 		arrow->info = info;
-		arrow->SetOwner(this);
+		arrow->SetOwner(shared_from_this());
 		this->info.set_arrows(this->info.arrows() - 1);
 	}
 	_prev = _now;

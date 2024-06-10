@@ -85,7 +85,7 @@ void QuickSlot::Render(HDC hdc)
 	}
 }
 
-void QuickSlot::SetQuickSlot(ITEM* item, int index)
+void QuickSlot::SetQuickSlot(shared_ptr<ITEM> item, int index)
 {
 	if (index < 1 || index > 9)
 		return;
@@ -122,7 +122,7 @@ void QuickSlot::SetQuickSlot(ITEM* item, int index)
 
 void QuickSlot::SetPressedButton()
 {
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (myPlayer)
 	{
@@ -172,7 +172,7 @@ void QuickSlot::SetPressedButton()
 
 	_selectedIndex = _pressedButton;
 
-	// 유효하지 않은 아이템 장착 불가
-	if (_slots[_selectedIndex].ItemId != 0)
-		GET_SINGLE(ItemManager)->EquipItem(_slots[_selectedIndex]);
+	//// 유효하지 않은 아이템 장착 불가
+	//if (_slots[_selectedIndex].ItemId != 0)
+	//	GET_SINGLE(ItemManager)->EquipItem(_slots[_selectedIndex]);
 }

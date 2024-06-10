@@ -9,28 +9,28 @@
 StatusPanel::StatusPanel()
 {
 	{	// HP
-		HP* hp = new HP();
+		auto hp = make_shared<HP>();
 		hp->SetVisible(true);
 		AddChild(hp);
 	}
 	{  // MP
-		MP* mp = new MP();
+		auto mp = make_shared<MP>();
 		mp->SetVisible(true);
 		AddChild(mp);
 	}
 
 	{	// Gold
-		Gold* gold = new Gold();
+		auto gold = make_shared<Gold>();
 		gold->SetVisible(true);
 		AddChild(gold);
 	}
 	{	// Arrow UI
-		ArrowUI* arrowUI = new ArrowUI();
+		auto arrowUI = make_shared<ArrowUI>();
 		arrowUI->SetVisible(true);
 		AddChild(arrowUI);
 	}
 	{	// Potion UI
-		Potion* potion = new Potion();
+		auto potion = make_shared<Potion>();
 		potion->SetVisible(true);
 		AddChild(potion);
 	}

@@ -20,8 +20,8 @@ public:
 	void SetVisible(bool visible) { _visible = visible; }
 	bool GetVisible() const { return _visible; }
 
-	void SetParent(UI* ui) { _parent = ui; }
-	UI* GetParent() { return _parent; }
+	void SetParent(shared_ptr<UI> ui) { _parent = ui; }
+	shared_ptr<UI> GetParent() { return _parent; }
 
 	// UI를 사각형이라고 가정
 	virtual RECT GetRect();
@@ -37,7 +37,7 @@ protected:
 	RECT _rect = {};
 	Vec2Int _size = { 150, 150 };
 	bool _visible = true;
-	UI* _parent = nullptr;
+	shared_ptr<UI> _parent = nullptr;
 	int _id = 0;
 
 	// id 부여

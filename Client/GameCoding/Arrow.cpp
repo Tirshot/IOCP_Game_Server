@@ -42,7 +42,7 @@ void Arrow::Render(HDC hdc)
 
 void Arrow::TickIdle()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 	if (scene == nullptr)
 		return;
 
@@ -60,7 +60,7 @@ void Arrow::TickIdle()
 	else
 	{
 		// 앞이 비어있으면 전진, 몬스터라면 타격
-		Creature* creature = scene->GetCreatureAt(nextPos);
+		auto creature = scene->GetCreatureAt(nextPos);
 		_owner->GetFrontCellPos();
 		if (creature == _owner)
 		{
@@ -108,12 +108,12 @@ void Arrow::TickHit()
 	Vec2Int pos = Vec2Int{ info.posx(), info.posy() };
 	Vec2Int nextPos = pos + deltaXY[info.dir()];
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	// 앞이 비어있으면 전진, 몬스터라면 타격
 	/*Monster* _target = dynamic_cast<Monster*>(scene->GetCreatureAt(nextPos));*/
 
-	scene->RemoveActor(this);
+	scene->RemoveActor(shared_from_this());
 }
 
 void Arrow::UpdateAnimation()

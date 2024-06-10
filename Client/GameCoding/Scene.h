@@ -16,19 +16,19 @@ public:
 	virtual void Update();
 	virtual void Render(HDC hdc);
 
-	virtual void AddActor(Actor* actor);
-	virtual void RemoveActor(Actor* actor);
+	virtual void AddActor(shared_ptr<Actor> actor);
+	virtual void RemoveActor(shared_ptr<Actor> actor);
 
-	virtual void AddUI(UI* ui);
-	virtual void RemoveUI(UI* ui);
+	virtual void AddUI(shared_ptr<UI> ui);
+	virtual void RemoveUI(shared_ptr<UI> ui);
 
 	bool GetPauseState() { return _isPaused; }
 	void SetPauseState(bool pause) { _isPaused = pause; }
 
-	Creature* GetCreatureAt(Vec2Int cellPos);
-	Player* GetPlayerByID(uint64 objectId);
-	vector<UI*> GetUIs() { return _uis; }
-	vector<UI*>& GetUIRef() { return _uis; }
+	shared_ptr<Creature> GetCreatureAt(Vec2Int cellPos);
+	shared_ptr<Player> GetPlayerByID(uint64 objectId);
+	vector<shared_ptr<UI>> GetUIs() { return _uis; }
+	vector<shared_ptr<UI>>& GetUIRef() { return _uis; }
 
 
 	template<typename T>
@@ -36,7 +36,7 @@ public:
 	{
 		for (auto& ui : _uis)
 		{
-			T* child = dynamic_cast<T*>(ui);
+			shared_ptr<T> child = dynamic_pointer_cast<T>(ui);
 			if (child)
 			{
 				child->SetVisible(visible);
@@ -46,25 +46,26 @@ public:
 	}
 
 	template<typename T>
-	T* FindUI(const std::vector<UI*>& _uis)
+	shared_ptr<T> FindUI(const std::vector<shared_ptr<UI>>& _uis)
 	{
 		for (auto& item : _uis)
 		{
-			T* foundItem = dynamic_cast<T*>(item);
+			shared_ptr<T> foundItem = dynamic_pointer_cast<T>(item);
 			if (foundItem)
 				return foundItem;
 		}
 		return nullptr;
 	}
 
-	vector<UI*> GetVisibleUIs();
+	vector<shared_ptr<UI>> GetVisibleUIs();
 
 public:
-	vector<Actor*> _actors[LAYER_MAXCOUNT];
-	vector<UI*> _uis;
-	vector<UI*> _visibleUIs;
+	vector<shared_ptr<Actor>> _actors[LAYER_MAXCOUNT];
+	vector<shared_ptr<UI>> _uis;
+	vector<shared_ptr<UI>> _visibleUIs;
 
-private:
+protected:
 	bool _isPaused = false;
+	bool _sceneChanged = false;
 };
 

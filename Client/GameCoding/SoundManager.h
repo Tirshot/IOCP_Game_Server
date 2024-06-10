@@ -19,8 +19,13 @@ public:
 	// 0(-100dB) ~ 1(±âº»)
 	void SetMasterVolume(float volume);
 	void SetBGMVolume(float volume);
-	void SetSFXVolume(float volume); 
+	void SetSFXVolume(float volume);
 	void SetUIVolume(float volume);
+
+	float GetMasterVolume() { return _masterVolume; }
+	float GetBGMVolume() { return _bgmVolume; }
+	float GetSFXVolume() { return _sfxVolume; }
+	float GetUIVolume() { return _uiVolume; }
 
 	void UpdateVolume();
 	long VolumeToDB(float volume);

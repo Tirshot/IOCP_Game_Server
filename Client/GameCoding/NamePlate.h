@@ -16,7 +16,7 @@ public:
 	wstring GetText() { return _name; }
 
 protected:
-	Sprite* _sprite = nullptr;
+	shared_ptr<Sprite> _sprite = nullptr;
 	RECT _rect = {};
 	wstring _name = L"";
 };

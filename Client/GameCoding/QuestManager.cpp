@@ -17,7 +17,7 @@ QuestManager::~QuestManager()
 
 void QuestManager::BeginPlay()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 	{
 		_tracker = scene->FindUI<QuestTrackerUI>(scene->GetUIs());
@@ -39,9 +39,9 @@ void QuestManager::Tick()
     // 필수 객체 가져오기
     auto scene = GET_SINGLE(SceneManager)->GetDevScene();
     auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-    auto inventory = GET_SINGLE(ItemManager)->GetInventory();
+    /*auto inventory = GET_SINGLE(ItemManager)->GetInventory();*/
 
-    if (!myPlayer || !scene || !inventory)
+    if (!myPlayer || !scene /* !inventory*/)
         return;
 
     auto& questStates = myPlayer->GetQuestStates();
@@ -80,7 +80,7 @@ void QuestManager::Tick()
         {
         case Protocol::OBJECT_TYPE_ITEM:
         {
-            ITEM* item = GET_SINGLE(ItemManager)->FindItemFromInventory(targetID);
+            auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(targetID);
             int itemCount = item ? item->ItemCount : 0;
 
             if (state == Protocol::QUEST_STATE_ACCEPT)
@@ -111,7 +111,7 @@ void QuestManager::Tick()
             {
                 if (_announce == false)
                 {
-                    inventory->RemoveItem(targetID, targetNums);
+                    /*inventory->RemoveItem(targetID, targetNums);*/
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
                     _tracker->RemoveQuestFromTracker(questID);
                     _announce = true;

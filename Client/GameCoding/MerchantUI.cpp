@@ -27,13 +27,13 @@ MerchantUI::MerchantUI()
 	}
 	{ // 대화 내용
 		wstring wstr = L"어서오세요!\n최고 품질의 아이템만 제공하는 언덕 집 상인입니다.\n저렴한 가격에 모시고 있습니다.";
-		TextBox* textBox = new TextBox(wstr);
+		auto textBox = make_shared<TextBox>(wstr);
 		textBox->SetPos({ 135, 342 });
 		textBox->SetSize({ 535, 178 });
 		AddChild(textBox);
 	}
 	{ // 대화 종료
-		Button* exit = new Button();
+		shared_ptr<Button> exit = make_shared<Button>();
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Off"), BS_Default);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
@@ -44,7 +44,7 @@ MerchantUI::MerchantUI()
 	}
 
 	{ // 상점 버튼
-		Button* shop = new Button();
+		shared_ptr<Button> shop = make_shared<Button>();
 		shop->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Shop_Off"), BS_Default);
 		shop->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Shop_On"), BS_Pressed);
 		shop->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Shop_Hovered"), BS_Hovered);
@@ -55,7 +55,7 @@ MerchantUI::MerchantUI()
 	}
 
 	{ // 퀘스트 버튼
-		Button* quest = new Button();
+		shared_ptr<Button> quest = make_shared<Button>();
 		quest->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Off"), BS_Default);
 		quest->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_On"), BS_Pressed);
 		quest->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Hovered"), BS_Hovered);
@@ -65,7 +65,7 @@ MerchantUI::MerchantUI()
 		AddChild(quest);
 	}
 	{ // 네임 플레이트
-		NamePlate* namePlate = new NamePlate(L"언덕 집 상인");
+		auto namePlate = make_shared<NamePlate>(L"언덕 집 상인");
 		namePlate->SetPos(Vec2{200, 300});
 		AddChild(namePlate);
 	}
@@ -131,9 +131,9 @@ void MerchantUI::OnClickShopButton()
 {
 	SetVisible(false);
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
-	ShopUI* shopui = scene->FindUI<ShopUI>(scene->GetUIs());
+	auto shopui = scene->FindUI<ShopUI>(scene->GetUIs());
 
 	if (shopui)
 		shopui->SetVisible(true);
@@ -146,9 +146,9 @@ void MerchantUI::OnClickQuestButton()
 	_initialized = true;
 
 	// 퀘스트 Panel 활성화
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
-	QuestUI* questUI = scene->FindUI<QuestUI>(scene->GetUIs());
+	auto questUI = scene->FindUI<QuestUI>(scene->GetUIs());
 
 	if (questUI)
 	{

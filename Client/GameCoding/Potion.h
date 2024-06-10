@@ -15,8 +15,8 @@ public:
 	virtual void Render(HDC hdc);
 
 protected:
-	MyPlayer* _myPlayer = nullptr;
-	Sprite* _potion = nullptr;
+	shared_ptr<MyPlayer> _myPlayer = nullptr;
+	shared_ptr<Sprite> _potion = nullptr;
 	int _potionCount = 0;
 	RECT _rect = {};
 };

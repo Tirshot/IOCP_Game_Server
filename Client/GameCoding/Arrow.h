@@ -1,7 +1,7 @@
 #pragma once
 #include "Projectile.h"
 
-class Arrow : public Projectile
+class Arrow : public Projectile, public enable_shared_from_this<Arrow>
 {
 	using Super = Projectile;
 public:
@@ -19,6 +19,6 @@ private:
 	virtual void UpdateAnimation()  override;
 
 private:
-	Flipbook* _flipbookMove[4] = {};
+	shared_ptr<Flipbook> _flipbookMove[4] = {};
 };
 

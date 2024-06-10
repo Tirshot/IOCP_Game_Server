@@ -46,6 +46,7 @@
 #include "Inventory.h"
 #include "QuickSlot.h"
 #include "AlertBox.h"
+#include "SettingPanel.h"
 #include "MerchantDialogueUI.h"
 #include <filesystem>
 
@@ -119,6 +120,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ShopUIBackground", L"Sprite\\UI\\ShopUI.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Inventory", L"Sprite\\UI\\inventory.bmp", RGB(255, 0, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Icon", L"Sprite\\UI\\Icon.bmp", RGB(255, 0, 255));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Settings", L"Sprite\\UI\\Settings.bmp", RGB(128, 128, 128));
 
 	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
@@ -211,6 +213,11 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"AlertIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 34, 0, 34, 34);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"InformationIcon", GET_SINGLE(ResourceManager)->GetTexture(L"Icon"), 68, 0, 34, 34);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"MerchantSprite", GET_SINGLE(ResourceManager)->GetTexture(L"Merchant"), 0, 0, 60, 100);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"SoundSettings", GET_SINGLE(ResourceManager)->GetTexture(L"Settings"), 60, 50, 83, 25);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"BGM", GET_SINGLE(ResourceManager)->GetTexture(L"Settings"), 60, 75, 83, 25);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"SFX", GET_SINGLE(ResourceManager)->GetTexture(L"Settings"), 60, 100, 83, 25);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"UI", GET_SINGLE(ResourceManager)->GetTexture(L"Settings"), 60, 125, 83, 25);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"SliderBackground", GET_SINGLE(ResourceManager)->GetTexture(L"Settings"), 145, 50, 143, 12);
 
 	LoadMap();
 	LoadPlayer();
@@ -235,24 +242,48 @@ void DevScene::Update()
 void DevScene::Render(HDC hdc)
 {
 	Super::Render(hdc);
+
+	// 페이드 인
+	if (_alpha >= 10)
+	{
+		BLENDFUNCTION bf = {};
+		bf.AlphaFormat = 0; //일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
+		bf.BlendFlags = 0;
+		bf.BlendOp = AC_SRC_OVER; //  원본과 대상 이미지를 합침
+		bf.SourceConstantAlpha = _alpha; // 투명도(투명 0 - 불투명 255)
+
+		::AlphaBlend(hdc,
+			0,
+			0,
+			800,
+			600,
+			_black->GetDC(),
+			0,
+			0,
+			100,
+			100,
+			bf);
+
+		_alpha -= 1;
+	}
 }
 
-void DevScene::AddActor(Actor* actor)
+void DevScene::AddActor(shared_ptr<Actor> actor)
 {
 	Super::AddActor(actor);
 
-	Monster* monster = dynamic_cast<Monster*>(actor);
+	shared_ptr<Monster> monster = dynamic_pointer_cast<Monster>(actor);
 	if (monster)
 	{
 		_monsterCount++;
 	}
 }
 
-void DevScene::RemoveActor(Actor* actor)
+void DevScene::RemoveActor(shared_ptr<Actor> actor)
 {
 	Super::RemoveActor(actor);
 
-	Monster* monster = dynamic_cast<Monster*>(actor);
+	shared_ptr<Monster> monster = dynamic_pointer_cast<Monster>(actor);
 	if (monster)
 	{
 		SpawnObject<DeathEffect>(monster->GetCellPos());
@@ -261,17 +292,17 @@ void DevScene::RemoveActor(Actor* actor)
 	}
 
 	// 사망시 메세지 및 UI 출력
-	MyPlayer* player = dynamic_cast<MyPlayer*>(actor);
+	shared_ptr<MyPlayer> player = dynamic_pointer_cast<MyPlayer>(actor);
 	if (player)
 	{
 		SpawnObject<DeathEffect>(player->GetCellPos());
 
 		GET_SINGLE(SoundManager)->Play(L"GameOver");
-		Chat* chat = GET_SINGLE(ChatManager)->GetChat();
+		shared_ptr<Chat> chat = GET_SINGLE(ChatManager)->GetChat();
 		chat->AddText(L"캐릭터가 쓰러졌습니다.");
 		for (auto& ui : _uis)
 		{
-			GameOver* go = dynamic_cast<GameOver*>(ui);
+			shared_ptr<GameOver> go = dynamic_pointer_cast<GameOver>(ui);
 			if (go)
 				go->SetVisible(true);
 		}
@@ -282,27 +313,21 @@ void DevScene::ClearActors()
 {
 	for (auto& actorLayer : _actors)
 	{
-		for(auto& actor : actorLayer)
-			delete actor;
-
 		actorLayer.clear();
 	}
 }
 
 void DevScene::ClearUIs()
 {
-	for (auto& ui : _uis)
-		delete ui;
-
 	_uis.clear();
 }
 
 void DevScene::LoadMap()
 {
 	// 배경
-	Sprite* sprite = GET_SINGLE(ResourceManager)->GetSprite(L"Stage01");
+	auto sprite = GET_SINGLE(ResourceManager)->GetSprite(L"Stage01");
 
-	SpriteActor* background = new SpriteActor();
+	shared_ptr<SpriteActor> background = make_shared<SpriteActor>();
 	background->SetSprite(sprite);
 	background->SetLayer(LAYER_BACKGROUND);
 
@@ -316,183 +341,183 @@ void DevScene::LoadPlayer()
 {
 	// 플레이어 Idle
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_IdleUp", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_IdleDown", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_IdleLeft", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_IdleRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_IdleRight", { 200, 200}, 0, 9, 0, 0.5f });
 	}
 	// 플레이어 Move
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_MoveUp", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_MoveDown", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_MoveLeft", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoveRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_MoveRight", { 200, 200}, 0, 9, 1, 0.53f });
 	}
 	// 플레이어 Attack, 매개변수 끝은 loop
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_AttackUp", { 200, 200}, 0, 7, 3, 0.3f , false});
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_AttackDown", { 200, 200}, 0, 7, 3, 0.3f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_AttackLeft", { 200, 200}, 0, 7, 3, 0.3f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_AttackRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_AttackRight", { 200, 200}, 0, 7, 3, 0.3f, false });
 	}
 	// 플레이어 Bow, 매개변수 끝은 loop
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_BowUp", { 200, 200}, 0, 5, 5, 0.3f , false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_BowDown", { 200, 200}, 0, 5, 5, 0.3f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_BowLeft", { 200, 200}, 0, 5, 5, 0.3f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_BowRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_BowRight", { 200, 200}, 0, 5, 5, 0.3f, false });
 	}
 	// 플레이어 Staff, 매개변수 끝은 loop
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_StaffUp", { 200, 200}, 0, 10, 6, 0.5f , false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_StaffDown", { 200, 200}, 0, 10, 6, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_StaffLeft", { 200, 200}, 0, 10, 6, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_StaffRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_StaffRight", { 200, 200}, 0, 10, 6, 0.5f, false });
 	}
 
 	// 플레이어 스핀공격
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinReadyDown", { 200, 200}, 9, 15, 3, 0.2f, false });
 	}
 
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinDown", { 200, 200}, 0, 22, 11, 0.4f, false });
 	}
 
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinReadyUp", { 200, 200}, 9, 15, 3, 0.2f, false });
 	}
 
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinUp", { 200, 200}, 0, 22, 11, 0.4f, false });
 	}
 
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinReadyLeft", { 200, 200}, 9, 15, 3, 0.2f, false });
 	}
 
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinLeft", { 200, 200}, 0, 22, 11, 0.4f, false });
 	}
 
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinReadyRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinReadyRight", { 200, 200}, 9, 15, 3, 0.2f, false });
 	}
 
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SpinRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SpinRight", { 200, 200}, 0, 24, 11, 0.4f, false });
 	}
@@ -502,52 +527,52 @@ void DevScene::LoadMonster()
 {
 	// Snake Move
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeUp", { 100, 100}, 0, 3, 3, 0.6f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeDown", { 100, 100}, 0, 3, 0, 0.6f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeLeft", { 100, 100}, 0, 3, 2, 0.6f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 0, 3, 1, 0.6f });
 	}
 
 	// Snake Hit
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeUpHit");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeUpHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeUp", { 100, 100}, 0, 0, 5, 1 });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeDownHit");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeDownHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeDown", { 100, 100}, 3, 3, 5, 1 });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeLeftHit");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeLeftHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeLeft", { 100, 100}, 1, 1, 5, 1 });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeRightHit");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeRightHit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SnakeRight", { 100, 100}, 2, 2, 5, 1 });
 	}
@@ -558,44 +583,44 @@ void DevScene::LoadNPC()
 {
 	// 표지판
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Sign");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SignIdle");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Sign");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SignIdle");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SignIdle", { 48, 96}, 0, 0, 0, 0 });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Sign");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SignMove");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Sign");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SignMove");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_SignMove", { 48, 96}, 1, 3, 0, 3.f });
 	}
 	{	// 튜토리얼 트리거 배치
-		TutorialTrigger* nc = new TutorialTrigger();
+		auto nc = make_shared<TutorialTrigger>();
 		nc->info.set_posx(4);
 		nc->info.set_posy(4);
 		SpawnObject<TutorialTrigger>(nc->GetCellPos());
 	}
 	{	// 상인 튜토리얼 트리거 배치
-		TutorialTrigger* nc = new TutorialTrigger();
+		auto nc = make_shared<TutorialTrigger>();
 		nc->info.set_posx(28);
 		nc->info.set_posy(5);
 		SpawnObject<MerchantTutorialTrigger>(nc->GetCellPos());
 	}
 	// 상인
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Merchant");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MerchantIdle");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Merchant");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MerchantIdle");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_MerchantIdle", { 60, 100}, 1, 3, 0, 3.f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Merchant");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MerchantMove");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Merchant");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MerchantMove");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_MerchantMove", { 60, 100}, 0, 0, 0, 0.f });
 	}
 	{	// 상점 트리거 배치
-		MerchantTrigger* mt = new MerchantTrigger();
+		auto mt = make_shared<MerchantTrigger>();
 		mt->info.set_posx(40);
 		mt->info.set_posy(26);
 		SpawnObject<MerchantTrigger>(mt->GetCellPos());
@@ -605,26 +630,26 @@ void DevScene::LoadNPC()
 void DevScene::LoadItem()
 {
 	{ // Heart 아이템
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"HeartItem");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_HeartItem");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"HeartItem");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_HeartItem");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"HeartItem", { 25, 21}, 0, 4, 0, 0.8f, true });
 	}
 	{ // Full Heart 아이템
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"FullHeartItem");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_FullHeartItem");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"FullHeartItem");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_FullHeartItem");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FullHeartItem", { 25, 21}, 0, 4, 0, 0.8f, true });
 	}
 	{ // Max Heart 아이템
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"MaxHeartItem");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MaxHeartItem");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"MaxHeartItem");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MaxHeartItem");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"MaxHeartItem", { 50, 21}, 0, 4, 0, 0.8f, true });
 	}
 	{ // Arrow 아이템
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"ArrowItem");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowItem");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"ArrowItem");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowItem");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"ArrowItem", { 24, 23}, 0, 4, 0, 0.8f, true });
 	}
@@ -634,26 +659,26 @@ void DevScene::LoadProjectile()
 {
 	// Arrow Move
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowUp");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_ArrowUp", { 100, 100}, 0, 0, 3, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowDown");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_ArrowDown", { 100, 100}, 0, 0, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_ArrowLeft", { 100, 100}, 0, 0, 1, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowRight");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_ArrowRight", { 100, 100}, 0, 0, 2, 0.5f });
 	}
@@ -663,29 +688,29 @@ void DevScene::LoadEffect()
 {
 	// HitEffect
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Hit");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Hit");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Hit");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Hit");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_Hit", { 50, 47}, 0, 5, 0, 0.3f, false });
 	}
 	// Teleport Effect
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Teleport");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Teleport");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Teleport");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Teleport");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_Teleport", { 80, 70}, 0, 9, 0, 0.3f, false });
 	}
 	// Death Effect
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Death");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Death");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Death");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Death");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_Death", { 80, 80}, 0, 5, 0, 0.5f, false });
 	}
 	// Heal Effect
 	{
-		Texture* texture = GET_SINGLE(ResourceManager)->GetTexture(L"Heal");
-		Flipbook* fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Heal");
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Heal");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_Heal");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_Heal", { 80, 70}, 0, 4, 0, 0.2f, false });
 	}
@@ -694,12 +719,12 @@ void DevScene::LoadEffect()
 void DevScene::LoadTilemap()
 {
 	// 타일맵
-		TilemapActor* actor = new TilemapActor();
+		shared_ptr<TilemapActor> actor = make_shared<TilemapActor>();
 		AddActor(actor);
 
 		_tilemapActor = actor;
 		{
-			auto* tm = GET_SINGLE(ResourceManager)->CreateTilemap(L"Tilemap_01");
+			auto tm = GET_SINGLE(ResourceManager)->CreateTilemap(L"Tilemap_01");
 			tm->SetMapSize({ 63,43 });
 			tm->SetTileSize(48);
 
@@ -711,8 +736,9 @@ void DevScene::LoadTilemap()
 
 void DevScene::LoadUI()
 {
+	_black = GET_SINGLE(ResourceManager)->GetSprite(L"Chat");
 	{	// 퀵 슬롯
-		QuickSlot* qs = GET_SINGLE(QuickSlot);
+		shared_ptr<QuickSlot> qs = GET_SINGLE(ItemManager)->GetQuickSlot();
 		if (qs)
 		{
 			qs->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });
@@ -721,7 +747,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{  // 채팅 창
-		Chat* chat = new Chat(Vec2{ 10,320 } /*Texts*/);
+		shared_ptr<Chat> chat = make_shared<Chat>(Vec2{ 10,320 } /*Texts*/);
 		if (chat)
 		{// background
 			chat->SetPos(Vec2{ 10,320 });
@@ -732,7 +758,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// Chatting input
-		ChatInput* chatInput = new ChatInput();
+		shared_ptr<ChatInput> chatInput = make_shared<ChatInput>();
 		if (chatInput)
 		{
 			/*chatInput->SetSize(Vec2Int{ 300,20 });*/
@@ -741,7 +767,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{
-		StatusPanel* statusPanel = new StatusPanel();
+		shared_ptr<StatusPanel> statusPanel = make_shared<StatusPanel>();
 		if (statusPanel)
 		{
 			statusPanel->SetVisible(true);
@@ -749,7 +775,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// 퀘스트 트래커
-		QuestTrackerUI* tracker = new QuestTrackerUI();
+		shared_ptr<QuestTrackerUI> tracker = make_shared<QuestTrackerUI>();
 		if (tracker)
 		{
 			tracker->SetVisible(true);
@@ -757,7 +783,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// Game Over
-		GameOver* go = new GameOver();
+		shared_ptr<GameOver> go = make_shared<GameOver>();
 		if (go)
 		{
 			go->SetVisible(false);
@@ -765,7 +791,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// 상인 UI
-		MerchantUI* tu = new MerchantUI();
+		shared_ptr<MerchantUI> tu = make_shared<MerchantUI>();
 		if (tu)
 		{
 			tu->SetVisible(false);
@@ -775,7 +801,7 @@ void DevScene::LoadUI()
 	}
 	{
 		// 상인 대화 창
-		MerchantDialogueUI* talk = new MerchantDialogueUI();
+		shared_ptr<MerchantDialogueUI> talk = make_shared<MerchantDialogueUI>();
 		if (talk)
 		{
 			talk->SetDialogue(0);
@@ -784,7 +810,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// 상인 - 상점 UI
-		ShopUI* shopUI = new ShopUI();
+		shared_ptr<ShopUI> shopUI = make_shared<ShopUI>();
 		if (shopUI)
 		{
 			shopUI->SetPos({ 135,80 });
@@ -794,7 +820,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// 상인 - 퀘스트 UI
-		QuestUI* questUI = new QuestUI();
+		shared_ptr<QuestUI> questUI = make_shared<QuestUI>();
 		if (questUI)
 		{
 			questUI->SetPos({ 135,80 });
@@ -805,7 +831,7 @@ void DevScene::LoadUI()
 		}
 	}
 	{	// 인벤토리 및 장비창
-		Inventory* Inven = new Inventory();
+		shared_ptr<Inventory> Inven = make_shared<Inventory>();
 		if (Inven)
 		{
 			Inven->SetPos({ 510, 125 });
@@ -814,6 +840,11 @@ void DevScene::LoadUI()
 
 			GET_SINGLE(ItemManager)->Init();
 		}
+	}
+	{	// 설정 패널
+		shared_ptr<SettingPanel> settings = make_shared<SettingPanel>();
+		settings->SetVisible(false);
+		AddUI(settings);
 	}
 }
 
@@ -851,7 +882,7 @@ void DevScene::LoadQuest()
 
 void DevScene::SpawnItem(Protocol::ItemInfo info)
 {
-	Item* ret = new Item();
+	shared_ptr<Item> ret = make_shared<Item>();
 
 	ret->SetItemInfo(info);
 
@@ -862,11 +893,11 @@ void DevScene::SpawnItem(Protocol::ItemInfo info)
 	ret->BeginPlay();
 }
 
-GameObject* DevScene::GetObjects(uint64 id)
+shared_ptr<GameObject> DevScene::GetObjects(uint64 id)
 {
-	for (Actor* actor : _actors[LAYER_OBJECT])
+	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
 	{
-		GameObject* gameObject = dynamic_cast<GameObject*>(actor);
+		shared_ptr<GameObject> gameObject = dynamic_pointer_cast<GameObject>(actor);
 		if (gameObject && gameObject->info.objectid() == id)
 			return gameObject;
 	}
@@ -874,11 +905,11 @@ GameObject* DevScene::GetObjects(uint64 id)
 	return nullptr;
 }
 
-Monster* DevScene::GetMonster()
+shared_ptr<Monster> DevScene::GetMonster()
 {
-	for (Actor* actor : _actors[LAYER_OBJECT])
+	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
 	{
-		Monster* monster = dynamic_cast<Monster*>(actor);
+		shared_ptr<Monster> monster = dynamic_pointer_cast<Monster>(actor);
 		if (monster)
 			return monster;
 	}
@@ -901,7 +932,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 
 		if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
 		{
-			Player* player = SpawnObject<Player>(Vec2Int{ info.posx(), info.posy() });
+			auto player = SpawnObject<Player>(Vec2Int{ info.posx(), info.posy() });
 			
 			// 애니메이션을 위해
 			player->info = info;
@@ -910,7 +941,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
 		{
-			Monster* monster = SpawnObject<Monster>(Vec2Int{ info.posx(), info.posy() });
+			shared_ptr<Monster> monster = SpawnObject<Monster>(Vec2Int{ info.posx(), info.posy() });
 
 			// 애니메이션을 위해
 			monster->info = info;
@@ -923,7 +954,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			{
 			case Protocol::NPC_TYPE_SIGN:
 			{
-				Sign* npc = SpawnObject<Sign>(Vec2Int{ info.posx(), info.posy() });
+				auto npc = SpawnObject<Sign>(Vec2Int{ info.posx(), info.posy() });
 				// 애니메이션을 위해
 				npc->info = info;
 				npc->SetDir(DIR_DOWN);
@@ -933,7 +964,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 
 			case Protocol::NPC_TYPE_MERCHANT:
 			{
-				Merchant* npc = SpawnObject<Merchant>(Vec2Int{ info.posx(), info.posy() });
+				auto npc = SpawnObject<Merchant>(Vec2Int{ info.posx(), info.posy() });
 				// 애니메이션을 위해
 				npc->info = info;
 				npc->SetDir(DIR_DOWN);
@@ -955,20 +986,20 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 	{
 		uint64 id = pkt.ids(i);
 
-		GameObject* object = GetObjects(id);
+		shared_ptr<GameObject> object = GetObjects(id);
 		if (object)
 			RemoveActor(object);
 	}
 }
 
-Player* DevScene::FindClosestPlayer(Vec2Int cellPos)
+shared_ptr<Player> DevScene::FindClosestPlayer(Vec2Int cellPos)
 {
 	float best = FLT_MAX;
-	Player* ret = nullptr;
+	shared_ptr<Player> ret = nullptr;
 
-	for (Actor* actor : _actors[LAYER_OBJECT])
+	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
 	{
-		Player* player = dynamic_cast<Player*>(actor);
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(actor);
 		if (player)
 		{
 			Vec2Int dir = cellPos - player->GetCellPos();
@@ -1109,11 +1140,11 @@ bool DevScene::CanGo(Vec2Int cellPos)
 	if (_tilemapActor == nullptr)
 		return false;
 
-	Tilemap* tm = _tilemapActor->GetTilemap();
+	shared_ptr<Tilemap> tm = _tilemapActor->GetTilemap();
 	if (tm == nullptr)
 		return false;
 
-	Tile* tile = tm->GetTileAt(cellPos);
+	shared_ptr<Tile> tile = tm->GetTileAt(cellPos);
 	if (tile == nullptr)
 		return false;
 
@@ -1130,11 +1161,11 @@ bool DevScene::MonsterCanGo(Vec2Int cellPos)
 	if (_tilemapActor == nullptr)
 		return false;
 
-	Tilemap* tm = _tilemapActor->GetTilemap();
+	shared_ptr<Tilemap> tm = _tilemapActor->GetTilemap();
 	if (tm == nullptr)
 		return false;
 
-	Tile* tile = tm->GetTileAt(cellPos);
+	shared_ptr<Tile> tile = tm->GetTileAt(cellPos);
 	if (tile == nullptr)
 		return false;
 
@@ -1156,7 +1187,7 @@ Vec2 DevScene::ConvertPos(Vec2Int cellPos)
 	if (_tilemapActor == nullptr)
 		return ret;
 
-	Tilemap* tm = _tilemapActor->GetTilemap();
+	shared_ptr<Tilemap> tm = _tilemapActor->GetTilemap();
 	if (tm == nullptr)
 		return ret;
 
@@ -1175,7 +1206,7 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 	if (_tilemapActor == nullptr)
 		return ret;
 
-	Tilemap* tm = _tilemapActor->GetTilemap();
+	shared_ptr<Tilemap> tm = _tilemapActor->GetTilemap();
 	if (tm == nullptr)
 		return ret;
 
@@ -1195,13 +1226,13 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 
 void DevScene::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
 {
-	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	shared_ptr<MyPlayer> player = GET_SINGLE(SceneManager)->GetMyPlayer();
 	player->SetQuestState(questId, state, 0);
 }
 
 Protocol::QUEST_STATE DevScene::GetPlayerQuestState(int objectId, int questId)
 {
-	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	shared_ptr<MyPlayer> player = GET_SINGLE(SceneManager)->GetMyPlayer();
 	if (player)
 		return player->GetQuestState(questId);
 }

@@ -28,11 +28,13 @@ void SoundManager::Init(HWND hwnd)
 
 void SoundManager::Play(const wstring& key, bool loop /*= false*/)
 {
-	Sound* sound = GET_SINGLE(ResourceManager)->GetSound(key);
+	shared_ptr<Sound> sound = GET_SINGLE(ResourceManager)->GetSound(key);
 	if (sound == nullptr)
 		return;
 
 	sound->Play(loop);
+
+	UpdateVolume();
 }
 
 void SoundManager::SetVolume(SoundType type, long vol)
@@ -43,7 +45,7 @@ void SoundManager::SetVolume(SoundType type, long vol)
 	{
 		for (auto& sonic : sounds)
 		{
-			Sound* sound = sonic.second;
+			shared_ptr<Sound> sound = sonic.second;
 
 			if (sound == nullptr)
 				continue;

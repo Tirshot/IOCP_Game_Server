@@ -122,9 +122,6 @@
     <ClInclude Include="TimeManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionManager.h">
-      <Filter>소스 파일\01. Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\02. Scene</Filter>
     </ClInclude>
@@ -371,6 +368,9 @@
     <ClInclude Include="SliderBar.h">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClInclude>
+    <ClInclude Include="LoadScene.h">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -400,9 +400,6 @@
       <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
     <ClCompile Include="TimeManager.cpp">
-      <Filter>소스 파일\01. Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
@@ -621,15 +618,6 @@
     <ClCompile Include="PopUp.cpp">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Protocol.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Struct.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Enum.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="QuestTrackerUI.cpp">
       <Filter>소스 파일\06. UI\InGame\Quest</Filter>
     </ClCompile>
@@ -641,6 +629,18 @@
     </ClCompile>
     <ClCompile Include="SliderBar.cpp">
       <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadScene.cpp">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Struct.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Enum.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

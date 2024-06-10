@@ -30,7 +30,7 @@ public:
 	int GetLineHeight(int idx);
 
 private:
-	Sprite* _chatSprite = nullptr;
+	shared_ptr<Sprite> _chatSprite = nullptr;
 	RECT _rect = {};
 	Vec2 _rectPos = { 0,0};
 

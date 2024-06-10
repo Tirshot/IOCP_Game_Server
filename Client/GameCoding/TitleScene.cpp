@@ -19,12 +19,10 @@ TitleScene::TitleScene()
 
 TitleScene::~TitleScene()
 {
-	_uis.clear();
 }
 
 void TitleScene::Init()
 {
-
 	// 모든 리소스는 Scene에서 불러온다
 	// 다른 Scene으로 넘어갈 때 제거(Clear)한다
 	// 맵 텍스쳐
@@ -74,6 +72,9 @@ void TitleScene::Init()
 
 void TitleScene::Update()
 {
+	if (this == nullptr)
+		return;
+
 	Super::Update();
 
 	srand(time(0));
@@ -86,7 +87,13 @@ void TitleScene::Update()
 
 	for (auto& ui : _uis)
 	{
-		SettingPanel* setting = dynamic_cast<SettingPanel*>(ui);
+		if (_sceneChanged == true)
+			return;
+
+		if (ui == nullptr)
+			return;
+
+		auto setting = dynamic_pointer_cast<SettingPanel>(ui);
 		if (setting == nullptr)
 			continue;
 
@@ -95,7 +102,7 @@ void TitleScene::Update()
 		{
 			for (auto& ui : _uis)
 			{
-				Button* button = dynamic_cast<Button*>(ui);
+				shared_ptr<Button> button = dynamic_pointer_cast<Button>(ui);
 				if (button)
 				{
 					button->SetPause(true);
@@ -106,7 +113,7 @@ void TitleScene::Update()
 		{
 			for (auto& ui : _uis)
 			{
-				Button* button = dynamic_cast<Button*>(ui);
+				shared_ptr<Button> button = dynamic_pointer_cast<Button>(ui);
 				if (button)
 				{
 					button->SetPause(false);
@@ -138,7 +145,7 @@ void TitleScene::Render(HDC hdc)
 		bf.AlphaFormat = 0; //일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
 		bf.BlendFlags = 0;
 		bf.BlendOp = AC_SRC_OVER; //  원본과 대상 이미지를 합침
-		bf.SourceConstantAlpha = _alpha; // 투명도(투명 0 - 불투명 255)
+		bf.SourceConstantAlpha = _backgroundAlpha; // 투명도(투명 0 - 불투명 255)
 
 		::AlphaBlend(hdc,
 			0,
@@ -190,6 +197,33 @@ void TitleScene::Render(HDC hdc)
 	}
 
 	Super::Render(hdc);
+
+	if (_sceneChanged)
+	{
+		// 페이드용 검은 화면
+		BLENDFUNCTION bf = {};
+		bf.AlphaFormat = 0; //일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
+		bf.BlendFlags = 0;
+		bf.BlendOp = AC_SRC_OVER; //  원본과 대상 이미지를 합침
+		bf.SourceConstantAlpha = _alpha; // 투명도(투명 0 - 불투명 255)
+
+		::AlphaBlend(hdc,
+			0,
+			0,
+			800,
+			600,
+			_black->GetDC(),
+			0,
+			0,
+			100,
+			100,
+			bf);
+
+		_alpha += 2;
+
+		if (_alpha >= 250)
+			GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+	}
 }
 
 void TitleScene::LoadPlayer()
@@ -207,7 +241,7 @@ void TitleScene::LoadUI()
 	_randY = rand() % 1464;
 
 	{
-		Button* exit = new Button();
+		shared_ptr<Button> exit = make_shared<Button>();
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Off"), BS_Default);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
@@ -218,7 +252,7 @@ void TitleScene::LoadUI()
 		AddUI(exit);
 	}
 	{
-		Button* option = new Button();
+		shared_ptr<Button> option = make_shared<Button>();
 		option->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Option_Off"), BS_Default);
 		option->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Option_On"), BS_Pressed);
 		option->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Option_Hovered"), BS_Hovered);
@@ -229,18 +263,18 @@ void TitleScene::LoadUI()
 		AddUI(option);
 	}
 	{
-		Button* start = new Button();
+		shared_ptr<Button> start = make_shared<Button>();
 		start->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Start_Off"), BS_Default);
 		start->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Start_On"), BS_Pressed);
 		start->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Start_Hovered"), BS_Hovered);
 		start->SetPos(Vec2{ 220, 485 });
 		start->SetSize({ 140, 40 });
-		start->AddOnClickDelegate(this, &TitleScene::OnClickExitButton);
+		start->AddOnClickDelegate(this, &TitleScene::OnClickStartButton);
 		start->SetVisible(false);
 		AddUI(start);
 	}
 	{
-		SettingPanel* settings = new SettingPanel();
+		auto settings = make_shared<SettingPanel>();
 		settings->SetVisible(false);
 		AddUI(settings);
 	}
@@ -249,6 +283,7 @@ void TitleScene::LoadUI()
 void TitleScene::LoadSound()
 {	
 	GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav", SoundType::BGM);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav", SoundType::Effect);
 	GET_SINGLE(SoundManager)->Play(L"BGM", true);
 }
 
@@ -305,6 +340,8 @@ void TitleScene::PressAnyToStart()
 
 			// 버튼들 활성화
 			SetChildVisible<Button>(true);
+
+			GET_SINGLE(SoundManager)->Play(L"Button");
 		}
 	}
 }
@@ -321,4 +358,10 @@ void TitleScene::OnClickExitButton()
 void TitleScene::OnClickOptionButton()
 {
 	SetChildVisible<SettingPanel>(true);
+}
+
+void TitleScene::OnClickStartButton()
+{
+	// 페이드 아웃
+	_sceneChanged = true;
 }

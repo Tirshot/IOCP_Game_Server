@@ -18,7 +18,7 @@ public:
 	virtual void UpdateAnimation()  override;
 
 private:
-	Flipbook* _flipbookIdle = nullptr;
-	Flipbook* _flipbookMove = nullptr;
+	shared_ptr<Flipbook> _flipbookIdle = nullptr;
+	shared_ptr<Flipbook> _flipbookMove = nullptr;
 };
 

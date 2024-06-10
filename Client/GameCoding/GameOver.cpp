@@ -25,7 +25,7 @@ GameOver::GameOver()
 	_gameOver = GET_SINGLE(ResourceManager)->GetSprite(L"GameOver");
 
 	{ // 부활 버튼
-		Button* revive = new Button();
+		shared_ptr<Button> revive = make_shared<Button>();
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_Off"), BS_Default);
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_On"), BS_Pressed);
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_Hovered"), BS_Hovered);
@@ -37,7 +37,7 @@ GameOver::GameOver()
 	}
 
 	{ // 게임 종료
-		Button* exit = new Button();
+		shared_ptr<Button> exit = make_shared<Button>();
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Off"), BS_Default);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
@@ -70,7 +70,7 @@ void GameOver::Tick()
 
 	if (_alpha >= 220)
 	{
-		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 		if (_invisibleUIs == false)
 		{
@@ -159,12 +159,12 @@ void GameOver::FadeIn()
 
 void GameOver::OnClickReviveButton()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene == nullptr)
 		return;
 
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (myPlayer == nullptr)
 		return;
@@ -186,10 +186,10 @@ void GameOver::OnClickExitButton()
 	if (_visible)
 	{
 		// 수행 후 ui 제거
-		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 		if (scene)
 		{
-			scene->RemoveUI(this);
+			scene->RemoveUI(shared_from_this());
 		}
 
 		// 프로그램 종료

@@ -29,11 +29,11 @@ void TriggerActor::Tick()
 	Super::Tick();
 }
 
-void TriggerActor::PressSpaceInteract(UI* ui)
+void TriggerActor::PressSpaceInteract(shared_ptr<UI> ui)
 { 
 	if (IsTouched())
 	{
-		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+		auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 		Protocol::DIR_TYPE dir = myPlayer->info.dir();
 
@@ -55,7 +55,7 @@ void TriggerActor::PressSpaceInteract(UI* ui)
 	}
 }
 
-void TriggerActor::TouchInteract(UI* ui)
+void TriggerActor::TouchInteract(shared_ptr<UI> ui)
 {
 	if (IsTouched())
 	{
@@ -74,8 +74,8 @@ void TriggerActor::TouchInteract(UI* ui)
 
 bool TriggerActor::IsTouched()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(scene->GetCreatureAt({ info.posx(),info.posy() }));
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto myPlayer = dynamic_pointer_cast<MyPlayer>(scene->GetCreatureAt({ info.posx(),info.posy() }));
 
 	if (myPlayer)
 	{

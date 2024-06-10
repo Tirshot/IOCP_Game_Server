@@ -12,7 +12,7 @@
 
 void ItemManager::Init()
 {
-    DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+    auto scene = GET_SINGLE(SceneManager)->GetDevScene();
     if (scene == nullptr)
         return;
 
@@ -22,7 +22,6 @@ void ItemManager::Init()
 
 void ItemManager::Clear()
 {
-    SAFE_DELETE(_inventory);
 }
 
 void ItemManager::Tick()
@@ -70,13 +69,13 @@ int ItemManager::FindItemIDByName(wstring Name)
     return -1;
 }
 
-ITEM& ItemManager::GetItem(int itemID)
+ITEM ItemManager::GetItem(int itemID)
 {
     // 아이템 정보를 찾음
     vector<wstring> ItemInfo = FindItemInfo(itemID);
 
     // ITEM 객체를 동적으로 할당
-    ITEM* item = new ITEM;
+    auto item = make_shared<ITEM>();
 
     // 아이템 정보 할당
     item->ItemId = itemID;
@@ -121,7 +120,7 @@ bool ItemManager::RemoveItemFromInventory(int itemId)
     return GetInventory()->RemoveItem(itemId);
 }
 
-void ItemManager::SetItemToQuickSlot(ITEM* item, int index)
+void ItemManager::SetItemToQuickSlot(shared_ptr<ITEM> item, int index)
 {
     GetQuickSlot()->SetQuickSlot(item, index);
 }
@@ -136,9 +135,9 @@ wstring ItemManager::GetQuickSlotSelectedSubType()
     return _quickSlot->GetSelectedSubType();
 }
 
-void ItemManager::EquipItem(ITEM item)
+void ItemManager::EquipItem(shared_ptr<ITEM> item)
 {
-    _inventory->EquipItem(&item);
+    _inventory->EquipItem(item);
 }
 
 bool ItemManager::IsInventoryFull()
@@ -147,7 +146,7 @@ bool ItemManager::IsInventoryFull()
 
     for (auto& slot : slots)
     {
-        if (slot.ItemId == 0)
+        if (slot.get()->ItemId == 0)
             return false;
     }
 
@@ -161,14 +160,14 @@ int ItemManager::GetEmptySlots()
 
     for (auto& slot : slots)
     {
-        if (slot.ItemId == 0)
+        if (slot.get()->ItemId == 0)
             emptySlots++;
     }
 
     return emptySlots;
 }
 
-ITEM* ItemManager::FindItemFromInventory(int itemId)
+shared_ptr<ITEM> ItemManager::FindItemFromInventory(int itemId)
 {
     return _inventory->FindItemFromInventory(itemId);
 }
@@ -179,10 +178,10 @@ void ItemManager::SyncToServer()
 
     for (auto& slot : slots)
     {
-        if (slot.ItemId != 0)
+        if (slot.get()->ItemId != 0)
         {
-            slot.ItemId;
-            slot.ItemCount;
+            slot.get()->ItemId;
+            slot.get()->ItemCount;
         }
     }
 
@@ -240,12 +239,12 @@ int ItemManager::GetPrice(vector<wstring> row)
     return stoi(row[6]);
 }
 
-Sprite* ItemManager::GetSprite(wstring wstr)
+shared_ptr<Sprite> ItemManager::GetSprite(wstring wstr)
 {
     return GET_SINGLE(ResourceManager)->GetSprite(wstr);
 }
 
-Sprite* ItemManager::GetSprite(int itemID)
+shared_ptr<Sprite> ItemManager::GetSprite(int itemID)
 {
     const auto ItemTable = GET_SINGLE(ResourceManager)->GetItemTable();
 

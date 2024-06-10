@@ -12,9 +12,9 @@ public:
 	virtual void Tick() override;
 
 public:
-	void SetUI(Panel* panel) { _ui = panel; }
+	void SetUI(shared_ptr<Panel> panel) { _ui = panel; }
 
 protected:
-	Panel* _ui = nullptr;
+	shared_ptr<Panel> _ui = nullptr;
 };
 

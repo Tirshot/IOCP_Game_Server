@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-class HealEffect :  public GameObject
+class HealEffect :  public GameObject, public enable_shared_from_this<HealEffect>
 {
 	using Super = GameObject;
 

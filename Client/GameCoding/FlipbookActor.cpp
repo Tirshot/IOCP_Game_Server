@@ -74,7 +74,7 @@ void FlipbookActor::Render(HDC hdc)
 		info.texture->GetTransparent());
 }
 
-void FlipbookActor::SetFlipbook(Flipbook* flipbook)
+void FlipbookActor::SetFlipbook(shared_ptr<Flipbook> flipbook)
 {
 	// 요청한 것이 동일한 플립북이라면 (첫번째 그림에서 넘어가지 않는 경우)
 	if (flipbook && _flipbook == flipbook)

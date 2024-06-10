@@ -22,8 +22,8 @@ void Item::BeginPlay()
 {
 	Super::BeginPlay();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (scene == nullptr)
 		return;
@@ -33,7 +33,7 @@ void Item::BeginPlay()
 
 
 	int itemID = itemInfo.itemid();
-	auto& item = GET_SINGLE(ItemManager)->GetItem(itemID);
+	auto item = GET_SINGLE(ItemManager)->GetItem(itemID);
 
 	_name = GET_SINGLE(ChatManager)->StringToWStr(itemInfo.itemname());
 	_sprite = GET_SINGLE(ItemManager)->GetSprite(itemID);
@@ -44,8 +44,8 @@ void Item::Tick()
 {
 	Super::Tick();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (scene == nullptr)
 		return;
@@ -78,7 +78,7 @@ void Item::Tick()
 		}
 
 		// 아이템 제거
-		scene->RemoveActor(this);
+		scene->RemoveActor(shared_from_this());
 	}
 }
 

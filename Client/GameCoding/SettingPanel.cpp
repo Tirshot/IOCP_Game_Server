@@ -17,11 +17,6 @@ SettingPanel::SettingPanel()
 	_rect.top = _pos.y;
 	_rect.right = _pos.x + _size.x;
 	_rect.bottom = _pos.y + _size.y;
-
-	_soundSettings = GET_SINGLE(ResourceManager)->GetSprite(L"SoundSettings");
-	_BGM = GET_SINGLE(ResourceManager)->GetSprite(L"BGM");
-	_UI = GET_SINGLE(ResourceManager)->GetSprite(L"UI");
-	_SFX = GET_SINGLE(ResourceManager)->GetSprite(L"SFX");
 }
 
 SettingPanel::~SettingPanel()
@@ -39,7 +34,7 @@ void SettingPanel::BeginPlay()
 
 	{
 		// 닫기 버튼
-		Button* cross = new Button;
+		shared_ptr<Button> cross = make_shared<Button>();
 		cross->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Cross_Off"), BS_Default);
 		cross->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Cross_Off"), BS_Hovered);
 		cross->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Cross_On"), BS_Pressed);
@@ -51,51 +46,55 @@ void SettingPanel::BeginPlay()
 	}
 	{
 		// 슬라이더
-		SliderBar* slider = new SliderBar;
+		auto slider = make_shared<SliderBar>();
 		slider->SetPos({ _pos.x + 280,_pos.y + 120 });
 		slider->SetMaximumValue(1);
 		slider->SetMinimumValue(0);
+		slider->SetValue(GET_SINGLE(SoundManager)->GetMasterVolume());
 		slider->SetName(L"ALL");
 		slider->AddOnSlideDelegate(this, &SettingPanel::SetAllVolume);
 		AddChild(slider);
 	}
 	{
 		// 슬라이더
-		SliderBar* slider = new SliderBar;
+		auto slider = make_shared<SliderBar>();
 		slider->SetPos({ _pos.x + 280,_pos.y + 170 });
 		slider->SetMaximumValue(1);
 		slider->SetMinimumValue(0);
+		slider->SetValue(GET_SINGLE(SoundManager)->GetBGMVolume());
 		slider->SetName(L"BGM");
 		slider->AddOnSlideDelegate(this, &SettingPanel::SetBGMVolume);
 		AddChild(slider);
 	}
 	{
 		// 슬라이더
-		SliderBar* slider = new SliderBar;
+		auto slider = make_shared<SliderBar>();
 		slider->SetPos({ _pos.x + 280,_pos.y + 220 });
 		slider->SetMaximumValue(1);
 		slider->SetMinimumValue(0);
+		slider->SetValue(GET_SINGLE(SoundManager)->GetSFXVolume());
 		slider->SetName(L"SFX");
 		slider->AddOnSlideDelegate(this, &SettingPanel::SetSFXVolume);
 		AddChild(slider);
 	}
 	{
 		// 슬라이더
-		SliderBar* slider = new SliderBar;
+		auto slider = make_shared<SliderBar>();
 		slider->SetPos({ _pos.x + 280,_pos.y + 270 });
 		slider->SetMaximumValue(1);
 		slider->SetMinimumValue(0);
+		slider->SetValue(GET_SINGLE(SoundManager)->GetUIVolume());
 		slider->SetName(L"UI");
 		slider->AddOnSlideDelegate(this, &SettingPanel::SetUIVolume);
 		AddChild(slider);
 	}
-	for (UI* child : _children)
+	for (auto& child : _children)
 		child->BeginPlay();
 }
 
 void SettingPanel::Tick()
 {
-	for (UI* child : _children)
+	for (auto& child : _children)
 		child->Tick();
 
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::ESC))
@@ -110,8 +109,6 @@ void SettingPanel::Tick()
 			SetVisible(false);
 		}
 	}
-
-
 }
 
 void SettingPanel::Render(HDC hdc)
@@ -128,17 +125,6 @@ void SettingPanel::Render(HDC hdc)
 		_background->GetSize().y,
 		SRCCOPY
 	);
-
-	//for (auto& child : _children)
-	//{
-	//	auto* slider = dynamic_cast<SliderBar*>(child);
-	//	if (slider)
-	//	{
-	//		RECT _textRect = { _pos.x + (_size.x / 2) - 10, _pos.y + (_size.y / 2),_textRect.left + 30,_textRect.top + 18 };
-	//		DrawTextW(hdc, to_wstring(slider->GetValue()).c_str(), -1, &_textRect, DT_CENTER | WHITENESS);
-	//		break;
-	//	}
-	//}
 
 	int sizeX = _soundSettings->GetSize().x;
 	int sizeY =	_soundSettings->GetSize().y;
@@ -191,7 +177,7 @@ void SettingPanel::Render(HDC hdc)
 		sizeY,
 		_UI->GetTransparent());
 
-	for (UI* child : _children)
+	for (auto& child : _children)
 		child->Render(hdc);
 }
 
@@ -204,7 +190,7 @@ void SettingPanel::SetAllVolume()
 {
 	for (auto& child : _children)
 	{
-		auto slider = dynamic_cast<SliderBar*>(child);
+		auto slider = dynamic_pointer_cast<SliderBar>(child);
 		if (slider)
 		{
 			if (slider->GetName() == L"ALL")
@@ -220,7 +206,7 @@ void SettingPanel::SetBGMVolume()
 {
 	for (auto& child : _children)
 	{
-		auto slider = dynamic_cast<SliderBar*>(child);
+		auto slider = dynamic_pointer_cast<SliderBar>(child);
 		if (slider)
 		{
 			if (slider->GetName() == L"BGM")
@@ -236,7 +222,7 @@ void SettingPanel::SetSFXVolume()
 {
 	for (auto& child : _children)
 	{
-		auto slider = dynamic_cast<SliderBar*>(child);
+		auto slider = dynamic_pointer_cast<SliderBar>(child);
 		if (slider)
 		{
 			if (slider->GetName() == L"SFX")
@@ -252,7 +238,7 @@ void SettingPanel::SetUIVolume()
 {
 	for (auto& child : _children)
 	{
-		auto slider = dynamic_cast<SliderBar*>(child);
+		auto slider = dynamic_pointer_cast<SliderBar>(child);
 		if (slider)
 		{
 			if (slider->GetName() == L"UI")

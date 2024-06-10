@@ -7,7 +7,8 @@ class Sprite : public ResourceBase
 {
 public:
 	// 텍스쳐의 영역을 찝어옴
-	Sprite(Texture* texture, int32 x, int32 y, int32 cx, int32 cy);
+	Sprite();
+	Sprite(shared_ptr<Texture> texture, int32 x, int32 y, int32 cx, int32 cy);
 	virtual ~Sprite();
 
 	HDC		GetDC();
@@ -16,7 +17,7 @@ public:
 	Vec2Int GetSize() { return Vec2Int{ _cx, _cy }; }
 
 private:
-	Texture* _texture = nullptr;
+	shared_ptr<Texture> _texture = nullptr;
 	int32 _x;
 	int32 _y;
 	int32 _cx;

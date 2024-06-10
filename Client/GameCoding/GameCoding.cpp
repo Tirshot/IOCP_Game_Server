@@ -151,14 +151,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             isChatting = false;
             memset(str1, 0, sizeof(str1));
 
-            DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+            auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
             
             if (scene)
             {
                 GET_SINGLE(ChatManager)->SetInvisibleChat();
                 GET_SINGLE(ChatManager)->SetVisibleChatInput(false);
 
-                MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+                shared_ptr<MyPlayer> myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
                 myPlayer->SetState(IDLE);
             }
         }
@@ -166,7 +166,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         // 엔터 키를 누르면 채팅 입력 시작 또는 종료
         if (wParam == VK_RETURN)
         {
-            DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+            auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 
             if (scene)
             {
@@ -209,7 +209,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_CHAR:
     {
-        DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+        auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
         if (scene)
         {
             if (isChatting)
@@ -235,7 +235,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
             else if (isChatting == false && wParam == VK_RETURN)
             {
-                MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+                shared_ptr<MyPlayer> myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
                 if (myPlayer && myPlayer->info.state() == CHAT)
                 {
                     str1[0] = L' ';

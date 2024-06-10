@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "SceneManager.h"
+#include "ResourceManager.h"
 #include "DevScene.h"
 #include "TitleScene.h"
+#include "LoadScene.h"
 #include "Player.h"
 #include "MyPlayer.h"
 
@@ -24,35 +26,41 @@ void SceneManager::Render(HDC hdc)
 
 void SceneManager::Clear()
 {
-	SAFE_DELETE(_scene);
+	/*SAFE_DELETE(_scene);*/
 }
 
 void SceneManager::ChangeScene(SceneType sceneType)
 {
+	if (_scene)
+		_scene->SetPauseState(true);
+
 	// 변경하려는 Scene과 현재 Scene이 일치하면 종료
 	//if (_sceneType == sceneType)
 	//	return;
 
 	// 변경하려는 Scene을 newScene이라 명명
-	Scene* newScene = nullptr;
+	shared_ptr<Scene> newScene = nullptr;
 
 	switch (sceneType)
 	{
 	case SceneType::DevScene:
-		newScene = new DevScene;
+		newScene = make_shared<DevScene>();
+		break;
+
+	case SceneType::LoadScene:
+		newScene = make_shared <LoadScene>();
 		break;
 
 	case SceneType::TitleScene:
-		newScene = new TitleScene;
+		newScene = make_shared <TitleScene>();
 		break;
-
 	}
 
-	// Scene 변경을 위해 기존 scene 제거
-	if (_scene)
-		SAFE_DELETE(_scene);
+	if (newScene == nullptr)
+		return;
 
 	newScene->SetPauseState(false);
+
 	// 기존 Scene을 변경하려는 Scene으로 대체
 	_scene = newScene;
 	_sceneType = sceneType;
@@ -60,9 +68,9 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	newScene->Init();
 }
 
-class DevScene* SceneManager::GetDevScene()
+shared_ptr<DevScene> SceneManager::GetDevScene()
 {
-	return dynamic_cast<DevScene*>(GetCurrentScene());
+	return dynamic_pointer_cast<DevScene>(GetCurrentScene());
 }
 
 uint64 SceneManager::GetMyPlayerId()
@@ -70,12 +78,12 @@ uint64 SceneManager::GetMyPlayerId()
 	return _myPlayer ? _myPlayer->info.objectid() : 0;
 }
 
-Player* SceneManager::GetPlayerByID(uint64 objectId)
+shared_ptr<Player> SceneManager::GetPlayerByID(uint64 objectId)
 {
 	if (!_scene)
 		return nullptr;
 
-	Player* player = _scene->GetPlayerByID(objectId);
+	auto player = _scene->GetPlayerByID(objectId);
 
 	return player ? player : nullptr;
 }

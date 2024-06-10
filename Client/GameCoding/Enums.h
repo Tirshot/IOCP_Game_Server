@@ -5,6 +5,7 @@ enum class SceneType
 		DevScene,
 		EditScene,
 		TitleScene,
+		LoadScene,
 };
 
 enum class SoundType
@@ -114,7 +115,7 @@ struct ITEM
 	wstring SubType = L"";
 	wstring Description = L"";
 	int Price = 0;
-	class Sprite* Sprite = nullptr;
+	shared_ptr<class Sprite> Sprite = nullptr;
 	RECT Rect = {};
 	int index = 0;
 
@@ -127,5 +128,18 @@ struct ITEM
 			return true;
 
 		return false;
+	}
+
+	void Reset()
+	{
+		this->ItemId = 0;
+		this->ItemCount = 0;
+		this->KorName = L"";
+		this->Name = L"";
+		this->Description = L"";
+		this->Price = 0;
+		this->Sprite = nullptr;
+		this->SubType = L"";
+		this->Type = L"";
 	}
 };

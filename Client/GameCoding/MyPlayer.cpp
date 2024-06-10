@@ -99,7 +99,7 @@ void MyPlayer::UsePotion()
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Heal(info.objectid());
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	scene->SpawnObject<HealEffect>({ GetCellPos() });
 }
 
@@ -113,7 +113,7 @@ void MyPlayer::TickInput()
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	// 채팅 입력창
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
 	{	
@@ -123,7 +123,7 @@ void MyPlayer::TickInput()
 	// 공격
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
-		NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
+		auto npc = dynamic_pointer_cast<NPC>(scene->GetCreatureAt(GetFrontCellPos()));
 
 		if (npc)
 			return;
@@ -150,7 +150,7 @@ void MyPlayer::TickInput()
 	{
 		if (_sumTimes >= 0.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
 		{
-			NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
+			auto npc = dynamic_pointer_cast<NPC>(scene->GetCreatureAt(GetFrontCellPos()));
 
 			if (npc)
 				return;
@@ -225,8 +225,8 @@ void MyPlayer::TickInput()
 	// Debug - 랜덤 위치의 몬스터 킬
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::B))
 	{
-		Monster* monster = scene->GetMonster();
-		Creature* creature = dynamic_cast<Creature*>(monster);
+		auto monster = scene->GetMonster();
+		auto creature = dynamic_pointer_cast<Creature>(monster);
 
 		if (monster)
 		{

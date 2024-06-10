@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 class Sprite;
-class Item : public GameObject
+class Item : public GameObject, public enable_shared_from_this<Item>
 {
 	using Super = GameObject;
 public:
@@ -16,7 +16,7 @@ public:
 
 protected:
 	virtual void TickIdle();
-	Sprite* _sprite = nullptr;
+	shared_ptr<Sprite> _sprite = nullptr;
 	wstring _name = L"";
 	wstring _korName = L"";
 

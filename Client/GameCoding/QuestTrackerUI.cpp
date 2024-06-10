@@ -64,7 +64,7 @@ void QuestTrackerUI::Render(HDC hdc)
 
 void QuestTrackerUI::AddQuestToTracking(int questID, wstring name, wstring description, int target)
 {
-	QUEST* quest = new QUEST();
+	auto quest = make_shared<QUEST>();
 	quest->questName = name;
 	quest->description = description;
 	quest->target = target;
@@ -76,8 +76,8 @@ void QuestTrackerUI::AddQuestToTracking(int questID, wstring name, wstring descr
 
 	wstring str = std::format(L"{0} {4}\n{1}\n({2} / {3})\n", name, description, progress, target, completeStr);
 
-	TextBox* list = new TextBox();
-	list->SetParent(this);
+	auto list = make_shared<TextBox>();
+	list->SetParent(shared_from_this());
 	list->SetBackground(_background);
 	list->SetPos({ _pos.x, _pos.y });
 	list->SetPadding(5, 5);
@@ -121,7 +121,7 @@ void QuestTrackerUI::SetProgress(int questID, int progress)
 	}
 }
 
-void QuestTrackerUI::AddQuestToTracker(QUEST* quest)
+void QuestTrackerUI::AddQuestToTracker(shared_ptr<QUEST> quest)
 {
 	_quests.push_back(quest);
 }
@@ -129,13 +129,11 @@ void QuestTrackerUI::AddQuestToTracker(QUEST* quest)
 void QuestTrackerUI::RemoveQuestFromTracker(int questID)
 {
 	auto it = std::remove_if(_quests.begin(), _quests.end(),
-		[&](QUEST* quest)
+		[&](shared_ptr<QUEST> quest)
 		{
 			if (quest->questID == questID)
 			{
 				RemoveChild(quest->textBox);
-				delete quest->textBox; // TextBox 메모리 해제
-				delete quest; // QUEST 메모리 해제
 				return true;
 			}
 			return false;
@@ -150,8 +148,8 @@ void QuestTrackerUI::RemoveQuestFromTracker(int questID)
 
 void QuestTrackerUI::GetActiveQuests()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (scene == nullptr || myPlayer == nullptr)
 		return;
@@ -167,6 +165,4 @@ void QuestTrackerUI::GetActiveQuests()
 		auto state = quest.second.first;
 		int progress = quest.second.second;
 	}
-
-
 }

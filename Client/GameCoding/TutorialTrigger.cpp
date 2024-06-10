@@ -8,15 +8,6 @@
 
 TutorialTrigger::TutorialTrigger()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
-	// 튜토리얼 UI 노출
-	Tutorial* tu = new Tutorial();
-
-	_tutorial = tu;
-	_tutorial->SetVisible(false);
-	_tutorial->SetPos({ 300,50 });
-	scene->AddUI(_tutorial);
 }
 
 TutorialTrigger::~TutorialTrigger()
@@ -27,6 +18,18 @@ TutorialTrigger::~TutorialTrigger()
 void TutorialTrigger::BeginPlay()
 {
 	Super::BeginPlay();
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene == nullptr)
+		return;
+
+	// 튜토리얼 UI 노출
+	auto tu = make_shared<Tutorial>();
+
+	_tutorial = tu;
+	_tutorial->SetVisible(false);
+	_tutorial->SetPos({ 300,50 });
+	scene->AddUI(_tutorial);
 }
 
 void TutorialTrigger::Tick()

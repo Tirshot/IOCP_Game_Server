@@ -67,7 +67,7 @@ void Creature::Render(HDC hdc)
 //		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 //	}
 //
-//	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+//	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 //	if (info.hp() == 0)
 //	{
 //		if (scene)

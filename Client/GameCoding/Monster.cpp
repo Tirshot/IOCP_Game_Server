@@ -110,11 +110,11 @@ void Monster::TickSkill()
 	}
 
 	// 공격 판정
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
 		return;
 
-	Player* player = dynamic_cast<Player*>(scene->GetCreatureAt(GetFrontCellPos()));
+	auto player = dynamic_pointer_cast<Player>(scene->GetCreatureAt(GetFrontCellPos()));
 	
 	// Player에 피격 이펙트 출력
 	scene->SpawnObject<HitEffect>(GetFrontCellPos());

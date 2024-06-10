@@ -48,7 +48,7 @@ private:
 	map<int, pair<Protocol::QUEST_STATE, int>> _questsStates;
 
 	bool _keyPressed = false;
-	Texture* _plum = nullptr;
+	shared_ptr<Texture> _plum = nullptr;
 	float _sumTimes = 0.f;
 	int _selectedSlot = 0;
 	int _potionNums = 0;

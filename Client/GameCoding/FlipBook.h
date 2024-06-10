@@ -5,7 +5,7 @@ class Texture;
 
 struct FlipbookInfo
 {
-	Texture* texture = nullptr;
+	shared_ptr<Texture> texture = nullptr;
 	wstring name;
 	// 각 스프라이트 한 칸의 크기
 	Vec2Int size = {};

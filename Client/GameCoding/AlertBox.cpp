@@ -24,7 +24,7 @@ void AlertBox::BeginPlay()
 
 	// 텍스트
 	{
-		TextBox* text = new TextBox();
+		shared_ptr<TextBox> text = make_shared<TextBox>();
 		text->SetText(L"테스트용 텍스트입니다. \n두번째 줄입니다. \n 세번째 줄입니다.");
 		text->SetPos(Vec2{ _pos.x + 60, _pos.y  + 10 });
 		text->SetSize(Vec2Int{ (_size.x / 4) * 3, (_size.y / 2) });
@@ -34,7 +34,7 @@ void AlertBox::BeginPlay()
 
 	// 확인
 	{
-		Button* accept = new Button();
+		shared_ptr<Button> accept = make_shared<Button>();
 		accept->SetPos({ _pos.x + _size.x / 2 - 40, _pos.y + _size.y - 35});
 		accept->SetSize({ 50,30 });
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Default);
@@ -47,7 +47,7 @@ void AlertBox::BeginPlay()
 
 	// 취소
 	{
-		Button* deny = new Button();
+		shared_ptr<Button> deny = make_shared<Button>();
 		deny->SetPos({ _pos.x + _size.x  / 2 + 40, _pos.y + _size.y  - 35 });
 		deny->SetSize({ 50,30 });
 		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Default);
@@ -69,7 +69,7 @@ void AlertBox::Tick()
 	// 기즈모 위치를 중앙에 위치시키기 위해서는 Size 설정을 Pos 설정보다 먼저!!
 	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
 
-	Panel::DragAndMove(&_rect);
+	Panel::DragAndMove(_rect);
 
 	for (auto& child : _children)
 		if (_visible == true)

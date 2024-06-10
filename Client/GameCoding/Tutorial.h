@@ -12,6 +12,6 @@ public:
 	virtual void Render(HDC hdc);
 
 private:
-	Sprite* _sprite = nullptr;
+	shared_ptr<Sprite> _sprite = nullptr;
 };
 

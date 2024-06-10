@@ -23,5 +23,6 @@ private:
 	RECT _rect = {};
 	HDC _hdcBack = {};
 	HBITMAP _bmpBack = {};
+	bool _initialized = false;
 
 };

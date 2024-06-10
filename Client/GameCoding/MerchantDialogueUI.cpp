@@ -37,7 +37,7 @@ void MerchantDialogueUI::BeginPlay()
 	}
 	{ // 대화 내용
 		wstring wstr = L"퀘스트 대화 내용입니다.";
-		TextBox* textBox = new TextBox(wstr);
+		auto textBox = make_shared<TextBox>(wstr);
 		textBox->SetPos({ _pos.x, _pos.y });
 		textBox->SetPadding( 15, 15 );
 		textBox->SetSize({ _size.x, _size.y });
@@ -45,13 +45,13 @@ void MerchantDialogueUI::BeginPlay()
 	}
 
 	{ // 네임 플레이트
-		NamePlate* namePlate = new NamePlate(L"언덕 집 상인");
+		auto namePlate = make_shared<NamePlate>(L"언덕 집 상인");
 		namePlate->SetPos(Vec2{ _pos.x + 65, _pos.y - 40 });
 		AddChild(namePlate);
 	}
 
 	{ // 보상
-		NamePlate* reward = new NamePlate(L"보상");
+		auto reward = make_shared<NamePlate>(L"보상");
 		auto posX = reward->GetSize().x;
 		reward->SetPos(Vec2{ _pos.x - 2 - (posX / 2), _pos.y - 100 });
 		reward->SetVisible(false);
@@ -60,7 +60,7 @@ void MerchantDialogueUI::BeginPlay()
 
 	{ // 대화 내용
 		wstring wstr = L"퀘스트 대화 내용입니다.";
-		TextBox* textBox = new TextBox(wstr);
+		auto textBox = make_shared<TextBox>(wstr);
 		textBox->SetPos({ _pos.x, _pos.y });
 		textBox->SetPadding(15, 15);
 		textBox->SetSize({ _size.x, _size.y });
@@ -68,7 +68,7 @@ void MerchantDialogueUI::BeginPlay()
 	}
 
 	{ // 퀘스트 수락
-		Button* accept = new Button();
+		shared_ptr<Button> accept = make_shared<Button>();
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Accept_Off"), BS_Default);
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Accept_On"), BS_Pressed);
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Accept_Hovered"), BS_Hovered);
@@ -82,7 +82,7 @@ void MerchantDialogueUI::BeginPlay()
 	}
 
 	{ // 퀘스트 거절
-		Button* decline = new Button();
+		shared_ptr<Button> decline = make_shared<Button>();
 		decline->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Decline_Off"), BS_Default);
 		decline->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Decline_On"), BS_Pressed);
 		decline->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Quest_Decline_Hovered"), BS_Hovered);
@@ -96,7 +96,7 @@ void MerchantDialogueUI::BeginPlay()
 	}
 
 	{ // 확인 버튼
-		Button* confirm = new Button();
+		shared_ptr<Button> confirm = make_shared<Button>();
 		confirm->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Confirm_Off"), BS_Default);
 		confirm->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Confirm_On"), BS_Pressed);
 		confirm->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Confirm_Hovered"), BS_Hovered);
@@ -110,7 +110,7 @@ void MerchantDialogueUI::BeginPlay()
 	}
 
 	{ // 뒤로 버튼
-		Button* back = new Button();
+		shared_ptr<Button> back = make_shared<Button>();
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Off"), BS_Default);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_On"), BS_Pressed);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Hovered"), BS_Hovered);
@@ -137,7 +137,7 @@ void MerchantDialogueUI::Tick()
 	// 다이얼로그 진행 로직
 	for (auto& child : _children)
 	{
-		auto textBox = dynamic_cast<TextBox*>(child);
+		auto textBox = dynamic_pointer_cast<TextBox>(child);
 
 		if (textBox)
 		{
@@ -160,7 +160,7 @@ void MerchantDialogueUI::Tick()
 		}
 		else
 		{
-			auto button = dynamic_cast<Button*>(child);
+			auto button = dynamic_pointer_cast<Button>(child);
 			if (button)
 			{
 				button->SetVisible(false);
@@ -247,7 +247,7 @@ void MerchantDialogueUI::VisibleButton()
 	for (auto& child : _children)
 	{
 		// 처음 수령하는 퀘스트인지 확인
-		auto button = dynamic_cast<Button*>(child);
+		auto button = dynamic_pointer_cast<Button>(child);
 		if (button)
 		{
 			switch (_questState)
@@ -307,7 +307,7 @@ void MerchantDialogueUI::VisibleReward()
 	for (auto& child : _children)
 	{
 		// 처음 수령하는 퀘스트인지 확인
-		auto namePlate = dynamic_cast<NamePlate*>(child);
+		auto namePlate = dynamic_pointer_cast<NamePlate>(child);
 		if (namePlate)
 		{
 			switch (_questState)
@@ -352,7 +352,7 @@ void MerchantDialogueUI::VisibleReward()
 
 void MerchantDialogueUI::OnClickAcceptButton()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene)
 	{
@@ -376,7 +376,7 @@ void MerchantDialogueUI::OnClickAcceptButton()
 
 	// UI 감추기
 	SetVisible(false);
-	auto* questUI = scene->FindUI<QuestUI>(scene->GetUIs());
+	auto questUI = scene->FindUI<QuestUI>(scene->GetUIs());
 
 	// 다이얼로그 페이지 초기화
 	ResetPage();
@@ -394,12 +394,12 @@ void MerchantDialogueUI::OnClickDeclineButton()
 	// UI 감추기
 	SetVisible(false);
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene == nullptr)
 		return;
 
-	auto* questUI = scene->FindUI<QuestUI>(scene->GetUIs());
+	auto questUI = scene->FindUI<QuestUI>(scene->GetUIs());
 
 	// 다이얼로그 페이지 초기화
 	ResetPage();
@@ -414,7 +414,7 @@ void MerchantDialogueUI::OnClickDeclineButton()
 
 void MerchantDialogueUI::OnClickConfirmButton()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene)
 	{
@@ -424,7 +424,7 @@ void MerchantDialogueUI::OnClickConfirmButton()
 		{
 			// 퀘스트 완료
 			{
-				MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+				auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 				if (myPlayer)
 				{

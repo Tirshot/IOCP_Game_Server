@@ -31,11 +31,11 @@ public:
 	Protocol::QUEST_STATE GetQuestState() { if (this != nullptr) return _questState; }
 
 protected:
-	Texture* _background = nullptr;
-	Sprite* _questImage = nullptr;
-	Texture* _goldImage = nullptr;
-	Button* _accept = nullptr;
-	Button* _complete = nullptr;
+	shared_ptr<Texture> _background = nullptr;
+	shared_ptr<Sprite> _questImage = nullptr;
+	shared_ptr<Texture> _goldImage = nullptr;
+	shared_ptr<Button> _accept = nullptr;
+	shared_ptr<Button> _complete = nullptr;
 
 protected:
 	RECT _rect = {};

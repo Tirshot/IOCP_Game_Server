@@ -23,20 +23,20 @@ ShopItemPanel::ShopItemPanel()
 
 }
 
-ShopItemPanel::ShopItemPanel(ITEM* item)
+ShopItemPanel::ShopItemPanel(ITEM item)
 {
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"ShopButtonsBackground");
 	_goldImage = GET_SINGLE(ResourceManager)->GetTexture(L"Gold");
 	SetSize({ 360,100 });
-	_item = item;
+	_item = make_shared<ITEM>(item);
 }
 
-ShopItemPanel::ShopItemPanel(ITEM* item, int index, Vec2 initialPos)
+ShopItemPanel::ShopItemPanel(ITEM item, int index, Vec2 initialPos)
 {
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"ShopButtonsBackground");
 	_goldImage = GET_SINGLE(ResourceManager)->GetTexture(L"Gold");
 	SetSize({ 180,60 });
-	_item = item;
+	_item = make_shared<ITEM>(item);
 
 	_index = index;
 	int page = index / 13;
@@ -53,7 +53,7 @@ ShopItemPanel::ShopItemPanel(ITEM* item, int index, Vec2 initialPos)
 
 	// 아이템 이름
 	{
-		_itemName = new TextBox();
+		_itemName = make_shared<TextBox>();
 		_itemName->SetText(_item->KorName);
 		_itemName->SetSize(Vec2Int{ 160 , 30 });
 		_itemName->SetPadding(0, 10);
@@ -66,7 +66,7 @@ ShopItemPanel::ShopItemPanel(ITEM* item, int index, Vec2 initialPos)
 
 	// 아이템 설명
 	{
-		_description = new TextBox();
+		_description = make_shared<TextBox>();
 		_description->SetText(_item->Description);
 		_description->SetSize(Vec2Int{ 160 , 250 });
 		_description->SetPadding(5, 5);

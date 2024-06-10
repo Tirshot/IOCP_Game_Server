@@ -82,7 +82,7 @@ void QuestUIPanel::Tick()
 	for (auto& child : _children)
 		child->Tick();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	uint64 myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
 
 	_questState = scene->GetPlayerQuestState(myPlayerId, _questId);
