@@ -140,13 +140,18 @@ void ItemManager::EquipItem(shared_ptr<ITEM> item)
     _inventory->EquipItem(item);
 }
 
+void ItemManager::QuickEquipItem(int itemID)
+{
+    _inventory->QuickEquipItem(itemID);
+}
+
 bool ItemManager::IsInventoryFull()
 {
     auto slots = _inventory->GetSlots();
 
     for (auto& slot : slots)
     {
-        if (slot.get()->ItemId == 0)
+        if (slot->ItemId == 0)
             return false;
     }
 
@@ -160,7 +165,7 @@ int ItemManager::GetEmptySlots()
 
     for (auto& slot : slots)
     {
-        if (slot.get()->ItemId == 0)
+        if (slot->ItemId == 0)
             emptySlots++;
     }
 
@@ -178,10 +183,10 @@ void ItemManager::SyncToServer()
 
     for (auto& slot : slots)
     {
-        if (slot.get()->ItemId != 0)
+        if (slot->ItemId != 0)
         {
-            slot.get()->ItemId;
-            slot.get()->ItemCount;
+            slot->ItemId;
+            slot->ItemCount;
         }
     }
 

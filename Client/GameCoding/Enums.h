@@ -118,8 +118,8 @@ struct ITEM
 	shared_ptr<class Sprite> Sprite = nullptr;
 	RECT Rect = {};
 	int index = 0;
-
-	bool operator== (ITEM* other)
+	
+	bool operator== (shared_ptr<ITEM> other)
 	{
 		if (this->Rect.left == other->Rect.left
 			&& this->Rect.right == other->Rect.right

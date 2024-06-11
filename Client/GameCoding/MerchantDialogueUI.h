@@ -30,7 +30,7 @@ protected:
 	RECT _rect = {};
 	vector<wstring> _scripts = {};
 	int _questID = 0;
-	Protocol::QUEST_STATE _questState;
+	Protocol::QUEST_STATE _questState = Protocol::QUEST_STATE_IDLE;
 	int _alpha = 0;
 	class shared_ptr<Sprite> _merchantSprite = nullptr;
 	class shared_ptr<Sprite> _backGround = nullptr;

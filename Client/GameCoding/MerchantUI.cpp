@@ -21,10 +21,19 @@ MerchantUI::MerchantUI()
 	_rect.right = 800;
 	_rect.top = 0;
 	_rect.bottom = 600;
-	{ // 2D 스프라이트
-		_merchantSprite = GET_SINGLE(ResourceManager)->GetSprite(L"MerchantSprite");
-		_backGround = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
-	}
+
+	// 2D 스프라이트
+	_merchantSprite = GET_SINGLE(ResourceManager)->GetSprite(L"MerchantSprite");
+	_backGround = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
+}
+
+MerchantUI::~MerchantUI()
+{
+
+}
+
+void MerchantUI::BeginPlay()
+{
 	{ // 대화 내용
 		wstring wstr = L"어서오세요!\n최고 품질의 아이템만 제공하는 언덕 집 상인입니다.\n저렴한 가격에 모시고 있습니다.";
 		auto textBox = make_shared<TextBox>(wstr);
@@ -66,18 +75,10 @@ MerchantUI::MerchantUI()
 	}
 	{ // 네임 플레이트
 		auto namePlate = make_shared<NamePlate>(L"언덕 집 상인");
-		namePlate->SetPos(Vec2{200, 300});
+		namePlate->SetPos(Vec2{ 200, 300 });
 		AddChild(namePlate);
 	}
-}
 
-MerchantUI::~MerchantUI()
-{
-
-}
-
-void MerchantUI::BeginPlay()
-{
 	for (auto& child : _children)
 		child->BeginPlay();
 

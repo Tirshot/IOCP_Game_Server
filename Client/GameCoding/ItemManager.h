@@ -31,6 +31,7 @@ public:
 	wstring GetQuickSlotSelectedSubType();
 
 	void EquipItem(shared_ptr<ITEM> item);
+	void QuickEquipItem(int itemID);
 
 	bool IsInventoryFull();
 	int GetEmptySlots();

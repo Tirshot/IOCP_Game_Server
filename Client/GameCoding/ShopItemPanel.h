@@ -27,7 +27,7 @@ protected:
 	shared_ptr<Texture> _background = nullptr;
 	shared_ptr<Texture> _goldImage = nullptr;
 	shared_ptr<ITEM> _item = nullptr;
-	RECT _rect;
+	RECT _rect = {};
 	shared_ptr<class TextBox> _description = nullptr;
 	shared_ptr<class TextBox> _itemName = nullptr;
 	shared_ptr<class ItemCountsPopUp> _countsPopUp = nullptr;

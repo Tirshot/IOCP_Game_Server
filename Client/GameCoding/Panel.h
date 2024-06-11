@@ -47,9 +47,8 @@ public:
 protected:
 	vector<shared_ptr<UI>> _children;
 	bool _isDragging = false;
-	POINT _initialMousePos;
-	POINT _mousePos;
-	int _offsetX;
-	int _offsetY;
+	POINT _initialMousePos = {};
+	POINT _mousePos = {};
+	int _offsetX = 0;
+	int _offsetY = 0;
 };
-

@@ -50,7 +50,14 @@ ShopItemPanel::ShopItemPanel(ITEM item, int index, Vec2 initialPos)
 	_rect = RECT{ (int)_pos.x, (int)_pos.y, (int)_pos.x + GetSize().x, (int)_pos.y + GetSize().y};
 	_item->Rect = _rect;
 	_initialPos = _pos;
+}
 
+ShopItemPanel::~ShopItemPanel()
+{
+}
+
+void ShopItemPanel::BeginPlay()
+{
 	// 아이템 이름
 	{
 		_itemName = make_shared<TextBox>();
@@ -71,18 +78,11 @@ ShopItemPanel::ShopItemPanel(ITEM item, int index, Vec2 initialPos)
 		_description->SetSize(Vec2Int{ 160 , 250 });
 		_description->SetPadding(5, 5);
 		_description->SetVisible(false);
-		_description->SetPos(Vec2{ 503, 115});
+		_description->SetPos(Vec2{ 503, 115 });
 		_description->SetInitialPos(Vec2{ 503, 115 });
 		AddChild(_description);
 	}
-}
 
-ShopItemPanel::~ShopItemPanel()
-{
-}
-
-void ShopItemPanel::BeginPlay()
-{
 	for (auto& child : _children)
 	{
 		child->BeginPlay();

@@ -738,7 +738,7 @@ void DevScene::LoadUI()
 {
 	_black = GET_SINGLE(ResourceManager)->GetSprite(L"Chat");
 	{	// Äü ½½·Ô
-		shared_ptr<QuickSlot> qs = GET_SINGLE(ItemManager)->GetQuickSlot();
+		shared_ptr<QuickSlot> qs = make_shared<QuickSlot>();
 		if (qs)
 		{
 			qs->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY });

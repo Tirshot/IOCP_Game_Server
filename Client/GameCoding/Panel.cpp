@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "Button.h"
 #include "AlertBox.h"
+#include "Inventory.h"
 #include "DevScene.h"
 #include "ItemCountsPopUp.h"
 
@@ -51,7 +52,7 @@ void Panel::AddChild(shared_ptr<UI> ui)
 	if (ui == nullptr)
 		return;
 
-	//ui->SetParent(shared_from_this());
+	ui->SetParent(shared_from_this());
 
 	_children.push_back(ui);
 }
@@ -158,8 +159,14 @@ void Panel::DragAndMove(RECT rect)
 		_pos.x = newLeft;
 		_pos.y = newTop;
 
-		// 자식 위치 업데이트
-		UpdateChildPos(shared_from_this(), deltaX, deltaY);
+		auto parent = static_pointer_cast<Panel>(shared_from_this());
+
+		if (parent)
+		{
+			// 자식 위치 업데이트
+			UpdateChildPos(parent, deltaX, deltaY);
+		}
+
 		//for (auto& child : _children)
 		//{
 		//	Vec2 childPos = child->GetPos();

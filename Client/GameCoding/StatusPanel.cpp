@@ -8,6 +8,14 @@
 
 StatusPanel::StatusPanel()
 {
+}
+
+StatusPanel::~StatusPanel()
+{
+}
+
+void StatusPanel::BeginPlay()
+{
 	{	// HP
 		auto hp = make_shared<HP>();
 		hp->SetVisible(true);
@@ -34,14 +42,7 @@ StatusPanel::StatusPanel()
 		potion->SetVisible(true);
 		AddChild(potion);
 	}
-}
 
-StatusPanel::~StatusPanel()
-{
-}
-
-void StatusPanel::BeginPlay()
-{
 	for (auto& child : _children)
 		child->BeginPlay();
 }

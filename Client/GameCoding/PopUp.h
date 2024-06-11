@@ -15,6 +15,9 @@ public:
 	template<typename T>
 	void AddParentDelegate(T* parent, void(T::* parentFunc)())
 	{
+		if (parentFunc == nullptr)
+			return;
+
 		_parentCallback = [parent, parentFunc]()
 			{
 				(parent->*parentFunc)();

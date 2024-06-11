@@ -1,6 +1,7 @@
 #pragma once
 #include "Panel.h"
 
+class AlertBox;
 class Inventory : public Panel
 {
 	using Super = Panel;
@@ -13,6 +14,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
+
+public:
+	shared_ptr<AlertBox> MakeAlertBox(Vec2 pos, Vec2Int size, void (Inventory::* func)() = nullptr, bool twoButtons = true);
 
 private:
 	void SetItemSlot(ITEM& slot);
@@ -43,6 +47,7 @@ public:
 	shared_ptr<ITEM> GetEquippedItem(wstring wstr);
 
 	void EquipItem(shared_ptr<ITEM> item);
+	void QuickEquipItem(int itemID);
 	void PressToSetQuickItem(ITEM slot);
 
 	void OnPopClickAcceptDelegate();

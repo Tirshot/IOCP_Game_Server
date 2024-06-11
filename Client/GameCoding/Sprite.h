@@ -18,9 +18,9 @@ public:
 
 private:
 	shared_ptr<Texture> _texture = nullptr;
-	int32 _x;
-	int32 _y;
-	int32 _cx;
-	int32 _cy;
+	int32 _x = 0;
+	int32 _y = 0;
+	int32 _cx = 0;
+	int32 _cy = 0;
 };
 

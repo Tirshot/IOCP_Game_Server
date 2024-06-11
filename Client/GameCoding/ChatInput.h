@@ -18,13 +18,12 @@ public:
 	void RemoveTextChar(WCHAR text[], int len);
 	void ClearTextBox();
 
-	HDC GetDC();
 	RECT GetRect() { return _rect; }
 
 protected:
 	RECT _rect = {};
 	HDC _hdc = nullptr;
 
-	WCHAR _text[256];
+	WCHAR _text[256] = {};
 };
 

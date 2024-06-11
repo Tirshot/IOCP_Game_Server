@@ -1,6 +1,7 @@
 #pragma once
 #include "Panel.h"
 class Texture;
+class AlertBox;
 class ShopUI :  public Panel
 {
 	using Super = Panel;
@@ -23,6 +24,9 @@ public:
 	void ResetPage() { _page = 1; }
 
 	RECT GetShopRect() { return _rect; }
+
+public:
+	shared_ptr<AlertBox> MakeAlertBox(Vec2 pos, Vec2Int size, void (ShopUI::* func)() = nullptr, bool twoButtons = true);
 
 private:
 	void OnPopClickAcceptDelegate();

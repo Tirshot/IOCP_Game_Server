@@ -23,7 +23,15 @@ GameOver::GameOver()
 
 	_background = GET_SINGLE(ResourceManager)->GetSprite(L"Chat");
 	_gameOver = GET_SINGLE(ResourceManager)->GetSprite(L"GameOver");
+}
 
+GameOver::~GameOver()
+{
+
+}
+
+void GameOver::BeginPlay()
+{
 	{ // 부활 버튼
 		shared_ptr<Button> revive = make_shared<Button>();
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_Off"), BS_Default);
@@ -47,15 +55,7 @@ GameOver::GameOver()
 		exit->AddOnClickDelegate(this, &GameOver::OnClickExitButton);
 		AddChild(exit);
 	}
-}
 
-GameOver::~GameOver()
-{
-
-}
-
-void GameOver::BeginPlay()
-{
 	for (auto& child : _children)
 		child->BeginPlay();
 }

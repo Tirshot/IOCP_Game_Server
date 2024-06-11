@@ -229,6 +229,7 @@ void ItemCountsPopUp::OnClickAcceptButton()
 	ResetPos();
 	_counts = 1;
 	_price = 0;
+	_parent->SetPause(false);
 }
 
 void ItemCountsPopUp::OnClickDenyButton()
@@ -238,6 +239,7 @@ void ItemCountsPopUp::OnClickDenyButton()
 	ResetPos();
 	_counts = 1;
 	_price = 0;
+	_parent->SetPause(false);
 }
 
 void ItemCountsPopUp::OnClickCountPlusButton()

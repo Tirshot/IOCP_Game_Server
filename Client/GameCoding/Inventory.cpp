@@ -91,20 +91,6 @@ void Inventory::BeginPlay()
         AddChild(_itemCount);
     }
 
-    // 팝업
-    {
-        _alert = make_shared<AlertBox>();
-        if (_alert)
-        {
-            _alert->SetSize({ 300, 150 });
-            _alert->SetPos({ 400, 300 });
-            AddChild(_alert);
-            _alert->AddParentDelegate(this, &Inventory::OnPopClickAcceptDelegate);
-            _alert->SetVisible(false);
-            _alert->SetInitialPos(_alert->GetPos());
-        }
-    }
-
     for (auto& child : _children)
         child->BeginPlay();
 
@@ -228,6 +214,12 @@ void Inventory::Tick()
         if (child->GetVisible())
             child->Tick();
 
+    // popup이 있으면 일시정지
+    if (_pause)
+        return;
+
+    _deleteItem = nullptr;
+
     // UI 관련 코드 //
     if (_visible)
     {
@@ -242,27 +234,37 @@ void Inventory::Tick()
             _invenRect.bottom = _invenRect.top + 335;
         }
 
-        // 자식의 팝업이 켜져있을 때 상호작용 불가
-        if (IsChildPopUpVisible())
-            return;
+        //// 자식의 팝업이 켜져있을 때 상호작용 불가
+        //if (IsChildPopUpVisible())
+        //    return;
 
-        if (IsAnyPopUpVisible())
-            return;
+        //if (IsAnyPopUpVisible())
+        //    return;
+
+        // 아이템 슬롯 초기화
+        for (int j = 0; j < 5; j++)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (_slots[i + j * 8] == nullptr)
+                    return;
+
+                RECT rect = {};
+                rect.left = _pos.x + 13 + i * (_slotSize + 6);
+                rect.top = _pos.y + 45 + j * (_slotSize + 6);
+                rect.right = rect.left + _slotSize;
+                rect.bottom = rect.top + _slotSize;
+
+                _slots[i + j * 8]->Rect = rect;
+            }
+        }
 
         // 인벤토리
         for (auto& slot : _slots)
         {
             if (slot->ItemCount <= 0)
             {
-                RECT rect;
-                rect.left = slot->Rect.left;
-                rect.top = slot->Rect.top;
-                rect.right = slot->Rect.right;
-                rect.bottom = slot->Rect.bottom;
-
                 slot->Reset();
-                slot->Rect = rect;
-                // slot->Rect = rect;
             }
 
             // 아이템 드래그 앤 드랍
@@ -359,6 +361,10 @@ void Inventory::Tick()
                             break;
                         }
                     }
+
+                    if (_deleteItem)
+                        break;
+
                     // 일반적으로는 아이템 버리기
                     _deleteItem = _selectedItem;
 
@@ -366,15 +372,20 @@ void Inventory::Tick()
 
                     if (deleteItemID == 1 || deleteItemID == 2 || deleteItemID == 3)
                     {
-                        _alert->SetText(L"기본 무기는 버릴 수 없습니다.");
-                        _alert->SetIcon(L"Alert");
+                        shared_ptr<AlertBox> alert = MakeAlertBox({ GWinSizeX / 2,GWinSizeY / 2 }, { 300,150 }, &Inventory::OnPopClickAcceptDelegate, false);
+                        SetPause(true);
+
+                        alert->SetText(L"기본 무기는 버릴 수 없습니다.");
+                        alert->SetIcon(L"Alert");
                     }
                     else
                     {
-                        _alert->SetText(L"아이템을 모두 버리겠습니까?\n다시 주울 수 없습니다.");
-                        _alert->SetIcon(L"Danger");
+                        shared_ptr<AlertBox> alert = MakeAlertBox({ GWinSizeX / 2,GWinSizeY / 2 }, { 300,150 }, &Inventory::OnPopClickAcceptDelegate);
+                        SetPause(true);
+
+                        alert->SetText(L"아이템을 모두 버리겠습니까?\n다시 주울 수 없습니다.");
+                        alert->SetIcon(L"Danger");
                     }
-                    _alert->SetVisible(true);
                     continue;
                 }
 
@@ -556,7 +567,31 @@ void Inventory::Render(HDC hdc)
             _selectedItem->Sprite->GetSize().y,
             _selectedItem->Sprite->GetTransparent());
     }
+}
 
+shared_ptr<AlertBox> Inventory::MakeAlertBox(Vec2 pos, Vec2Int size, void (Inventory::* func)(), bool twoButtons)
+{
+    // 팝업
+    shared_ptr<AlertBox> alert = make_shared<AlertBox>();
+    if (alert)
+    {
+        // AlertBox 초기화
+        alert->SetSize(size);
+        alert->SetPos({ pos.x, pos.y });
+        alert->SetVisible(true);
+        alert->SetInitialPos(alert->GetPos());
+        alert->MakeAcceptButton();
+
+        if (twoButtons)
+            alert->MakeDenyButton();
+
+        alert->AddParentDelegate(this, func);
+        alert->BeginPlay();
+    }
+
+    AddChild(alert);
+
+    return alert;
 }
 
 void Inventory::SetItemSlot(ITEM& slot)
@@ -613,37 +648,36 @@ void Inventory::SlotRectsPosUpdate(shared_ptr<RECT> rect)
 void Inventory::SyncUseableItemToServer(int itemID, int counts)
 {
     // 서버와 동기화되는 소모품 관리 -> 서버 관리 인벤토리에 추가할 필요가 있음
+    auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    if (myPlayer == nullptr)
+        return;
+
+    switch (itemID)
     {
-        auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-        switch (itemID)
-        {
-        case 4: // Arrow
-        {
-            if (myPlayer)
-            {
-                int arrows = myPlayer->info.arrows();
-                myPlayer->info.set_arrows(arrows + counts);
+    case 4: // Arrow
+    {
+        int arrows = myPlayer->info.arrows();
+        if (counts == 0)
+            myPlayer->info.set_arrows(0);
+        else
+            myPlayer->info.set_arrows(arrows + counts);
 
-                if (counts == 0)
-                    myPlayer->info.set_arrows(0);
+        break;
+    }
 
-                break;
-            }
-        }
-        case 5: // Potion
-        {
-            if (myPlayer)
-            {
-                int potions = myPlayer->info.potion();
-                myPlayer->info.set_potion(potions + counts);
+    case 5: // Potion
+    {
+        int potions = myPlayer->info.potion();
+        if (counts == 0)
+            myPlayer->info.set_potion(0);
+        else
+            myPlayer->info.set_potion(potions + counts);
 
-                if (counts == 0)
-                    myPlayer->info.set_potion(0);
+        break;
+    }
 
-                break;
-            }
-        }
-        }
+    default:
+        break;
     }
 }
 
@@ -1277,7 +1311,6 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
             if (slot->ItemCount < ItemCount)
                 return false;
 
-            slot->index = index;
             slot->ItemCount -= ItemCount; // 수량 감소
 
             SyncUseableItemToServer(itemId, -ItemCount);
@@ -1285,13 +1318,12 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
 
             if (slot->ItemCount <= 0)
             {
-                //RECT slotRect = slot->Rect;
+                RECT slotRect = slot->Rect;
                 slot->Reset();
-                //slot->Rect = slotRect;
+                slot->Rect = slotRect;
                 return true;
             }
         }
-        index++;
     }
 
     // 아이템이 없는 경우
@@ -1496,41 +1528,88 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     }
 }
 
+void Inventory::QuickEquipItem(int itemID)
+{
+    if (itemID <= 0)
+        return;
+
+    ITEM item = GET_SINGLE(ItemManager)->GetItem(itemID);
+
+    if (item.Type != L"Wearable" && item.Type != L"Consumable")
+        return;
+
+    auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    if (myPlayer == nullptr)
+        return;
+
+    if (item.SubType == L"Sword")
+    {
+        if (_equips[0].second->ItemId == item.ItemId)
+            return;
+
+        _equips[0].second = make_shared<ITEM>(item);
+        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
+    }
+    else if (item.SubType == L"Bow")
+    {
+        if (_equips[0].second->ItemId == item.ItemId)
+            return;
+
+        _equips[0].second = make_shared<ITEM>(item);
+        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_BOW);
+    }
+    else if (item.SubType == L"Staff")
+    {
+        if (_equips[0].second->ItemId == item.ItemId)
+            return;
+
+        _equips[0].second = make_shared<ITEM>(item);
+        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
+    }
+    else if (item.SubType == L"Potion")
+    {
+
+
+    }
+}
+
 void Inventory::PressToSetQuickItem(ITEM slot)
 {
-    //// 퀵 슬롯 등록
-    //if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_1))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 1);
-    //}
-    //else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_2))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 2);
-    //}
-    //else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_3))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 3);
-    //}
-    //else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_4))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 4);
-    //}
-    //else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_5))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 5);
-    //}
-    //else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_6))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 6);
-    //}
-    //else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_7))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 7);
-    //}
-    //else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_8))
-    //{
-    //    GET_SINGLE(ItemManager)->SetItemToQuickSlot(slot, 8);
-    //}
+    auto slotRef = make_shared<ITEM>(slot);
+
+    // 퀵 슬롯 등록
+    if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_1))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 1);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_2))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 2);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_3))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 3);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_4))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 4);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_5))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 5);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_6))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 6);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_7))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 7);
+    }
+    else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::KEY_8))
+    {
+        GET_SINGLE(ItemManager)->SetItemToQuickSlot(slotRef, 8);
+    }
 }
 
 void Inventory::OnPopClickAcceptDelegate()

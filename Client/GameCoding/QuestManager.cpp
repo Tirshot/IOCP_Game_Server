@@ -26,12 +26,12 @@ void QuestManager::BeginPlay()
 float sumTime = 0.f;
 void QuestManager::Tick()
 {
-    // 0.5초 마다 실행
+    // 0.1초 마다 실행
     float now = GET_SINGLE(TimeManager)->GetDeltaTime();
 
     sumTime += now;
 
-    if (sumTime <= 0.5)
+    if (sumTime <= 0.1)
         return;
 
     sumTime = 0.f;
@@ -39,9 +39,9 @@ void QuestManager::Tick()
     // 필수 객체 가져오기
     auto scene = GET_SINGLE(SceneManager)->GetDevScene();
     auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-    /*auto inventory = GET_SINGLE(ItemManager)->GetInventory();*/
-
-    if (!myPlayer || !scene /* !inventory*/)
+    auto inventory = GET_SINGLE(ItemManager)->GetInventory();
+    
+    if (!myPlayer || !scene || !inventory)
         return;
 
     auto& questStates = myPlayer->GetQuestStates();
@@ -109,12 +109,12 @@ void QuestManager::Tick()
             }
             else if (state == Protocol::QUEST_STATE_FINISHED)
             {
-                if (_announce == false)
+                if (_announce == true)
                 {
-                    /*inventory->RemoveItem(targetID, targetNums);*/
+                    inventory->RemoveItem(targetID, targetNums);
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
                     _tracker->RemoveQuestFromTracker(questID);
-                    _announce = true;
+                    _announce = false;
                     continue;
                 }
             }

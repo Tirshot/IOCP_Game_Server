@@ -172,13 +172,10 @@ void ShopUI::Tick()
 	if (_visible)
 	{
 		for (auto& child : _children)
-			child->Tick();
+			if (child)
+				child->Tick();
 
-		// 자식 팝업이 있을 때 작동 중지
-		if (IsChildPopUpVisible())
-			return;
-
-		if (IsAnyPopUpVisible())
+		if (_pause)
 			return;
 
 		float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
@@ -227,11 +224,14 @@ void ShopUI::Tick()
 					_countsPopUp->SetPrice(_price);
 					_countsPopUp->SetMaxCounts(99);
 					_countsPopUp->SetVisible(true);
-					_initializeTime = 0.f;
+					SetPause(true);
+
 				}
 			}
 		}
 	}
+
+	_initializeTime = 0.f;
 }
 
 void ShopUI::Render(HDC hdc)
@@ -294,17 +294,45 @@ void ShopUI::SellItemToShop(shared_ptr<ITEM> item)
 	int itemID = _sellToShop->ItemId;
 	if (itemID == 1 || itemID == 2 || itemID == 3)
 	{
-		_alert->SetText(L"기본 무기는 판매할 수 없습니다.");
-		_alert->SetIcon(L"Alert");
+		auto alert = MakeAlertBox(Vec2{ GWinSizeX / 2, GWinSizeY / 2 }, { 300,150 }, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate, false);
+		SetPause(true);
+
+		alert->SetText(L"기본 무기는 판매할 수 없습니다.");
+		alert->SetIcon(L"Alert");
 	}
 	else
 	{
-		_alert->SetText(item->KorName + L"을(를) 개당 " + to_wstring(_sellToShop->Price / _buyPriceDivider) +L"골드에 판매하시겠습니까 ? ");
-		_alert->SetIcon(L"Warning");
+		auto alert = MakeAlertBox(Vec2{ GWinSizeX / 2, GWinSizeY / 2 }, { 300,150 }, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate);
+		SetPause(true);
+
+		alert->SetText(item->KorName + L"을(를) 개당 " + to_wstring(_sellToShop->Price / _buyPriceDivider) +L"골드에 판매하시겠습니까 ? ");
+		alert->SetIcon(L"Warning");
+	}
+}
+
+shared_ptr<AlertBox> ShopUI::MakeAlertBox(Vec2 pos, Vec2Int size, void(ShopUI::* func)(), bool twoButtons)
+{
+	// 팝업
+	shared_ptr<AlertBox> alert = make_shared<AlertBox>();
+	if (alert)
+	{
+		// AlertBox 초기화
+		alert->SetSize(size);
+		alert->SetPos({ pos.x, pos.y });
+		alert->SetVisible(true);
+		alert->SetInitialPos(alert->GetPos());
+		alert->MakeAcceptButton();
+
+		if (twoButtons)
+			alert->MakeDenyButton();
+
+		alert->AddParentDelegate(this, func);
+		alert->BeginPlay();
 	}
 
-	_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-	_alert->SetVisible(true);
+	AddChild(alert);
+
+	return alert;
 }
 
 void ShopUI::OnPopClickAcceptDelegate()
@@ -325,10 +353,9 @@ void ShopUI::OnPopClickAcceptDelegate()
 
 	if (gold < _allCost)
 	{
-		_alert->SetIcon(L"Warning");
-		_alert->SetText(L"골드가 부족합니다.");
-		_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-		_alert->SetVisible(true);
+		auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+		alert->SetIcon(L"Warning");
+		alert->SetText(L"골드가 부족합니다.");
 		return;
 	}
 
@@ -371,20 +398,18 @@ void ShopUI::OnPopClickAcceptDelegate()
 			// 중첩이 불가능한 타입
 			if (_sellItem->Type == L"Wearable")
 			{
-				_alert->SetIcon(L"Warning");
-				_alert->SetText(L"인벤토리가 가득 찼습니다.");
-				_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-				_alert->SetVisible(true);
+				auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+				alert->SetIcon(L"Warning");
+				alert->SetText(L"인벤토리가 가득 찼습니다.");
 				return;
 			}
 			// 인벤토리가 꽉 찼으며, 중첩이 가능한 타입 -> if문 탈출
 		}
 		else
 		{
-			_alert->SetIcon(L"Warning");
-			_alert->SetText(L"인벤토리가 가득 찼습니다.");
-			_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-			_alert->SetVisible(true);
+			auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+			alert->SetIcon(L"Warning");
+			alert->SetText(L"인벤토리가 가득 찼습니다.");
 			return;	// 인벤토리가 꽉 찼는데 해당 아이템이 슬롯에 없다면 리턴
 		}
 	}
@@ -406,10 +431,9 @@ void ShopUI::OnPopClickAcceptDelegate()
 			// 갑옷 등 중첩이 불가능한 아이템 갯수가 남은 슬롯보다 많으면 리턴
 			if (_sellItem->Type == L"Wearable" && GET_SINGLE(ItemManager)->GetEmptySlots() < _counts)
 			{
-				_alert->SetIcon(L"Warning");
-				_alert->SetText(L"인벤토리가 부족합니다.");
-				_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-				_alert->SetVisible(true);
+				auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+				alert->SetIcon(L"Warning");
+				alert->SetText(L"인벤토리에 빈 슬롯이 부족합니다.");
 				return;
 			}
 		}
@@ -424,6 +448,7 @@ void ShopUI::OnPopClickAcceptDelegate()
 	}
 
 	GET_SINGLE(ItemManager)->AddItemToInventory(_sellItem->ItemId, _counts);
+	SetPause(false);
 }
 
 void ShopUI::OnPopClickAlertAcceptDelegate()
@@ -467,6 +492,8 @@ void ShopUI::OnPopClickAlertAcceptDelegate()
 		_countsPopUp->AddParentDelegate(this, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate);
 		_countsPopUp->SetVisible(true);
 	}
+
+	SetPause(false);
 }
 
 void ShopUI::OnClickSellItemToShopAlertAcceptDelegate()
@@ -484,6 +511,8 @@ void ShopUI::OnClickSellItemToShopAlertAcceptDelegate()
 	_sellToShop = nullptr;
 
 	_countsPopUp->AddParentDelegate(this, &ShopUI::OnPopClickAcceptDelegate);
+
+	SetPause(false);
 }
 
 void ShopUI::OnClickBackButton()
@@ -501,6 +530,8 @@ void ShopUI::OnClickBackButton()
 
 	auto merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
 	merchantUI->SetVisible(true);
+
+	SetPause(false);
 }
 
 void ShopUI::OnClickExitButton()
@@ -514,6 +545,8 @@ void ShopUI::OnClickExitButton()
 	ResetPos();
 	_initializeTime = 0.f;
 	_page = 1;
+
+	SetPause(false);
 }
 
 shared_ptr<ITEM> ShopUI::GetSellItem(int itemID)

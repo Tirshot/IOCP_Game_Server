@@ -167,7 +167,6 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
-    <ClInclude Include="ItemCountBox.h" />
     <ClInclude Include="ItemCountsPopUp.h" />
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="LoadScene.h" />
@@ -259,7 +258,6 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
-    <ClCompile Include="ItemCountBox.cpp" />
     <ClCompile Include="ItemCountsPopUp.cpp" />
     <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="LoadScene.cpp" />

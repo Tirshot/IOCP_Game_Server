@@ -1,5 +1,7 @@
 #pragma once
 #include "PopUp.h"
+
+class Button;
 class AlertBox :  public PopUp
 {
 	using Super = PopUp;
@@ -17,14 +19,18 @@ private:
 	void OnClickDenyButton();
 
 public:
+	shared_ptr<Button> MakeAcceptButton();
+	shared_ptr<Button> MakeDenyButton();
 	void SetIcon(wstring wstr);
 	void SetText(wstring wstr);
 
 private:
-	class shared_ptr<Sprite> _background = nullptr;
-	class shared_ptr<Sprite> _icon = nullptr;
+	shared_ptr<class Sprite> _background = nullptr;
+	shared_ptr<class Sprite> _icon = nullptr;
+	shared_ptr<class TextBox> _text = nullptr;
 	RECT _rect = {};
 	Vec2 _initialPos = {};
 	bool _result = false;
+	int _buttonsCount = 0;
 };
 
