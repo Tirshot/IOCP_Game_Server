@@ -32,6 +32,9 @@ private:
 	virtual void TickSpinReady() override;
 	virtual void TickTeleport() override;
 
+public:
+	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
+	void MakeArrow();
 	void SyncToServer();
 
 public:
@@ -49,6 +52,7 @@ private:
 
 	bool _keyPressed = false;
 	shared_ptr<Texture> _plum = nullptr;
+	shared_ptr<class MiniMap> _miniMap = nullptr;
 	float _sumTimes = 0.f;
 	int _selectedSlot = 0;
 	int _potionNums = 0;

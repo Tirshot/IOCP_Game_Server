@@ -1,4 +1,3 @@
-#include "Monster.h"
 #include "pch.h"
 #include "Monster.h"
 #include "ResourceManager.h"
@@ -14,29 +13,21 @@
 
 Monster::Monster()
 {
-	_flipbookMove[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeUp");
-	_flipbookMove[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeDown");
-	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeft");
-	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRight");
-
-	_flipbookHit[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeUpHit");
-	_flipbookHit[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeDownHit");
-	_flipbookHit[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeftHit");
-	_flipbookHit[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRightHit");
 	// typeµµ protobuf·Î ¹Þ¾Æ¿È
 	// _type = CreatureType::Monster;
 	
 	// ½ºÅÈµµ protobuf·Î ¹Þ¾Æ¿È
 	//info.set_hp(50);
 	//info.set_maxhp(50);
-	info.set_attack(10);
+	//info.set_attack(10);
 	//info.set_defence(0);
 }
 
 Monster::~Monster()
 {
-
+	GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
 }
+
 void Monster::BeginPlay()
 {
 	Super::BeginPlay();
@@ -128,22 +119,4 @@ void Monster::TickHit()
 
 	if (_now > _wait)
 		SetState(IDLE);
-}
-
-void Monster::UpdateAnimation()
-{
-	switch (info.state())
-	{
-	case IDLE:
-		SetFlipbook(_flipbookMove[info.dir()]);
-		break;
-
-	case MOVE:
-		SetFlipbook(_flipbookMove[info.dir()]);
-		break;
-
-	case HIT:
-		SetFlipbook(_flipbookHit[info.dir()]);
-		break;
-	}
 }

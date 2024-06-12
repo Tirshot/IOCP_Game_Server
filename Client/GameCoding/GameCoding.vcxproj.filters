@@ -368,6 +368,10 @@
     <ClInclude Include="LoadScene.h">
       <Filter>소스 파일\02. Scene</Filter>
     </ClInclude>
+    <ClInclude Include="MiniMap.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -635,6 +639,12 @@
     </ClCompile>
     <ClCompile Include="Enum.pb.cc">
       <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniMap.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

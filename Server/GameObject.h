@@ -35,7 +35,7 @@ public:
 	Protocol::OBJECT_TYPE GetType() { return info.objecttype(); }
 	// ¿ÀºêÁ§Æ®¸¦ ÃÑ°ý °ü¸®
 	static PlayerRef CreatePlayer();
-	static MonsterRef CreateMonster();
+	static MonsterRef CreateMonster(Protocol::MONSTER_TYPE monsterType);
 	static NPCRef CreateNPC();
 	static SignRef CreateSign();
 	static ItemRef CreateItem();

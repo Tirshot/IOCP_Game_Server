@@ -318,10 +318,6 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 		Protocol::ObjectInfo* info = pkt.add_objects();
 		*info = gameObject->info;
 
-		// 아이템은 개별 드랍
-		if (info->objecttype() == Protocol::OBJECT_TYPE_ITEM)
-			return;
-
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 
 		Broadcast(sendBuffer);
@@ -630,7 +626,7 @@ void GameRoom::RandomMonsterSpawn()
 	Vec2Int randPos = GetRandomEmptyCellPos();
 	//
 	{
-		MonsterRef monster = GameObject::CreateMonster();
+		auto monster = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
 		monster->SetCellPos(randPos, true);
 		AddObject(monster);
 		_monsterCount++;

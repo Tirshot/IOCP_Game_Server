@@ -25,6 +25,7 @@
 #include "Sound.h"
 #include "Merchant.h"
 #include "Monster.h"
+#include "Snake.h"
 #include "MyPlayer.h"
 #include "Item.h"
 #include "StatusPanel.h"
@@ -48,6 +49,7 @@
 #include "AlertBox.h"
 #include "SettingPanel.h"
 #include "MerchantDialogueUI.h"
+#include "MiniMap.h"
 #include <filesystem>
 
 DevScene::DevScene()
@@ -66,6 +68,7 @@ void DevScene::Init()
 	// 다른 Scene으로 넘어갈 때 제거(Clear)한다
 	// 스테이지 01
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Stage01", L"Sprite\\Map\\Stage01.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Stage01_mini", L"Sprite\\Map\\Stage01_mini.bmp");
 
 	// 타일, 화살, 크리쳐의 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tile", L"Sprite\\Map\\Tile.bmp", RGB(128, 128, 128));
@@ -124,6 +127,7 @@ void DevScene::Init()
 
 	// 맵 스프라이트
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01"));
+	GET_SINGLE(ResourceManager)->CreateSprite(L"Stage01_mini", GET_SINGLE(ResourceManager)->GetTexture(L"Stage01_mini"));
 	GET_SINGLE(ResourceManager)->CreateSprite(L"TileO", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 0, 0 ,48, 48);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"TileX", GET_SINGLE(ResourceManager)->GetTexture(L"Tile"), 48, 0, 48, 48);
 	
@@ -287,6 +291,9 @@ void DevScene::RemoveActor(shared_ptr<Actor> actor)
 	if (monster)
 	{
 		SpawnObject<DeathEffect>(monster->GetCellPos());
+
+		GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
+
 		_monsterCount--;
 		return;
 	}
@@ -298,8 +305,10 @@ void DevScene::RemoveActor(shared_ptr<Actor> actor)
 		SpawnObject<DeathEffect>(player->GetCellPos());
 
 		GET_SINGLE(SoundManager)->Play(L"GameOver");
+
 		shared_ptr<Chat> chat = GET_SINGLE(ChatManager)->GetChat();
 		chat->AddText(L"캐릭터가 쓰러졌습니다.");
+
 		for (auto& ui : _uis)
 		{
 			shared_ptr<GameOver> go = dynamic_pointer_cast<GameOver>(ui);
@@ -782,6 +791,16 @@ void DevScene::LoadUI()
 			AddUI(tracker);
 		}
 	}
+	{	// 미니맵
+		auto miniMap = make_shared<MiniMap>();
+		if (miniMap)
+		{
+			miniMap->SetVisible(true);
+			miniMap->SetSize({ 120, 120 });
+			miniMap->SetPos({ (float)GWinSizeX - miniMap->GetSize().x, 0});
+			AddUI(miniMap);
+		}
+	}
 	{	// Game Over
 		shared_ptr<GameOver> go = make_shared<GameOver>();
 		if (go)
@@ -941,12 +960,25 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
 		{
-			shared_ptr<Monster> monster = SpawnObject<Monster>(Vec2Int{ info.posx(), info.posy() });
+			switch (info.monstertype())
+			{
+			case Protocol::MONSTER_TYPE_SNAKE:
+			{
+				shared_ptr<Snake> snake = SpawnObject<Snake>(Vec2Int{ info.posx(), info.posy() });
 
-			// 애니메이션을 위해
-			monster->info = info;
-			monster->SetDir(info.dir());
-			monster->SetState(info.state());
+				// 애니메이션을 위해
+				snake->info = info;
+				snake->SetDir(info.dir());
+				snake->SetState(info.state());
+				break;
+			}
+			case Protocol::MONSTER_TYPE_MOBLIN:
+			{
+				// 모블린
+			}
+
+
+			}
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_NPC)
 		{

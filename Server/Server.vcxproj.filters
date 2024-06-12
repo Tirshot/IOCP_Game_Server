@@ -125,6 +125,12 @@
     <ClCompile Include="Quest1Trigger.cpp">
       <Filter>소스 파일\Game\Room\Quest</Filter>
     </ClCompile>
+    <ClCompile Include="Moblin.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -198,6 +204,12 @@
     </ClInclude>
     <ClInclude Include="Quest1Trigger.h">
       <Filter>소스 파일\Game\Room\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Moblin.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

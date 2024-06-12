@@ -176,6 +176,7 @@
     <ClInclude Include="MerchantTutorial.h" />
     <ClInclude Include="MerchantTutorialTrigger.h" />
     <ClInclude Include="MerchantUI.h" />
+    <ClInclude Include="MiniMap.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="ShopItemPanel.h" />
     <ClInclude Include="ShopUI.h" />
     <ClInclude Include="SliderBar.h" />
+    <ClInclude Include="Snake.h" />
     <ClInclude Include="StatusPanel.h" />
     <ClInclude Include="TeleportEffect.h" />
     <ClInclude Include="TextBox.h" />
@@ -267,6 +269,7 @@
     <ClCompile Include="MerchantTutorial.cpp" />
     <ClCompile Include="MerchantTutorialTrigger.cpp" />
     <ClCompile Include="MerchantUI.cpp" />
+    <ClCompile Include="MiniMap.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
@@ -286,6 +289,7 @@
     <ClCompile Include="ShopItemPanel.cpp" />
     <ClCompile Include="ShopUI.cpp" />
     <ClCompile Include="SliderBar.cpp" />
+    <ClCompile Include="Snake.cpp" />
     <ClCompile Include="StatusPanel.cpp" />
     <ClCompile Include="Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

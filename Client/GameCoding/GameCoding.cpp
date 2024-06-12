@@ -143,8 +143,22 @@ int len = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    static HFONT hFont;
+
     switch (message)
     {
+    case WM_CREATE:
+    {
+        // 글꼴 생성
+        hFont = CreateFont(
+            -MulDiv(16, GetDeviceCaps(GetDC(hWnd), LOGPIXELSY), 72), // (16 * DPI) / 72 (1인치당 포인트)
+            0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+            DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+            DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, L"Malgun Gothic"
+        );
+    }
+    break;
+
     case WM_KEYDOWN:
         if (wParam == VK_ESCAPE)
         {
@@ -265,8 +279,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
-
         HDC hdc = BeginPaint(hWnd, &ps);
+
+        // 맑은 고딕
+        HFONT hOldFont = (HFONT)SelectObject(hdc, hFont);
+        SelectObject(hdc, hOldFont);
         EndPaint(hWnd, &ps);
     }
     break;

@@ -145,7 +145,7 @@ void TitleScene::Render(HDC hdc)
 		bf.AlphaFormat = 0; //일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
 		bf.BlendFlags = 0;
 		bf.BlendOp = AC_SRC_OVER; //  원본과 대상 이미지를 합침
-		bf.SourceConstantAlpha = _backgroundAlpha; // 투명도(투명 0 - 불투명 255)
+		bf.SourceConstantAlpha = _alpha; // 투명도(투명 0 - 불투명 255)
 
 		::AlphaBlend(hdc,
 			0,
@@ -205,7 +205,7 @@ void TitleScene::Render(HDC hdc)
 		bf.AlphaFormat = 0; //일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
 		bf.BlendFlags = 0;
 		bf.BlendOp = AC_SRC_OVER; //  원본과 대상 이미지를 합침
-		bf.SourceConstantAlpha = _alpha; // 투명도(투명 0 - 불투명 255)
+		bf.SourceConstantAlpha = _backgroundAlpha; // 투명도(투명 0 - 불투명 255)
 
 		::AlphaBlend(hdc,
 			0,
@@ -219,9 +219,9 @@ void TitleScene::Render(HDC hdc)
 			100,
 			bf);
 
-		_alpha += 2;
+		_backgroundAlpha += 1;
 
-		if (_alpha >= 250)
+		if (_backgroundAlpha >= 250)
 			GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 	}
 }
@@ -282,9 +282,9 @@ void TitleScene::LoadUI()
 
 void TitleScene::LoadSound()
 {	
-	GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav", SoundType::BGM);
+	GET_SINGLE(ResourceManager)->LoadSound(L"Title_BGM", L"Sound\\Title_BGM.wav", SoundType::BGM);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav", SoundType::Effect);
-	GET_SINGLE(SoundManager)->Play(L"BGM", true);
+	GET_SINGLE(SoundManager)->Play(L"Title_BGM", true);
 }
 
 void TitleScene::BackgroundFadeInAndOut()

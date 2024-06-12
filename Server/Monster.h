@@ -12,7 +12,7 @@ public:
 	virtual void Init();
 	virtual void Update();
 
-private:
+protected:
 	virtual void UpdateIdle();
 	virtual void UpdateMove();
 	virtual void UpdateSkill();

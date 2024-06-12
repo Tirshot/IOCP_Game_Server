@@ -101,9 +101,6 @@ public:
 	static SendBufferRef Make_S_ItemDrop(const Protocol::ItemInfo& info);
 	static SendBufferRef Make_S_AddItem(uint64 objectID, int itemID, int itemCounts);
 
-	// Arrow¿« info∏¶ ≥—±Ë
-	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
-
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
 	{

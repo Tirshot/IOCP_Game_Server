@@ -20,7 +20,7 @@ void QuestTrackerUI::BeginPlay()
 {
 	_size = { 150, 150 };
 	_pos.x = 800 - (int)_size.x;
-	_pos.y = 120;
+	_pos.y = 150;
 
 	_background = GET_SINGLE(ResourceManager)->GetSprite(L"Chat");
 

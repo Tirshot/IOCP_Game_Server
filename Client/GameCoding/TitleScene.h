@@ -43,9 +43,9 @@ private:
 	float _dir1 = 1.f;
 	float _dir2 = 0.f;
 	int _multiplier = 50;
-	int _backgroundAlpha = 255;
-	int _alpha = 0;
-	bool _isFadedIn = false;
+	int _backgroundAlpha = 0;
+	int _alpha = 10;
+	bool _isFadedIn = true;
 	bool _isPressedAnyKey = false;
 };
 

@@ -8,7 +8,9 @@
 #include "Creature.h"
 #include "Monster.h"
 #include "Player.h"
+#include "MyPlayer.h"
 #include "HitEffect.h"
+#include "Tilemap.h"
 #include "ChatManager.h"
 #include "SoundManager.h"
 
@@ -28,6 +30,21 @@ Arrow::~Arrow()
 void Arrow::BeginPlay()
 {
 	Super::BeginPlay();
+
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	if (myPlayer == nullptr)
+		return;
+
+	auto playerDir = myPlayer->GetFrontCellPos() - myPlayer->GetCellPos();
+
+	if (playerDir == VectorInt{ 1, 0 })
+		info.set_dir(DIR_RIGHT);
+	else if (playerDir == VectorInt{ -1, 0 })
+		info.set_dir(DIR_LEFT);
+	else if (playerDir == VectorInt{ 0, 1 })
+		info.set_dir(DIR_DOWN);
+	else
+		info.set_dir(DIR_UP);
 }
 
 void Arrow::Tick()
@@ -55,13 +72,12 @@ void Arrow::TickIdle()
 	{
 		SetCellPos(nextPos);
 		SetState(MOVE);
-		return;
 	}
 	else
 	{
 		// 앞이 비어있으면 전진, 몬스터라면 타격
 		auto creature = scene->GetCreatureAt(nextPos);
-		_owner->GetFrontCellPos();
+
 		if (creature == _owner)
 		{
 			SetCellPos(nextPos);
@@ -75,6 +91,14 @@ void Arrow::TickIdle()
 void Arrow::TickMove()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+
+	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+
+	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene == nullptr)
+		return;
 
 	Vec2 dir = (_destPos - _pos);
 	if (dir.Length() < 3.f)
@@ -109,6 +133,9 @@ void Arrow::TickHit()
 	Vec2Int nextPos = pos + deltaXY[info.dir()];
 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (scene == nullptr)
+		return;
 
 	// 앞이 비어있으면 전진, 몬스터라면 타격
 	/*Monster* _target = dynamic_cast<Monster*>(scene->GetCreatureAt(nextPos));*/

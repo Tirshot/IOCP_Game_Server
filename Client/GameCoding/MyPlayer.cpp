@@ -344,6 +344,7 @@ void MyPlayer::TickSpinReady()
 		SetState(SPIN);
 	}
 }
+
 void MyPlayer::TickTeleport()
 {
 	if (info.mp() >= 25)
@@ -356,6 +357,43 @@ void MyPlayer::TickTeleport()
 	}
 	SetState(IDLE);
 }
+
+void MyPlayer::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
+{
+	// 화살 BroadCast로 인해 2발씩 생성되는 버그 수정, 서버에서는 50ms 이후 화살 생성
+	_now = GetTickCount64();
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (_now - _prev >= 50)
+	{
+		if (this->info.arrows() <= 0)
+			return;
+
+		auto arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
+		arrow->info = info;
+		arrow->SetOwner(shared_from_this());
+		this->info.set_arrows(this->info.arrows() - 1);
+	}
+	_prev = _now;
+}
+
+void MyPlayer::MakeArrow()
+{
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		int arrows = this->info.arrows();
+		if (arrows <= 0)
+			return;
+
+		auto nextPos = GetFrontCellPos();
+
+		auto arrow = scene->SpawnObject<Arrow>(nextPos);
+		arrow->SetOwner(shared_from_this());
+		this->info.set_arrows(arrows - 1);
+	}
+}
+
 void MyPlayer::SyncToServer()
 {
 	// 매 1000프레임마다 동기화하긴 불합리

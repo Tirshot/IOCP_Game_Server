@@ -18,13 +18,8 @@ public:
 	virtual void TickMove()  override;
 	virtual void TickSkill()  override;
 	virtual void TickHit() override;
-	virtual void UpdateAnimation()  override;
 
-protected:
-	shared_ptr<Flipbook> _flipbookMove[4] = {};
-	shared_ptr<Flipbook> _flipbookHit[4] = {};
-
-	shared_ptr<Player> _target = nullptr; // 임시!!!!!, 스마트 포인터 사용하기 or id 발급하기
+	shared_ptr<Player> _target = nullptr;
 	float _waitSeconds = 0.f;
 };
 

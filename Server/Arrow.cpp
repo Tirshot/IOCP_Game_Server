@@ -57,7 +57,7 @@ void Arrow::TickIdle()
 	{
 		SetCellPos(nextPos);
 		SetState(MOVE);
-		_waitUntil = GetTickCount64() + 65; // 클라이언트의 화살 속도와 동기화
+		_waitUntil = GetTickCount64() + 50; // 클라이언트의 화살 속도와 동기화
 	}
 	else
 	{
@@ -65,7 +65,7 @@ void Arrow::TickIdle()
 		{
 			SetCellPos(nextPos + deltaXY[info.dir()]);
 			SetState(MOVE);
-			_waitUntil = GetTickCount64() + 65; // 클라이언트의 화살 속도와 동기화
+			_waitUntil = GetTickCount64() + 50; // 클라이언트의 화살 속도와 동기화
 			return;
 		}
 		SetState(HIT);

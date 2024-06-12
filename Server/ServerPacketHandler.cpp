@@ -638,15 +638,3 @@ SendBufferRef ServerPacketHandler::Make_S_AddItem(uint64 objectID, int itemID, i
 
 	return MakeSendBuffer(pkt, S_AddItem);
 }
-
-SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
-{
-	Protocol::S_Fire pkt;
-
-	Protocol::ObjectInfo* objectInfo = pkt.mutable_info();
-	*objectInfo = info;
-
-	pkt.set_ownerid(id);
-
-	return MakeSendBuffer(pkt, S_Fire);
-}

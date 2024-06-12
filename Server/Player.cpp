@@ -260,15 +260,7 @@ void Player::MakeArrow()
 	arrow->info.set_posx(shared_from_this()->info.posx());
 	arrow->info.set_posy(shared_from_this()->info.posy());
 	arrow->SetState(IDLE);
-	// 클라이언트로 화살 생성 패킷 전송
-	{
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Fire(arrow->info, info.objectid());
-		session->Send(sendBuffer);
-		room->Broadcast(sendBuffer);
-	}
 	room->AddObject(arrow);
-
-	info.set_arrows(info.arrows() - 1);
 }
 
 void Player::Teleport()

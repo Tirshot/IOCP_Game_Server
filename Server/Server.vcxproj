@@ -171,6 +171,7 @@
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemManager.cpp" />
+    <ClCompile Include="Moblin.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="pch.cpp">
@@ -188,6 +189,7 @@
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ServerPacketHandler.cpp" />
     <ClCompile Include="Sign.cpp" />
+    <ClCompile Include="Snake.cpp" />
     <ClCompile Include="Struct.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -207,6 +209,7 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemManager.h" />
+    <ClInclude Include="Moblin.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="pch.h" />
@@ -217,6 +220,7 @@
     <ClInclude Include="Quest1Trigger.h" />
     <ClInclude Include="ServerPacketHandler.h" />
     <ClInclude Include="Sign.h" />
+    <ClInclude Include="Snake.h" />
     <ClInclude Include="Struct.pb.h" />
     <ClInclude Include="Tilemap.h" />
     <ClInclude Include="Trigger.h" />

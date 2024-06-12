@@ -10,7 +10,6 @@
 
 Monster::Monster()
 {
-	info.set_name("Snake");
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	info.set_monstertype(Protocol::MONSTER_TYPE_SNAKE);
 	info.set_hp(50);
@@ -21,7 +20,6 @@ Monster::Monster()
 
 Monster::~Monster()
 {
-
 }
 
 void Monster::Init()
@@ -31,8 +29,6 @@ void Monster::Init()
 
 void Monster::Update()
 {
-	// Super::Update();
-
 	switch (info.state())
 	{
 	case IDLE:

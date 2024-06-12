@@ -297,11 +297,10 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 	// 화살의 주인 플레이어를 가져옴
 	if (scene)
 	{
-		shared_ptr<GameObject> gameObject = scene->GetObjects(pkt.ownerid());
-		shared_ptr<Player> player = static_pointer_cast<Player>(gameObject);
-		if (player)
+		auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+		if (myPlayer)
 		{
-			player->Handle_S_Fire(info, pkt.ownerid());
+			myPlayer->Handle_S_Fire(info, pkt.ownerid());
 		}
 	}
 }
