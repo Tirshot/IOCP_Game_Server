@@ -33,9 +33,9 @@ public:
 	void SaveTilemap(const wstring& key, const wstring& path);
 	shared_ptr<Tilemap> LoadTilemap(const wstring& key, const wstring& path);
 
-	shared_ptr<Sound> GetSound(const wstring& key) { return _sounds[key]; }
-	unordered_map<wstring, shared_ptr<Sound>> GetSounds() { return _sounds; }
-	shared_ptr<Sound> LoadSound(const wstring& key, const wstring& path, SoundType type);
+	Sound* GetSound(const wstring& key) { return _sounds[key]; }
+	unordered_map<wstring, Sound*> GetSounds() { return _sounds; }
+	Sound* LoadSound(const wstring& key, const wstring& path, SoundType type);
 
 	vector<vector<wstring>> GetDataFromCSV(const string& filename);
 	vector<vector<wstring>> GetItemTable() { return _itemTable; }
@@ -51,7 +51,7 @@ private:
 	unordered_map<wstring, shared_ptr<Sprite>> _sprites;
 	unordered_map<wstring, shared_ptr<Flipbook>> _flipbooks;
 	unordered_map<wstring, shared_ptr<Tilemap>> _tilemaps;
-	unordered_map<wstring, shared_ptr<Sound>> _sounds;
+	unordered_map<wstring, Sound*> _sounds;
 	vector<vector<wstring>> _itemTable;
 	vector<vector<wstring>> _questTable;
 };

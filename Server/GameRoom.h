@@ -38,7 +38,7 @@ public:
 	GameRoomRef GetRoomRef() { return shared_from_this(); }
 
 public:
-	void SetName(PlayerRef& player);
+	void SetName(PlayerRef player);
 	void AddObject(GameObjectRef gameObject);
 	void RemoveObject(uint64 id);
 	void RemoveTemp(uint64 id);
@@ -60,7 +60,7 @@ public:
 
 private:
 	// 몬스터 스폰 숫자
-	const int32 DESIRED_MONSTER_COUNT = 10;
+	const int32 DESIRED_MONSTER_COUNT = 12;
 	int32 _monsterCount = 0;
 
 public:

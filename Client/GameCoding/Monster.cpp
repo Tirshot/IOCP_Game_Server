@@ -53,8 +53,6 @@ void Monster::TickIdle()
 
 void Monster::TickMove()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
 	Vec2 dir = (_destPos - _pos);
 	if (dir.Length() < 5.f)
 	{
@@ -69,22 +67,6 @@ void Monster::TickMove()
 			SetDir(dir.x < 0 ? DIR_LEFT : DIR_RIGHT);
 		else
 			SetDir(dir.y < 0 ? DIR_UP : DIR_DOWN);
-
-		switch (info.dir())
-		{
-		case DIR_UP:
-			_pos.y -= 160 * deltaTime;
-			break;
-		case DIR_DOWN:
-			_pos.y += 160 * deltaTime;
-			break;
-		case DIR_LEFT:
-			_pos.x -= 160 * deltaTime;
-			break;
-		case DIR_RIGHT:
-			_pos.x += 160 * deltaTime;
-			break;
-		}
 	}
 }
 

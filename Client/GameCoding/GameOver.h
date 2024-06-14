@@ -14,6 +14,7 @@ public:
 	virtual void Render(HDC hdc);
 
 	void FadeIn();
+	void HideAllUIs();
 
 	void OnClickReviveButton();
 	void OnClickExitButton();

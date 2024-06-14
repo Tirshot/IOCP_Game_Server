@@ -1,11 +1,11 @@
 #pragma once
 #include "Monster.h"
-class Snake : public Monster
+class Moblin : public Monster
 {
 	using Super = Monster;
 public:
-	Snake();
-	virtual ~Snake() override;
+	Moblin();
+	virtual ~Moblin() override;
 
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
@@ -19,7 +19,9 @@ public:
 	virtual void UpdateAnimation() override;
 
 protected:
+	shared_ptr<Flipbook> _flipbookIdle[4] = {};
 	shared_ptr<Flipbook> _flipbookMove[4] = {};
+	shared_ptr<Flipbook> _flipbookAttack[4] = {};
 	shared_ptr<Flipbook> _flipbookHit[4] = {};
 
 	shared_ptr<Player> _target = nullptr;

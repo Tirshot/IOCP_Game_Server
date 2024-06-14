@@ -20,7 +20,7 @@ public:
 	bool IsHit() { return _hit; }
 
 protected:
-	uint64 _waitUntil = 0;
+	float _waitUntil = 0;
 	MonsterRef _target;
 
 	// 삭제를 위한 적중 여부

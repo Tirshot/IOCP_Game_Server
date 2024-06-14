@@ -24,6 +24,7 @@ protected:
 	virtual void UpdateAnimation() override;
 
 public:
+	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 	void SyncToServer();
 
 private:

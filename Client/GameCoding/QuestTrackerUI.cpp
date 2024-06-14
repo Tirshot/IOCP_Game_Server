@@ -6,6 +6,7 @@
 #include "QuestManager.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include "TimeManager.h"
 #include "Sprite.h"
 
 QuestTrackerUI::QuestTrackerUI()
@@ -30,9 +31,16 @@ void QuestTrackerUI::BeginPlay()
 	_rect.right = _rect.left + _size.x - 10;
 	_rect.bottom = _rect.top + _size.y;
 }
-
+float _sumTime = 0.f;
 void QuestTrackerUI::Tick()
 {
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+
+	_sumTime += deltaTime;
+
+	if (_sumTime <= 0.1f)
+		return;
+
 	for (size_t i = 0; i < _quests.size(); ++i)
 	{
 		auto& box = _quests[i]->textBox;
@@ -50,7 +58,25 @@ void QuestTrackerUI::Tick()
 			// 현재 TextBox를 이전 TextBox의 아래에 배치
 			box->SetPos({ _pos.x, (float)prevRect.bottom });
 		}
+
+		if (_quests[i]->target <= 0)
+		{
+			int questID = _quests[i]->questID;
+
+			auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+			if (scene)
+			{
+				auto& quest = scene->GetQuest(questID);
+				auto target = quest.targetnums();
+
+				if (target <= 0)
+					continue;
+
+				_quests[i]->target = target;
+			}
+		}
 	}
+	_sumTime = 0.f;
 }
 
 void QuestTrackerUI::Render(HDC hdc)

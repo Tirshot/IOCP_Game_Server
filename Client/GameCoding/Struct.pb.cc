@@ -48,11 +48,12 @@ PROTOBUF_CONSTEXPR ObjectInfo::ObjectInfo(
   , /*decltype(_impl_.maxhp_)*/0
   , /*decltype(_impl_.attack_)*/0
   , /*decltype(_impl_.defence_)*/0
+  , /*decltype(_impl_.speed_)*/0
   , /*decltype(_impl_.posx_)*/0
   , /*decltype(_impl_.posy_)*/0
   , /*decltype(_impl_.damage_)*/0
-  , /*decltype(_impl_.gold_)*/uint64_t{0u}
   , /*decltype(_impl_.weapontype_)*/0
+  , /*decltype(_impl_.gold_)*/uint64_t{0u}
   , /*decltype(_impl_.itemtype_)*/0
   , /*decltype(_impl_.arrows_)*/0
   , /*decltype(_impl_.mp_)*/0
@@ -160,6 +161,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.maxhp_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.attack_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.defence_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.speed_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.posx_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.posy_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.damage_),
@@ -218,9 +220,9 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::BuffData)},
   { 9, -1, -1, sizeof(::Protocol::ObjectInfo)},
-  { 36, -1, -1, sizeof(::Protocol::Text)},
-  { 46, -1, -1, sizeof(::Protocol::QuestInfo)},
-  { 64, -1, -1, sizeof(::Protocol::ItemInfo)},
+  { 37, -1, -1, sizeof(::Protocol::Text)},
+  { 47, -1, -1, sizeof(::Protocol::QuestInfo)},
+  { 65, -1, -1, sizeof(::Protocol::ItemInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -234,41 +236,41 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\?\n\010"
   "BuffData\022\016\n\006buffId\030\001 \001(\004\022\022\n\nremainTime\030\002"
-  " \001(\002\022\017\n\007victims\030\003 \003(\004\"\371\003\n\nObjectInfo\022\020\n\010"
+  " \001(\002\022\017\n\007victims\030\003 \003(\004\"\210\004\n\nObjectInfo\022\020\n\010"
   "objectId\030\001 \001(\004\022)\n\nobjectType\030\002 \001(\0162\025.Pro"
   "tocol.OBJECT_TYPE\022*\n\005state\030\003 \001(\0162\033.Proto"
   "col.OBJECT_STATE_TYPE\022\037\n\003dir\030\004 \001(\0162\022.Pro"
   "tocol.DIR_TYPE\022\014\n\004name\030\005 \001(\t\022\n\n\002hp\030\006 \001(\005"
   "\022\r\n\005maxHp\030\007 \001(\005\022\016\n\006attack\030\010 \001(\005\022\017\n\007defen"
-  "ce\030\t \001(\005\022\014\n\004posX\030\n \001(\005\022\014\n\004posY\030\013 \001(\005\022\016\n\006"
-  "damage\030\014 \001(\005\022)\n\nweaponType\030\r \001(\0162\025.Proto"
-  "col.WEAPON_TYPE\022\014\n\004gold\030\016 \001(\004\022%\n\010itemTyp"
-  "e\030\017 \001(\0162\023.Protocol.ITEM_TYPE\022\016\n\006arrows\030\020"
-  " \001(\005\022\n\n\002mp\030\021 \001(\005\022\r\n\005maxMp\030\022 \001(\005\022#\n\007npcTy"
-  "pe\030\023 \001(\0162\022.Protocol.NPC_TYPE\022\016\n\006potion\030\024"
-  " \001(\005\022+\n\013monsterType\030\025 \001(\0162\026.Protocol.MON"
-  "STER_TYPE\"F\n\004Text\022\020\n\010objectId\030\001 \001(\004\022\014\n\004t"
-  "ime\030\002 \001(\004\022\013\n\003str\030\003 \001(\t\022\021\n\tbroadcast\030\004 \001("
-  "\010\"\226\002\n\tQuestInfo\022\017\n\007questid\030\001 \001(\005\022\020\n\010obje"
-  "ctid\030\002 \001(\004\022\020\n\010targetid\030\003 \001(\005\022)\n\ntargetty"
-  "pe\030\004 \001(\0162\025.Protocol.OBJECT_TYPE\022\022\n\ntarge"
-  "tnums\030\005 \001(\005\022\017\n\007process\030\006 \001(\005\022)\n\nqueststa"
-  "te\030\007 \001(\0162\025.Protocol.QUEST_STATE\022\022\n\nrewar"
-  "dGold\030\010 \001(\005\022\022\n\nrewardItem\030\t \001(\005\022\025\n\rrewar"
-  "dItemNum\030\n \001(\005\022\014\n\004posX\030\013 \001(\005\022\014\n\004posY\030\014 \001"
-  "(\005\"\301\001\n\010ItemInfo\022\016\n\006ItemId\030\001 \001(\004\022\021\n\tItemC"
-  "ount\030\002 \001(\004\022%\n\010itemType\030\003 \001(\0162\023.Protocol."
-  "ITEM_TYPE\022\020\n\010ItemName\030\004 \001(\t\022\014\n\004posX\030\005 \001("
-  "\005\022\014\n\004posY\030\006 \001(\005\022+\n\013itemSubType\030\007 \001(\0162\026.P"
-  "rotocol.ITEM_SUBTYPE\022\020\n\010objectId\030\010 \001(\004b\006"
-  "proto3"
+  "ce\030\t \001(\005\022\r\n\005speed\030\n \001(\005\022\014\n\004posX\030\013 \001(\005\022\014\n"
+  "\004posY\030\014 \001(\005\022\016\n\006damage\030\r \001(\005\022)\n\nweaponTyp"
+  "e\030\016 \001(\0162\025.Protocol.WEAPON_TYPE\022\014\n\004gold\030\017"
+  " \001(\004\022%\n\010itemType\030\020 \001(\0162\023.Protocol.ITEM_T"
+  "YPE\022\016\n\006arrows\030\021 \001(\005\022\n\n\002mp\030\022 \001(\005\022\r\n\005maxMp"
+  "\030\023 \001(\005\022#\n\007npcType\030\024 \001(\0162\022.Protocol.NPC_T"
+  "YPE\022\016\n\006potion\030\025 \001(\005\022+\n\013monsterType\030\026 \001(\016"
+  "2\026.Protocol.MONSTER_TYPE\"F\n\004Text\022\020\n\010obje"
+  "ctId\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\013\n\003str\030\003 \001(\t\022\021\n"
+  "\tbroadcast\030\004 \001(\010\"\226\002\n\tQuestInfo\022\017\n\007questi"
+  "d\030\001 \001(\005\022\020\n\010objectid\030\002 \001(\004\022\020\n\010targetid\030\003 "
+  "\001(\005\022)\n\ntargettype\030\004 \001(\0162\025.Protocol.OBJEC"
+  "T_TYPE\022\022\n\ntargetnums\030\005 \001(\005\022\017\n\007process\030\006 "
+  "\001(\005\022)\n\nqueststate\030\007 \001(\0162\025.Protocol.QUEST"
+  "_STATE\022\022\n\nrewardGold\030\010 \001(\005\022\022\n\nrewardItem"
+  "\030\t \001(\005\022\025\n\rrewardItemNum\030\n \001(\005\022\014\n\004posX\030\013 "
+  "\001(\005\022\014\n\004posY\030\014 \001(\005\"\301\001\n\010ItemInfo\022\016\n\006ItemId"
+  "\030\001 \001(\004\022\021\n\tItemCount\030\002 \001(\004\022%\n\010itemType\030\003 "
+  "\001(\0162\023.Protocol.ITEM_TYPE\022\020\n\010ItemName\030\004 \001"
+  "(\t\022\014\n\004posX\030\005 \001(\005\022\014\n\004posY\030\006 \001(\005\022+\n\013itemSu"
+  "bType\030\007 \001(\0162\026.Protocol.ITEM_SUBTYPE\022\020\n\010o"
+  "bjectId\030\010 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 1166, descriptor_table_protodef_Struct_2eproto,
+    false, false, 1181, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -573,11 +575,12 @@ ObjectInfo::ObjectInfo(const ObjectInfo& from)
     , decltype(_impl_.maxhp_){}
     , decltype(_impl_.attack_){}
     , decltype(_impl_.defence_){}
+    , decltype(_impl_.speed_){}
     , decltype(_impl_.posx_){}
     , decltype(_impl_.posy_){}
     , decltype(_impl_.damage_){}
-    , decltype(_impl_.gold_){}
     , decltype(_impl_.weapontype_){}
+    , decltype(_impl_.gold_){}
     , decltype(_impl_.itemtype_){}
     , decltype(_impl_.arrows_){}
     , decltype(_impl_.mp_){}
@@ -616,11 +619,12 @@ inline void ObjectInfo::SharedCtor(
     , decltype(_impl_.maxhp_){0}
     , decltype(_impl_.attack_){0}
     , decltype(_impl_.defence_){0}
+    , decltype(_impl_.speed_){0}
     , decltype(_impl_.posx_){0}
     , decltype(_impl_.posy_){0}
     , decltype(_impl_.damage_){0}
-    , decltype(_impl_.gold_){uint64_t{0u}}
     , decltype(_impl_.weapontype_){0}
+    , decltype(_impl_.gold_){uint64_t{0u}}
     , decltype(_impl_.itemtype_){0}
     , decltype(_impl_.arrows_){0}
     , decltype(_impl_.mp_){0}
@@ -750,100 +754,108 @@ const char* ObjectInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
         } else
           goto handle_unusual;
         continue;
-      // int32 posX = 10;
+      // int32 speed = 10;
       case 10:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 80)) {
+          _impl_.speed_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 posX = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
           _impl_.posx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 posY = 11;
-      case 11:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 88)) {
+      // int32 posY = 12;
+      case 12:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
           _impl_.posy_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 damage = 12;
-      case 12:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 96)) {
+      // int32 damage = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
           _impl_.damage_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.WEAPON_TYPE weaponType = 13;
-      case 13:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
+      // .Protocol.WEAPON_TYPE weaponType = 14;
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 112)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_weapontype(static_cast<::Protocol::WEAPON_TYPE>(val));
         } else
           goto handle_unusual;
         continue;
-      // uint64 gold = 14;
-      case 14:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 112)) {
+      // uint64 gold = 15;
+      case 15:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 120)) {
           _impl_.gold_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.ITEM_TYPE itemType = 15;
-      case 15:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 120)) {
+      // .Protocol.ITEM_TYPE itemType = 16;
+      case 16:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 128)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_itemtype(static_cast<::Protocol::ITEM_TYPE>(val));
         } else
           goto handle_unusual;
         continue;
-      // int32 arrows = 16;
-      case 16:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 128)) {
+      // int32 arrows = 17;
+      case 17:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 136)) {
           _impl_.arrows_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 mp = 17;
-      case 17:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 136)) {
+      // int32 mp = 18;
+      case 18:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 144)) {
           _impl_.mp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 maxMp = 18;
-      case 18:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 144)) {
+      // int32 maxMp = 19;
+      case 19:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 152)) {
           _impl_.maxmp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.NPC_TYPE npcType = 19;
-      case 19:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 152)) {
+      // .Protocol.NPC_TYPE npcType = 20;
+      case 20:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 160)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_npctype(static_cast<::Protocol::NPC_TYPE>(val));
         } else
           goto handle_unusual;
         continue;
-      // int32 potion = 20;
-      case 20:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 160)) {
+      // int32 potion = 21;
+      case 21:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 168)) {
           _impl_.potion_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.MONSTER_TYPE monsterType = 21;
-      case 21:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 168)) {
+      // .Protocol.MONSTER_TYPE monsterType = 22;
+      case 22:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 176)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_monstertype(static_cast<::Protocol::MONSTER_TYPE>(val));
@@ -940,80 +952,86 @@ uint8_t* ObjectInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(9, this->_internal_defence(), target);
   }
 
-  // int32 posX = 10;
+  // int32 speed = 10;
+  if (this->_internal_speed() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(10, this->_internal_speed(), target);
+  }
+
+  // int32 posX = 11;
   if (this->_internal_posx() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(10, this->_internal_posx(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(11, this->_internal_posx(), target);
   }
 
-  // int32 posY = 11;
+  // int32 posY = 12;
   if (this->_internal_posy() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(11, this->_internal_posy(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(12, this->_internal_posy(), target);
   }
 
-  // int32 damage = 12;
+  // int32 damage = 13;
   if (this->_internal_damage() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(12, this->_internal_damage(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(13, this->_internal_damage(), target);
   }
 
-  // .Protocol.WEAPON_TYPE weaponType = 13;
+  // .Protocol.WEAPON_TYPE weaponType = 14;
   if (this->_internal_weapontype() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      13, this->_internal_weapontype(), target);
+      14, this->_internal_weapontype(), target);
   }
 
-  // uint64 gold = 14;
+  // uint64 gold = 15;
   if (this->_internal_gold() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(14, this->_internal_gold(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(15, this->_internal_gold(), target);
   }
 
-  // .Protocol.ITEM_TYPE itemType = 15;
+  // .Protocol.ITEM_TYPE itemType = 16;
   if (this->_internal_itemtype() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      15, this->_internal_itemtype(), target);
+      16, this->_internal_itemtype(), target);
   }
 
-  // int32 arrows = 16;
+  // int32 arrows = 17;
   if (this->_internal_arrows() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(16, this->_internal_arrows(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(17, this->_internal_arrows(), target);
   }
 
-  // int32 mp = 17;
+  // int32 mp = 18;
   if (this->_internal_mp() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(17, this->_internal_mp(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(18, this->_internal_mp(), target);
   }
 
-  // int32 maxMp = 18;
+  // int32 maxMp = 19;
   if (this->_internal_maxmp() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(18, this->_internal_maxmp(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(19, this->_internal_maxmp(), target);
   }
 
-  // .Protocol.NPC_TYPE npcType = 19;
+  // .Protocol.NPC_TYPE npcType = 20;
   if (this->_internal_npctype() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      19, this->_internal_npctype(), target);
+      20, this->_internal_npctype(), target);
   }
 
-  // int32 potion = 20;
+  // int32 potion = 21;
   if (this->_internal_potion() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(20, this->_internal_potion(), target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(21, this->_internal_potion(), target);
   }
 
-  // .Protocol.MONSTER_TYPE monsterType = 21;
+  // .Protocol.MONSTER_TYPE monsterType = 22;
   if (this->_internal_monstertype() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      21, this->_internal_monstertype(), target);
+      22, this->_internal_monstertype(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1082,73 +1100,78 @@ size_t ObjectInfo::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_defence());
   }
 
-  // int32 posX = 10;
+  // int32 speed = 10;
+  if (this->_internal_speed() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_speed());
+  }
+
+  // int32 posX = 11;
   if (this->_internal_posx() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_posx());
   }
 
-  // int32 posY = 11;
+  // int32 posY = 12;
   if (this->_internal_posy() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_posy());
   }
 
-  // int32 damage = 12;
+  // int32 damage = 13;
   if (this->_internal_damage() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_damage());
   }
 
-  // uint64 gold = 14;
-  if (this->_internal_gold() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_gold());
-  }
-
-  // .Protocol.WEAPON_TYPE weaponType = 13;
+  // .Protocol.WEAPON_TYPE weaponType = 14;
   if (this->_internal_weapontype() != 0) {
     total_size += 1 +
       ::_pbi::WireFormatLite::EnumSize(this->_internal_weapontype());
   }
 
-  // .Protocol.ITEM_TYPE itemType = 15;
+  // uint64 gold = 15;
+  if (this->_internal_gold() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_gold());
+  }
+
+  // .Protocol.ITEM_TYPE itemType = 16;
   if (this->_internal_itemtype() != 0) {
-    total_size += 1 +
+    total_size += 2 +
       ::_pbi::WireFormatLite::EnumSize(this->_internal_itemtype());
   }
 
-  // int32 arrows = 16;
+  // int32 arrows = 17;
   if (this->_internal_arrows() != 0) {
     total_size += 2 +
       ::_pbi::WireFormatLite::Int32Size(
         this->_internal_arrows());
   }
 
-  // int32 mp = 17;
+  // int32 mp = 18;
   if (this->_internal_mp() != 0) {
     total_size += 2 +
       ::_pbi::WireFormatLite::Int32Size(
         this->_internal_mp());
   }
 
-  // int32 maxMp = 18;
+  // int32 maxMp = 19;
   if (this->_internal_maxmp() != 0) {
     total_size += 2 +
       ::_pbi::WireFormatLite::Int32Size(
         this->_internal_maxmp());
   }
 
-  // .Protocol.NPC_TYPE npcType = 19;
+  // .Protocol.NPC_TYPE npcType = 20;
   if (this->_internal_npctype() != 0) {
     total_size += 2 +
       ::_pbi::WireFormatLite::EnumSize(this->_internal_npctype());
   }
 
-  // int32 potion = 20;
+  // int32 potion = 21;
   if (this->_internal_potion() != 0) {
     total_size += 2 +
       ::_pbi::WireFormatLite::Int32Size(
         this->_internal_potion());
   }
 
-  // .Protocol.MONSTER_TYPE monsterType = 21;
+  // .Protocol.MONSTER_TYPE monsterType = 22;
   if (this->_internal_monstertype() != 0) {
     total_size += 2 +
       ::_pbi::WireFormatLite::EnumSize(this->_internal_monstertype());
@@ -1199,6 +1222,9 @@ void ObjectInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   if (from._internal_defence() != 0) {
     _this->_internal_set_defence(from._internal_defence());
   }
+  if (from._internal_speed() != 0) {
+    _this->_internal_set_speed(from._internal_speed());
+  }
   if (from._internal_posx() != 0) {
     _this->_internal_set_posx(from._internal_posx());
   }
@@ -1208,11 +1234,11 @@ void ObjectInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   if (from._internal_damage() != 0) {
     _this->_internal_set_damage(from._internal_damage());
   }
-  if (from._internal_gold() != 0) {
-    _this->_internal_set_gold(from._internal_gold());
-  }
   if (from._internal_weapontype() != 0) {
     _this->_internal_set_weapontype(from._internal_weapontype());
+  }
+  if (from._internal_gold() != 0) {
+    _this->_internal_set_gold(from._internal_gold());
   }
   if (from._internal_itemtype() != 0) {
     _this->_internal_set_itemtype(from._internal_itemtype());

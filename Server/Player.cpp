@@ -18,6 +18,7 @@ Player::Player()
 	info.set_defence(0);
 	info.set_arrows(10);
 	info.set_gold(1500);
+	info.set_speed(180);
 }
 
 Player::~Player()
@@ -241,6 +242,11 @@ void Player::OnDamaged(CreatureRef attacker, bool debug)
 				GetObjectID(),
 				attackerType,
 				attacker->GetObjectID()));
+
+			if (debug)
+			{
+				GChat->AddText(L"DEBUG : Player Kill");
+			}
 		}
 	}
 }
@@ -261,6 +267,11 @@ void Player::MakeArrow()
 	arrow->info.set_posy(shared_from_this()->info.posy());
 	arrow->SetState(IDLE);
 	room->AddObject(arrow);
+
+	uint64 id = GetObjectID();
+
+	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Fire(arrow->info, id);
+	session->Send(sendBuffer);
 }
 
 void Player::Teleport()

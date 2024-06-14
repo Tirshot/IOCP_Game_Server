@@ -16,18 +16,16 @@
 
 Scene::Scene()
 {
-
+	
 }
 
 Scene::~Scene()
 {
-	GET_SINGLE(ResourceManager)->Clear();
+	
 }
 
 void Scene::Init()
 {
-	_sceneChanged = false;
-
 	//
 	for (const vector<shared_ptr<Actor>>& actors : _actors)
 		for (shared_ptr<Actor> actor : actors)
@@ -52,9 +50,6 @@ void Scene::Update()
 			return;
 
 		if (ui == nullptr)
-			return;
-
-		if (_sceneChanged)
 			return;
 
 		bool visiblity = ui->GetVisible();

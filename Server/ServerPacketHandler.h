@@ -53,6 +53,8 @@ enum
 	S_Gold = 81,
 
 	S_Reset = 99,
+
+	C_KillPlayer = 990,	// 디버그 전용 커맨드, 테스트 이후 제거 필요
 };
 
 struct BuffData
@@ -79,6 +81,7 @@ public:
 	static void Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_EquipItem(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_SyncInventory(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_KillPlayer(GameSessionRef session, BYTE* buffer, int32 len);
 
 	
 	// 보내기
@@ -87,7 +90,7 @@ public:
 	static SendBufferRef Make_S_Reset();
 	static SendBufferRef Make_S_EnterGame();
 	static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info, bool revive = false);
-	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
+	static SendBufferRef Make_S_AddObject(Protocol::S_AddObject& pkt, bool revive = false);
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
 	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
 	static SendBufferRef Make_S_SendMessage(uint64 objectId, uint64 time, string str);
@@ -100,6 +103,8 @@ public:
 	static SendBufferRef Make_S_QuestState(const Protocol::QuestInfo& info);
 	static SendBufferRef Make_S_ItemDrop(const Protocol::ItemInfo& info);
 	static SendBufferRef Make_S_AddItem(uint64 objectID, int itemID, int itemCounts);
+	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 objectID);
+
 
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)

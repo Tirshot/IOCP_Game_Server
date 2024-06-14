@@ -17,6 +17,7 @@
 #include "ChatManager.h"
 #include "NetworkManager.h"
 #include "SoundManager.h"
+#include "ResourceManager.h"
 #include "ItemManager.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
@@ -130,9 +131,6 @@ void ClientPacketHandler::Handle_S_TEST(ServerSessionRef session, BYTE* buffer, 
 
 void ClientPacketHandler::Handle_S_Reset(ServerSessionRef session, BYTE* buffer, int32 len)
 {
-	// 모든 액터, ui 초기화
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-
 	// Scene 초기화
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
@@ -218,7 +216,7 @@ void ClientPacketHandler::Handle_S_RemoveObject(ServerSessionRef session, BYTE* 
 void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
-	//uint16 id = header->id;
+	
 	uint16 size = header->size;
 
 	Protocol::S_Move pkt;
@@ -230,18 +228,27 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 	{
-		uint64 myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
-		if (myPlayerId == info.objectid())
+		shared_ptr<GameObject> gameObject = scene->GetObjects(info.objectid());
+		if (gameObject == nullptr)
 			return;
 
-		shared_ptr<GameObject> gameObject = scene->GetObjects(info.objectid());
-		if (gameObject)
+		uint64 myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
+
+		if (myPlayerId == info.objectid())
+		{
+			//gameObject->info.set_arrows(info.arrows());
+			gameObject->info.set_hp(info.hp());
+			//gameObject->info.set_mp(info.mp());
+			//gameObject->info.set_gold(info.gold());
+		}
+		else
 		{
 			gameObject->SetDir(info.dir());
 			gameObject->SetState(info.state());
 			gameObject->SetCellPos(Vec2Int{ info.posx(), info.posy() });
 			gameObject->SetWeaponType(info.weapontype());
 			gameObject->info.set_arrows(info.arrows());
+			gameObject->info.set_hp(info.hp());
 			gameObject->info.set_mp(info.mp());
 			gameObject->info.set_gold(info.gold());
 		}
@@ -297,10 +304,10 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 	// 화살의 주인 플레이어를 가져옴
 	if (scene)
 	{
-		auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-		if (myPlayer)
+		auto player = GET_SINGLE(SceneManager)->GetPlayerByID(pkt.ownerid());
+		if (player)
 		{
-			myPlayer->Handle_S_Fire(info, pkt.ownerid());
+			player->Handle_S_Fire(info, pkt.ownerid());
 		}
 	}
 }
@@ -601,15 +608,6 @@ SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t ti
 	return MakeSendBuffer(pkt, C_SendMessage);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_RemoveObject(uint64 objectId)
-{
-	Protocol::C_RemoveObject pkt;
-
-	pkt.set_id(objectId);
-
-	return MakeSendBuffer(pkt, C_RemoveObject);
-}
-
 SendBufferRef ClientPacketHandler::Make_C_Revive(Protocol::ObjectInfo& objectInfo)
 {
 	Protocol::C_Revive pkt;
@@ -694,4 +692,13 @@ SendBufferRef ClientPacketHandler::Make_C_SyncInventory(uint64 objectID)
 	pkt.set_objectid(objectID);
 
 	return MakeSendBuffer(pkt, C_SyncInventory);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_KillPlayer(uint64 objectID)
+{
+	Protocol::C_KillPlayer pkt;
+
+	pkt.set_objectid(objectID);
+
+	return MakeSendBuffer(pkt, C_KillPlayer);
 }

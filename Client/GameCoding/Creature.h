@@ -16,10 +16,8 @@ public:
 	virtual void TickMove()  override {};
 	virtual void TickSkill()  override {};
 	virtual void UpdateAnimation()  override {};
-
-	/*virtual void OnDamaged(Creature* attacker);*/
 	
-	void KnockBack(Creature* attacker);
+	void KnockBack(shared_ptr<Creature> attacker);
 	uint64 SetWait(uint64 time) { return _wait = GetTickCount64() + time; }
 
 	Protocol::OBJECT_TYPE GetType() { return this->info.objecttype(); }

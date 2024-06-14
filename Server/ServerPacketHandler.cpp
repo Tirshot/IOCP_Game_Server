@@ -71,6 +71,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_SyncInventory(session, buffer, len);
 		break;
 
+	case C_KillPlayer:
+		Handle_C_KillPlayer(session, buffer, len);
+		break;
+
 	default:
 		break;
 	}
@@ -119,20 +123,26 @@ void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int
 void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
-	//uint16 id = header->id;
+	uint16 id = header->id;
 	uint16 size = header->size;
 
 	Protocol::C_Fire pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
+	auto ownerID = pkt.ownerid();
+
 	GameRoomRef room = session->gameRoom.lock();
 	if (room)
 	{
-		GameObjectRef object = room->FindObject(pkt.ownerid());
+		GameObjectRef object = room->FindObject(ownerID);
 
-		if (object)
+		if (object == nullptr)
+			return;
+
+		auto player = dynamic_pointer_cast<Player>(object);
+		if (player)
 		{
-			PlayerRef player = static_pointer_cast<Player>(object);
+			//PlayerRef player = static_pointer_cast<Player>(object);
 			// 화살발사?
 			player->MakeArrow();
 		}
@@ -207,46 +217,54 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 
 		// 모든 오브젝트 정보 전송
 		{
-			Protocol::S_AddObject pkt;
-
 			for (auto& item : room->GetPlayers())
 			{
+				Protocol::S_AddObject pkt;
+
 				Protocol::ObjectInfo* info = pkt.add_objects();
 				*info = item.second->info;
+
+				{	// 오브젝트 정보 추가
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt, true);
+					session->Send(sendBuffer);
+				}
 			}
 
 			for (auto& item : room->GetMonsters())
 			{
+				Protocol::S_AddObject pkt;
+
 				Protocol::ObjectInfo* info = pkt.add_objects();
 				*info = item.second->info;
+
+				{	// 오브젝트 정보 추가
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+					session->Send(sendBuffer);
+				}
 			}
 
 			for (auto& item : room->GetNPCs())
 			{
-				Protocol::ObjectInfo* info = pkt.add_objects();
-				*info = item.second->info;
-			}
+				Protocol::S_AddObject pkt;
 
-			for (auto& item : room->GetArrows())
-			{
 				Protocol::ObjectInfo* info = pkt.add_objects();
 				*info = item.second->info;
-			}
-			// 기존의 액터들 제거 후 다시 추가
-			{
-				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Reset();
-				session->Send(sendBuffer);
-			}
-			{	// 오브젝트 정보 추가
-				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-				session->Send(sendBuffer);
-			}
-			// 입장한 클라이언트에게 정보 전송
-			{
-				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info, true);
-				session->Send(sendBuffer);
+
+				{	// 오브젝트 정보 추가
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+					session->Send(sendBuffer);
+				}
 			}
 		}
+		//{	// Scene 리셋
+		//	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Reset();
+		//	session->Send(sendBuffer);
+		//}
+		{	// 입장한 클라이언트에게 정보 전송
+			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MyPlayer(player->info, true);
+			session->Send(sendBuffer);
+		}
+
 		{
 			// 드랍 아이템 재생성
 			Protocol::S_ItemDrop pkt;
@@ -281,8 +299,8 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 				}
 			}
 		}
-		room->AddObject(player);
 		room->RemoveTemp(id);
+		room->AddObject(player);
 		GChat->AddText(format(L"Player {0}이 부활함.", id));
 	}
 }
@@ -339,14 +357,20 @@ void ServerPacketHandler::Handle_C_QuestList(GameSessionRef session, BYTE* buffe
 	if (room)
 	{
 		auto quests = room->GetQuests();
-		uint64 objectId = session->player.lock()->info.objectid();
-		for (auto& quest : quests)
+		auto player = session->player.lock();
+
+		if (player)
 		{
-			int questid = quest.first;
-			Protocol::QuestInfo job = quest.second;
+			uint64 objectId = player->info.objectid();
+
+			for (auto& quest : quests)
 			{
-				SendBufferRef sendBuffer = Make_S_QuestList(objectId, job);
-				session->Send(sendBuffer);
+				int questid = quest.first;
+				Protocol::QuestInfo job = quest.second;
+				{
+					SendBufferRef sendBuffer = Make_S_QuestList(objectId, job);
+					session->Send(sendBuffer);
+				}
 			}
 		}
 	}
@@ -432,6 +456,30 @@ void ServerPacketHandler::Handle_C_SyncInventory(GameSessionRef session, BYTE* b
 	inventory->SyncToClient(objectID);
 }
 
+void ServerPacketHandler::Handle_C_KillPlayer(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+
+	uint16 size = header->size;
+
+	Protocol::C_KillPlayer pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	GameRoomRef room = session->gameRoom.lock();
+
+	int objectID = pkt.objectid();
+	
+	auto player = dynamic_pointer_cast<Player>(room->FindObject(objectID)); 
+	if (player)
+	{
+		player->info.set_hp(0);
+		{
+			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(player->info);
+			player->session->Send(sendBuffer);
+		}
+	}
+}
+
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
 	Protocol::S_TEST pkt;
@@ -500,8 +548,9 @@ SendBufferRef ServerPacketHandler::Make_S_MyPlayer(const Protocol::ObjectInfo& i
 	return MakeSendBuffer(pkt, S_MyPlayer);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_AddObject(const Protocol::S_AddObject& pkt)
+SendBufferRef ServerPacketHandler::Make_S_AddObject(Protocol::S_AddObject& pkt, bool revive)
 {
+	pkt.set_revive(revive);
 	return MakeSendBuffer(pkt, S_AddObject);
 }
 
@@ -637,4 +686,15 @@ SendBufferRef ServerPacketHandler::Make_S_AddItem(uint64 objectID, int itemID, i
 	pkt.set_itemcounts(itemCounts);
 
 	return MakeSendBuffer(pkt, S_AddItem);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_Fire(const Protocol::ObjectInfo& info, uint64 objectID)
+{
+	Protocol::S_Fire pkt;
+
+	Protocol::ObjectInfo* objectInfo = pkt.mutable_info();
+	*objectInfo = info;
+	pkt.set_ownerid(objectID);
+
+	return MakeSendBuffer(pkt, S_Fire);
 }

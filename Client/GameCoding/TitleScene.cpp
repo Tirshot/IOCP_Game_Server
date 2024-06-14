@@ -8,6 +8,7 @@
 #include "AlertBox.h"
 #include "SettingPanel.h"
 #include "TimeManager.h"
+#include "NetworkManager.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "InputManager.h"
@@ -85,9 +86,20 @@ void TitleScene::Update()
 	// 아무 키나 눌러서 시작
 	PressAnyToStart();
 
+	if (_backgroundAlpha >= 250)
+	{
+		GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+	}
+
+	if (_uis.empty())
+		return;
+
 	for (auto& ui : _uis)
 	{
 		if (_sceneChanged == true)
+			return;
+
+		if (_uis.size() > 10000)
 			return;
 
 		if (ui == nullptr)
@@ -98,26 +110,16 @@ void TitleScene::Update()
 			continue;
 
 		// 세팅 창 활성화 시 버튼 상호작용 불가
-		if (setting->GetVisible())
+		bool isSettingVisible = setting->GetVisible();
+		for (auto& ui : _uis)
 		{
-			for (auto& ui : _uis)
+			if (ui == nullptr)
+				continue;
+
+			auto button = dynamic_pointer_cast<Button>(ui);
+			if (button)
 			{
-				shared_ptr<Button> button = dynamic_pointer_cast<Button>(ui);
-				if (button)
-				{
-					button->SetPause(true);
-				}
-			}
-		}
-		else
-		{
-			for (auto& ui : _uis)
-			{
-				shared_ptr<Button> button = dynamic_pointer_cast<Button>(ui);
-				if (button)
-				{
-					button->SetPause(false);
-				}
+				button->SetPause(isSettingVisible);
 			}
 		}
 	}
@@ -220,9 +222,6 @@ void TitleScene::Render(HDC hdc)
 			bf);
 
 		_backgroundAlpha += 1;
-
-		if (_backgroundAlpha >= 250)
-			GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 	}
 }
 

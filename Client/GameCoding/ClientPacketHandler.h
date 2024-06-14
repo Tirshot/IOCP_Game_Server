@@ -10,7 +10,6 @@ enum
 	S_AddObject = 5,
 	S_RemoveObject = 6,
 
-	C_RemoveObject = 7,
 	// 해킹 방지를 위하여 번호를 비연속적으로 설정가능
 	C_Move = 10,
 	S_Move = 11,
@@ -54,6 +53,8 @@ enum
 	S_Gold = 81,
 
 	S_Reset = 99,
+
+	C_KillPlayer = 990,	// 디버그 전용 커맨드, 테스트 이후 제거 필요
 };
 class Creature;
 class ClientPacketHandler
@@ -114,5 +115,7 @@ public:
 	static SendBufferRef Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
 	static SendBufferRef Make_C_EquipItem(uint64 objectId, int itemId, bool equip = true);
 	static SendBufferRef Make_C_SyncInventory(uint64 objectID);
+	static SendBufferRef Make_C_KillPlayer(uint64 objectID);
+
 };
 

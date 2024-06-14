@@ -47,9 +47,8 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(Path));
 	GET_SINGLE(SoundManager)->Init(hwnd);
 
-	GET_SINGLE(SceneManager)->Init();
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TitleScene);
-
+	GET_SINGLE(SceneManager)->Init();
 }
 
 void Game::Update()
@@ -63,12 +62,17 @@ void Game::Update()
 
 	if (devScene)
 	{
-		if (_initialized == false)
+		bool initialized = devScene->isInitialized();
+		if (initialized == false)
 		{
+			if (_first)
+			{
+				GET_SINGLE(NetworkManager)->Init();
+				_first = false;
+			}
 			GET_SINGLE(ItemManager)->Init();
-			GET_SINGLE(NetworkManager)->Init();
 			GET_SINGLE(QuestManager)->BeginPlay();
-			_initialized = true;
+			devScene->SetInitialized(true);
 		}
 
 		GET_SINGLE(NetworkManager)->Update();

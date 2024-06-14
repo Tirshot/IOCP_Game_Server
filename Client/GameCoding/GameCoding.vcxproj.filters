@@ -99,6 +99,9 @@
     <Filter Include="소스 파일\06. UI\OutGame">
       <UniqueIdentifier>{adf79d33-92d3-4fb2-9d29-e521fcc83748}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\03. Objects\Game\Creature\Monster">
+      <UniqueIdentifier>{5bdfe4b5-ff50-4a7c-a8b4-41d8368fa0e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -132,9 +135,6 @@
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
     <ClInclude Include="Creature.h">
-      <Filter>소스 파일\03. Objects\Game\Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="Monster.h">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
     <ClInclude Include="HitEffect.h">
@@ -371,7 +371,15 @@
     <ClInclude Include="MiniMap.h">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="Snake.h" />
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Moblin.h">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -410,9 +418,6 @@
       <Filter>소스 파일\02. Scene</Filter>
     </ClCompile>
     <ClCompile Include="Creature.cpp">
-      <Filter>소스 파일\03. Objects\Game\Creature</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -643,8 +648,14 @@
     <ClCompile Include="MiniMap.cpp">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Moblin.cpp">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClCompile>
     <ClCompile Include="Snake.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

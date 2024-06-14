@@ -34,7 +34,7 @@ private:
 
 public:
 	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
-	void MakeArrow();
+	//void MakeArrow(uint64 ownerID);
 	void SyncToServer();
 
 public:

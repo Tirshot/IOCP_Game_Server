@@ -78,6 +78,13 @@ void GameRoom::Update()
 	for (auto& item : _players)
 	{
 		item.second->Update();
+
+		auto id = item.second->GetObjectID();
+		// 어딘가에 적중시 제거
+		if (item.second->info.hp() <= 0)
+		{
+			_temps[id] = item.second;
+		}
 	}
 
 	for (auto& item : _monsters)
@@ -145,7 +152,8 @@ void GameRoom::Update()
 void GameRoom::EnterRoom(GameSessionRef session)
 {
 	// 플레이어 초기화
-	PlayerRef player = GameObject::CreatePlayer();
+	auto player = GameObject::CreatePlayer();
+
 	InventoryRef inventory = GameObject::CreateInventory(player);
 	AddObject(inventory);
 
@@ -258,7 +266,7 @@ weak_ptr<Player> GameRoom::FindObjectInTemp(uint64 id)
 	return {};
 }
 
-void GameRoom::SetName(PlayerRef& player)
+void GameRoom::SetName(PlayerRef player)
 {
 	string strPlayer = "Player";
 	string str = strPlayer.append(to_string(player->GetObjectID()));
@@ -373,9 +381,9 @@ void GameRoom::RemoveObject(uint64 id)
 
 void GameRoom::RemoveTemp(uint64 id)
 {
-	GameObjectRef gameObject = FindObject(id);
-	if (gameObject == nullptr)
-		return;
+	//GameObjectRef gameObject = FindObject(id);
+	//if (gameObject == nullptr)
+	//	return;
 
 	_temps.erase(id);
 }
@@ -393,9 +401,9 @@ PlayerRef GameRoom::FindClosestPlayer(Vec2Int cellPos)
 	float best = FLT_MAX;
 	PlayerRef ret = nullptr;
 
-	for (auto& item :_players)
+	for (const auto& item :_players)
 	{
-		PlayerRef player = item.second;
+		const auto& player = item.second;
 		if (player)
 		{
 			Vec2Int dir = cellPos - player->GetCellPos();
@@ -597,10 +605,18 @@ Vec2Int GameRoom::GetRandomEmptySpawnCellPos()
 
 CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 {
-	for (auto& item : _players)
+	for (const auto& item : _players)
 	{
-		if (item.second->GetCellPos() == cellPos)
-			return item.second;
+		const auto& player = item.second;
+		if (player)
+		{
+			auto playerCellPos = player->GetCellPos();
+
+			if (playerCellPos == cellPos)
+			{
+				return player;
+			}
+		}
 	}
 
 	for (auto& item : _monsters)
@@ -616,20 +632,37 @@ CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 	}
 	return nullptr;
 }
-
 void GameRoom::RandomMonsterSpawn()
 {
-	// 정해진 숫자 만큼만 스폰
+	// 매 0.5초마다 정해진 숫자 만큼만 스폰
 	if (_monsterCount > DESIRED_MONSTER_COUNT)
 		return;
 
 	Vec2Int randPos = GetRandomEmptyCellPos();
-	//
+
+	auto randValue = rand() % 2 + 1;
+
+	switch (randValue)
 	{
-		auto monster = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
-		monster->SetCellPos(randPos, true);
-		AddObject(monster);
-		_monsterCount++;
+	case 1:
+		{
+			auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
+			snake->SetCellPos(randPos, true);
+			AddObject(snake);
+			_monsterCount++;
+			GChat->AddText(::format(L"snake {0} 생성.", snake->info.objectid()));
+		}
+		break;
+
+	case 2:
+		{
+			auto moblin = GameObject::CreateMonster(Protocol::MONSTER_TYPE_MOBLIN);
+			moblin->SetCellPos(randPos, true);
+			AddObject(moblin);
+			_monsterCount++;
+			GChat->AddText(::format(L"moblin {0} 생성.", moblin->info.objectid()));
+		}
+		break;
 	}
 }
 

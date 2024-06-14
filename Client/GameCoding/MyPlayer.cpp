@@ -29,8 +29,6 @@ MyPlayer::MyPlayer()
 {
 	CameraComponent* camera = new CameraComponent();
 	AddComponent(camera);
-
-	_plum = GET_SINGLE(ResourceManager)->GetTexture(L"Crown");
 }
 
 MyPlayer::~MyPlayer()
@@ -41,6 +39,8 @@ MyPlayer::~MyPlayer()
 void MyPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_plum = GET_SINGLE(ResourceManager)->GetTexture(L"Crown");
 }
 
 void MyPlayer::Tick()
@@ -55,6 +55,9 @@ void MyPlayer::Render(HDC hdc)
 	Super::Render(hdc);
 
 	// Plum
+	if (_plum == nullptr)
+		return;
+
 	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
 	::TransparentBlt(hdc,
 		(int32)_pos.x - 10 - ((int32)cameraPos.x - GWinSizeX / 2),
@@ -241,13 +244,13 @@ void MyPlayer::TickInput()
 	// Debug - 사망
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::M))
 	{
-		info.set_hp(0);
+		//info.set_hp(0);
 
 		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 사망");
 		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 사망", false);
 
 		{
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_KillPlayer(GetObjectID());
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 	}
@@ -358,42 +361,34 @@ void MyPlayer::TickTeleport()
 	SetState(IDLE);
 }
 
-void MyPlayer::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
-{
-	// 화살 BroadCast로 인해 2발씩 생성되는 버그 수정, 서버에서는 50ms 이후 화살 생성
-	_now = GetTickCount64();
-
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (_now - _prev >= 50)
-	{
-		if (this->info.arrows() <= 0)
-			return;
-
-		auto arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
-		arrow->info = info;
-		arrow->SetOwner(shared_from_this());
-		this->info.set_arrows(this->info.arrows() - 1);
-	}
-	_prev = _now;
-}
-
-void MyPlayer::MakeArrow()
-{
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (scene)
-	{
-		int arrows = this->info.arrows();
-		if (arrows <= 0)
-			return;
-
-		auto nextPos = GetFrontCellPos();
-
-		auto arrow = scene->SpawnObject<Arrow>(nextPos);
-		arrow->SetOwner(shared_from_this());
-		this->info.set_arrows(arrows - 1);
-	}
-}
-
+//void MyPlayer::MakeArrow(uint64 ownerID)
+//{
+//	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+//	if (scene)
+//	{
+//		_now = GetTickCount64();
+//
+//		if (_now - _prev >= 50)
+//		{
+//			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(ownerID);
+//			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+//
+//			int arrows = this->info.arrows();
+//			if (arrows <= 0)
+//				return;
+//
+//			auto nextPos = shared_from_this()->GetCellPos();
+//
+//			auto arrow = scene->SpawnObject<Arrow>(nextPos);
+//
+//			arrow->SetDir(shared_from_this()->info.dir());
+//			arrow->SetOwner(shared_from_this());
+//
+//			shared_from_this()->info.set_arrows(arrows - 1);
+//		}
+//	}
+//	_prev = _now;
+//}
 void MyPlayer::SyncToServer()
 {
 	// 매 1000프레임마다 동기화하긴 불합리

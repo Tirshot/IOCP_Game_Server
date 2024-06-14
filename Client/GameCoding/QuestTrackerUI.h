@@ -16,6 +16,7 @@ class QuestTrackerUI :	 public Panel
 		bool changed = false;
 		shared_ptr<class TextBox> textBox;
 
+
 		void SetProgress(int progressing) { progress = progressing; }
 	};
 

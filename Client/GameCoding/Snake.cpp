@@ -51,6 +51,26 @@ void Snake::TickIdle()
 void Snake::TickMove()
 {
 	Super::TickMove();
+
+	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+
+	float speed = info.speed();
+
+	switch (info.dir())
+	{
+	case DIR_UP:
+		_pos.y -= speed * deltaTime;
+		break;
+	case DIR_DOWN:
+		_pos.y += speed * deltaTime;
+		break;
+	case DIR_LEFT:
+		_pos.x -= speed * deltaTime;
+		break;
+	case DIR_RIGHT:
+		_pos.x += speed * deltaTime;
+		break;
+	}
 }
 
 void Snake::TickSkill()

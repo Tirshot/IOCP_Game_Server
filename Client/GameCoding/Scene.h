@@ -24,6 +24,8 @@ public:
 
 	bool GetPauseState() { return _isPaused; }
 	void SetPauseState(bool pause) { _isPaused = pause; }
+	bool isInitialized() { return _isInitialized; }
+	void SetInitialized(bool init) { _isInitialized = init; }
 
 	shared_ptr<Creature> GetCreatureAt(Vec2Int cellPos);
 	shared_ptr<Player> GetPlayerByID(uint64 objectId);
@@ -66,6 +68,7 @@ public:
 
 protected:
 	bool _isPaused = false;
+	bool _isInitialized = false;
 	bool _sceneChanged = false;
 };
 

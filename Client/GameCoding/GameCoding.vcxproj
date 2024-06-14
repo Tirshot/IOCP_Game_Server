@@ -177,6 +177,7 @@
     <ClInclude Include="MerchantTutorialTrigger.h" />
     <ClInclude Include="MerchantUI.h" />
     <ClInclude Include="MiniMap.h" />
+    <ClInclude Include="Moblin.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
@@ -270,6 +271,7 @@
     <ClCompile Include="MerchantTutorialTrigger.cpp" />
     <ClCompile Include="MerchantUI.cpp" />
     <ClCompile Include="MiniMap.cpp" />
+    <ClCompile Include="Moblin.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />

@@ -175,11 +175,21 @@ void ShopUI::Tick()
 			if (child)
 				child->Tick();
 
+		auto deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+		_initializeTime += deltaTime;
+
 		if (_pause)
 			return;
 
-		float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-		_initializeTime += deltaTime;
+		if (IsAnyPopUpVisible())
+			return;
+
+		if (IsChildPopUpVisible())
+			return;
+
+		if (_initializeTime <= 1.f)
+			return;
+
 		{
 			_rect.left = _pos.x;
 			_rect.top = _pos.y;
@@ -189,10 +199,6 @@ void ShopUI::Tick()
 
 		for (auto& child : _children)
 		{
-			// 판매창이 열리는 순간 품목이 눌리는 버그 수정
-			if (_initializeTime <= 0.5f)
-				continue;
-
 			auto Item = dynamic_pointer_cast<ShopItemPanel>(child);
 			if (Item == nullptr)
 				continue;
@@ -225,13 +231,12 @@ void ShopUI::Tick()
 					_countsPopUp->SetMaxCounts(99);
 					_countsPopUp->SetVisible(true);
 					SetPause(true);
-
+					_initializeTime = 0.f;
+					return;
 				}
 			}
 		}
 	}
-
-	_initializeTime = 0.f;
 }
 
 void ShopUI::Render(HDC hdc)
@@ -498,6 +503,9 @@ void ShopUI::OnPopClickAlertAcceptDelegate()
 
 void ShopUI::OnClickSellItemToShopAlertAcceptDelegate()
 {
+	if (_sellToShop == nullptr)
+		return;
+
 	int gold = _sellToShop->Price / 5;
 	int counts = _sellToShop->ItemCount;
 

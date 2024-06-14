@@ -31,7 +31,7 @@ void QuestManager::Tick()
 
     sumTime += now;
 
-    if (sumTime <= 0.1)
+    if (sumTime <= 0.1f)
         return;
 
     sumTime = 0.f;

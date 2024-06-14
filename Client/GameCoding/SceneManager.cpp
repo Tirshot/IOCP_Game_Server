@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
+#include "NetworkManager.h"
 #include "DevScene.h"
 #include "TitleScene.h"
 #include "LoadScene.h"
@@ -31,12 +32,10 @@ void SceneManager::Clear()
 
 void SceneManager::ChangeScene(SceneType sceneType)
 {
-	if (_scene)
-		_scene->SetPauseState(true);
-
 	// 변경하려는 Scene과 현재 Scene이 일치하면 종료
 	//if (_sceneType == sceneType)
 	//	return;
+	GET_SINGLE(ResourceManager)->Clear();
 
 	// 변경하려는 Scene을 newScene이라 명명
 	shared_ptr<Scene> newScene = nullptr;
@@ -59,7 +58,7 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	if (newScene == nullptr)
 		return;
 
-	newScene->SetPauseState(false);
+	newScene->SetInitialized(false);
 
 	// 기존 Scene을 변경하려는 Scene으로 대체
 	_scene = newScene;
@@ -90,5 +89,5 @@ shared_ptr<Player> SceneManager::GetPlayerByID(uint64 objectId)
 
 void SceneManager::SetPause(bool pause)
 {
-	GetDevScene()->SetPauseState(pause);
+	GetCurrentScene()->SetPauseState(pause);
 }

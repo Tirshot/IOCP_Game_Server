@@ -65,31 +65,12 @@ void GameOver::Tick()
 	// Game Over UI 페이드 인
 	if (_visible)
 	{
+		HideAllUIs();
 		FadeIn();
 	}
 
 	if (_alpha >= 220)
 	{
-		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-
-		if (_invisibleUIs == false)
-		{
-			_invisibleUIs = true;
-
-			if (scene)
-			{
-				auto uis = scene->GetUIs();
-
-				if (uis.empty() == false)
-				{
-					for (auto& ui : uis)
-					{
-						ui->SetVisible(false);
-					}
-				}
-			}
-		}
-
 		SetVisible(true);
 		for (auto& child : _children)
 		{
@@ -157,6 +138,37 @@ void GameOver::FadeIn()
 	_alpha = clamp(_alpha, 0, 230);
 }
 
+void GameOver::HideAllUIs()
+{
+	if (_invisibleUIs)
+		return;
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (_invisibleUIs == false)
+	{
+		_invisibleUIs = true;
+
+		if (scene)
+		{
+			auto uis = scene->GetUIs();
+
+			if (uis.empty() == false)
+			{
+				for (auto& ui : uis)
+				{
+					auto gameOver = dynamic_pointer_cast<GameOver>(ui);
+					if (gameOver)
+						continue;
+
+					ui->SetVisible(false);
+				}
+			}
+		}
+	}
+}
+
+
 void GameOver::OnClickReviveButton()
 {
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
@@ -173,12 +185,13 @@ void GameOver::OnClickReviveButton()
 	SetVisible(false);
 	_invisibleUIs = false;
 
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+
 	// 부활 패킷 전송
 	{
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Revive(myPlayer->info);
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
-	GET_SINGLE(ItemManager)->Init();
 }
 
 void GameOver::OnClickExitButton()

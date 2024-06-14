@@ -30,21 +30,6 @@ Arrow::~Arrow()
 void Arrow::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-	if (myPlayer == nullptr)
-		return;
-
-	auto playerDir = myPlayer->GetFrontCellPos() - myPlayer->GetCellPos();
-
-	if (playerDir == VectorInt{ 1, 0 })
-		info.set_dir(DIR_RIGHT);
-	else if (playerDir == VectorInt{ -1, 0 })
-		info.set_dir(DIR_LEFT);
-	else if (playerDir == VectorInt{ 0, 1 })
-		info.set_dir(DIR_DOWN);
-	else
-		info.set_dir(DIR_UP);
 }
 
 void Arrow::Tick()
@@ -72,6 +57,7 @@ void Arrow::TickIdle()
 	{
 		SetCellPos(nextPos);
 		SetState(MOVE);
+		return;
 	}
 	else
 	{
@@ -84,21 +70,14 @@ void Arrow::TickIdle()
 			SetState(MOVE);
 			return;
 		}
-		SetState(HIT);
 	}
+
+	SetState(HIT);
 }
 
 void Arrow::TickMove()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-
-	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-
-	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (scene == nullptr)
-		return;
 
 	Vec2 dir = (_destPos - _pos);
 	if (dir.Length() < 3.f)

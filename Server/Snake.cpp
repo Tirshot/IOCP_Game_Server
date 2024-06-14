@@ -9,6 +9,7 @@ Snake::Snake()
 	info.set_maxhp(50);
 	info.set_attack(1);
 	info.set_defence(0);
+	info.set_speed(180);
 }
 
 Snake::~Snake()

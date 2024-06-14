@@ -387,18 +387,19 @@ class ObjectInfo final :
     kMaxHpFieldNumber = 7,
     kAttackFieldNumber = 8,
     kDefenceFieldNumber = 9,
-    kPosXFieldNumber = 10,
-    kPosYFieldNumber = 11,
-    kDamageFieldNumber = 12,
-    kGoldFieldNumber = 14,
-    kWeaponTypeFieldNumber = 13,
-    kItemTypeFieldNumber = 15,
-    kArrowsFieldNumber = 16,
-    kMpFieldNumber = 17,
-    kMaxMpFieldNumber = 18,
-    kNpcTypeFieldNumber = 19,
-    kPotionFieldNumber = 20,
-    kMonsterTypeFieldNumber = 21,
+    kSpeedFieldNumber = 10,
+    kPosXFieldNumber = 11,
+    kPosYFieldNumber = 12,
+    kDamageFieldNumber = 13,
+    kWeaponTypeFieldNumber = 14,
+    kGoldFieldNumber = 15,
+    kItemTypeFieldNumber = 16,
+    kArrowsFieldNumber = 17,
+    kMpFieldNumber = 18,
+    kMaxMpFieldNumber = 19,
+    kNpcTypeFieldNumber = 20,
+    kPotionFieldNumber = 21,
+    kMonsterTypeFieldNumber = 22,
   };
   // string name = 5;
   void clear_name();
@@ -486,7 +487,16 @@ class ObjectInfo final :
   void _internal_set_defence(int32_t value);
   public:
 
-  // int32 posX = 10;
+  // int32 speed = 10;
+  void clear_speed();
+  int32_t speed() const;
+  void set_speed(int32_t value);
+  private:
+  int32_t _internal_speed() const;
+  void _internal_set_speed(int32_t value);
+  public:
+
+  // int32 posX = 11;
   void clear_posx();
   int32_t posx() const;
   void set_posx(int32_t value);
@@ -495,7 +505,7 @@ class ObjectInfo final :
   void _internal_set_posx(int32_t value);
   public:
 
-  // int32 posY = 11;
+  // int32 posY = 12;
   void clear_posy();
   int32_t posy() const;
   void set_posy(int32_t value);
@@ -504,7 +514,7 @@ class ObjectInfo final :
   void _internal_set_posy(int32_t value);
   public:
 
-  // int32 damage = 12;
+  // int32 damage = 13;
   void clear_damage();
   int32_t damage() const;
   void set_damage(int32_t value);
@@ -513,16 +523,7 @@ class ObjectInfo final :
   void _internal_set_damage(int32_t value);
   public:
 
-  // uint64 gold = 14;
-  void clear_gold();
-  uint64_t gold() const;
-  void set_gold(uint64_t value);
-  private:
-  uint64_t _internal_gold() const;
-  void _internal_set_gold(uint64_t value);
-  public:
-
-  // .Protocol.WEAPON_TYPE weaponType = 13;
+  // .Protocol.WEAPON_TYPE weaponType = 14;
   void clear_weapontype();
   ::Protocol::WEAPON_TYPE weapontype() const;
   void set_weapontype(::Protocol::WEAPON_TYPE value);
@@ -531,7 +532,16 @@ class ObjectInfo final :
   void _internal_set_weapontype(::Protocol::WEAPON_TYPE value);
   public:
 
-  // .Protocol.ITEM_TYPE itemType = 15;
+  // uint64 gold = 15;
+  void clear_gold();
+  uint64_t gold() const;
+  void set_gold(uint64_t value);
+  private:
+  uint64_t _internal_gold() const;
+  void _internal_set_gold(uint64_t value);
+  public:
+
+  // .Protocol.ITEM_TYPE itemType = 16;
   void clear_itemtype();
   ::Protocol::ITEM_TYPE itemtype() const;
   void set_itemtype(::Protocol::ITEM_TYPE value);
@@ -540,7 +550,7 @@ class ObjectInfo final :
   void _internal_set_itemtype(::Protocol::ITEM_TYPE value);
   public:
 
-  // int32 arrows = 16;
+  // int32 arrows = 17;
   void clear_arrows();
   int32_t arrows() const;
   void set_arrows(int32_t value);
@@ -549,7 +559,7 @@ class ObjectInfo final :
   void _internal_set_arrows(int32_t value);
   public:
 
-  // int32 mp = 17;
+  // int32 mp = 18;
   void clear_mp();
   int32_t mp() const;
   void set_mp(int32_t value);
@@ -558,7 +568,7 @@ class ObjectInfo final :
   void _internal_set_mp(int32_t value);
   public:
 
-  // int32 maxMp = 18;
+  // int32 maxMp = 19;
   void clear_maxmp();
   int32_t maxmp() const;
   void set_maxmp(int32_t value);
@@ -567,7 +577,7 @@ class ObjectInfo final :
   void _internal_set_maxmp(int32_t value);
   public:
 
-  // .Protocol.NPC_TYPE npcType = 19;
+  // .Protocol.NPC_TYPE npcType = 20;
   void clear_npctype();
   ::Protocol::NPC_TYPE npctype() const;
   void set_npctype(::Protocol::NPC_TYPE value);
@@ -576,7 +586,7 @@ class ObjectInfo final :
   void _internal_set_npctype(::Protocol::NPC_TYPE value);
   public:
 
-  // int32 potion = 20;
+  // int32 potion = 21;
   void clear_potion();
   int32_t potion() const;
   void set_potion(int32_t value);
@@ -585,7 +595,7 @@ class ObjectInfo final :
   void _internal_set_potion(int32_t value);
   public:
 
-  // .Protocol.MONSTER_TYPE monsterType = 21;
+  // .Protocol.MONSTER_TYPE monsterType = 22;
   void clear_monstertype();
   ::Protocol::MONSTER_TYPE monstertype() const;
   void set_monstertype(::Protocol::MONSTER_TYPE value);
@@ -611,11 +621,12 @@ class ObjectInfo final :
     int32_t maxhp_;
     int32_t attack_;
     int32_t defence_;
+    int32_t speed_;
     int32_t posx_;
     int32_t posy_;
     int32_t damage_;
-    uint64_t gold_;
     int weapontype_;
+    uint64_t gold_;
     int itemtype_;
     int32_t arrows_;
     int32_t mp_;
@@ -1625,7 +1636,27 @@ inline void ObjectInfo::set_defence(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.defence)
 }
 
-// int32 posX = 10;
+// int32 speed = 10;
+inline void ObjectInfo::clear_speed() {
+  _impl_.speed_ = 0;
+}
+inline int32_t ObjectInfo::_internal_speed() const {
+  return _impl_.speed_;
+}
+inline int32_t ObjectInfo::speed() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.speed)
+  return _internal_speed();
+}
+inline void ObjectInfo::_internal_set_speed(int32_t value) {
+  
+  _impl_.speed_ = value;
+}
+inline void ObjectInfo::set_speed(int32_t value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.speed)
+}
+
+// int32 posX = 11;
 inline void ObjectInfo::clear_posx() {
   _impl_.posx_ = 0;
 }
@@ -1645,7 +1676,7 @@ inline void ObjectInfo::set_posx(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.posX)
 }
 
-// int32 posY = 11;
+// int32 posY = 12;
 inline void ObjectInfo::clear_posy() {
   _impl_.posy_ = 0;
 }
@@ -1665,7 +1696,7 @@ inline void ObjectInfo::set_posy(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.posY)
 }
 
-// int32 damage = 12;
+// int32 damage = 13;
 inline void ObjectInfo::clear_damage() {
   _impl_.damage_ = 0;
 }
@@ -1685,7 +1716,7 @@ inline void ObjectInfo::set_damage(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.damage)
 }
 
-// .Protocol.WEAPON_TYPE weaponType = 13;
+// .Protocol.WEAPON_TYPE weaponType = 14;
 inline void ObjectInfo::clear_weapontype() {
   _impl_.weapontype_ = 0;
 }
@@ -1705,7 +1736,7 @@ inline void ObjectInfo::set_weapontype(::Protocol::WEAPON_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.weaponType)
 }
 
-// uint64 gold = 14;
+// uint64 gold = 15;
 inline void ObjectInfo::clear_gold() {
   _impl_.gold_ = uint64_t{0u};
 }
@@ -1725,7 +1756,7 @@ inline void ObjectInfo::set_gold(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.gold)
 }
 
-// .Protocol.ITEM_TYPE itemType = 15;
+// .Protocol.ITEM_TYPE itemType = 16;
 inline void ObjectInfo::clear_itemtype() {
   _impl_.itemtype_ = 0;
 }
@@ -1745,7 +1776,7 @@ inline void ObjectInfo::set_itemtype(::Protocol::ITEM_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.itemType)
 }
 
-// int32 arrows = 16;
+// int32 arrows = 17;
 inline void ObjectInfo::clear_arrows() {
   _impl_.arrows_ = 0;
 }
@@ -1765,7 +1796,7 @@ inline void ObjectInfo::set_arrows(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.arrows)
 }
 
-// int32 mp = 17;
+// int32 mp = 18;
 inline void ObjectInfo::clear_mp() {
   _impl_.mp_ = 0;
 }
@@ -1785,7 +1816,7 @@ inline void ObjectInfo::set_mp(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.mp)
 }
 
-// int32 maxMp = 18;
+// int32 maxMp = 19;
 inline void ObjectInfo::clear_maxmp() {
   _impl_.maxmp_ = 0;
 }
@@ -1805,7 +1836,7 @@ inline void ObjectInfo::set_maxmp(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.maxMp)
 }
 
-// .Protocol.NPC_TYPE npcType = 19;
+// .Protocol.NPC_TYPE npcType = 20;
 inline void ObjectInfo::clear_npctype() {
   _impl_.npctype_ = 0;
 }
@@ -1825,7 +1856,7 @@ inline void ObjectInfo::set_npctype(::Protocol::NPC_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.npcType)
 }
 
-// int32 potion = 20;
+// int32 potion = 21;
 inline void ObjectInfo::clear_potion() {
   _impl_.potion_ = 0;
 }
@@ -1845,7 +1876,7 @@ inline void ObjectInfo::set_potion(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.potion)
 }
 
-// .Protocol.MONSTER_TYPE monsterType = 21;
+// .Protocol.MONSTER_TYPE monsterType = 22;
 inline void ObjectInfo::clear_monstertype() {
   _impl_.monstertype_ = 0;
 }
