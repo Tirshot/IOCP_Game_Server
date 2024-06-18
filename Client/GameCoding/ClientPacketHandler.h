@@ -103,10 +103,9 @@ public:
 		return sendBuffer;
 	}
 
-	static SendBufferRef Make_C_Fire(uint64 ownerid);
+	static SendBufferRef Make_C_Fire(uint64 objectId);
 	static SendBufferRef Make_C_Hit(uint64 objectId, uint64 attackerId);
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str, bool broadcast = true);
-	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
 	static SendBufferRef Make_C_Quest(uint64 objectId, uint64 questId);
 	static SendBufferRef Make_C_QuestFinish(uint64 objectId, uint64 questId);

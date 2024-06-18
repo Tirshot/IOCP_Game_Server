@@ -275,16 +275,6 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	if (creature == nullptr)
 		return;
 
-	{
-		shared_ptr<Player> player = dynamic_pointer_cast<Player>(creature);
-
-		if (player)
-			GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
-		else
-			GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
-
-	}
-	scene->SpawnObject<HitEffect>(creature->GetCellPos());
 	creature->info.set_hp(clamp(creature->info.hp() - damage, 0, creature->info.maxhp()));
 }
 
@@ -304,10 +294,11 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 	// 화살의 주인 플레이어를 가져옴
 	if (scene)
 	{
-		auto player = GET_SINGLE(SceneManager)->GetPlayerByID(pkt.ownerid());
+		auto player = scene->GetPlayerByID(pkt.ownerid());
+
 		if (player)
 		{
-			player->Handle_S_Fire(info, pkt.ownerid());
+			player->MakeArrow();
 		}
 	}
 }
@@ -574,12 +565,12 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 	return MakeSendBuffer(pkt, C_Move);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
+SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 objectId)
 {
 	// 패킷 생성
 	Protocol::C_Fire pkt;
 
-	pkt.set_ownerid(ownerid);
+	pkt.set_ownerid(objectId);
 
 	return MakeSendBuffer(pkt, C_Fire);
 }

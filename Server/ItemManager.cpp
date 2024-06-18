@@ -190,6 +190,12 @@ int ItemManager::GetItemFromGroup(vector<vector<wstring>> dropTable)
 	// 테이블의 총 확률 계산
 	int total = GET_SINGLE(ItemManager)->CalculateItemTotalProbablity(dropTable);
 
+	if (total <= 0)
+	{
+		GChat->AddText(::format(L"<ERROR> 드랍 테이블 총 확률이 0으로 계산됨."));
+		return 0;
+	}
+
 	// 주사위 굴리기
 	int randItemValue = rand() % total + 1;
 

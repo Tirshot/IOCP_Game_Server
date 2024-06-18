@@ -43,6 +43,7 @@ public:
 	void RemoveObject(uint64 id);
 	void RemoveTemp(uint64 id);
 	void Broadcast(SendBufferRef& sendBuffer);
+	void Broadcast(SendBufferRef& sendBuffer, uint64 objectId);
 
 public:
 	PlayerRef FindClosestPlayer(Vec2Int cellPos);

@@ -191,6 +191,12 @@ void Monster::ItemDrop(CreatureRef owner)
 		return;
 	}
 
+	if (group.size() == 0)
+	{
+		GChat->AddText(L"<ERROR> 드랍 아이템을 찾을 수 없음. 몬스터 별 전리품(ETC)이 있는지 확인.");
+		return;
+	}
+
 	// 아이템 생성, 패킷 전송
 	GET_SINGLE(ItemManager)->MakeItem(group, owner, {GetCellPos().x, GetCellPos().y});
 }

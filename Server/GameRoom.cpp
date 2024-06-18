@@ -390,8 +390,21 @@ void GameRoom::RemoveTemp(uint64 id)
 
 void GameRoom::Broadcast(SendBufferRef& sendBuffer)
 {
+	// 자기 자신을 포함한 모든 플레이어를 대상으로 Broadcast
 	for (auto& item : _players)
 	{
+		item.second->session->Send(sendBuffer);
+	}
+}
+
+void GameRoom::Broadcast(SendBufferRef& sendBuffer, uint64 objectId)
+{
+	// 특정 ID를 제외한 Broadcast
+	for (auto& item : _players)
+	{
+		if (item.second->GetObjectID() == objectId)
+			continue;
+
 		item.second->session->Send(sendBuffer);
 	}
 }

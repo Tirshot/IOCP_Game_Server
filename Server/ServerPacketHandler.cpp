@@ -123,28 +123,25 @@ void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int
 void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
-	uint16 id = header->id;
+	//uint16 id = header->id;
 	uint16 size = header->size;
 
 	Protocol::C_Fire pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	auto ownerID = pkt.ownerid();
-
 	GameRoomRef room = session->gameRoom.lock();
 	if (room)
 	{
-		GameObjectRef object = room->FindObject(ownerID);
-
-		if (object == nullptr)
-			return;
-
-		auto player = dynamic_pointer_cast<Player>(object);
-		if (player)
+		auto id = pkt.ownerid();
+		auto object = room->FindObject(id);
+		GChat->AddText(format(L"서버에서 player{0}가 화살 생성", pkt.ownerid()));
+		if (object)
 		{
-			//PlayerRef player = static_pointer_cast<Player>(object);
-			// 화살발사?
-			player->MakeArrow();
+			auto player = dynamic_pointer_cast<Player>(object);
+			if (player)
+			{
+				player->MakeArrow();
+			}
 		}
 	}
 

@@ -33,8 +33,6 @@ private:
 	virtual void TickTeleport() override;
 
 public:
-	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
-	//void MakeArrow(uint64 ownerID);
 	void SyncToServer();
 
 public:

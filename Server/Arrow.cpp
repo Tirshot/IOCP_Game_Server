@@ -103,7 +103,6 @@ void Arrow::TickHit()
 		int damage = _owner->info.attack() - _target->info.defence();
 
 		_target->OnDamaged(_owner);
-
 		{
 			int32 damage = info.attack() - _target->info.defence();
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(_target->info.objectid(), _owner->info.objectid(), damage);

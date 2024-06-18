@@ -162,10 +162,15 @@ void Player::TickSkill()
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
-		{
-			uint64 objectID = GET_SINGLE(SceneManager)->GetMyPlayerId();
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(objectID);
-			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		{	
+			auto myPlayer = dynamic_pointer_cast<MyPlayer>(shared_from_this());
+
+			// 화살 버그 수정 - 패킷 생성시 플레이어 수 만큼 나감 주의!!
+			if (myPlayer)
+			{
+				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(info.objectid());
+				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
 		{
@@ -313,23 +318,19 @@ void Player::UpdateAnimation()
 	}
 }
 
-void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
+void Player::MakeArrow()
 {
-	// 화살 BroadCast로 인해 2발씩 생성되는 버그 수정, 서버에서는 50ms 이후 화살 생성
-	_now = GetTickCount64();
-
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (_now - _prev >= 50)
-	{
-		if (this->info.arrows() <= 0)
-			return;
 
-		auto arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
-		arrow->info = info;
+	if (scene)
+	{
+		auto arrow = scene->SpawnObject<Arrow>({ info.posx(), info.posy() });
+		arrow->info.set_dir(info.dir());
 		arrow->SetOwner(shared_from_this());
-		this->info.set_arrows(this->info.arrows() - 1);
+
+		auto arrows = info.arrows();
+		info.set_arrows(arrows - 1);
 	}
-	_prev = _now;
 }
 
 void Player::SyncToServer()

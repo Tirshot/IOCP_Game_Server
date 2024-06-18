@@ -98,7 +98,7 @@ void Moblin::UpdateAnimation()
 	switch (info.state())
 	{
 	case IDLE:
-		SetFlipbook(_flipbookMove[info.dir()]);
+		SetFlipbook(_flipbookIdle[info.dir()]);
 		break;
 
 	case MOVE:

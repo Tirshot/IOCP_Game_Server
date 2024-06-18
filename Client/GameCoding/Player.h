@@ -24,7 +24,7 @@ protected:
 	virtual void UpdateAnimation() override;
 
 public:
-	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
+	void MakeArrow();
 	void SyncToServer();
 
 private:
@@ -39,7 +39,7 @@ private:
 	bool _keyPressed = false;
 
 protected:
-	uint64 _now = 0;
-	uint64 _prev = 0;
+	float _now = 0;
+	float _prev = 0;
 };
 

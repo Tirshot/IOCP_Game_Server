@@ -593,25 +593,25 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinUp", { 300, 300}, 0, 0, 6, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinUp", { 300, 300}, 0, 0, 6, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinDown", { 300, 300}, 0, 0, 0, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinDown", { 300, 300}, 0, 0, 0, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinLeft", { 300, 300}, 0, 0, 2, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinLeft", { 300, 300}, 0, 0, 2, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinRight", { 300, 300}, 0, 0, 4, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinRight", { 300, 300}, 0, 0, 4, 0.6f, true });
 	}
 
 	// Moblin Move
@@ -619,25 +619,25 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveUp", { 300, 300}, 0, 3, 6, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveUp", { 300, 300}, 0, 3, 6, 0.4f});
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveDown", { 300, 300}, 0, 3, 0, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveDown", { 300, 300}, 0, 3, 0, 0.4f});
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveLeft", { 300, 300}, 0, 3, 2, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveLeft", { 300, 300}, 0, 3, 2, 0.4f});
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveRight", { 300, 300}, 0, 3, 4, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveRight", { 300, 300}, 0, 3, 4, 0.4f});
 	}
 
 	// Moblin Attack
@@ -645,25 +645,25 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackUp", { 300, 300}, 0, 3, 6, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackUp", { 300, 300}, 0, 1, 6, 0.4f });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackDown", { 300, 300}, 0, 3, 1, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackDown", { 300, 300}, 0, 1, 1, 0.4f });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackLeft", { 300, 300}, 0, 3, 3, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackLeft", { 300, 300}, 0, 1, 3, 0.4f });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackRight", { 300, 300}, 0, 3, 5, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackRight", { 300, 300}, 0, 1, 5, 0.4f });
 	}
 
 	// Moblin Hit
@@ -671,25 +671,25 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitUp", { 300, 300}, 0, 0, 10, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitUp", { 300, 300}, 0, 0, 10, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitDown", { 300, 300}, 0, 0, 7, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitDown", { 300, 300}, 0, 0, 7, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitLeft", { 300, 300}, 0, 0, 8, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitLeft", { 300, 300}, 0, 0, 8, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitRight", { 300, 300}, 0, 0, 9, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitRight", { 300, 300}, 0, 0, 9, 0.6f, true });
 	}
 }
 

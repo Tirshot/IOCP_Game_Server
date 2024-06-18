@@ -361,34 +361,6 @@ void MyPlayer::TickTeleport()
 	SetState(IDLE);
 }
 
-//void MyPlayer::MakeArrow(uint64 ownerID)
-//{
-//	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-//	if (scene)
-//	{
-//		_now = GetTickCount64();
-//
-//		if (_now - _prev >= 50)
-//		{
-//			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(ownerID);
-//			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-//
-//			int arrows = this->info.arrows();
-//			if (arrows <= 0)
-//				return;
-//
-//			auto nextPos = shared_from_this()->GetCellPos();
-//
-//			auto arrow = scene->SpawnObject<Arrow>(nextPos);
-//
-//			arrow->SetDir(shared_from_this()->info.dir());
-//			arrow->SetOwner(shared_from_this());
-//
-//			shared_from_this()->info.set_arrows(arrows - 1);
-//		}
-//	}
-//	_prev = _now;
-//}
 void MyPlayer::SyncToServer()
 {
 	// 매 1000프레임마다 동기화하긴 불합리

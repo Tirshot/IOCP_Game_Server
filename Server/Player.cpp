@@ -91,7 +91,7 @@ void Player::UpdateSkill()
 
 		if (creature)
 		{
-			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -121,6 +121,7 @@ void Player::UpdateSkill()
 	{
 		
 	}
+	SetState(IDLE, true);
 }
 
 void Player::UpdateSpin()
@@ -135,7 +136,7 @@ void Player::UpdateSpin()
 
 		if (creature)
 		{
-			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -154,7 +155,7 @@ void Player::UpdateSpin()
 
 		if (creature2)
 		{
-			if (creature2->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature2->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -173,7 +174,7 @@ void Player::UpdateSpin()
 
 		if (creature3)
 		{
-			if (creature3->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature3->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -192,7 +193,7 @@ void Player::UpdateSpin()
 
 		if (creature4)
 		{
-			if (creature4->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature4->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -270,8 +271,12 @@ void Player::MakeArrow()
 
 	uint64 id = GetObjectID();
 
+	auto arrows = info.arrows();
+	info.set_arrows(arrows - 1);
+	
 	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Fire(arrow->info, id);
 	session->Send(sendBuffer);
+	room->Broadcast(sendBuffer, id);
 }
 
 void Player::Teleport()
