@@ -21,22 +21,22 @@ UI::~UI()
 
 void UI::BeginPlay()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-		for (UI* ui : scene->_uis)
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+		for (auto& ui : scene->_uis)
 			ui->BeginPlay();
 }
 
 void UI::Tick()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	for (UI* ui : scene->_uis)
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	for (auto& ui : scene->_uis)
 		ui->Tick();
 }
 
 void UI::Render(HDC hdc)
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	for (UI* ui : scene->_uis)
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	for (auto& ui : scene->_uis)
 		ui->Render(hdc);
 }
 

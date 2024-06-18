@@ -17,13 +17,13 @@ public:
 
 	void TilePicking();
 
-	void SetTilemap(Tilemap* tilemap) { _tilemap = tilemap; }
-	Tilemap* GetTilemap() { return _tilemap; }
+	void SetTilemap(shared_ptr<Tilemap> tilemap) { _tilemap = tilemap; }
+	shared_ptr<Tilemap> GetTilemap() { return _tilemap; }
 
 	void SetShowDebug(bool showDebug) { _showDebug = showDebug; }
 
 protected:
-	Tilemap* _tilemap = nullptr;
+	shared_ptr<Tilemap> _tilemap = nullptr;
 	// 인게임에서 O, X를 표시
 	bool _showDebug = false;
 };

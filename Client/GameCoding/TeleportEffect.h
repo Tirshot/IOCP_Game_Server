@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-class TeleportEffect : public GameObject
+class TeleportEffect : public GameObject, public enable_shared_from_this<TeleportEffect>
 {
 	using Super = GameObject;
 

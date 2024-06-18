@@ -7,10 +7,10 @@ public:
 	virtual ~Quest();
 
 	virtual void Init();
-	virtual void Accept();
+	virtual void Update();
 	virtual void Completed();
 
-protected:
+public:
 	vector<vector<wstring>> GetDataFromCSV(const string& filename);
 	int GetID(vector<wstring> row) { return stoi(row[0]); }
 	int GetTargetID(vector<wstring> row) { return stoi(row[1]); }
@@ -19,11 +19,15 @@ protected:
 	int GetRewardGold(vector<wstring> row) { return stoi(row[4]); }
 	int GetRewardItemID(vector<wstring> row) { if (row[5] != L"") return stoi(row[5]); else return 0; }
 	int GetRewardItemCounts(vector<wstring> row) { if (row[6] != L"") return stoi(row[6]); else return 0; }
+	Vec2Int GetTargetCellPos(vector<wstring> row);
+	
 	vector<wstring> GetQuestInfo(int questID);
+	vector<wstring> GetQuestInfoByTargetID(wstring targetType, int targetID);
+
 
 public:
 	void CreateQuest();
-
+	//void ItemQuestCheck(int objectID, int itemID);
 
 public:
 	Protocol::QuestInfo info;

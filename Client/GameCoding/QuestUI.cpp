@@ -34,7 +34,7 @@ void QuestUI::BeginPlay()
 	}
 
 	{ // 뒤로 버튼
-		Button* back = new Button();
+		shared_ptr<Button> back = make_shared<Button>();
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Off"), BS_Default);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_On"), BS_Pressed);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Hovered"), BS_Hovered);
@@ -46,7 +46,7 @@ void QuestUI::BeginPlay()
 	}
 
 	{ // 대화 종료
-		Button* exit = new Button();
+		shared_ptr<Button> exit = make_shared<Button>();
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Off"), BS_Default);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
@@ -58,7 +58,7 @@ void QuestUI::BeginPlay()
 	}
 	// 페이지 감소
 	{
-		Button* minus = new Button();
+		shared_ptr<Button> minus = make_shared<Button>();
 		minus->SetPos({ _pos.x + 400, _pos.y + 300 });
 		minus->SetSize({ 40,24 });
 		minus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LButton"), ButtonState::BS_Default);
@@ -71,7 +71,7 @@ void QuestUI::BeginPlay()
 
 	// 페이지 증가
 	{
-		Button* plus = new Button();
+		shared_ptr<Button> plus = make_shared<Button>();
 		plus->SetPos({ _pos.x + 500, _pos.y + 300 });
 		plus->SetSize({ 40,24 });
 		plus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RButton"), ButtonState::BS_Default);
@@ -83,7 +83,7 @@ void QuestUI::BeginPlay()
 	}
 	// 퀘스트 설명
 	{
-		TextBox* textBox = new TextBox();
+		auto textBox = make_shared<TextBox>();
 		textBox->SetText(L"퀘스트를 선택하세요.");
 		textBox->SetSize(Vec2Int{ 160 , 250 });
 		textBox->SetPadding(5, 5);
@@ -97,8 +97,6 @@ void QuestUI::BeginPlay()
 
 	for (auto& child : _children)
 		child->BeginPlay();
-
-	ResetQuestList();
 }
 
 void QuestUI::Tick()
@@ -115,13 +113,13 @@ void QuestUI::Tick()
 	for (auto& child : _children)
 		child->Tick();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
 		return;
 
 	for (auto& child : _children)
 	{
-		auto Panel = dynamic_cast<QuestUIPanel*>(child);
+		auto Panel = dynamic_pointer_cast<QuestUIPanel>(child);
 		// 퀘스트 패널을 클릭 시 대화 발동
 		if (Panel && Panel->GetVisible() && IsMouseInRect(Panel->GetRect()))
 		{
@@ -141,15 +139,11 @@ void QuestUI::Tick()
 				}
 			}
 		}
-
 		auto questState = Panel->GetQuestState();
-		if (questState)
+		if (questState && questState == Protocol::QUEST_STATE_FINISHED)
 		{
-			if (Panel->GetQuestState() == Protocol::QUEST_STATE_FINISHED)
-			{
-				RemoveChild(Panel);
-				ResetQuestList();
-			}
+			RemoveChild(Panel);
+			ResetQuestList();
 		}
 	}
 }
@@ -176,7 +170,7 @@ void QuestUI::Render(HDC hdc)
 
 	for (auto& child : _children)
 	{
-		auto* Item = dynamic_cast<QuestUIPanel*>(child);
+		auto Item = dynamic_pointer_cast<QuestUIPanel>(child);
 		if (Item)
 		{
 			int index = Item->GetIndex();
@@ -201,9 +195,9 @@ void QuestUI::OnClickBackButton()
 	ResetPage();
 	ResetPos();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
-	MerchantUI* merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
+	auto merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
 	merchantUI->SetVisible(true);
 }
 
@@ -232,7 +226,7 @@ void QuestUI::ResetQuestList()
 	_idx = 0;
 	_quests.clear();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 	{
 		auto& quests = scene->GetQuests();
@@ -253,7 +247,9 @@ void QuestUI::ResetQuestList()
 			if (state == Protocol::QUEST_STATE_FINISHED)
 				continue;
 
-			_quests.insert(questInfo);
+			int questId = questInfo.second.questid();
+
+			_quests[questId] = questInfo.second;
 			SetQuestPanel(questInfo);
 			_idx++;
 		}
@@ -265,7 +261,7 @@ void QuestUI::RepostionPanels()
 	for (int i = 0; i < _children.size(); i++)
 	{
 		// 자식 중 패널을 찾음
-		auto panel = dynamic_cast<QuestUIPanel*>(_children[i]);
+		auto panel = dynamic_pointer_cast<QuestUIPanel>(_children[i]);
 		if (panel)
 		{
 
@@ -276,7 +272,7 @@ void QuestUI::RepostionPanels()
 
 void QuestUI::SetQuestPanel(pair<int, Protocol::QuestInfo> questInfo)
 {
-	QuestUIPanel* questPanel = new QuestUIPanel(questInfo.second, _pos, _idx);
+	auto questPanel = make_shared<QuestUIPanel>(questInfo.second, _pos, _idx);
 	AddChild(questPanel);
 }
 

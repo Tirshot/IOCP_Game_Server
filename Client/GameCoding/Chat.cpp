@@ -124,8 +124,8 @@ void Chat::ChatBoxFade()
 			_sumTime = 0;
 		}
 	}
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	ChatInput* chatInput = scene->FindUI<ChatInput>(scene->_uis);
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	shared_ptr<ChatInput> chatInput = scene->FindUI<ChatInput>(scene->_uis);
 
 	if (chatInput->GetVisible() == true)
 	{

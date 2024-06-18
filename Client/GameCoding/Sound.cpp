@@ -46,7 +46,7 @@ bool Sound::LoadWave(fs::path fullPath)
 	::memset(&_bufferDesc, 0, sizeof(DSBUFFERDESC));
 	_bufferDesc.dwBufferBytes = child.cksize;
 	_bufferDesc.dwSize = sizeof(DSBUFFERDESC);
-	_bufferDesc.dwFlags = DSBCAPS_STATIC;
+	_bufferDesc.dwFlags = DSBCAPS_CTRLVOLUME;
 	_bufferDesc.lpwfxFormat = &wft;
 
 	if (FAILED(GET_SINGLE(SoundManager)->GetSoundDevice()->CreateSoundBuffer(&_bufferDesc, &_soundBuffer, NULL)))
@@ -90,4 +90,9 @@ void Sound::Stop(bool reset)
 
 	if (reset)
 		_soundBuffer->SetCurrentPosition(0);
+}
+
+void Sound::SetVolume(long vol)
+{
+	_soundBuffer->SetVolume(vol);
 }

@@ -24,17 +24,17 @@ protected:
 	virtual void UpdateAnimation() override;
 
 public:
-	virtual void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
+	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 	void SyncToServer();
 
 private:
-	Flipbook* _flipbookIdle[4] = {};
-	Flipbook* _flipbookMove[4] = {};
-	Flipbook* _flipbookAttack[4] = {};
-	Flipbook* _flipbookSpin[4] = {};
-	Flipbook* _flipbookSpinReady[4] = {};
-	Flipbook* _flipbookBow[4] = {};
-	Flipbook* _flipbookStaff[4] = {};
+	shared_ptr<Flipbook> _flipbookIdle[4] = {};
+	shared_ptr<Flipbook> _flipbookMove[4] = {};
+	shared_ptr<Flipbook> _flipbookAttack[4] = {};
+	shared_ptr<Flipbook> _flipbookSpin[4] = {};
+	shared_ptr<Flipbook> _flipbookSpinReady[4] = {};
+	shared_ptr<Flipbook> _flipbookBow[4] = {};
+	shared_ptr<Flipbook> _flipbookStaff[4] = {};
 
 	bool _keyPressed = false;
 

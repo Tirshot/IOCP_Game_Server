@@ -101,7 +101,7 @@ bool GameObject::HasReachedDest()
 
 bool GameObject::CanGo(Vec2Int cellPos)
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
 		return false;
 
@@ -130,7 +130,7 @@ void GameObject::SetCellPos(Vec2Int cellPos, bool teleport)
 	info.set_posx(cellPos.x);
 	info.set_posy(cellPos.y);
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
 		return;
 

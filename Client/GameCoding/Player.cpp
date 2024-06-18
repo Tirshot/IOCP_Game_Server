@@ -3,6 +3,7 @@
 #include "MyPlayer.h"
 #include "InputManager.h"
 #include "ResourceManager.h"
+#include "ItemManager.h"
 #include "Flipbook.h"
 #include "TimeManager.h"
 #include "SoundManager.h"
@@ -78,10 +79,12 @@ void Player::Tick()
 {
 	Super::Tick();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (info.hp() <= 0)
-		scene->RemoveActor(this);
+	{
+		scene->RemoveActor(shared_from_this());
+	}
 }
 
 void Player::Render(HDC hdc)
@@ -98,6 +101,8 @@ void Player::TickMove()
 {
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
+	auto speed = info.speed();
+
 	Vec2 dir = (_destPos - _pos);
 	if (dir.Length() < 1.f )
 	{
@@ -109,16 +114,16 @@ void Player::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 160 * deltaTime;
+			_pos.y -= speed * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 160 * deltaTime;
+			_pos.y += speed * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 160 * deltaTime;
+			_pos.x -= speed * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 160 * deltaTime;
+			_pos.x += speed * deltaTime;
 			break;
 		}
 	}
@@ -133,41 +138,34 @@ void Player::TickSkill()
 	if (IsAnimationEnded())
 	{
 		// 공격 판정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		if (scene == nullptr)
 			return;
 
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
-			Monster* monster = dynamic_cast<Monster*>(scene->GetCreatureAt(GetFrontCellPos()));
+			auto monster = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetFrontCellPos()));
 
 			if (monster)
 			{
-				// 몬스터에 피격 이펙트 출력
-				//scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				//GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
-
 				// 몬스터 피격 스프라이트 출력 및 스턴 시간
 				if (monster->info.hp() <=0)
+				{
+					monster->SetState(HIT);
 					return;
+				}
 
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack(this);
+				monster->KnockBack(shared_from_this());
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{
-			// 화살 생성 패킷 전송
-			MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
-
-			// 화살 버그 수정 - 패킷 생성시 플레이어 수 만큼 나감 주의!!
-			if (myPlayer)
-			{
-				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(GetObjectID());
-				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-			}
+			uint64 objectID = GET_SINGLE(SceneManager)->GetMyPlayerId();
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(objectID);
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
 		{
@@ -186,17 +184,17 @@ void Player::TickSpin()
 	if (IsAnimationEnded())
 	{
 		// 공격 판정
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 		if (scene == nullptr)
 			return;
 
 		if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 십자에 있는 좌표
-			Monster* monster = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 })); // up
-			Monster* monster2 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 })); // right
-			Monster* monster3 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 })); // down
-			Monster* monster4 = dynamic_cast<Monster*>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 })); // left
+			auto monster = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,-1 })); // up
+			auto monster2 = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 1,0 })); // right
+			auto monster3 = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ 0,1 })); // down
+			auto monster4 = dynamic_pointer_cast<Monster>(scene->GetCreatureAt(GetCellPos() + Vec2Int{ -1,0 })); // left
 
 			if (monster)
 			{
@@ -207,7 +205,7 @@ void Player::TickSpin()
 				}
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack(this);
+				monster->KnockBack(shared_from_this());
 			}
 
 			if (monster2)
@@ -219,7 +217,7 @@ void Player::TickSpin()
 				}
 				monster2->SetWait(50);
 				monster2->SetState(HIT);
-				monster2->KnockBack(this);
+				monster2->KnockBack(shared_from_this());
 			}
 
 			if (monster3)
@@ -231,7 +229,7 @@ void Player::TickSpin()
 				}
 				monster3->SetWait(50);
 				monster3->SetState(HIT);
-				monster3->KnockBack(this);
+				monster3->KnockBack(shared_from_this());
 			}
 
 			if (monster4)
@@ -243,12 +241,12 @@ void Player::TickSpin()
 				}
 				monster4->SetWait(50);
 				monster4->SetState(HIT);
-				monster4->KnockBack(this);
+				monster4->KnockBack(shared_from_this());
 			}
 		}
 		SetState(MOVE);
 
-		MyPlayer* myPlayer = dynamic_cast<MyPlayer*>(this);
+		auto myPlayer = dynamic_pointer_cast<MyPlayer>(shared_from_this());
 		if (myPlayer && myPlayer->GetQuestState(1) == Protocol::QUEST_STATE_ACCEPT
 			&& GetCellPos() == Vec2Int{ 44, 18 })
 			scene->SpawnObject<TeleportEffect>(GetCellPos());
@@ -320,15 +318,15 @@ void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
 	// 화살 BroadCast로 인해 2발씩 생성되는 버그 수정, 서버에서는 50ms 이후 화살 생성
 	_now = GetTickCount64();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (_now - _prev >= 50)
 	{
 		if (this->info.arrows() <= 0)
 			return;
 
-		Arrow* arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
+		auto arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
 		arrow->info = info;
-		arrow->SetOwner(this);
+		arrow->SetOwner(shared_from_this());
 		this->info.set_arrows(this->info.arrows() - 1);
 	}
 	_prev = _now;

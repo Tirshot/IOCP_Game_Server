@@ -23,6 +23,9 @@ void Button::Tick()
 	POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
+	if (_pause == true)
+		return;
+
 	if (_state == BS_Clicked)
 	{
 		_sumTime += deltaTime;

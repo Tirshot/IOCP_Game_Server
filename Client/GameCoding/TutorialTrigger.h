@@ -13,6 +13,6 @@ public:
 	virtual void Tick() override;
 
 protected:
-	Tutorial* _tutorial = nullptr;
+	shared_ptr<Tutorial> _tutorial = nullptr;
 };
 

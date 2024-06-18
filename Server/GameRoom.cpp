@@ -10,6 +10,9 @@
 #include "Chat.h"
 #include "Quest.h"
 #include "Inventory.h"
+#include "Trigger.h"
+#include "Quest1Trigger.h"
+#include "ItemManager.h"
 #include <filesystem>
 
 extern GameRoomRef GRoom = make_shared<GameRoom>();
@@ -31,7 +34,7 @@ void GameRoom::Init()
 	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
 	_tilemap.LoadFile(relativePath);
 	GET_SINGLE(Quest)->Init();
-	GET_SINGLE(Inventory)->Init();
+	GET_SINGLE(ItemManager)->Init();
 	// Sign
 	{
 		SignRef npc1 = GameObject::CreateSign();
@@ -75,6 +78,13 @@ void GameRoom::Update()
 	for (auto& item : _players)
 	{
 		item.second->Update();
+
+		auto id = item.second->GetObjectID();
+		// 어딘가에 적중시 제거
+		if (item.second->info.hp() <= 0)
+		{
+			_temps[id] = item.second;
+		}
 	}
 
 	for (auto& item : _monsters)
@@ -96,7 +106,19 @@ void GameRoom::Update()
 		if (item.second->IsGet())
 		{
 			_deleteObjects[id] = item.second;
+
+			int itemID = item.second.get()->GetItemInfo().itemid();
+
+			wstring itemStr = to_wstring(itemID);
+
+			// 제거 후 로그
+			GChat->AddText(L"ItemID : " + itemStr + L" 아이템 서버에서 제거.");
 		}
+	}
+
+	for (auto& item : _triggers)
+	{
+		item.second->Tick();
 	}
 
 	for (auto& inven : _inventorys)
@@ -130,7 +152,10 @@ void GameRoom::Update()
 void GameRoom::EnterRoom(GameSessionRef session)
 {
 	// 플레이어 초기화
-	PlayerRef player = GameObject::CreatePlayer();
+	auto player = GameObject::CreatePlayer();
+
+	InventoryRef inventory = GameObject::CreateInventory(player);
+	AddObject(inventory);
 
 	player->info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 	SetName(player);
@@ -139,6 +164,8 @@ void GameRoom::EnterRoom(GameSessionRef session)
 	session->gameRoom = GetRoomRef();
 	session->player = player;
 	player->session = session;
+
+	GChat->AddText(::format(L"System : Player {0} 게임 입장.", player->GetObjectID()));
 
 	// Player Character Spawn
 	Vec2Int randCellPos = GetRandomEmptySpawnCellPos();
@@ -239,7 +266,7 @@ weak_ptr<Player> GameRoom::FindObjectInTemp(uint64 id)
 	return {};
 }
 
-void GameRoom::SetName(PlayerRef& player)
+void GameRoom::SetName(PlayerRef player)
 {
 	string strPlayer = "Player";
 	string str = strPlayer.append(to_string(player->GetObjectID()));
@@ -278,6 +305,14 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 		_items[id] = static_pointer_cast<Item>(gameObject);
 		return;
 
+	case Protocol::OBJECT_TYPE_INVENTORY:
+		_inventorys[id] = static_pointer_cast<Inventory>(gameObject);
+		return;
+
+	case Protocol::OBJECT_TYPE_TRIGGER:
+		_triggers[id] = static_pointer_cast<Trigger>(gameObject);
+		return;
+
 	default:
 		return;
 	}
@@ -292,10 +327,6 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 		*info = gameObject->info;
 
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-
-		// 아이템은 개별 드랍
-		if (info->objecttype() == Protocol::OBJECT_TYPE_ITEM)
-			return;
 
 		Broadcast(sendBuffer);
 	}
@@ -350,9 +381,9 @@ void GameRoom::RemoveObject(uint64 id)
 
 void GameRoom::RemoveTemp(uint64 id)
 {
-	GameObjectRef gameObject = FindObject(id);
-	if (gameObject == nullptr)
-		return;
+	//GameObjectRef gameObject = FindObject(id);
+	//if (gameObject == nullptr)
+	//	return;
 
 	_temps.erase(id);
 }
@@ -370,9 +401,9 @@ PlayerRef GameRoom::FindClosestPlayer(Vec2Int cellPos)
 	float best = FLT_MAX;
 	PlayerRef ret = nullptr;
 
-	for (auto& item :_players)
+	for (const auto& item :_players)
 	{
-		PlayerRef player = item.second;
+		const auto& player = item.second;
 		if (player)
 		{
 			Vec2Int dir = cellPos - player->GetCellPos();
@@ -574,10 +605,18 @@ Vec2Int GameRoom::GetRandomEmptySpawnCellPos()
 
 CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 {
-	for (auto& item : _players)
+	for (const auto& item : _players)
 	{
-		if (item.second->GetCellPos() == cellPos)
-			return item.second;
+		const auto& player = item.second;
+		if (player)
+		{
+			auto playerCellPos = player->GetCellPos();
+
+			if (playerCellPos == cellPos)
+			{
+				return player;
+			}
+		}
 	}
 
 	for (auto& item : _monsters)
@@ -593,20 +632,37 @@ CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 	}
 	return nullptr;
 }
-
 void GameRoom::RandomMonsterSpawn()
 {
-	// 정해진 숫자 만큼만 스폰
+	// 매 0.5초마다 정해진 숫자 만큼만 스폰
 	if (_monsterCount > DESIRED_MONSTER_COUNT)
 		return;
 
 	Vec2Int randPos = GetRandomEmptyCellPos();
-	//
+
+	auto randValue = rand() % 2 + 1;
+
+	switch (randValue)
 	{
-		MonsterRef monster = GameObject::CreateMonster();
-		monster->SetCellPos(randPos, true);
-		AddObject(monster);
-		_monsterCount++;
+	case 1:
+		{
+			auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
+			snake->SetCellPos(randPos, true);
+			AddObject(snake);
+			_monsterCount++;
+			GChat->AddText(::format(L"snake {0} 생성.", snake->info.objectid()));
+		}
+		break;
+
+	case 2:
+		{
+			auto moblin = GameObject::CreateMonster(Protocol::MONSTER_TYPE_MOBLIN);
+			moblin->SetCellPos(randPos, true);
+			AddObject(moblin);
+			_monsterCount++;
+			GChat->AddText(::format(L"moblin {0} 생성.", moblin->info.objectid()));
+		}
+		break;
 	}
 }
 
@@ -619,14 +675,6 @@ Protocol::QuestInfo& GameRoom::GetQuest(int questId)
 		return info;
 	}
 }
-
-void GameRoom::SetPlayerQuestState(int playerId, int questId, Protocol::QUEST_STATE state)
-{
-	PlayerRef player = dynamic_pointer_cast<Player>(FindObject(playerId));
-	if (player)
-		player->SetQuestState(questId, state, 0);
-}
-
 
 void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 {
@@ -652,7 +700,27 @@ void GameRoom::AddQuest(Quest quest)
 	_quests.insert({ quest.info.questid(), quest.info });
 }
 
-void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts)
+void GameRoom::AddItemToPlayer(int objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index)
 {
-	GetInventory(objectId)->AddItemToInventory(itemId, itemCounts);
+	GetInventory(objectId)->AddItemToInventory(itemId, itemCounts, itemType, index);
+}
+
+void GameRoom::EquipItemToPlayer(int objectId, int itemId, bool equip)
+{
+	GetInventory(objectId)->EquipItem(itemId, equip);
+}
+
+void GameRoom::SetQuestStates(uint64 objectId, int questId, Protocol::QUEST_STATE state)
+{
+	_questsStates[objectId][questId].state = state;
+}
+
+map<int, PlayerQuestState> GameRoom::GetQuestsStatesByID(uint64 objectId)
+{
+	return _questsStates[objectId];
+}
+
+void GameRoom::SetQuestStateProgress(uint64 objectId, int questId, int progress)
+{
+	_questsStates[objectId][questId].progress = progress;
 }

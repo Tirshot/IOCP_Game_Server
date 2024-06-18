@@ -21,10 +21,10 @@ protected:
 	virtual void UpdateAnimation()  override {};
 
 public:
-	void SetOwner(Creature* owner) { _owner = owner; }
-	Creature* GetOwner() { return _owner; }
+	void SetOwner(shared_ptr<Creature> owner) { _owner = owner; }
+	shared_ptr<Creature> GetOwner() { return _owner; }
 
 protected:
-	Creature* _owner = nullptr;
+	shared_ptr<Creature> _owner = nullptr;
 };
 

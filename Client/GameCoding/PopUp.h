@@ -15,6 +15,9 @@ public:
 	template<typename T>
 	void AddParentDelegate(T* parent, void(T::* parentFunc)())
 	{
+		if (parentFunc == nullptr)
+			return;
+
 		_parentCallback = [parent, parentFunc]()
 			{
 				(parent->*parentFunc)();
@@ -23,6 +26,6 @@ public:
 	std::function<void(void)>_parentCallback = nullptr;
 
 	void SetPos(Vec2 pos) { _pos = { pos.x - (int)_size.x / 2, pos.y - (int)_size.y / 2 }; }
-	void SetVisible(bool visible) override;
+	void SetVisible(bool visible);
 };
 

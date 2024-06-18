@@ -1,10 +1,15 @@
 #include "pch.h"
 #include "DevScene.h"
 #include "MyPlayer.h"
+#include "Inventory.h"
+#include "QuestTrackerUI.h"
 #include "QuestManager.h"
 #include "ItemManager.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "ChatManager.h"
+#include "TimeManager.h"
+#include "SoundManager.h"
 
 QuestManager::~QuestManager()
 {
@@ -12,75 +17,151 @@ QuestManager::~QuestManager()
 
 void QuestManager::BeginPlay()
 {
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		_tracker = scene->FindUI<QuestTrackerUI>(scene->GetUIs());
+	}
 }
-
+float sumTime = 0.f;
 void QuestManager::Tick()
 {
-	// 퀘스트 조건 확인
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    // 0.1초 마다 실행
+    float now = GET_SINGLE(TimeManager)->GetDeltaTime();
 
-	if (myPlayer && scene)
-	{
-		auto& questStates = myPlayer->GetQuestStates();
+    sumTime += now;
 
-		if (questStates.size() == 0)
-			return;
+    if (sumTime <= 0.1f)
+        return;
 
-		for (auto& questState : questStates)
-		{
-			int questID = questState.first;
-			int progress = questState.second.second;
-			int state = questState.second.first;
+    sumTime = 0.f;
+    
+    // 필수 객체 가져오기
+    auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+    auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    auto inventory = GET_SINGLE(ItemManager)->GetInventory();
+    
+    if (!myPlayer || !scene || !inventory)
+        return;
 
-			if (state == Protocol::QUEST_STATE_ACCEPT)
-			{
-				auto& info = scene->GetQuest(questID);
-				auto targetType = info.targettype();
-				int targetNums = info.targetnums();
-				int targetID = info.targetid();
+    auto& questStates = myPlayer->GetQuestStates();
+    if (questStates.empty())
+        return;
 
-				switch (targetType)
-				{
-				case Protocol::OBJECT_TYPE_ITEM:
-				{
-					ITEM& item = *GET_SINGLE(ItemManager)->FindItemFromInventory(targetID);
-					int itemCount = item.ItemCount;
-					if (itemCount == targetNums)
-					{
-						// 퀘스트 완료
+    for (auto& questState : questStates)
+    {
+        int questID = questState.first;
+        int progress = questState.second.second;
+        int state = questState.second.first;
 
-						// 아이템 제거
-					}
-					else
-					{
-						// 퀘스트 진행 중, 트래킹
+        auto& info = scene->GetQuest(questID);
+        int targetType = info.targettype();
+        int targetNums = info.targetnums();
+        int targetID = info.targetid();
+        auto questScriptInfo = GetQuestScriptInfo(questID);
+        wstring questName = questScriptInfo.questName;
+        wstring description = questScriptInfo.description;
 
-					}
-					break;
-				}
+        // 트래커 진행도 갱신
+        _tracker->SetProgress(questID, progress);
 
-				case Protocol::OBJECT_TYPE_MONSTER:
-				{
-					// 몬스터 처리 기록
-					int progress = myPlayer->GetQuestProgress(questID);
-					if (progress == targetNums)
-					{
-						// 퀘스트 완료
+        // 퀘스트가 트래커에 추가되지 않았으면 추가
+        if (state == Protocol::QUEST_STATE_ACCEPT ||
+            state == Protocol::QUEST_STATE_COMPLETED)
+        {
+            if (!_tracker->IsQuestInTracker(questID))
+                _tracker->AddQuestToTracking(questID, questName, description, targetNums);
+        }
 
-					}
-					else
-					{
-						// 퀘스트 진행 중, 트래킹
+        bool questComplete = false;
 
-					}
-					break;
-				}
-				}
-			}
+        // 퀘스트 상태 처리
+        switch (targetType)
+        {
+        case Protocol::OBJECT_TYPE_ITEM:
+        {
+            auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(targetID);
+            int itemCount = item ? item->ItemCount : 0;
 
-		}
-	}
+            if (state == Protocol::QUEST_STATE_ACCEPT)
+            {
+                _tracker->SetProgress(questID, itemCount);
+                if (itemCount >= targetNums)
+                {
+                    myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
+                    questComplete = true;
+                    _announce = false;
+                    continue;
+                }
+            }
+            else if (state == Protocol::QUEST_STATE_COMPLETED)
+            {
+                _tracker->SetProgress(questID, itemCount);
+
+                if (_announce == false)
+                {
+                    GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
+                    GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
+                    GET_SINGLE(SoundManager)->Play(L"QuestComplete");
+                    _announce = true;
+                    continue;
+                }
+            }
+            else if (state == Protocol::QUEST_STATE_FINISHED)
+            {
+                if (_announce == true)
+                {
+                    inventory->RemoveItem(targetID, targetNums);
+                    GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
+                    _tracker->RemoveQuestFromTracker(questID);
+                    _announce = false;
+                    continue;
+                }
+            }
+            break;
+        }
+        case Protocol::OBJECT_TYPE_MONSTER:
+        {
+            if (state == Protocol::QUEST_STATE_ACCEPT)
+            {
+                if (progress == targetNums)
+                {
+                    myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
+                    questComplete = true;
+                    continue;
+                }
+            }
+            else if (state == Protocol::QUEST_STATE_COMPLETED)
+            {
+                if (_announce == true)
+                {
+                    GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
+                    GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
+                    GET_SINGLE(SoundManager)->Play(L"QuestComplete");
+                    _announce = false;
+                    continue;
+                }
+            }
+            else if (state == Protocol::QUEST_STATE_FINISHED)
+            {
+                if (_announce == false)
+                {
+                    _tracker->RemoveQuestFromTracker(questID);
+                    GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
+                    _announce = true;
+                    continue;
+                }
+            }
+            break;
+        }
+        }
+
+        if (questComplete && _announce == false)
+        {
+            GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 진행중.");
+            _announce = true;
+        }
+    }
 }
 
 QuestInfo QuestManager::GetQuestScriptInfo(int questID)

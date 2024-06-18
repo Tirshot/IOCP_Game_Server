@@ -12,14 +12,19 @@ public:
 	virtual void Init();
 	virtual void Update();
 
-private:
+protected:
 	virtual void UpdateIdle();
 	virtual void UpdateMove();
 	virtual void UpdateSkill();
 	virtual void UpdateHit();
 
+	void ItemDrop(CreatureRef owner);
+	void GoldDrop(CreatureRef owner);
+
 public:
+	virtual void OnDamaged(CreatureRef attacker, bool debug = false) override;
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
+	wstring GetName();
 
 protected:
 	uint64 _waitUntil = 0;

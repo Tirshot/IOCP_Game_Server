@@ -1,0 +1,18 @@
+몬스터 타입,아이템 그룹,아이템 ID,Item Name,확률 가중치,확률
+1,Wearable,10,Helmet00,10,0.33
+1,Wearable,14,Armor00,5,0.165
+1,Wearable,18,Pants00,10,0.33
+1,Wearable,22,Boots00,5,0.165
+1,Consumable,4,ArrowItem,40,0.353
+1,Consumable,5,Potion,20,0.176
+1,Consumable,7,HeartItem,30,0.353
+1,Consumable,6,MaxHeartItem,10,0.118
+1,ETC,26,SnakeSkin,20,1
+2,Wearable,10,Helmet02,10,0.33
+2,Wearable,14,Armor02,5,0.165
+2,Wearable,18,Pants02,10,0.33
+2,Wearable,22,Boots02,5,0.165
+2,Consumable,4,ArrowItem,20,0.353
+2,Consumable,5,Potion,20,0.176
+2,Consumable,7,HeartItem,30,0.353
+2,Consumable,6,MaxHeartItem,10,0.118

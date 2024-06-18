@@ -7,6 +7,8 @@ using CreatureRef = shared_ptr<class Creature>;
 using GameRoomRef = shared_ptr<class GameRoom>;
 using PlayerRef = shared_ptr<class Player>;
 using MonsterRef = shared_ptr<class Monster>;
+using SnakeRef = shared_ptr<class Snake>;
+using MoblinRef = shared_ptr<class Moblin>;
 using NPCRef = shared_ptr<class NPC>;
 using SignRef = shared_ptr<class Sign>;
 using ItemRef = shared_ptr<class Item>;
@@ -17,6 +19,7 @@ using ChatRef = shared_ptr<class Chat>;
 using QuestRef = shared_ptr<class Quest>;
 using ShopItemRef = shared_ptr<class ShopItem>;
 using InventoryRef = shared_ptr<class Inventory>;
+using TriggerRef = shared_ptr<class Trigger>;
 
 #include "Enum.pb.h"
 using Dir = Protocol::DIR_TYPE;

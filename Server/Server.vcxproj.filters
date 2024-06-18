@@ -45,6 +45,9 @@
     <Filter Include="소스 파일\Game\Room\Inventory">
       <UniqueIdentifier>{e345f2fa-58bb-4aa4-bef5-f7cd40d45f08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Protocol\Protocol">
+      <UniqueIdentifier>{05be1575-a634-4889-9a3e-9a3d04d473f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -61,15 +64,6 @@
     </ClCompile>
     <ClCompile Include="ServerPacketHandler.cpp">
       <Filter>소스 파일\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Struct.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Enum.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
     </ClCompile>
     <ClCompile Include="GameRoom.cpp">
       <Filter>소스 파일\Game\Room</Filter>
@@ -113,6 +107,30 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>소스 파일\Game\Room\Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="ItemManager.cpp">
+      <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol.pb.cc">
+      <Filter>소스 파일\Protocol\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Struct.pb.cc">
+      <Filter>소스 파일\Protocol\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Enum.pb.cc">
+      <Filter>소스 파일\Protocol\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Trigger.cpp">
+      <Filter>소스 파일\Game\Room\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="Quest1Trigger.cpp">
+      <Filter>소스 파일\Game\Room\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="Moblin.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -126,15 +144,6 @@
     </ClInclude>
     <ClInclude Include="ServerPacketHandler.h">
       <Filter>소스 파일\Main</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol.pb.h">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Enum.pb.h">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Struct.pb.h">
-      <Filter>소스 파일\Protocol</Filter>
     </ClInclude>
     <ClInclude Include="GameRoom.h">
       <Filter>소스 파일\Game\Room</Filter>
@@ -177,6 +186,30 @@
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>소스 파일\Game\Room\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemManager.h">
+      <Filter>소스 파일\Game\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.pb.h">
+      <Filter>소스 파일\Protocol\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol.pb.h">
+      <Filter>소스 파일\Protocol\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.pb.h">
+      <Filter>소스 파일\Protocol\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Trigger.h">
+      <Filter>소스 파일\Game\Room\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="Quest1Trigger.h">
+      <Filter>소스 파일\Game\Room\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Moblin.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

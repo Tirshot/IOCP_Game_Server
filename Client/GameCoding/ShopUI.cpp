@@ -44,7 +44,7 @@ void ShopUI::BeginPlay()
 	_dragRect = {(int)_pos.x + 370, (int)_pos.y, (int)_pos.x + 535, (int)_pos.y + 300};
 
 	{ // 뒤로 버튼
-		Button* back = new Button();
+		shared_ptr<Button> back = make_shared<Button>();
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Off"), BS_Default);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_On"), BS_Pressed);
 		back->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Back_Hovered"), BS_Hovered);
@@ -56,7 +56,7 @@ void ShopUI::BeginPlay()
 	}
 
 	{ // 대화 종료
-		Button* exit = new Button();
+		shared_ptr<Button> exit = make_shared<Button>();
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Off"), BS_Default);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
@@ -69,7 +69,7 @@ void ShopUI::BeginPlay()
 
 	// 페이지 감소
 	{
-		Button* minus = new Button();
+		shared_ptr<Button> minus = make_shared<Button>();
 		minus->SetPos({ _pos.x + 400, _pos.y + 300 });
 		minus->SetSize({ 40,24 });
 		minus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LButton"), ButtonState::BS_Default);
@@ -82,7 +82,7 @@ void ShopUI::BeginPlay()
 
 	// 페이지 증가
 	{
-		Button* plus = new Button();
+		shared_ptr<Button> plus = make_shared<Button>();
 		plus->SetPos({ _pos.x + 500, _pos.y + 300 });
 		plus->SetSize({ 40,24 });
 		plus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RButton"), ButtonState::BS_Default);
@@ -119,20 +119,6 @@ void ShopUI::BeginPlay()
 		AddSellItem(23);
 		AddSellItem(25);
 		AddSellItem(26);
-		AddSellItem(27);
-		AddSellItem(28);
-		AddSellItem(29);
-		AddSellItem(30);
-		AddSellItem(31);
-		AddSellItem(32);
-		AddSellItem(33);
-		AddSellItem(34);
-		AddSellItem(35);
-		AddSellItem(36);
-		AddSellItem(37);
-		AddSellItem(38);
-		AddSellItem(39);
-		AddSellItem(40);
 		AddSellItem(1);
 		AddSellItem(2);
 		AddSellItem(3);
@@ -140,10 +126,10 @@ void ShopUI::BeginPlay()
 
 	// 아이템 수량 확인 창
 	{
-		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 		if (scene)
 		{
-			_countsPopUp = new ItemCountsPopUp();
+			_countsPopUp = make_shared<ItemCountsPopUp>();
 
 			if (_countsPopUp)
 			{
@@ -158,11 +144,11 @@ void ShopUI::BeginPlay()
 	}
 
 	{
-		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 		if (scene)
 		{
 			// 팝업
-			_alert = new AlertBox();
+			_alert = make_shared<AlertBox>();
 			_alert->SetSize({ 250,150 });
 			_alert->SetPos({ 400,300 });
 			_alert->AddParentDelegate(this, &ShopUI::OnPopClickAlertAcceptDelegate);
@@ -186,17 +172,24 @@ void ShopUI::Tick()
 	if (_visible)
 	{
 		for (auto& child : _children)
-			child->Tick();
+			if (child)
+				child->Tick();
 
-		// 자식 팝업이 있을 때 작동 중지
-		if (IsChildPopUpVisible())
+		auto deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+		_initializeTime += deltaTime;
+
+		if (_pause)
 			return;
 
 		if (IsAnyPopUpVisible())
 			return;
 
-		float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-		_initializeTime += deltaTime;
+		if (IsChildPopUpVisible())
+			return;
+
+		if (_initializeTime <= 1.f)
+			return;
+
 		{
 			_rect.left = _pos.x;
 			_rect.top = _pos.y;
@@ -206,11 +199,7 @@ void ShopUI::Tick()
 
 		for (auto& child : _children)
 		{
-			// 판매창이 열리는 순간 품목이 눌리는 버그 수정
-			if (_initializeTime <= 0.5f)
-				continue;
-
-			auto* Item = dynamic_cast<ShopItemPanel*>(child);
+			auto Item = dynamic_pointer_cast<ShopItemPanel>(child);
 			if (Item == nullptr)
 				continue;
 
@@ -224,7 +213,7 @@ void ShopUI::Tick()
 
 			if (IsMouseInRect(ItemRect))
 			{
-				Inventory* inventory = GET_SINGLE(ItemManager)->GetInventory();
+				auto inventory = GET_SINGLE(ItemManager)->GetInventory();
 				if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
 				{
 					if (inventory && inventory->GetVisible() == true)
@@ -239,8 +228,11 @@ void ShopUI::Tick()
 					_price = _sellItem->Price;
 					_countsPopUp->SetText(_sellItem->KorName + L"을(를) 몇 개 구입하시겠습니까?");
 					_countsPopUp->SetPrice(_price);
+					_countsPopUp->SetMaxCounts(99);
 					_countsPopUp->SetVisible(true);
+					SetPause(true);
 					_initializeTime = 0.f;
+					return;
 				}
 			}
 		}
@@ -270,7 +262,7 @@ void ShopUI::Render(HDC hdc)
 
 	for (auto& child : _children)
 	{
-		auto* Item = dynamic_cast<ShopItemPanel*>(child);
+		auto Item = dynamic_pointer_cast<ShopItemPanel>(child);
 		if (Item)
 		{
 			int index = Item->GetItemIndex();
@@ -285,37 +277,76 @@ void ShopUI::Render(HDC hdc)
 	}
 }
 
-void ShopUI::AddSellItem(ITEM* item)
+void ShopUI::AddSellItem(shared_ptr<ITEM> item)
 {
 	_items.push_back(item);
 }
 
 void ShopUI::AddSellItem(int itemID)
 {
-	ITEM* Item = &GET_SINGLE(ItemManager)->GetItem(itemID);
-	AddSellItem(Item);
+	auto Item = GET_SINGLE(ItemManager)->GetItem(itemID);
+	AddSellItem(make_shared<ITEM>(Item));
 	int index = GetItemIndex(itemID);
-	ITEM* itemInfo = &GET_SINGLE(ItemManager)->GetItem(itemID);
-	ShopItemPanel* itemPanel = new ShopItemPanel(itemInfo, index, _pos);
+	auto itemInfo = GET_SINGLE(ItemManager)->GetItem(itemID);
+	auto itemPanel = make_shared<ShopItemPanel>(itemInfo, index, _pos);
 	AddChild(itemPanel);
 }
 
-void ShopUI::SellItemToShop(ITEM* item)
+void ShopUI::SellItemToShop(shared_ptr<ITEM> item)
 {
 	_sellToShop = item;
-	_alert->SetText(item->KorName + L"을(를) 판매하시겠습니까?");
-	_alert->SetIcon(L"Warning");
-	_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-	_alert->SetVisible(true);
+
+	int itemID = _sellToShop->ItemId;
+	if (itemID == 1 || itemID == 2 || itemID == 3)
+	{
+		auto alert = MakeAlertBox(Vec2{ GWinSizeX / 2, GWinSizeY / 2 }, { 300,150 }, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate, false);
+		SetPause(true);
+
+		alert->SetText(L"기본 무기는 판매할 수 없습니다.");
+		alert->SetIcon(L"Alert");
+	}
+	else
+	{
+		auto alert = MakeAlertBox(Vec2{ GWinSizeX / 2, GWinSizeY / 2 }, { 300,150 }, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate);
+		SetPause(true);
+
+		alert->SetText(item->KorName + L"을(를) 개당 " + to_wstring(_sellToShop->Price / _buyPriceDivider) +L"골드에 판매하시겠습니까 ? ");
+		alert->SetIcon(L"Warning");
+	}
+}
+
+shared_ptr<AlertBox> ShopUI::MakeAlertBox(Vec2 pos, Vec2Int size, void(ShopUI::* func)(), bool twoButtons)
+{
+	// 팝업
+	shared_ptr<AlertBox> alert = make_shared<AlertBox>();
+	if (alert)
+	{
+		// AlertBox 초기화
+		alert->SetSize(size);
+		alert->SetPos({ pos.x, pos.y });
+		alert->SetVisible(true);
+		alert->SetInitialPos(alert->GetPos());
+		alert->MakeAcceptButton();
+
+		if (twoButtons)
+			alert->MakeDenyButton();
+
+		alert->AddParentDelegate(this, func);
+		alert->BeginPlay();
+	}
+
+	AddChild(alert);
+
+	return alert;
 }
 
 void ShopUI::OnPopClickAcceptDelegate()
 {
 	bool found = false;
 	// 구매 확인
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-	Inventory* inventory = GET_SINGLE(ItemManager)->GetInventory();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto inventory = GET_SINGLE(ItemManager)->GetInventory();
 
 	if (!myPlayer)
 		return;
@@ -327,10 +358,9 @@ void ShopUI::OnPopClickAcceptDelegate()
 
 	if (gold < _allCost)
 	{
-		_alert->SetIcon(L"Warning");
-		_alert->SetText(L"골드가 부족합니다.");
-		_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-		_alert->SetVisible(true);
+		auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+		alert->SetIcon(L"Warning");
+		alert->SetText(L"골드가 부족합니다.");
 		return;
 	}
 
@@ -360,7 +390,7 @@ void ShopUI::OnPopClickAcceptDelegate()
 		for (auto& slot : inventory->GetSlots())
 		{
 			// 구매하려는 아이템이 인벤토리에 이미 있는지 확인
-			if (slot.ItemId == _sellItem->ItemId)
+			if (slot->ItemId == _sellItem->ItemId)
 			{
 				found = true;
 				break;
@@ -373,20 +403,18 @@ void ShopUI::OnPopClickAcceptDelegate()
 			// 중첩이 불가능한 타입
 			if (_sellItem->Type == L"Wearable")
 			{
-				_alert->SetIcon(L"Warning");
-				_alert->SetText(L"인벤토리가 가득 찼습니다.");
-				_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-				_alert->SetVisible(true);
+				auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+				alert->SetIcon(L"Warning");
+				alert->SetText(L"인벤토리가 가득 찼습니다.");
 				return;
 			}
 			// 인벤토리가 꽉 찼으며, 중첩이 가능한 타입 -> if문 탈출
 		}
 		else
 		{
-			_alert->SetIcon(L"Warning");
-			_alert->SetText(L"인벤토리가 가득 찼습니다.");
-			_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-			_alert->SetVisible(true);
+			auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+			alert->SetIcon(L"Warning");
+			alert->SetText(L"인벤토리가 가득 찼습니다.");
 			return;	// 인벤토리가 꽉 찼는데 해당 아이템이 슬롯에 없다면 리턴
 		}
 	}
@@ -396,7 +424,7 @@ void ShopUI::OnPopClickAcceptDelegate()
 		for (auto& slot : inventory->GetSlots())
 		{
 			// 구매하려는 아이템이 인벤토리에 이미 있는지 확인
-			if (slot.ItemId == _sellItem->ItemId)
+			if (slot->ItemId == _sellItem->ItemId)
 			{
 				found = true;
 				break;
@@ -408,10 +436,9 @@ void ShopUI::OnPopClickAcceptDelegate()
 			// 갑옷 등 중첩이 불가능한 아이템 갯수가 남은 슬롯보다 많으면 리턴
 			if (_sellItem->Type == L"Wearable" && GET_SINGLE(ItemManager)->GetEmptySlots() < _counts)
 			{
-				_alert->SetIcon(L"Warning");
-				_alert->SetText(L"인벤토리가 부족합니다.");
-				_alert->SetPos(Vec2{ GWinSizeX / 2, GWinSizeY / 2 });
-				_alert->SetVisible(true);
+				auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+				alert->SetIcon(L"Warning");
+				alert->SetText(L"인벤토리에 빈 슬롯이 부족합니다.");
 				return;
 			}
 		}
@@ -426,19 +453,21 @@ void ShopUI::OnPopClickAcceptDelegate()
 	}
 
 	GET_SINGLE(ItemManager)->AddItemToInventory(_sellItem->ItemId, _counts);
+	SetPause(false);
 }
 
 void ShopUI::OnPopClickAlertAcceptDelegate()
 {
-	int gold = _sellToShop->Price / 5;
+	if (_sellToShop == nullptr)
+		return;
+
+	int gold = _sellToShop->Price / _buyPriceDivider;
+	int counts = _sellToShop->ItemCount;
 
 	// 구매 확인
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-	Inventory* inventory = GET_SINGLE(ItemManager)->GetInventory();
-
-	if (!_sellToShop)
-		return;
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto inventory = GET_SINGLE(ItemManager)->GetInventory();
 
 	if (!myPlayer)
 		return;
@@ -450,9 +479,48 @@ void ShopUI::OnPopClickAlertAcceptDelegate()
 	if (!sellingItem)
 		return;
 
-	inventory->RemoveItem(sellingItem);
-	myPlayer->info.set_gold(myPlayer->info.gold() + gold);
+	int itemID = sellingItem->ItemId;
+	if (itemID == 1 || itemID == 2 || itemID == 3)
+		return;
+
+	if (counts == 1)
+	{
+		inventory->RemoveItem(sellingItem);
+		myPlayer->info.set_gold(myPlayer->info.gold() + gold);
+		_sellToShop = nullptr;
+	}
+	else
+	{
+		_countsPopUp->SetText(sellingItem->KorName + L"을(를) 몇 개 판매하시겠습니까?");
+		_countsPopUp->SetPrice(gold);
+		_countsPopUp->SetMaxCounts(counts);
+		_countsPopUp->AddParentDelegate(this, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate);
+		_countsPopUp->SetVisible(true);
+	}
+
+	SetPause(false);
+}
+
+void ShopUI::OnClickSellItemToShopAlertAcceptDelegate()
+{
+	if (_sellToShop == nullptr)
+		return;
+
+	int gold = _sellToShop->Price / 5;
+	int counts = _sellToShop->ItemCount;
+
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto inventory = GET_SINGLE(ItemManager)->GetInventory();
+
+	auto sellingItem = inventory->FindItemFromInventory(_sellToShop);
+
+	inventory->RemoveItem(sellingItem, counts);
+	myPlayer->info.set_gold(myPlayer->info.gold() + (gold * counts));
 	_sellToShop = nullptr;
+
+	_countsPopUp->AddParentDelegate(this, &ShopUI::OnPopClickAcceptDelegate);
+
+	SetPause(false);
 }
 
 void ShopUI::OnClickBackButton()
@@ -462,14 +530,16 @@ void ShopUI::OnClickBackButton()
 
 	SetVisible(false);
 	SetChildVisible(false);
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	ResetPos();
 	_initializeTime = 0.f;
 	_page = 1;
 
-	MerchantUI* merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
+	auto merchantUI = scene->FindUI<MerchantUI>(scene->GetUIs());
 	merchantUI->SetVisible(true);
+
+	SetPause(false);
 }
 
 void ShopUI::OnClickExitButton()
@@ -483,9 +553,11 @@ void ShopUI::OnClickExitButton()
 	ResetPos();
 	_initializeTime = 0.f;
 	_page = 1;
+
+	SetPause(false);
 }
 
-ITEM* ShopUI::GetSellItem(int itemID)
+shared_ptr<ITEM> ShopUI::GetSellItem(int itemID)
 {
 	for (auto& item : _items)
 	{
@@ -511,7 +583,7 @@ void ShopUI::SetChildVisible(bool visible)
 		child->SetVisible(visible);
 
 		// 버튼은 부모의 visiblity에 영향을 받음
-		auto button = dynamic_cast<Button*>(child);
+		auto button = dynamic_pointer_cast<Button>(child);
 
 		if (button)
 			button->SetVisible(true);

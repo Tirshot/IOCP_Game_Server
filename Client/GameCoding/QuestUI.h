@@ -27,7 +27,7 @@ private:
 
 protected:
 	RECT _rect = {};
-	Texture* _background = nullptr;
+	shared_ptr<Texture> _background = nullptr;
 	map<int, Protocol::QuestInfo> _quests;
 	int _idx = 1;
 	int _page = 1;

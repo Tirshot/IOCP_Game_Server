@@ -26,7 +26,7 @@ void ItemCountsPopUp::BeginPlay()
 	_initialPos = _pos;
 	// 텍스트
 	{
-		TextBox* text = new TextBox();
+		shared_ptr<TextBox> text = make_shared<TextBox>();
 		text->SetText(L"테스트용 텍스트입니다. \n두번째 줄입니다. \n 세번째 줄입니다.");
 		text->SetPos(Vec2{ _pos.x + 60, _pos.y + 20 });
 		text->SetSize(Vec2Int{ _size.x - 80, (_size.y / 2) - 25 });
@@ -37,7 +37,7 @@ void ItemCountsPopUp::BeginPlay()
 
 	// 확인
 	{
-		Button* accept = new Button();
+		shared_ptr<Button> accept = make_shared<Button>();
 		accept->SetPos({ _pos.x + _size.x / 2 - 40, _pos.y + _size.y - 30 });
 		accept->SetSize({ 50,30 });
 		accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Default);
@@ -50,7 +50,7 @@ void ItemCountsPopUp::BeginPlay()
 
 	// 취소
 	{
-		Button* deny = new Button();
+		shared_ptr<Button> deny = make_shared<Button>();
 		deny->SetPos({ _pos.x + _size.x / 2 + 40, _pos.y + _size.y - 30 });
 		deny->SetSize({ 50,30 });
 		deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Default);
@@ -63,7 +63,7 @@ void ItemCountsPopUp::BeginPlay()
 
 	// 아이템 수량 감소
 	{
-		Button* minus = new Button();
+		shared_ptr<Button> minus = make_shared<Button>();
 		minus->SetPos({ _pos.x + _size.x / 2 - 34, _pos.y + _size.y - 55 });
 		minus->SetSize({ 30,18 });
 		minus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LButton"), ButtonState::BS_Default);
@@ -76,7 +76,7 @@ void ItemCountsPopUp::BeginPlay()
 
 	// 아이템 수량 10개 감소
 	{
-		Button* doubleMinus = new Button();
+		shared_ptr<Button> doubleMinus = make_shared<Button>();
 		doubleMinus->SetPos({ _pos.x + _size.x / 2 - 78, _pos.y + _size.y - 55 });
 		doubleMinus->SetSize({ 30,18 });
 		doubleMinus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"LLButton"), ButtonState::BS_Default);
@@ -89,7 +89,7 @@ void ItemCountsPopUp::BeginPlay()
 
 	// 아이템 수량 증가
 	{
-		Button* plus = new Button();
+		shared_ptr<Button> plus = make_shared<Button>();
 		plus->SetPos({ _pos.x + _size.x / 2 + 42, _pos.y + _size.y - 55 });
 		plus->SetSize({ 30,18 });
 		plus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RButton"), ButtonState::BS_Default);
@@ -102,7 +102,7 @@ void ItemCountsPopUp::BeginPlay()
 
 	// 아이템 수량 10개 증가
 	{
-		Button* doublePlus = new Button();
+		shared_ptr<Button> doublePlus = make_shared<Button>();
 		doublePlus->SetPos({ _pos.x + _size.x / 2 + 86, _pos.y + _size.y - 55 });
 		doublePlus->SetSize({ 30,18 });
 		doublePlus->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"RRButton"), ButtonState::BS_Default);
@@ -123,7 +123,7 @@ void ItemCountsPopUp::Tick()
 
 	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
 
-	Panel::DragAndMove(&_rect);
+	Panel::DragAndMove(_rect);
 
 	_totalPrice = _price * _counts;
 
@@ -176,7 +176,7 @@ void ItemCountsPopUp::Render(HDC hdc)
 
 	// 골드 아이콘
 	{
-		Sprite* goldImage = GET_SINGLE(ResourceManager)->GetSprite(L"Gold");
+		shared_ptr<Sprite> goldImage = GET_SINGLE(ResourceManager)->GetSprite(L"Gold");
 
 		if (goldImage)
 		::TransparentBlt(hdc,
@@ -229,6 +229,7 @@ void ItemCountsPopUp::OnClickAcceptButton()
 	ResetPos();
 	_counts = 1;
 	_price = 0;
+	_parent->SetPause(false);
 }
 
 void ItemCountsPopUp::OnClickDenyButton()
@@ -238,19 +239,23 @@ void ItemCountsPopUp::OnClickDenyButton()
 	ResetPos();
 	_counts = 1;
 	_price = 0;
+	_parent->SetPause(false);
 }
 
 void ItemCountsPopUp::OnClickCountPlusButton()
 {
 	_counts++;
+
+	if (_counts > _maxCounts)
+		_counts = _maxCounts;
 }
 
 void ItemCountsPopUp::OnClickCountDoublePlusButton()
 {
 	_counts += 10;
 
-	if (_counts > 99)
-		_counts = 99;
+	if (_counts > _maxCounts)
+		_counts = _maxCounts;
 }
 
 void ItemCountsPopUp::OnClickCountMinusButton()

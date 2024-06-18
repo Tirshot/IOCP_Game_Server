@@ -16,19 +16,19 @@ public:
 public:
 	// Scene 조작
 	void ChangeScene(SceneType sceneType);
-	Scene* GetCurrentScene(){ return _scene; }
-	class DevScene* GetDevScene();
+	shared_ptr<Scene> GetCurrentScene(){ return _scene; }
+	shared_ptr<class DevScene> GetDevScene();
 
 	// 플레이어 조작
-	MyPlayer* GetMyPlayer() { return _myPlayer; }
+	shared_ptr<MyPlayer> GetMyPlayer() { return _myPlayer; }
 	uint64 GetMyPlayerId();
-	void SetMyPlayer(MyPlayer* myplayer) { _myPlayer = myplayer; }
-	Player* GetPlayerByID(uint64 objectId);
+	void SetMyPlayer(shared_ptr<MyPlayer> myplayer) { _myPlayer = myplayer; }
+	shared_ptr<Player> GetPlayerByID(uint64 objectId);
 
 private:
-	Scene* _scene = nullptr;
+	shared_ptr<Scene> _scene = nullptr;
 	SceneType _sceneType = SceneType::None;
-	MyPlayer* _myPlayer = nullptr;
+	shared_ptr<MyPlayer> _myPlayer = nullptr;
 
 public:
 	// 카메라 조작

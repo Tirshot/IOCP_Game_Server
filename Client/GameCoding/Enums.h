@@ -4,7 +4,18 @@ enum class SceneType
 		None,
 		DevScene,
 		EditScene,
+		TitleScene,
+		LoadScene,
 };
+
+enum class SoundType
+{
+	NONE = 0,
+	BGM,
+	UI,
+	Effect,
+};
+
 enum class CreatureType
 {
 	None,
@@ -104,10 +115,11 @@ struct ITEM
 	wstring SubType = L"";
 	wstring Description = L"";
 	int Price = 0;
-	class Sprite* Sprite = nullptr;
+	shared_ptr<class Sprite> Sprite = nullptr;
 	RECT Rect = {};
-
-	bool operator== (ITEM* other)
+	int index = 0;
+	
+	bool operator== (shared_ptr<ITEM> other)
 	{
 		if (this->Rect.left == other->Rect.left
 			&& this->Rect.right == other->Rect.right
@@ -116,5 +128,18 @@ struct ITEM
 			return true;
 
 		return false;
+	}
+
+	void Reset()
+	{
+		this->ItemId = 0;
+		this->ItemCount = 0;
+		this->KorName = L"";
+		this->Name = L"";
+		this->Description = L"";
+		this->Price = 0;
+		this->Sprite = nullptr;
+		this->SubType = L"";
+		this->Type = L"";
 	}
 };

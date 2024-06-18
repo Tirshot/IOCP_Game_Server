@@ -43,8 +43,8 @@ void TilemapActor::Render(HDC hdc)
 
 	vector<vector<Tile>>& tiles = _tilemap->GetTiles();
 
-	Sprite* spriteO = GET_SINGLE(ResourceManager)->GetSprite(L"TileO");
-	Sprite* spriteX = GET_SINGLE(ResourceManager)->GetSprite(L"TileX");
+	shared_ptr<Sprite> spriteO = GET_SINGLE(ResourceManager)->GetSprite(L"TileO");
+	shared_ptr<Sprite> spriteX = GET_SINGLE(ResourceManager)->GetSprite(L"TileX");
 	Vec2Int size = spriteO->GetSize();
 	// 타일맵도 움직이게 처리
 	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
@@ -130,7 +130,7 @@ void TilemapActor::TilePicking()
 		if (_showDebug == false)
 			return;
 
-		Tile* tile = _tilemap->GetTileAt({ x,y });
+		auto tile = _tilemap->GetTileAt({ x,y });
 		if (tile)
 			tile->value = 1;
 	}
@@ -140,7 +140,7 @@ void TilemapActor::TilePicking()
 		if (_showDebug == false)
 			return;
 
-		Tile* tile = _tilemap->GetTileAt({ x,y });
+		auto tile = _tilemap->GetTileAt({ x,y });
 		if (tile)
 			tile->value = 0;
 	}

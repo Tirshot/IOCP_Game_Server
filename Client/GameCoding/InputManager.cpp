@@ -55,3 +55,13 @@ bool InputManager::IsMouseOutRect(RECT& rect)
 
 	return false;
 }
+
+bool InputManager::IsPressedAnyKey()
+{
+	for (const auto& state : _states)
+	{
+		if (state == KeyState::Up)
+			return true;
+	}
+	return false;
+}

@@ -8,12 +8,22 @@
 TextBox::TextBox()
 {
 	_backGround = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
+
+	_rect.left = _pos.x + _leftPadding;
+	_rect.right = _rect.left + _size.x - _leftPadding;
+	_rect.top = _pos.y + _topPadding;
+	_rect.bottom = _rect.top + _size.y - _topPadding;
 }
 
 TextBox::TextBox(wstring wstr)
 {
 	_backGround = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
 	_text = wstr;
+
+	_rect.left = _pos.x + _leftPadding;
+	_rect.right = _rect.left + _size.x - _leftPadding;
+	_rect.top = _pos.y + _topPadding;
+	_rect.bottom = _rect.top + _size.y - _topPadding;
 }
 
 TextBox::~TextBox()
@@ -51,8 +61,8 @@ void TextBox::Render(HDC hdc)
 				{
 					_size.x -= 19;
 				}
-				_initialized = true;
 			}
+			_initialized = true;
 		}
 
 		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
@@ -60,63 +70,72 @@ void TextBox::Render(HDC hdc)
 		// 아이템 이름이 우측 창을 넘으면 왼쪽으로 표시
 		if (mousePos.x + _size.x > 800)
 		{
-			::StretchBlt(hdc,
-				mousePos.x - _size.x,
-				mousePos.y - 26,
-				_size.x,
-				_size.y,
-				_backGround->GetDC(),
-				0,
-				0,
-				_backGround->GetSize().x,
-				_backGround->GetSize().y,
-				SRCCOPY);
-
 			_rect.left = mousePos.x + _leftPadding - _size.x;
 			_rect.right = _rect.left + _size.x - _leftPadding;
 			_rect.top = mousePos.y + _topPadding - 26;
-			_rect.bottom = _rect.top + _size.y - _topPadding;
+			_rect.bottom = _rect.top + _size.y;
 		}
 		else
 		{
-			::StretchBlt(hdc,
-				mousePos.x,
-				mousePos.y - 26,
-				_size.x,
-				_size.y,
-				_backGround->GetDC(),
-				0,
-				0,
-				_backGround->GetSize().x,
-				_backGround->GetSize().y,
-				SRCCOPY);
-
 			_rect.left = mousePos.x + _leftPadding;
 			_rect.right = _rect.left + _size.x - _leftPadding;
 			_rect.top = mousePos.y + _topPadding - 26;
-			_rect.bottom = _rect.top + _size.y - _topPadding;
+			_rect.bottom = _rect.top + _size.y ;
 		}
 	}
 	else
 	{
-		::StretchBlt(hdc,
-			_pos.x,
-			_pos.y,
-			_size.x,
-			_size.y,
-			_backGround->GetDC(),
-			0,
-			0,
-			_backGround->GetSize().x,
-			_backGround->GetSize().y,
-			SRCCOPY);
-
 		_rect.left = _pos.x + _leftPadding;
 		_rect.right = _rect.left + _size.x - _leftPadding;
 		_rect.top = _pos.y + _topPadding;
-		_rect.bottom = _rect.top + _size.y - _topPadding;
+		_rect.bottom = _rect.top + _size.y;
 	}
-	
+
+	// 텍스트 크기 계산
+	RECT calcRect = _rect;
+	::DrawTextW(hdc, _text.c_str(), -1, &calcRect, DT_LEFT | DT_VCENTER | DT_WORDBREAK | DT_CALCRECT);
+
+	// _rect 크기 조정
+	_rect.bottom = calcRect.bottom;
+
+	// 배경 그리기
+	{
+		if (_transparent == false)
+		{
+			::StretchBlt(hdc,
+				_rect.left - _leftPadding,
+				_rect.top - _topPadding,
+				_rect.right - _rect.left + _leftPadding,
+				_rect.bottom - _rect.top + _topPadding,
+				_backGround->GetDC(),
+				0,
+				0,
+				_backGround->GetSize().x,
+				_backGround->GetSize().y - 10,
+				SRCCOPY);
+		}
+		else
+		{
+			BLENDFUNCTION bf = {};
+			bf.AlphaFormat = 0; // 일반 비트맵의 경우 0, 32비트 비트맵의 경우 AC_SRC_ALPHA
+			bf.BlendFlags = 0;
+			bf.BlendOp = AC_SRC_OVER; // 원본과 대상 이미지를 합침
+			bf.SourceConstantAlpha = _alpha; // 투명도(투명 0 - 불투명 255)
+
+			::AlphaBlend(hdc,
+				_rect.left - _leftPadding,
+				_rect.top - _topPadding,
+				_rect.right - _rect.left + _leftPadding,
+				_rect.bottom - _rect.top + _topPadding,
+				_backGround->GetDC(),
+				0,
+				0,
+				_backGround->GetSize().x,
+				_backGround->GetSize().y,
+				bf);
+		}
+	}
+
 	SetBkMode(hdc, TRANSPARENT);
 	SetTextColor(hdc, RGB(255, 255, 255));
 	switch (_textAlign)

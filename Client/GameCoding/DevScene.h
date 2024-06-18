@@ -5,6 +5,7 @@ class Actor;
 class UI;
 class GameObject;
 class Player;
+class Item;
 
 struct PQNode
 {
@@ -35,8 +36,8 @@ public:
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 
-	virtual void AddActor(Actor* actor) override;
-	virtual void RemoveActor(Actor* actor) override;
+	virtual void AddActor(shared_ptr<Actor> actor) override;
+	virtual void RemoveActor(shared_ptr<Actor> actor) override;
 
 	void ClearActors();
 	void ClearUIs();
@@ -54,13 +55,13 @@ public:
 	void LoadQuest();
 
 	template<typename T>
-	T* SpawnObject(Vec2Int pos)
+	shared_ptr<T> SpawnObject(Vec2Int pos)
 	{
 		// 타입 추측, 컴파일 타임에 확인
-		auto isGameObject = std::is_convertible_v<T*, GameObject*>;
+		auto isGameObject = std::is_convertible_v<shared_ptr<T>, shared_ptr<GameObject>>;
 		assert(isGameObject);
 
-		T* ret = new T();
+		shared_ptr<T> ret = make_shared<T>();
 		ret->SetCellPos(pos, true);
 		AddActor(ret);
 
@@ -70,20 +71,23 @@ public:
 	}
 
 	template<typename T>
-	T* SpawnObjectAtRandomPos()
+	shared_ptr<T> SpawnObjectAtRandomPos()
 	{
 		Vec2Int randPos = GetRandomEmptyCellPos();
 		return SpawnObject<T>(randPos);
 	}
 
+	void SpawnItem(Protocol::ItemInfo info);
+
 public:
-	GameObject* GetObjects(uint64 id);
+	shared_ptr<GameObject> GetObjects(uint64 id);
+	shared_ptr<class Monster> GetMonster();
 
 	// 패킷 핸들
 	void Handle_S_AddObject(Protocol::S_AddObject& pkt);
 	void Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt);
 
-	Player* FindClosestPlayer(Vec2Int cellPos);
+	shared_ptr<Player> FindClosestPlayer(Vec2Int cellPos);
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 
 	bool CanGo(Vec2Int cellPos);
@@ -106,7 +110,9 @@ private:
 	// 몬스터 스폰 숫자
 	const int32 DESIRED_MONSTER_COUNT = 1;
 	int32 _monsterCount = 0;
-	class TilemapActor* _tilemapActor = nullptr;
+	shared_ptr<class TilemapActor> _tilemapActor = nullptr;
 	map<int, Protocol::QuestInfo> _quests;
 	bool _questInitialized = false;
+	int _alpha = 255;
+	shared_ptr<Sprite> _black = nullptr;
 };

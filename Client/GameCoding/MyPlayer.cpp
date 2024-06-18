@@ -29,8 +29,6 @@ MyPlayer::MyPlayer()
 {
 	CameraComponent* camera = new CameraComponent();
 	AddComponent(camera);
-
-	_plum = GET_SINGLE(ResourceManager)->GetTexture(L"Crown");
 }
 
 MyPlayer::~MyPlayer()
@@ -41,6 +39,8 @@ MyPlayer::~MyPlayer()
 void MyPlayer::BeginPlay()
 {
 	Super::BeginPlay();
+
+	_plum = GET_SINGLE(ResourceManager)->GetTexture(L"Crown");
 }
 
 void MyPlayer::Tick()
@@ -55,6 +55,9 @@ void MyPlayer::Render(HDC hdc)
 	Super::Render(hdc);
 
 	// Plum
+	if (_plum == nullptr)
+		return;
+
 	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
 	::TransparentBlt(hdc,
 		(int32)_pos.x - 10 - ((int32)cameraPos.x - GWinSizeX / 2),
@@ -99,32 +102,8 @@ void MyPlayer::UsePotion()
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Heal(info.objectid());
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	scene->SpawnObject<HealEffect>({ GetCellPos() });
-}
-
-void MyPlayer::OpenInventory()
-{
-	Inventory* Inven = GET_SINGLE(ItemManager)->GetInventory();
-
-	if (Inven == nullptr)
-		return;
-
-	// 팝업이 켜져있을 때 끌 수 없음
-	if (Inven->IsChildPopUpVisible())
-		return;
-
-	if (Inven->GetVisible())
-	{
-		Inven->SetVisible(false);
-		return;
-	}
-	else
-	{
-		Inven->ResetPos();
-		Inven->SetVisible(true);
-		return;
-	}
 }
 
 void MyPlayer::TickInput()
@@ -137,7 +116,7 @@ void MyPlayer::TickInput()
 	// deltaXY = {위, 아래, 왼쪽, 오른쪽}
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	// 채팅 입력창
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::Enter))
 	{	
@@ -147,7 +126,7 @@ void MyPlayer::TickInput()
 	// 공격
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::SpaceBar))
 	{
-		NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
+		auto npc = dynamic_pointer_cast<NPC>(scene->GetCreatureAt(GetFrontCellPos()));
 
 		if (npc)
 			return;
@@ -161,9 +140,12 @@ void MyPlayer::TickInput()
 		UsePotion();
 	}
 
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::I))
+	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::I))
 	{
-		OpenInventory();
+		GET_SINGLE(ItemManager)->OpenInventory();
+
+		//  열 때마다 서버와 연동
+		GET_SINGLE(ItemManager)->GetInventory()->AutoSyncInventory();
 	}
 
 	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar)
@@ -171,7 +153,7 @@ void MyPlayer::TickInput()
 	{
 		if (_sumTimes >= 0.5f && GetState() != Protocol::OBJECT_STATE_TYPE_SPIN)
 		{
-			NPC* npc = dynamic_cast<NPC*>(scene->GetCreatureAt(GetFrontCellPos()));
+			auto npc = dynamic_pointer_cast<NPC>(scene->GetCreatureAt(GetFrontCellPos()));
 
 			if (npc)
 				return;
@@ -209,6 +191,7 @@ void MyPlayer::TickInput()
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 보유 화살 증가");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 보유 화살 증가", false);
 	}
 
 	// Debug - 보유 골드 증가
@@ -220,6 +203,7 @@ void MyPlayer::TickInput()
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 보유 골드 증가");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 보유 골드 증가", false);
 	}
 
 	// Debug -	Move
@@ -230,7 +214,8 @@ void MyPlayer::TickInput()
 			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
-		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : Move");
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 상인에게 순간이동");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 상인에게 순간이동", false);
 	}
 
 	// Debug - CellPos 확인
@@ -240,12 +225,32 @@ void MyPlayer::TickInput()
 		GET_SINGLE(ChatManager)->AddMessage(format(L"위치 : ({0}, {1})", CellPos.x, CellPos.y));
 	}
 
-	// Debug - 사망
+	// Debug - 랜덤 위치의 몬스터 킬
 	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::B))
 	{
-		info.set_hp(0);
+		auto monster = scene->GetMonster();
+		auto creature = dynamic_pointer_cast<Creature>(monster);
+
+		if (monster)
 		{
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Hit(monster->info.objectid(), info.objectid());
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+
+			GET_SINGLE(ChatManager)->AddMessage(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y));
+			GET_SINGLE(ChatManager)->SendMessageToServer(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y), false);
+		}
+	}
+
+	// Debug - 사망
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::M))
+	{
+		//info.set_hp(0);
+
+		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 사망");
+		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 사망", false);
+
+		{
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_KillPlayer(GetObjectID());
 			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 	}
@@ -342,9 +347,9 @@ void MyPlayer::TickSpinReady()
 		SetState(SPIN);
 	}
 }
+
 void MyPlayer::TickTeleport()
 {
-	/*Super::TickTeleport();*/
 	if (info.mp() >= 25)
 	{
 		info.set_mp(clamp(info.mp() - 25, 0, info.maxmp()));
@@ -355,6 +360,35 @@ void MyPlayer::TickTeleport()
 	}
 	SetState(IDLE);
 }
+
+//void MyPlayer::MakeArrow(uint64 ownerID)
+//{
+//	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+//	if (scene)
+//	{
+//		_now = GetTickCount64();
+//
+//		if (_now - _prev >= 50)
+//		{
+//			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(ownerID);
+//			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+//
+//			int arrows = this->info.arrows();
+//			if (arrows <= 0)
+//				return;
+//
+//			auto nextPos = shared_from_this()->GetCellPos();
+//
+//			auto arrow = scene->SpawnObject<Arrow>(nextPos);
+//
+//			arrow->SetDir(shared_from_this()->info.dir());
+//			arrow->SetOwner(shared_from_this());
+//
+//			shared_from_this()->info.set_arrows(arrows - 1);
+//		}
+//	}
+//	_prev = _now;
+//}
 void MyPlayer::SyncToServer()
 {
 	// 매 1000프레임마다 동기화하긴 불합리
@@ -371,6 +405,26 @@ void MyPlayer::SyncToServer()
 int MyPlayer::GetQuestProgress(int questId)
 {
 	return _questsStates[questId].second;
+}
+
+map<int, pair<Protocol::QUEST_STATE, int>> MyPlayer::GetActiveQuests()
+{
+	map<int, pair<Protocol::QUEST_STATE, int>> activeQuests;
+
+	for (auto& quest : _questsStates)
+	{
+		int questID = quest.first;
+		auto state = quest.second.first;
+		int questProgress = quest.second.second;
+
+		if (state == Protocol::QUEST_STATE_ACCEPT ||
+			state == Protocol::QUEST_STATE_COMPLETED)
+		{
+			activeQuests.insert(quest);
+		}
+	}
+
+	return activeQuests;
 }
 
 void MyPlayer::SetQuestProgress(int questId, int progress)

@@ -16,10 +16,10 @@ public:
 
 protected:
 	Vec2Int _size = { 52, 52 };
-	MyPlayer* _myPlayer = nullptr;
+	shared_ptr<MyPlayer> _myPlayer = nullptr;
 	int _hp = 0;
 	int _maxHp = 0;
-	Sprite* _blackHeart = nullptr;
-	Sprite* _heart = nullptr;
+	shared_ptr<Sprite> _blackHeart = nullptr;
+	shared_ptr<Sprite> _heart = nullptr;
 };
 

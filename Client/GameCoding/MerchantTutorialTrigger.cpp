@@ -7,15 +7,6 @@
 
 MerchantTutorialTrigger::MerchantTutorialTrigger()
 {
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
-	// 튜토리얼 UI 노출
-	MerchantTutorial* tu = new MerchantTutorial();
-
-	_tutorial = tu;
-	_tutorial->SetVisible(false);
-	_tutorial->SetPos({ 490,180 });
-	scene->AddUI(_tutorial);
 }
 
 MerchantTutorialTrigger::~MerchantTutorialTrigger()
@@ -25,6 +16,19 @@ MerchantTutorialTrigger::~MerchantTutorialTrigger()
 void MerchantTutorialTrigger::BeginPlay()
 {
 	Super::BeginPlay();
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	// 튜토리얼 UI 노출
+	auto tu = make_shared<MerchantTutorial>();
+
+	if (scene == nullptr)
+		return;
+
+	_tutorial = tu;
+	_tutorial->SetVisible(false);
+	_tutorial->SetPos({ 490,180 });
+	scene->AddUI(_tutorial);
 }
 
 void MerchantTutorialTrigger::Tick()

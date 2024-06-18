@@ -96,6 +96,12 @@
     <Filter Include="소스 파일\06. UI\InGame\Quest">
       <UniqueIdentifier>{411c386a-1c5b-4764-99a6-628096bcd0c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\06. UI\OutGame">
+      <UniqueIdentifier>{adf79d33-92d3-4fb2-9d29-e521fcc83748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03. Objects\Game\Creature\Monster">
+      <UniqueIdentifier>{5bdfe4b5-ff50-4a7c-a8b4-41d8368fa0e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSession.h">
@@ -119,9 +125,6 @@
     <ClInclude Include="TimeManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionManager.h">
-      <Filter>소스 파일\01. Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\02. Scene</Filter>
     </ClInclude>
@@ -132,9 +135,6 @@
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
     <ClInclude Include="Creature.h">
-      <Filter>소스 파일\03. Objects\Game\Creature</Filter>
-    </ClInclude>
-    <ClInclude Include="Monster.h">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
     <ClInclude Include="HitEffect.h">
@@ -212,15 +212,6 @@
     <ClInclude Include="pch.h">
       <Filter>소스 파일\99. Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Struct.pb.h">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Enum.pb.h">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClInclude>
-    <ClInclude Include="Protocol.pb.h">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClInclude>
     <ClInclude Include="ClientPacketHandler.h">
       <Filter>소스 파일\07. Network</Filter>
     </ClInclude>
@@ -263,14 +254,8 @@
     <ClInclude Include="Item.h">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClInclude>
-    <ClInclude Include="HeartItem.h">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
-    </ClInclude>
     <ClInclude Include="TeleportEffect.h">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrowItem.h">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClInclude>
     <ClInclude Include="DeathEffect.h">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
@@ -303,9 +288,6 @@
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClInclude>
     <ClInclude Include="MP.h">
-      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
-    </ClInclude>
-    <ClInclude Include="WeaponSlot.h">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClInclude>
     <ClInclude Include="MerchantTutorial.h">
@@ -353,9 +335,6 @@
     <ClInclude Include="ItemManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="ItemCountBox.h">
-      <Filter>소스 파일\06. UI\Base</Filter>
-    </ClInclude>
     <ClInclude Include="AlertBox.h">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClInclude>
@@ -371,7 +350,36 @@
     <ClInclude Include="MerchantDialogueUI.h">
       <Filter>소스 파일\06. UI\InGame\NPC</Filter>
     </ClInclude>
-    <ClInclude Include="PopUp.h" />
+    <ClInclude Include="PopUp.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestTrackerUI.h">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingPanel.h">
+      <Filter>소스 파일\06. UI\OutGame</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderBar.h">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadScene.h">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="MiniMap.h">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Moblin.h">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -403,9 +411,6 @@
     <ClCompile Include="TimeManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionManager.cpp">
-      <Filter>소스 파일\01. Manager</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\02. Scene</Filter>
     </ClCompile>
@@ -413,9 +418,6 @@
       <Filter>소스 파일\02. Scene</Filter>
     </ClCompile>
     <ClCompile Include="Creature.cpp">
-      <Filter>소스 파일\03. Objects\Game\Creature</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
@@ -478,15 +480,6 @@
     <ClCompile Include="pch.cpp">
       <Filter>소스 파일\99. Headers</Filter>
     </ClCompile>
-    <ClCompile Include="Enum.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Protocol.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
-    <ClCompile Include="Struct.pb.cc">
-      <Filter>소스 파일\Protocol</Filter>
-    </ClCompile>
     <ClCompile Include="ClientPacketHandler.cpp">
       <Filter>소스 파일\07. Network</Filter>
     </ClCompile>
@@ -529,14 +522,8 @@
     <ClCompile Include="Item.cpp">
       <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClCompile>
-    <ClCompile Include="HeartItem.cpp">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
-    </ClCompile>
     <ClCompile Include="TeleportEffect.cpp">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="ArrowItem.cpp">
-      <Filter>소스 파일\03. Objects\Game\Item</Filter>
     </ClCompile>
     <ClCompile Include="DeathEffect.cpp">
       <Filter>소스 파일\04. Resources\Paper2D\Effect</Filter>
@@ -566,9 +553,6 @@
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClCompile>
     <ClCompile Include="MP.cpp">
-      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
-    </ClCompile>
-    <ClCompile Include="WeaponSlot.cpp">
       <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
     </ClCompile>
     <ClCompile Include="MerchantTutorial.cpp">
@@ -619,9 +603,6 @@
     <ClCompile Include="ItemManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="ItemCountBox.cpp">
-      <Filter>소스 파일\06. UI\Base</Filter>
-    </ClCompile>
     <ClCompile Include="AlertBox.cpp">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClCompile>
@@ -638,7 +619,43 @@
       <Filter>소스 파일\06. UI\InGame\NPC</Filter>
     </ClCompile>
     <ClCompile Include="PopUp.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestTrackerUI.cpp">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingPanel.cpp">
+      <Filter>소스 파일\06. UI\OutGame</Filter>
+    </ClCompile>
+    <ClCompile Include="SliderBar.cpp">
+      <Filter>소스 파일\06. UI\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadScene.cpp">
+      <Filter>소스 파일\02. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Struct.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Enum.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="MiniMap.cpp">
+      <Filter>소스 파일\06. UI\InGame\MyPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Moblin.cpp">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,8 +8,8 @@ class ShopItemPanel : public Panel
 
 public:
 	ShopItemPanel();
-	ShopItemPanel(ITEM* item);
-	ShopItemPanel(ITEM* item, int index, Vec2 initialPos);
+	ShopItemPanel(ITEM item);
+	ShopItemPanel(ITEM item, int index, Vec2 initialPos);
 	virtual ~ShopItemPanel();
 
 	virtual void BeginPlay() override;
@@ -17,20 +17,20 @@ public:
 	virtual void Render(HDC hdc);
 
 	RECT GetRect() { return _rect; }
-	ITEM* GetItem() { return _item;  }
+	shared_ptr<ITEM> GetItem() { return _item;  }
 
 	int GetItemIndex() { return _index; }
 
 	void OnPopClickAcceptDelegate();
 
 protected:
-	Texture* _background = nullptr;
-	Texture* _goldImage = nullptr;
-	ITEM* _item = nullptr;
-	RECT _rect;
-	class TextBox* _description = nullptr;
-	class TextBox* _itemName = nullptr;
-	class ItemCountsPopUp* _countsPopUp = nullptr;
+	shared_ptr<Texture> _background = nullptr;
+	shared_ptr<Texture> _goldImage = nullptr;
+	shared_ptr<ITEM> _item = nullptr;
+	RECT _rect = {};
+	shared_ptr<class TextBox> _description = nullptr;
+	shared_ptr<class TextBox> _itemName = nullptr;
+	shared_ptr<class ItemCountsPopUp> _countsPopUp = nullptr;
 	int _index = 0;
 };
 

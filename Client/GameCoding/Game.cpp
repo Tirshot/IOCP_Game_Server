@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Game.h"
+#include "TitleScene.h"
+#include "DevScene.h"
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "SceneManager.h"
@@ -17,8 +19,9 @@ Game::Game()
 
 Game::~Game()
 {
-	GET_SINGLE(SceneManager)->Clear();
-	GET_SINGLE(ResourceManager)->Clear();
+	//GET_SINGLE(SceneManager)->Clear();
+	//GET_SINGLE(ResourceManager)->Clear();
+	//GET_SINGLE(ItemManager)->Clear();
 }
 
 void Game::Init(HWND hwnd)
@@ -44,11 +47,8 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(Path));
 	GET_SINGLE(SoundManager)->Init(hwnd);
 
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TitleScene);
 	GET_SINGLE(SceneManager)->Init();
-	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
-
-	GET_SINGLE(ItemManager)->Init();
-	GET_SINGLE(NetworkManager)->Init();
 }
 
 void Game::Update()
@@ -57,9 +57,28 @@ void Game::Update()
 	GET_SINGLE(TimeManager)->Update();
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
-	GET_SINGLE(NetworkManager)->Update();
-	GET_SINGLE(QuestManager)->Tick();
-	GET_SINGLE(ChatManager)->Tick();
+
+	auto devScene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
+
+	if (devScene)
+	{
+		bool initialized = devScene->isInitialized();
+		if (initialized == false)
+		{
+			if (_first)
+			{
+				GET_SINGLE(NetworkManager)->Init();
+				_first = false;
+			}
+			GET_SINGLE(ItemManager)->Init();
+			GET_SINGLE(QuestManager)->BeginPlay();
+			devScene->SetInitialized(true);
+		}
+
+		GET_SINGLE(NetworkManager)->Update();
+		GET_SINGLE(QuestManager)->Tick();
+		GET_SINGLE(ChatManager)->Tick();
+	}
 }
 
 void Game::Render()
@@ -68,19 +87,32 @@ void Game::Render()
 
 	uint32 fps = GET_SINGLE(TimeManager)->GetFps();
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-	{ // 마우스 위치 출력
-		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
-		wstring str = std::format(L"Mouse({0}, {1})", mousePos.x, mousePos.y);
-		SetTextColor(_hdcBack, RGB(0, 0, 0));
-		SetBkMode(_hdcBack, TRANSPARENT);
-		::TextOut(_hdcBack, 680, 28, str.c_str(), static_cast<int32>(str.size()));
-	}
+
+	// 글꼴 생성
+	static HFONT hFont = CreateFont(
+		-MulDiv(10, GetDeviceCaps(_hdc, LOGPIXELSY), 72), // (16 * DPI) / 72 (1인치당 포인트)
+		0, 0, 0, FW_BOLD, FALSE, FALSE, FALSE,
+		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY, DEFAULT_PITCH | FF_MODERN, L"Malgun Gothic"
+	);
+
+	// 맑은 고딕
+	HFONT hOldFont = (HFONT)SelectObject(_hdcBack, hFont);
+	SelectObject(_hdc, hOldFont);
 
 	{ // FPS, Delta Time 출력
 		wstring str = std::format(L"FPS : {0}", fps);
-		SetTextColor(_hdcBack, RGB(0, 0, 0));
+		SetTextColor(_hdcBack, RGB(255, 255, 255));
 		SetBkMode(_hdcBack, TRANSPARENT);
-		::TextOut(_hdcBack, 680, 10, str.c_str(), static_cast<int32>(str.size()));
+		::TextOut(_hdcBack, 5, 560, str.c_str(), static_cast<int32>(str.size()));
+	}
+
+	{ // 마우스 위치 출력
+		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
+		wstring str = std::format(L"Mouse({0}, {1})", mousePos.x, mousePos.y);
+		SetTextColor(_hdcBack, RGB(255, 255, 255));
+		SetBkMode(_hdcBack, TRANSPARENT);
+		::TextOut(_hdcBack, 5, 578, str.c_str(), static_cast<int32>(str.size()));
 	}
 
 	// 더블 버퍼링, 비트 블릿 ; 고속 복사
@@ -88,5 +120,13 @@ void Game::Render()
 
 	// 복사 이후 백 버퍼 클리어
 	::PatBlt(_hdcBack, 0, 0, _rect.right, _rect.bottom, WHITENESS);
+}
 
+void Game::Restart()
+{
+	GET_SINGLE(SceneManager)->Clear();
+	GET_SINGLE(ResourceManager)->Clear();
+	GET_SINGLE(ItemManager)->Clear();
+
+	Init(_hwnd);
 }

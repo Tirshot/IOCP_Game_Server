@@ -27,8 +27,8 @@ void TeleportEffect::Tick()
 	// 애니메이션 종료 후 이펙트 제거
 	if (IsAnimationEnded())
 	{
-		Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
-		scene->RemoveActor(this);
+		auto scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+		scene->RemoveActor(shared_from_this());
 	}
 }
 

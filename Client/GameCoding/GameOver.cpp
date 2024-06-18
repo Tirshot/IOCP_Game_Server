@@ -1,10 +1,12 @@
 #include "pch.h"
+#include "Game.h"
 #include "GameOver.h"
 #include "Sprite.h"
 #include "Button.h"
 #include "DevScene.h"
 #include "MyPlayer.h"
 #include "ResourceManager.h"
+#include "ItemManager.h"
 #include "TimeManager.h"
 #include "SceneManager.h"
 #include "SoundManager.h"
@@ -21,9 +23,17 @@ GameOver::GameOver()
 
 	_background = GET_SINGLE(ResourceManager)->GetSprite(L"Chat");
 	_gameOver = GET_SINGLE(ResourceManager)->GetSprite(L"GameOver");
+}
 
+GameOver::~GameOver()
+{
+
+}
+
+void GameOver::BeginPlay()
+{
 	{ // 부활 버튼
-		Button* revive = new Button();
+		shared_ptr<Button> revive = make_shared<Button>();
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_Off"), BS_Default);
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_On"), BS_Pressed);
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_Hovered"), BS_Hovered);
@@ -35,7 +45,7 @@ GameOver::GameOver()
 	}
 
 	{ // 게임 종료
-		Button* exit = new Button();
+		shared_ptr<Button> exit = make_shared<Button>();
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Off"), BS_Default);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_On"), BS_Pressed);
 		exit->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Exit_Hovered"), BS_Hovered);
@@ -45,15 +55,7 @@ GameOver::GameOver()
 		exit->AddOnClickDelegate(this, &GameOver::OnClickExitButton);
 		AddChild(exit);
 	}
-}
 
-GameOver::~GameOver()
-{
-
-}
-
-void GameOver::BeginPlay()
-{
 	for (auto& child : _children)
 		child->BeginPlay();
 }
@@ -63,11 +65,13 @@ void GameOver::Tick()
 	// Game Over UI 페이드 인
 	if (_visible)
 	{
+		HideAllUIs();
 		FadeIn();
 	}
 
 	if (_alpha >= 220)
 	{
+		SetVisible(true);
 		for (auto& child : _children)
 		{
 			if (child == nullptr)
@@ -134,21 +138,54 @@ void GameOver::FadeIn()
 	_alpha = clamp(_alpha, 0, 230);
 }
 
+void GameOver::HideAllUIs()
+{
+	if (_invisibleUIs)
+		return;
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (_invisibleUIs == false)
+	{
+		_invisibleUIs = true;
+
+		if (scene)
+		{
+			auto uis = scene->GetUIs();
+
+			if (uis.empty() == false)
+			{
+				for (auto& ui : uis)
+				{
+					auto gameOver = dynamic_pointer_cast<GameOver>(ui);
+					if (gameOver)
+						continue;
+
+					ui->SetVisible(false);
+				}
+			}
+		}
+	}
+}
+
+
 void GameOver::OnClickReviveButton()
 {
-
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	if (scene == nullptr)
 		return;
 
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (myPlayer == nullptr)
 		return;
 
 	// 수행 후
 	SetVisible(false);
+	_invisibleUIs = false;
+
+	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 
 	// 부활 패킷 전송
 	{
@@ -162,16 +199,11 @@ void GameOver::OnClickExitButton()
 	if (_visible)
 	{
 		// 수행 후 ui 제거
-		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 		if (scene)
 		{
-			scene->RemoveUI(this);
+			scene->RemoveUI(shared_from_this());
 		}
-
-		MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-
-		if (myPlayer == nullptr)
-			return;
 
 		// 프로그램 종료
 		PostQuitMessage(0);

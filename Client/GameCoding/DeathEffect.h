@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-class DeathEffect : public GameObject
+class DeathEffect : public GameObject, public enable_shared_from_this<DeathEffect>
 {
 	using Super = GameObject;
 

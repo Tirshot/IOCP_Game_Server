@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-class HitEffect : public GameObject
+class HitEffect : public GameObject, public enable_shared_from_this<HitEffect>
 {
 	using Super = GameObject;
 

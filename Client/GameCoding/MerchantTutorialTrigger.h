@@ -13,6 +13,6 @@ public:
 	virtual void Tick() override;
 
 protected:
-	MerchantTutorial* _tutorial = nullptr;
+	shared_ptr<MerchantTutorial> _tutorial = nullptr;
 };
 

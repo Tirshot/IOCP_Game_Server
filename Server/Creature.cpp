@@ -5,6 +5,7 @@
 #include "Chat.h"
 #include "Player.h"
 #include "Item.h"
+#include "ItemManager.h"
 
 Creature::Creature()
 {
@@ -26,7 +27,7 @@ void Creature::Tick()
 	Super::Tick();
 }
 
-void Creature::OnDamaged(CreatureRef attacker)
+void Creature::OnDamaged(CreatureRef attacker, bool debug)
 {
 	if (attacker == nullptr)
 		return;
@@ -50,6 +51,9 @@ void Creature::OnDamaged(CreatureRef attacker)
 	// hp는 항상 양수
  	info.set_hp(max(0, info.hp() - damage));
 
+	if (info.hp() <= 0)
+		info.set_hp(0);
+
 	// 채팅 출력
 	{
 		wstring attackerType = L"";
@@ -72,165 +76,8 @@ void Creature::OnDamaged(CreatureRef attacker)
 			objectType,
 			GetObjectID(),
 			damage));
-
-		if (info.hp() == 0)
-		{
-			// 플레이어만 막타를 쳤을 때 아이템이 드랍
-			if (attacker->GetType() == Protocol::OBJECT_TYPE_PLAYER)
-			{	// 아이템 드랍, 1 ~ 99
-				auto randValueItem = (rand() % 99) + 1;
-
-				if (randValueItem <= 10)
-				{
-					// 10%, HP 전체 회복
-					if (room)
-					{
-						ItemRef item1 = GameObject::CreateItem();
-						item1->info.set_posx(shared_from_this()->info.posx());
-						item1->info.set_posy(shared_from_this()->info.posy());
-						item1->info.set_defence(9999);
-						item1->info.set_name("FullHeartItem");
-						item1->info.set_itemtype(Protocol::ITEM_TYPE_FULLHEART);
-						item1->SetOwner(attacker->GetObjectID());
-						room->AddObject(item1);
-						{
-							Protocol::S_AddObject pkt;
-
-							Protocol::ObjectInfo* info = pkt.add_objects();
-							*info = item1->info;
-
-							SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
-
-							if (player)
-							{
-								player->session->Send(sendBuffer);
-								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 FullHeart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
-							}
-						}
-					}
-				}
-				else if (randValueItem > 10 && randValueItem <= 50)
-				{
-					// 40%, HP ++
-					if (room)
-					{
-						ItemRef item1 = GameObject::CreateItem();
-						item1->info.set_posx(shared_from_this()->info.posx());
-						item1->info.set_posy(shared_from_this()->info.posy());
-						item1->info.set_defence(9999);
-						item1->info.set_name("HeartItem");
-						item1->info.set_itemtype(Protocol::ITEM_TYPE_HEART);
-						item1->SetOwner(attacker->GetObjectID());
-						room->AddObject(item1);
-						{
-							Protocol::S_AddObject pkt;
-
-							Protocol::ObjectInfo* info = pkt.add_objects();
-							*info = item1->info;
-
-							SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
-
-							if (player)
-							{
-								player->session->Send(sendBuffer);
-								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 Heart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
-							}
-						}
-					}
-				}
-				else if (randValueItem > 50 && randValueItem <= 55)
-				{
-					// 5%, maxHP ++
-					if (room)
-					{
-						ItemRef item1 = GameObject::CreateItem();
-						item1->info.set_posx(shared_from_this()->info.posx());
-						item1->info.set_posy(shared_from_this()->info.posy());
-						item1->info.set_defence(9999);
-						item1->info.set_name("MaxHeartItem");
-						item1->info.set_itemtype(Protocol::ITEM_TYPE_MAXHEART);
-						item1->SetOwner(attacker->GetObjectID());
-						room->AddObject(item1);
-						{
-							Protocol::S_AddObject pkt;
-
-							Protocol::ObjectInfo* info = pkt.add_objects();
-							*info = item1->info;
-
-							SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
-
-							if (player)
-							{
-								player->session->Send(sendBuffer);
-								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 MaxHeart 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
-							}
-						}
-					}
-				}
-				else if (randValueItem > 55 && randValueItem <= 80)
-				{
-					// 25%, Arrow ++
-					if (room)
-					{
-						ItemRef item1 = GameObject::CreateItem();
-						item1->info.set_posx(shared_from_this()->info.posx());
-						item1->info.set_posy(shared_from_this()->info.posy());
-						item1->info.set_defence(9999);
-						item1->info.set_name("ArrowItem");
-						item1->info.set_itemtype(Protocol::ITEM_TYPE_ARROW);
-						item1->SetOwner(attacker->GetObjectID());
-						room->AddObject(item1);
-						{
-							Protocol::S_AddObject pkt;
-
-							Protocol::ObjectInfo* info = pkt.add_objects();
-							*info = item1->info;
-
-							SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-							PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
-
-							if (player)
-							{
-								player->session->Send(sendBuffer);
-								GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 Arrow 아이템 드랍.", attacker->info.objectid(), info->posx(), info->posy()));
-							}
-						}
-					}
-				}
-				// 골드 드랍, 1~10
-				auto randValueGold = (rand() % 10) + 1;
-				{
-					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Gold(attacker->info.objectid(), randValueGold);
-					PlayerRef player = static_pointer_cast<Player>(room->FindObject(attacker->GetObjectID()));
-
-					if (player)
-					{
-						player->session->Send(sendBuffer);
-						GChat->AddText(format(L"Player {0}가 {1}골드 획득.", player->info.objectid(), randValueGold));
-					}
-				}
-				
-			}
-			if (room)
-			{
-				room->RemoveObject(GetObjectID());
-
-				PlayerRef player = dynamic_pointer_cast<Player>(attacker);
-				if (player)
-					player->QuestProgress(0);
-
-				// 채팅 출력
-				GChat->AddText(format(L"{0} {1}이(가) {2} {3}에 의해 쓰러짐",
-					objectType,
-					GetObjectID(),
-					attackerType,
-					attacker->GetObjectID()));
-			}
-		}
 	}
+	// 사망 로직은 자식 클래스에서 수행
 }
 
 void Creature::KnockBack(CreatureRef attacker)
@@ -264,4 +111,9 @@ void Creature::KnockBack(CreatureRef attacker)
 	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
 	if (CanGo(backPos))
 		SetCellPos(backPos);
+}
+
+wstring Creature::GetName()
+{
+	return GET_SINGLE(ItemManager)->StringToWString(info.name());
 }

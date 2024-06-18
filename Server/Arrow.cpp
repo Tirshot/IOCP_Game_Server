@@ -52,35 +52,41 @@ void Arrow::TickIdle()
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
 
+	float tick = (float)(GetTickCount64()) / 1000.0f;
+	if (_waitUntil <= 0.0f)
+	{
+		_waitUntil = tick + 0.05f;
+	}
+
+	if (tick < _waitUntil)
+		return;
+
+	_waitUntil = tick + 0.05f;
+
 	// 다음 위치에 갈 수 있는지 확인
 	if (CanGo(nextPos))
 	{
 		SetCellPos(nextPos);
 		SetState(MOVE);
-		_waitUntil = GetTickCount64() + 65; // 클라이언트의 화살 속도와 동기화
 	}
 	else
 	{
 		if (_target == _owner)
 		{
-			SetCellPos(nextPos + deltaXY[info.dir()]);
+			SetCellPos(nextPos);
 			SetState(MOVE);
-			_waitUntil = GetTickCount64() + 65; // 클라이언트의 화살 속도와 동기화
 			return;
 		}
 		SetState(HIT);
 		return;
 	}
+
+	_waitUntil = 0.f;
 	_hit = false;
 }
 
 void Arrow::TickMove()
 {
-	uint64 now = GetTickCount64();
-
-	if (_waitUntil > now)
-		return;
-
 	SetState(IDLE);
 }
 

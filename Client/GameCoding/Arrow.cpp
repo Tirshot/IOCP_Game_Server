@@ -8,7 +8,9 @@
 #include "Creature.h"
 #include "Monster.h"
 #include "Player.h"
+#include "MyPlayer.h"
 #include "HitEffect.h"
+#include "Tilemap.h"
 #include "ChatManager.h"
 #include "SoundManager.h"
 
@@ -42,7 +44,7 @@ void Arrow::Render(HDC hdc)
 
 void Arrow::TickIdle()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
 	if (scene == nullptr)
 		return;
 
@@ -60,16 +62,17 @@ void Arrow::TickIdle()
 	else
 	{
 		// 앞이 비어있으면 전진, 몬스터라면 타격
-		Creature* creature = scene->GetCreatureAt(nextPos);
-		_owner->GetFrontCellPos();
+		auto creature = scene->GetCreatureAt(nextPos);
+
 		if (creature == _owner)
 		{
 			SetCellPos(nextPos);
 			SetState(MOVE);
 			return;
 		}
-		SetState(HIT);
 	}
+
+	SetState(HIT);
 }
 
 void Arrow::TickMove()
@@ -108,12 +111,15 @@ void Arrow::TickHit()
 	Vec2Int pos = Vec2Int{ info.posx(), info.posy() };
 	Vec2Int nextPos = pos + deltaXY[info.dir()];
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+
+	if (scene == nullptr)
+		return;
 
 	// 앞이 비어있으면 전진, 몬스터라면 타격
 	/*Monster* _target = dynamic_cast<Monster*>(scene->GetCreatureAt(nextPos));*/
 
-	scene->RemoveActor(this);
+	scene->RemoveActor(shared_from_this());
 }
 
 void Arrow::UpdateAnimation()

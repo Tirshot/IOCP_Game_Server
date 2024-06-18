@@ -1,6 +1,7 @@
 #pragma once
 #include "Panel.h"
 class Texture;
+class AlertBox;
 class ShopUI :  public Panel
 {
 	using Super = Panel;
@@ -14,24 +15,28 @@ public:
 	virtual void Render(HDC hdc);
 
 public:
-	void AddSellItem(ITEM* item);
+	void AddSellItem(shared_ptr<ITEM> item);
 	void AddSellItem(int itemID);
 
-	void SellItemToShop(ITEM* item);
+	void SellItemToShop(shared_ptr<ITEM> item);
 
 	void ResetInitializingTime() { _initializeTime = 0.f; }
 	void ResetPage() { _page = 1; }
 
 	RECT GetShopRect() { return _rect; }
 
+public:
+	shared_ptr<AlertBox> MakeAlertBox(Vec2 pos, Vec2Int size, void (ShopUI::* func)() = nullptr, bool twoButtons = true);
+
 private:
 	void OnPopClickAcceptDelegate();
 	void OnPopClickAlertAcceptDelegate();
+	void OnClickSellItemToShopAlertAcceptDelegate();
 	void OnClickBackButton();
 	void OnClickExitButton();
 
 private:
-	ITEM* GetSellItem(int itemID);
+	shared_ptr<ITEM> GetSellItem(int itemID);
 	int GetItemIndex(int itemID);
 	void SetAllCost(int cost) { _allCost = cost; }
 	void SetChildVisible(bool visible);
@@ -43,15 +48,18 @@ private:
 protected:
 	RECT _rect = {};
 	RECT _dragRect = {};
-	Texture* _background = nullptr;
-	class ItemCountsPopUp* _countsPopUp = nullptr;
-	class	AlertBox* _alert = {};
-	vector<ITEM*> _items = {};	// 판매할 아이템이 저장되어 있음
-	ITEM* _sellItem = {};
-	ITEM* _sellToShop = {};
+	shared_ptr<Texture> _background = nullptr;
+	shared_ptr<class ItemCountsPopUp> _countsPopUp = nullptr;
+	shared_ptr<class	AlertBox> _alert = {};
+	vector<shared_ptr<ITEM>> _items = {};	// 판매할 아이템이 저장되어 있음
+	shared_ptr<ITEM> _sellItem = {};
+	shared_ptr<ITEM> _sellToShop = {};
 	int _counts = 1;	// 아이템 구매 갯수
 	int _price = 0;
 	int _allCost = 0;
 	float _initializeTime = 0.f;	// 판매창 품목 구입 대기시간
 	int _page = 1;	// 열린 페이지
+
+private:
+	int _buyPriceDivider = 5;
 };

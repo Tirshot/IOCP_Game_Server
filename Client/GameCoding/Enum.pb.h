@@ -82,12 +82,14 @@ enum OBJECT_TYPE : int {
   OBJECT_TYPE_NPC = 4,
   OBJECT_TYPE_NPC_SIGN = 5,
   OBJECT_TYPE_ITEM = 6,
+  OBJECT_TYPE_INVENTORY = 7,
+  OBJECT_TYPE_TRIGGER = 8,
   OBJECT_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   OBJECT_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool OBJECT_TYPE_IsValid(int value);
 constexpr OBJECT_TYPE OBJECT_TYPE_MIN = OBJECT_TYPE_NONE;
-constexpr OBJECT_TYPE OBJECT_TYPE_MAX = OBJECT_TYPE_ITEM;
+constexpr OBJECT_TYPE OBJECT_TYPE_MAX = OBJECT_TYPE_TRIGGER;
 constexpr int OBJECT_TYPE_ARRAYSIZE = OBJECT_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* OBJECT_TYPE_descriptor();
@@ -198,12 +200,13 @@ enum ITEM_TYPE : int {
   ITEM_TYPE_POTION = 5,
   ITEM_TYPE_CONSUMABLE = 11,
   ITEM_TYPE_WEARABLE = 12,
+  ITEM_TYPE_ETC = 13,
   ITEM_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ITEM_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ITEM_TYPE_IsValid(int value);
 constexpr ITEM_TYPE ITEM_TYPE_MIN = ITEM_TYPE_NONE;
-constexpr ITEM_TYPE ITEM_TYPE_MAX = ITEM_TYPE_WEARABLE;
+constexpr ITEM_TYPE ITEM_TYPE_MAX = ITEM_TYPE_ETC;
 constexpr int ITEM_TYPE_ARRAYSIZE = ITEM_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ITEM_TYPE_descriptor();
@@ -220,34 +223,40 @@ inline bool ITEM_TYPE_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ITEM_TYPE>(
     ITEM_TYPE_descriptor(), name, value);
 }
-enum CONSUMABLE_TYPE : int {
+enum ITEM_SUBTYPE : int {
   CONSUMABLE_TYPE_NONE = 0,
   CONSUMABLE_TYPE_HEART = 1,
   CONSUMABLE_TYPE_FULLHEART = 2,
   CONSUMABLE_TYPE_MAXHEART = 3,
   CONSUMABLE_TYPE_ARROW = 4,
   CONSUMABLE_TYPE_POTION = 5,
-  CONSUMABLE_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  CONSUMABLE_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+  WEARABLE_TYPE_WEAPON = 6,
+  WEARABLE_TYPE_HELMET = 7,
+  WEARABLE_TYPE_ARMOR = 8,
+  WEARABLE_TYPE_PANTS = 9,
+  WEARABLE_TYPE_BOOTS = 10,
+  ETC = 11,
+  ITEM_SUBTYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  ITEM_SUBTYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
-bool CONSUMABLE_TYPE_IsValid(int value);
-constexpr CONSUMABLE_TYPE CONSUMABLE_TYPE_MIN = CONSUMABLE_TYPE_NONE;
-constexpr CONSUMABLE_TYPE CONSUMABLE_TYPE_MAX = CONSUMABLE_TYPE_POTION;
-constexpr int CONSUMABLE_TYPE_ARRAYSIZE = CONSUMABLE_TYPE_MAX + 1;
+bool ITEM_SUBTYPE_IsValid(int value);
+constexpr ITEM_SUBTYPE ITEM_SUBTYPE_MIN = CONSUMABLE_TYPE_NONE;
+constexpr ITEM_SUBTYPE ITEM_SUBTYPE_MAX = ETC;
+constexpr int ITEM_SUBTYPE_ARRAYSIZE = ITEM_SUBTYPE_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CONSUMABLE_TYPE_descriptor();
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ITEM_SUBTYPE_descriptor();
 template<typename T>
-inline const std::string& CONSUMABLE_TYPE_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, CONSUMABLE_TYPE>::value ||
+inline const std::string& ITEM_SUBTYPE_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ITEM_SUBTYPE>::value ||
     ::std::is_integral<T>::value,
-    "Incorrect type passed to function CONSUMABLE_TYPE_Name.");
+    "Incorrect type passed to function ITEM_SUBTYPE_Name.");
   return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    CONSUMABLE_TYPE_descriptor(), enum_t_value);
+    ITEM_SUBTYPE_descriptor(), enum_t_value);
 }
-inline bool CONSUMABLE_TYPE_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, CONSUMABLE_TYPE* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CONSUMABLE_TYPE>(
-    CONSUMABLE_TYPE_descriptor(), name, value);
+inline bool ITEM_SUBTYPE_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ITEM_SUBTYPE* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ITEM_SUBTYPE>(
+    ITEM_SUBTYPE_descriptor(), name, value);
 }
 enum NPC_TYPE : int {
   NPC_TYPE_SIGN = 0,
@@ -301,6 +310,32 @@ inline bool QUEST_STATE_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<QUEST_STATE>(
     QUEST_STATE_descriptor(), name, value);
 }
+enum MONSTER_TYPE : int {
+  MONSTER_TYPE_NONE = 0,
+  MONSTER_TYPE_SNAKE = 1,
+  MONSTER_TYPE_MOBLIN = 2,
+  MONSTER_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  MONSTER_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool MONSTER_TYPE_IsValid(int value);
+constexpr MONSTER_TYPE MONSTER_TYPE_MIN = MONSTER_TYPE_NONE;
+constexpr MONSTER_TYPE MONSTER_TYPE_MAX = MONSTER_TYPE_MOBLIN;
+constexpr int MONSTER_TYPE_ARRAYSIZE = MONSTER_TYPE_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MONSTER_TYPE_descriptor();
+template<typename T>
+inline const std::string& MONSTER_TYPE_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, MONSTER_TYPE>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function MONSTER_TYPE_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    MONSTER_TYPE_descriptor(), enum_t_value);
+}
+inline bool MONSTER_TYPE_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, MONSTER_TYPE* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<MONSTER_TYPE>(
+    MONSTER_TYPE_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -353,10 +388,10 @@ template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::ITEM_TYPE>() {
   return ::Protocol::ITEM_TYPE_descriptor();
 }
-template <> struct is_proto_enum< ::Protocol::CONSUMABLE_TYPE> : ::std::true_type {};
+template <> struct is_proto_enum< ::Protocol::ITEM_SUBTYPE> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::CONSUMABLE_TYPE>() {
-  return ::Protocol::CONSUMABLE_TYPE_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::ITEM_SUBTYPE>() {
+  return ::Protocol::ITEM_SUBTYPE_descriptor();
 }
 template <> struct is_proto_enum< ::Protocol::NPC_TYPE> : ::std::true_type {};
 template <>
@@ -367,6 +402,11 @@ template <> struct is_proto_enum< ::Protocol::QUEST_STATE> : ::std::true_type {}
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::QUEST_STATE>() {
   return ::Protocol::QUEST_STATE_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::MONSTER_TYPE> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::MONSTER_TYPE>() {
+  return ::Protocol::MONSTER_TYPE_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

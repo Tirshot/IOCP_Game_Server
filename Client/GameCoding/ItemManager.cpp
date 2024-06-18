@@ -12,12 +12,16 @@
 
 void ItemManager::Init()
 {
-    DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+    auto scene = GET_SINGLE(SceneManager)->GetDevScene();
     if (scene == nullptr)
         return;
 
     _inventory = scene->FindUI<Inventory>(scene->GetUIs());
     _quickSlot = scene->FindUI<QuickSlot>(scene->GetUIs());
+}
+
+void ItemManager::Clear()
+{
 }
 
 void ItemManager::Tick()
@@ -65,24 +69,24 @@ int ItemManager::FindItemIDByName(wstring Name)
     return -1;
 }
 
-ITEM& ItemManager::GetItem(int itemID)
+ITEM ItemManager::GetItem(int itemID)
 {
     // 아이템 정보를 찾음
-    vector<wstring> ItemInfo = GET_SINGLE(ItemManager)->FindItemInfo(itemID);
+    vector<wstring> ItemInfo = FindItemInfo(itemID);
 
     // ITEM 객체를 동적으로 할당
-    ITEM* item = new ITEM;
+    auto item = make_shared<ITEM>();
 
     // 아이템 정보 할당
     item->ItemId = itemID;
     item->ItemCount = 1;
-    item->Name = GET_SINGLE(ItemManager)->GetName(ItemInfo);
-    item->KorName = GET_SINGLE(ItemManager)->GetKorName(ItemInfo);
-    item->Description = GET_SINGLE(ItemManager)->GetDescription(ItemInfo);
-    item->Price = GET_SINGLE(ItemManager)->GetPrice(ItemInfo);
-    item->Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
-    item->SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
-    item->Sprite = GET_SINGLE(ItemManager)->GetSprite(item->Name);
+    item->Name = GetName(ItemInfo);
+    item->KorName = GetKorName(ItemInfo);
+    item->Description = GetDescription(ItemInfo);
+    item->Price = GetPrice(ItemInfo);
+    item->Type = GetType(ItemInfo);
+    item->SubType = GetSubType(ItemInfo);
+    item->Sprite = GetSprite(item->Name);
 
     // 동적으로 할당한 ITEM 객체의 참조를 반환
     return *item;
@@ -95,23 +99,20 @@ bool ItemManager::AddItemToInventory(int itemId)
 
 bool ItemManager::AddItemToInventory(int itemId, int counts)
 {
-    if (itemId == 0)
+    if (itemId <= 0)
         return false;
 
-    //DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-    //MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-    //int myPlayerID = GET_SINGLE(SceneManager)->GetMyPlayerId();
-
-    //if (scene == nullptr || myPlayer == nullptr)
-    //    return false;
-
-    //// 인벤토리 아이템 서버와 동기화
-    //{
-    //    SendBufferRef sendBuffer = ClientPacketHandler::Make_C_AddItem(myPlayerID, itemId, counts);
-    //    GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-    //}
-
     return GetInventory()->AddItem(itemId, counts);
+}
+
+bool ItemManager::SetItemToInventory(int itemId, int counts)
+{
+    if (itemId <= 0)
+        return false;
+
+    GetInventory()->SetItemCount(itemId, counts);
+
+    return true;
 }
 
 bool ItemManager::RemoveItemFromInventory(int itemId)
@@ -119,7 +120,7 @@ bool ItemManager::RemoveItemFromInventory(int itemId)
     return GetInventory()->RemoveItem(itemId);
 }
 
-void ItemManager::SetItemToQuickSlot(ITEM* item, int index)
+void ItemManager::SetItemToQuickSlot(shared_ptr<ITEM> item, int index)
 {
     GetQuickSlot()->SetQuickSlot(item, index);
 }
@@ -134,9 +135,14 @@ wstring ItemManager::GetQuickSlotSelectedSubType()
     return _quickSlot->GetSelectedSubType();
 }
 
-void ItemManager::EquipItem(ITEM item)
+void ItemManager::EquipItem(shared_ptr<ITEM> item)
 {
-    _inventory->EquipItem(&item);
+    _inventory->EquipItem(item);
+}
+
+void ItemManager::QuickEquipItem(int itemID)
+{
+    _inventory->QuickEquipItem(itemID);
 }
 
 bool ItemManager::IsInventoryFull()
@@ -145,7 +151,7 @@ bool ItemManager::IsInventoryFull()
 
     for (auto& slot : slots)
     {
-        if (slot.ItemId == 0)
+        if (slot->ItemId == 0)
             return false;
     }
 
@@ -159,14 +165,14 @@ int ItemManager::GetEmptySlots()
 
     for (auto& slot : slots)
     {
-        if (slot.ItemId == 0)
+        if (slot->ItemId == 0)
             emptySlots++;
     }
 
     return emptySlots;
 }
 
-ITEM* ItemManager::FindItemFromInventory(int itemId)
+shared_ptr<ITEM> ItemManager::FindItemFromInventory(int itemId)
 {
     return _inventory->FindItemFromInventory(itemId);
 }
@@ -177,15 +183,32 @@ void ItemManager::SyncToServer()
 
     for (auto& slot : slots)
     {
-        if (slot.ItemId != 0)
+        if (slot->ItemId != 0)
         {
-            slot.ItemId;
-            slot.ItemCount;
-            slot.Type;
-            slot.SubType;
+            slot->ItemId;
+            slot->ItemCount;
         }
     }
 
+}
+
+void ItemManager::OpenInventory()
+{
+    if (_inventory->GetVisible())
+    {
+        _inventory->SetVisible(false);
+    }
+    else
+    {
+        _inventory->SetVisible(true);
+    }
+}
+
+void ItemManager::ResetInventory()
+{
+    // 부활 했을 경우에만 사용
+    // 초기화된 인벤토리를 지우고 서버에서 받을 것
+    _inventory->ResetInventory();
 }
 
 wstring ItemManager::GetName(vector<wstring> row)
@@ -200,7 +223,10 @@ wstring ItemManager::GetKorName(vector<wstring> row)
 
 wstring ItemManager::GetType(vector<wstring> row)
 {
-    return row[3];
+    if (!row.empty())
+        return row[3];
+
+    return L"";
 }
 
 wstring ItemManager::GetSubType(vector<wstring> row)
@@ -218,7 +244,24 @@ int ItemManager::GetPrice(vector<wstring> row)
     return stoi(row[6]);
 }
 
-Sprite* ItemManager::GetSprite(wstring wstr)
+shared_ptr<Sprite> ItemManager::GetSprite(wstring wstr)
 {
     return GET_SINGLE(ResourceManager)->GetSprite(wstr);
+}
+
+shared_ptr<Sprite> ItemManager::GetSprite(int itemID)
+{
+    const auto ItemTable = GET_SINGLE(ResourceManager)->GetItemTable();
+
+    for (auto& row : ItemTable)
+    {
+        if (row.empty())
+            return nullptr;
+
+        if (stoi(row[0]) == itemID)
+        {
+            return GET_SINGLE(ResourceManager)->GetSprite(row[1]);
+        }
+    }
+
 }

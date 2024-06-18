@@ -15,8 +15,8 @@ public:
 	virtual void Render(HDC hdc);
 
 protected:
-	MyPlayer* _myPlayer = nullptr;
-	Sprite* _arrows= nullptr;
+	shared_ptr<MyPlayer> _myPlayer = nullptr;
+	shared_ptr<Sprite> _arrows= nullptr;
 	int32 _arrowsCount = 0;
 };
 

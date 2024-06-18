@@ -1,19 +1,9 @@
 #pragma once
 #include "UI.h"
 
-class Panel : public UI
+class Panel : public UI, public enable_shared_from_this<Panel>
 {
 	using Super = UI;
-
-	enum class OverlapDir
-	{
-		None,
-		Left,
-		Right,
-		Top,
-		Bottom,
-		Full
-	};
 
 public:
 	Panel();
@@ -23,28 +13,28 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
 
-	void AddChild(UI* ui);
+	void AddChild(shared_ptr<UI> ui);
 
 	template <typename T>
-	T* FindChild(const vector<UI*>& children)
+	shared_ptr<T> FindChild(const vector<shared_ptr<UI>>& children)
 	{
 		for (auto& item : children)
 		{
-			T* foundItem = dynamic_cast<T*>(item);
+			shared_ptr<T> foundItem = dynamic_pointer_cast<T>(item);
 			if (foundItem)
 				return foundItem;
 		}
 		return nullptr;
 	}
 	virtual RECT GetRect() override;
-	bool RemoveChild(UI* ui);
+	bool RemoveChild(shared_ptr<UI> ui);
 	auto& GetChildren() { return _children; }
 
-	void UpdateChildPos(Panel* parent, int deltaX, int deltaY);
-	void DragAndMove(RECT* rect);
+	void UpdateChildPos(shared_ptr<Panel> parent, int deltaX, int deltaY);
+	void DragAndMove(RECT rect);
 	void SetRelativePos(Vec2Int pos);
 
-	void MoveUIToFront(UI* ui);
+	void MoveUIToFront(shared_ptr<UI> ui);
 
 	bool IsOverlappedWithVisibleUIRect(RECT& thisRect);
 	bool IsRectOverlapped(RECT& thisRect, RECT& other);
@@ -55,11 +45,10 @@ public:
 	void ResetPos();
 
 protected:
-	vector<UI*> _children;
+	vector<shared_ptr<UI>> _children;
 	bool _isDragging = false;
-	POINT _initialMousePos;
-	POINT _mousePos;
-	int _offsetX;
-	int _offsetY;
+	POINT _initialMousePos = {};
+	POINT _mousePos = {};
+	int _offsetX = 0;
+	int _offsetY = 0;
 };
-

@@ -10,11 +10,11 @@ public:
 	void BeginPlay();
 	void Tick();
 
-	Chat* GetChat() { return _chat; }
-	void SetChat(Chat* chat) { _chat = chat; }
+	shared_ptr<Chat> GetChat() { return _chat; }
+	void SetChat(shared_ptr<Chat> chat) { _chat = chat; }
 
-	ChatInput* GetChatInput() { return _chatInput; }
-	void SetChatInput(ChatInput* chatInput) { _chatInput = chatInput; }
+	shared_ptr<ChatInput> GetChatInput() { return _chatInput; }
+	void SetChatInput(shared_ptr<ChatInput> chatInput) { _chatInput = chatInput; }
 
 	void AddMessage(const wstring text);
 
@@ -27,11 +27,11 @@ public:
 	void SetInvisibleChat();
 	void SetVisibleChatInput(bool visible);
 
-	void SendMessageToServer(const wstring text);
+	void SendMessageToServer(const wstring text, bool broadcast = true);
 
 private:
-	Chat* _chat = nullptr;
-	ChatInput* _chatInput = nullptr;
+	shared_ptr<Chat> _chat = nullptr;
+	shared_ptr<ChatInput> _chatInput = nullptr;
 	wstring _str = L"";
 };
 

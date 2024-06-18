@@ -24,6 +24,8 @@ public:
 	wstring StringToWStr(string str);
 
 	void SaveLogFile();
+	wstring GetDateForLogName();
+	wstring SetTimeFormat(time_t time);
 
 private:
 	float _now = 0;

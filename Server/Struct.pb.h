@@ -49,9 +49,9 @@ namespace Protocol {
 class BuffData;
 struct BuffDataDefaultTypeInternal;
 extern BuffDataDefaultTypeInternal _BuffData_default_instance_;
-class Item;
-struct ItemDefaultTypeInternal;
-extern ItemDefaultTypeInternal _Item_default_instance_;
+class ItemInfo;
+struct ItemInfoDefaultTypeInternal;
+extern ItemInfoDefaultTypeInternal _ItemInfo_default_instance_;
 class ObjectInfo;
 struct ObjectInfoDefaultTypeInternal;
 extern ObjectInfoDefaultTypeInternal _ObjectInfo_default_instance_;
@@ -64,7 +64,7 @@ extern TextDefaultTypeInternal _Text_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::BuffData* Arena::CreateMaybeMessage<::Protocol::BuffData>(Arena*);
-template<> ::Protocol::Item* Arena::CreateMaybeMessage<::Protocol::Item>(Arena*);
+template<> ::Protocol::ItemInfo* Arena::CreateMaybeMessage<::Protocol::ItemInfo>(Arena*);
 template<> ::Protocol::ObjectInfo* Arena::CreateMaybeMessage<::Protocol::ObjectInfo>(Arena*);
 template<> ::Protocol::QuestInfo* Arena::CreateMaybeMessage<::Protocol::QuestInfo>(Arena*);
 template<> ::Protocol::Text* Arena::CreateMaybeMessage<::Protocol::Text>(Arena*);
@@ -387,17 +387,19 @@ class ObjectInfo final :
     kMaxHpFieldNumber = 7,
     kAttackFieldNumber = 8,
     kDefenceFieldNumber = 9,
-    kPosXFieldNumber = 10,
-    kPosYFieldNumber = 11,
-    kDamageFieldNumber = 12,
-    kGoldFieldNumber = 14,
-    kWeaponTypeFieldNumber = 13,
-    kItemTypeFieldNumber = 15,
-    kArrowsFieldNumber = 16,
-    kMpFieldNumber = 17,
-    kMaxMpFieldNumber = 18,
-    kNpcTypeFieldNumber = 19,
-    kPotionFieldNumber = 20,
+    kSpeedFieldNumber = 10,
+    kPosXFieldNumber = 11,
+    kPosYFieldNumber = 12,
+    kDamageFieldNumber = 13,
+    kWeaponTypeFieldNumber = 14,
+    kGoldFieldNumber = 15,
+    kItemTypeFieldNumber = 16,
+    kArrowsFieldNumber = 17,
+    kMpFieldNumber = 18,
+    kMaxMpFieldNumber = 19,
+    kNpcTypeFieldNumber = 20,
+    kPotionFieldNumber = 21,
+    kMonsterTypeFieldNumber = 22,
   };
   // string name = 5;
   void clear_name();
@@ -485,7 +487,16 @@ class ObjectInfo final :
   void _internal_set_defence(int32_t value);
   public:
 
-  // int32 posX = 10;
+  // int32 speed = 10;
+  void clear_speed();
+  int32_t speed() const;
+  void set_speed(int32_t value);
+  private:
+  int32_t _internal_speed() const;
+  void _internal_set_speed(int32_t value);
+  public:
+
+  // int32 posX = 11;
   void clear_posx();
   int32_t posx() const;
   void set_posx(int32_t value);
@@ -494,7 +505,7 @@ class ObjectInfo final :
   void _internal_set_posx(int32_t value);
   public:
 
-  // int32 posY = 11;
+  // int32 posY = 12;
   void clear_posy();
   int32_t posy() const;
   void set_posy(int32_t value);
@@ -503,7 +514,7 @@ class ObjectInfo final :
   void _internal_set_posy(int32_t value);
   public:
 
-  // int32 damage = 12;
+  // int32 damage = 13;
   void clear_damage();
   int32_t damage() const;
   void set_damage(int32_t value);
@@ -512,16 +523,7 @@ class ObjectInfo final :
   void _internal_set_damage(int32_t value);
   public:
 
-  // uint64 gold = 14;
-  void clear_gold();
-  uint64_t gold() const;
-  void set_gold(uint64_t value);
-  private:
-  uint64_t _internal_gold() const;
-  void _internal_set_gold(uint64_t value);
-  public:
-
-  // .Protocol.WEAPON_TYPE weaponType = 13;
+  // .Protocol.WEAPON_TYPE weaponType = 14;
   void clear_weapontype();
   ::Protocol::WEAPON_TYPE weapontype() const;
   void set_weapontype(::Protocol::WEAPON_TYPE value);
@@ -530,7 +532,16 @@ class ObjectInfo final :
   void _internal_set_weapontype(::Protocol::WEAPON_TYPE value);
   public:
 
-  // .Protocol.ITEM_TYPE itemType = 15;
+  // uint64 gold = 15;
+  void clear_gold();
+  uint64_t gold() const;
+  void set_gold(uint64_t value);
+  private:
+  uint64_t _internal_gold() const;
+  void _internal_set_gold(uint64_t value);
+  public:
+
+  // .Protocol.ITEM_TYPE itemType = 16;
   void clear_itemtype();
   ::Protocol::ITEM_TYPE itemtype() const;
   void set_itemtype(::Protocol::ITEM_TYPE value);
@@ -539,7 +550,7 @@ class ObjectInfo final :
   void _internal_set_itemtype(::Protocol::ITEM_TYPE value);
   public:
 
-  // int32 arrows = 16;
+  // int32 arrows = 17;
   void clear_arrows();
   int32_t arrows() const;
   void set_arrows(int32_t value);
@@ -548,7 +559,7 @@ class ObjectInfo final :
   void _internal_set_arrows(int32_t value);
   public:
 
-  // int32 mp = 17;
+  // int32 mp = 18;
   void clear_mp();
   int32_t mp() const;
   void set_mp(int32_t value);
@@ -557,7 +568,7 @@ class ObjectInfo final :
   void _internal_set_mp(int32_t value);
   public:
 
-  // int32 maxMp = 18;
+  // int32 maxMp = 19;
   void clear_maxmp();
   int32_t maxmp() const;
   void set_maxmp(int32_t value);
@@ -566,7 +577,7 @@ class ObjectInfo final :
   void _internal_set_maxmp(int32_t value);
   public:
 
-  // .Protocol.NPC_TYPE npcType = 19;
+  // .Protocol.NPC_TYPE npcType = 20;
   void clear_npctype();
   ::Protocol::NPC_TYPE npctype() const;
   void set_npctype(::Protocol::NPC_TYPE value);
@@ -575,13 +586,22 @@ class ObjectInfo final :
   void _internal_set_npctype(::Protocol::NPC_TYPE value);
   public:
 
-  // int32 potion = 20;
+  // int32 potion = 21;
   void clear_potion();
   int32_t potion() const;
   void set_potion(int32_t value);
   private:
   int32_t _internal_potion() const;
   void _internal_set_potion(int32_t value);
+  public:
+
+  // .Protocol.MONSTER_TYPE monsterType = 22;
+  void clear_monstertype();
+  ::Protocol::MONSTER_TYPE monstertype() const;
+  void set_monstertype(::Protocol::MONSTER_TYPE value);
+  private:
+  ::Protocol::MONSTER_TYPE _internal_monstertype() const;
+  void _internal_set_monstertype(::Protocol::MONSTER_TYPE value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
@@ -601,17 +621,19 @@ class ObjectInfo final :
     int32_t maxhp_;
     int32_t attack_;
     int32_t defence_;
+    int32_t speed_;
     int32_t posx_;
     int32_t posy_;
     int32_t damage_;
-    uint64_t gold_;
     int weapontype_;
+    uint64_t gold_;
     int itemtype_;
     int32_t arrows_;
     int32_t mp_;
     int32_t maxmp_;
     int npctype_;
     int32_t potion_;
+    int monstertype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -743,6 +765,7 @@ class Text final :
     kStrFieldNumber = 3,
     kObjectIdFieldNumber = 1,
     kTimeFieldNumber = 2,
+    kBroadcastFieldNumber = 4,
   };
   // string str = 3;
   void clear_str();
@@ -776,6 +799,15 @@ class Text final :
   void _internal_set_time(uint64_t value);
   public:
 
+  // bool broadcast = 4;
+  void clear_broadcast();
+  bool broadcast() const;
+  void set_broadcast(bool value);
+  private:
+  bool _internal_broadcast() const;
+  void _internal_set_broadcast(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.Text)
  private:
   class _Internal;
@@ -787,6 +819,7 @@ class Text final :
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr str_;
     uint64_t objectid_;
     uint64_t time_;
+    bool broadcast_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -925,6 +958,8 @@ class QuestInfo final :
     kRewardGoldFieldNumber = 8,
     kRewardItemFieldNumber = 9,
     kRewardItemNumFieldNumber = 10,
+    kPosXFieldNumber = 11,
+    kPosYFieldNumber = 12,
   };
   // uint64 objectid = 2;
   void clear_objectid();
@@ -1016,6 +1051,24 @@ class QuestInfo final :
   void _internal_set_rewarditemnum(int32_t value);
   public:
 
+  // int32 posX = 11;
+  void clear_posx();
+  int32_t posx() const;
+  void set_posx(int32_t value);
+  private:
+  int32_t _internal_posx() const;
+  void _internal_set_posx(int32_t value);
+  public:
+
+  // int32 posY = 12;
+  void clear_posy();
+  int32_t posy() const;
+  void set_posy(int32_t value);
+  private:
+  int32_t _internal_posy() const;
+  void _internal_set_posy(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.QuestInfo)
  private:
   class _Internal;
@@ -1034,6 +1087,8 @@ class QuestInfo final :
     int32_t rewardgold_;
     int32_t rewarditem_;
     int32_t rewarditemnum_;
+    int32_t posx_;
+    int32_t posy_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1041,24 +1096,24 @@ class QuestInfo final :
 };
 // -------------------------------------------------------------------
 
-class Item final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.Item) */ {
+class ItemInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.ItemInfo) */ {
  public:
-  inline Item() : Item(nullptr) {}
-  ~Item() override;
-  explicit PROTOBUF_CONSTEXPR Item(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline ItemInfo() : ItemInfo(nullptr) {}
+  ~ItemInfo() override;
+  explicit PROTOBUF_CONSTEXPR ItemInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  Item(const Item& from);
-  Item(Item&& from) noexcept
-    : Item() {
+  ItemInfo(const ItemInfo& from);
+  ItemInfo(ItemInfo&& from) noexcept
+    : ItemInfo() {
     *this = ::std::move(from);
   }
 
-  inline Item& operator=(const Item& from) {
+  inline ItemInfo& operator=(const ItemInfo& from) {
     CopyFrom(from);
     return *this;
   }
-  inline Item& operator=(Item&& from) noexcept {
+  inline ItemInfo& operator=(ItemInfo&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1081,20 +1136,20 @@ class Item final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const Item& default_instance() {
+  static const ItemInfo& default_instance() {
     return *internal_default_instance();
   }
-  static inline const Item* internal_default_instance() {
-    return reinterpret_cast<const Item*>(
-               &_Item_default_instance_);
+  static inline const ItemInfo* internal_default_instance() {
+    return reinterpret_cast<const ItemInfo*>(
+               &_ItemInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     4;
 
-  friend void swap(Item& a, Item& b) {
+  friend void swap(ItemInfo& a, ItemInfo& b) {
     a.Swap(&b);
   }
-  inline void Swap(Item* other) {
+  inline void Swap(ItemInfo* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1107,7 +1162,7 @@ class Item final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(Item* other) {
+  void UnsafeArenaSwap(ItemInfo* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1115,14 +1170,14 @@ class Item final :
 
   // implements Message ----------------------------------------------
 
-  Item* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Item>(arena);
+  ItemInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ItemInfo>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Item& from);
+  void CopyFrom(const ItemInfo& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Item& from) {
-    Item::MergeImpl(*this, from);
+  void MergeFrom( const ItemInfo& from) {
+    ItemInfo::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1140,15 +1195,15 @@ class Item final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Item* other);
+  void InternalSwap(ItemInfo* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.Item";
+    return "Protocol.ItemInfo";
   }
   protected:
-  explicit Item(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit ItemInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1162,9 +1217,29 @@ class Item final :
   // accessors -------------------------------------------------------
 
   enum : int {
+    kItemNameFieldNumber = 4,
     kItemIdFieldNumber = 1,
     kItemCountFieldNumber = 2,
+    kItemTypeFieldNumber = 3,
+    kPosXFieldNumber = 5,
+    kPosYFieldNumber = 6,
+    kItemSubTypeFieldNumber = 7,
+    kObjectIdFieldNumber = 8,
   };
+  // string ItemName = 4;
+  void clear_itemname();
+  const std::string& itemname() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_itemname(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_itemname();
+  PROTOBUF_NODISCARD std::string* release_itemname();
+  void set_allocated_itemname(std::string* itemname);
+  private:
+  const std::string& _internal_itemname() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_itemname(const std::string& value);
+  std::string* _internal_mutable_itemname();
+  public:
+
   // uint64 ItemId = 1;
   void clear_itemid();
   uint64_t itemid() const;
@@ -1183,7 +1258,52 @@ class Item final :
   void _internal_set_itemcount(uint64_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.Item)
+  // .Protocol.ITEM_TYPE itemType = 3;
+  void clear_itemtype();
+  ::Protocol::ITEM_TYPE itemtype() const;
+  void set_itemtype(::Protocol::ITEM_TYPE value);
+  private:
+  ::Protocol::ITEM_TYPE _internal_itemtype() const;
+  void _internal_set_itemtype(::Protocol::ITEM_TYPE value);
+  public:
+
+  // int32 posX = 5;
+  void clear_posx();
+  int32_t posx() const;
+  void set_posx(int32_t value);
+  private:
+  int32_t _internal_posx() const;
+  void _internal_set_posx(int32_t value);
+  public:
+
+  // int32 posY = 6;
+  void clear_posy();
+  int32_t posy() const;
+  void set_posy(int32_t value);
+  private:
+  int32_t _internal_posy() const;
+  void _internal_set_posy(int32_t value);
+  public:
+
+  // .Protocol.ITEM_SUBTYPE itemSubType = 7;
+  void clear_itemsubtype();
+  ::Protocol::ITEM_SUBTYPE itemsubtype() const;
+  void set_itemsubtype(::Protocol::ITEM_SUBTYPE value);
+  private:
+  ::Protocol::ITEM_SUBTYPE _internal_itemsubtype() const;
+  void _internal_set_itemsubtype(::Protocol::ITEM_SUBTYPE value);
+  public:
+
+  // uint64 objectId = 8;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
+  private:
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.ItemInfo)
  private:
   class _Internal;
 
@@ -1191,8 +1311,14 @@ class Item final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr itemname_;
     uint64_t itemid_;
     uint64_t itemcount_;
+    int itemtype_;
+    int32_t posx_;
+    int32_t posy_;
+    int itemsubtype_;
+    uint64_t objectid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1510,7 +1636,27 @@ inline void ObjectInfo::set_defence(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.defence)
 }
 
-// int32 posX = 10;
+// int32 speed = 10;
+inline void ObjectInfo::clear_speed() {
+  _impl_.speed_ = 0;
+}
+inline int32_t ObjectInfo::_internal_speed() const {
+  return _impl_.speed_;
+}
+inline int32_t ObjectInfo::speed() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.speed)
+  return _internal_speed();
+}
+inline void ObjectInfo::_internal_set_speed(int32_t value) {
+  
+  _impl_.speed_ = value;
+}
+inline void ObjectInfo::set_speed(int32_t value) {
+  _internal_set_speed(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.speed)
+}
+
+// int32 posX = 11;
 inline void ObjectInfo::clear_posx() {
   _impl_.posx_ = 0;
 }
@@ -1530,7 +1676,7 @@ inline void ObjectInfo::set_posx(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.posX)
 }
 
-// int32 posY = 11;
+// int32 posY = 12;
 inline void ObjectInfo::clear_posy() {
   _impl_.posy_ = 0;
 }
@@ -1550,7 +1696,7 @@ inline void ObjectInfo::set_posy(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.posY)
 }
 
-// int32 damage = 12;
+// int32 damage = 13;
 inline void ObjectInfo::clear_damage() {
   _impl_.damage_ = 0;
 }
@@ -1570,7 +1716,7 @@ inline void ObjectInfo::set_damage(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.damage)
 }
 
-// .Protocol.WEAPON_TYPE weaponType = 13;
+// .Protocol.WEAPON_TYPE weaponType = 14;
 inline void ObjectInfo::clear_weapontype() {
   _impl_.weapontype_ = 0;
 }
@@ -1590,7 +1736,7 @@ inline void ObjectInfo::set_weapontype(::Protocol::WEAPON_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.weaponType)
 }
 
-// uint64 gold = 14;
+// uint64 gold = 15;
 inline void ObjectInfo::clear_gold() {
   _impl_.gold_ = uint64_t{0u};
 }
@@ -1610,7 +1756,7 @@ inline void ObjectInfo::set_gold(uint64_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.gold)
 }
 
-// .Protocol.ITEM_TYPE itemType = 15;
+// .Protocol.ITEM_TYPE itemType = 16;
 inline void ObjectInfo::clear_itemtype() {
   _impl_.itemtype_ = 0;
 }
@@ -1630,7 +1776,7 @@ inline void ObjectInfo::set_itemtype(::Protocol::ITEM_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.itemType)
 }
 
-// int32 arrows = 16;
+// int32 arrows = 17;
 inline void ObjectInfo::clear_arrows() {
   _impl_.arrows_ = 0;
 }
@@ -1650,7 +1796,7 @@ inline void ObjectInfo::set_arrows(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.arrows)
 }
 
-// int32 mp = 17;
+// int32 mp = 18;
 inline void ObjectInfo::clear_mp() {
   _impl_.mp_ = 0;
 }
@@ -1670,7 +1816,7 @@ inline void ObjectInfo::set_mp(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.mp)
 }
 
-// int32 maxMp = 18;
+// int32 maxMp = 19;
 inline void ObjectInfo::clear_maxmp() {
   _impl_.maxmp_ = 0;
 }
@@ -1690,7 +1836,7 @@ inline void ObjectInfo::set_maxmp(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.maxMp)
 }
 
-// .Protocol.NPC_TYPE npcType = 19;
+// .Protocol.NPC_TYPE npcType = 20;
 inline void ObjectInfo::clear_npctype() {
   _impl_.npctype_ = 0;
 }
@@ -1710,7 +1856,7 @@ inline void ObjectInfo::set_npctype(::Protocol::NPC_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.npcType)
 }
 
-// int32 potion = 20;
+// int32 potion = 21;
 inline void ObjectInfo::clear_potion() {
   _impl_.potion_ = 0;
 }
@@ -1728,6 +1874,26 @@ inline void ObjectInfo::_internal_set_potion(int32_t value) {
 inline void ObjectInfo::set_potion(int32_t value) {
   _internal_set_potion(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.potion)
+}
+
+// .Protocol.MONSTER_TYPE monsterType = 22;
+inline void ObjectInfo::clear_monstertype() {
+  _impl_.monstertype_ = 0;
+}
+inline ::Protocol::MONSTER_TYPE ObjectInfo::_internal_monstertype() const {
+  return static_cast< ::Protocol::MONSTER_TYPE >(_impl_.monstertype_);
+}
+inline ::Protocol::MONSTER_TYPE ObjectInfo::monstertype() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.monsterType)
+  return _internal_monstertype();
+}
+inline void ObjectInfo::_internal_set_monstertype(::Protocol::MONSTER_TYPE value) {
+  
+  _impl_.monstertype_ = value;
+}
+inline void ObjectInfo::set_monstertype(::Protocol::MONSTER_TYPE value) {
+  _internal_set_monstertype(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.monsterType)
 }
 
 // -------------------------------------------------------------------
@@ -1822,6 +1988,26 @@ inline void Text::set_allocated_str(std::string* str) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Protocol.Text.str)
+}
+
+// bool broadcast = 4;
+inline void Text::clear_broadcast() {
+  _impl_.broadcast_ = false;
+}
+inline bool Text::_internal_broadcast() const {
+  return _impl_.broadcast_;
+}
+inline bool Text::broadcast() const {
+  // @@protoc_insertion_point(field_get:Protocol.Text.broadcast)
+  return _internal_broadcast();
+}
+inline void Text::_internal_set_broadcast(bool value) {
+  
+  _impl_.broadcast_ = value;
+}
+inline void Text::set_broadcast(bool value) {
+  _internal_set_broadcast(value);
+  // @@protoc_insertion_point(field_set:Protocol.Text.broadcast)
 }
 
 // -------------------------------------------------------------------
@@ -2028,48 +2214,238 @@ inline void QuestInfo::set_rewarditemnum(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.rewardItemNum)
 }
 
+// int32 posX = 11;
+inline void QuestInfo::clear_posx() {
+  _impl_.posx_ = 0;
+}
+inline int32_t QuestInfo::_internal_posx() const {
+  return _impl_.posx_;
+}
+inline int32_t QuestInfo::posx() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.posX)
+  return _internal_posx();
+}
+inline void QuestInfo::_internal_set_posx(int32_t value) {
+  
+  _impl_.posx_ = value;
+}
+inline void QuestInfo::set_posx(int32_t value) {
+  _internal_set_posx(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.posX)
+}
+
+// int32 posY = 12;
+inline void QuestInfo::clear_posy() {
+  _impl_.posy_ = 0;
+}
+inline int32_t QuestInfo::_internal_posy() const {
+  return _impl_.posy_;
+}
+inline int32_t QuestInfo::posy() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.posY)
+  return _internal_posy();
+}
+inline void QuestInfo::_internal_set_posy(int32_t value) {
+  
+  _impl_.posy_ = value;
+}
+inline void QuestInfo::set_posy(int32_t value) {
+  _internal_set_posy(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.posY)
+}
+
 // -------------------------------------------------------------------
 
-// Item
+// ItemInfo
 
 // uint64 ItemId = 1;
-inline void Item::clear_itemid() {
+inline void ItemInfo::clear_itemid() {
   _impl_.itemid_ = uint64_t{0u};
 }
-inline uint64_t Item::_internal_itemid() const {
+inline uint64_t ItemInfo::_internal_itemid() const {
   return _impl_.itemid_;
 }
-inline uint64_t Item::itemid() const {
-  // @@protoc_insertion_point(field_get:Protocol.Item.ItemId)
+inline uint64_t ItemInfo::itemid() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.ItemId)
   return _internal_itemid();
 }
-inline void Item::_internal_set_itemid(uint64_t value) {
+inline void ItemInfo::_internal_set_itemid(uint64_t value) {
   
   _impl_.itemid_ = value;
 }
-inline void Item::set_itemid(uint64_t value) {
+inline void ItemInfo::set_itemid(uint64_t value) {
   _internal_set_itemid(value);
-  // @@protoc_insertion_point(field_set:Protocol.Item.ItemId)
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.ItemId)
 }
 
 // uint64 ItemCount = 2;
-inline void Item::clear_itemcount() {
+inline void ItemInfo::clear_itemcount() {
   _impl_.itemcount_ = uint64_t{0u};
 }
-inline uint64_t Item::_internal_itemcount() const {
+inline uint64_t ItemInfo::_internal_itemcount() const {
   return _impl_.itemcount_;
 }
-inline uint64_t Item::itemcount() const {
-  // @@protoc_insertion_point(field_get:Protocol.Item.ItemCount)
+inline uint64_t ItemInfo::itemcount() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.ItemCount)
   return _internal_itemcount();
 }
-inline void Item::_internal_set_itemcount(uint64_t value) {
+inline void ItemInfo::_internal_set_itemcount(uint64_t value) {
   
   _impl_.itemcount_ = value;
 }
-inline void Item::set_itemcount(uint64_t value) {
+inline void ItemInfo::set_itemcount(uint64_t value) {
   _internal_set_itemcount(value);
-  // @@protoc_insertion_point(field_set:Protocol.Item.ItemCount)
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.ItemCount)
+}
+
+// .Protocol.ITEM_TYPE itemType = 3;
+inline void ItemInfo::clear_itemtype() {
+  _impl_.itemtype_ = 0;
+}
+inline ::Protocol::ITEM_TYPE ItemInfo::_internal_itemtype() const {
+  return static_cast< ::Protocol::ITEM_TYPE >(_impl_.itemtype_);
+}
+inline ::Protocol::ITEM_TYPE ItemInfo::itemtype() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.itemType)
+  return _internal_itemtype();
+}
+inline void ItemInfo::_internal_set_itemtype(::Protocol::ITEM_TYPE value) {
+  
+  _impl_.itemtype_ = value;
+}
+inline void ItemInfo::set_itemtype(::Protocol::ITEM_TYPE value) {
+  _internal_set_itemtype(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.itemType)
+}
+
+// string ItemName = 4;
+inline void ItemInfo::clear_itemname() {
+  _impl_.itemname_.ClearToEmpty();
+}
+inline const std::string& ItemInfo::itemname() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.ItemName)
+  return _internal_itemname();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void ItemInfo::set_itemname(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.itemname_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.ItemName)
+}
+inline std::string* ItemInfo::mutable_itemname() {
+  std::string* _s = _internal_mutable_itemname();
+  // @@protoc_insertion_point(field_mutable:Protocol.ItemInfo.ItemName)
+  return _s;
+}
+inline const std::string& ItemInfo::_internal_itemname() const {
+  return _impl_.itemname_.Get();
+}
+inline void ItemInfo::_internal_set_itemname(const std::string& value) {
+  
+  _impl_.itemname_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ItemInfo::_internal_mutable_itemname() {
+  
+  return _impl_.itemname_.Mutable(GetArenaForAllocation());
+}
+inline std::string* ItemInfo::release_itemname() {
+  // @@protoc_insertion_point(field_release:Protocol.ItemInfo.ItemName)
+  return _impl_.itemname_.Release();
+}
+inline void ItemInfo::set_allocated_itemname(std::string* itemname) {
+  if (itemname != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.itemname_.SetAllocated(itemname, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.itemname_.IsDefault()) {
+    _impl_.itemname_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.ItemInfo.ItemName)
+}
+
+// int32 posX = 5;
+inline void ItemInfo::clear_posx() {
+  _impl_.posx_ = 0;
+}
+inline int32_t ItemInfo::_internal_posx() const {
+  return _impl_.posx_;
+}
+inline int32_t ItemInfo::posx() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.posX)
+  return _internal_posx();
+}
+inline void ItemInfo::_internal_set_posx(int32_t value) {
+  
+  _impl_.posx_ = value;
+}
+inline void ItemInfo::set_posx(int32_t value) {
+  _internal_set_posx(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.posX)
+}
+
+// int32 posY = 6;
+inline void ItemInfo::clear_posy() {
+  _impl_.posy_ = 0;
+}
+inline int32_t ItemInfo::_internal_posy() const {
+  return _impl_.posy_;
+}
+inline int32_t ItemInfo::posy() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.posY)
+  return _internal_posy();
+}
+inline void ItemInfo::_internal_set_posy(int32_t value) {
+  
+  _impl_.posy_ = value;
+}
+inline void ItemInfo::set_posy(int32_t value) {
+  _internal_set_posy(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.posY)
+}
+
+// .Protocol.ITEM_SUBTYPE itemSubType = 7;
+inline void ItemInfo::clear_itemsubtype() {
+  _impl_.itemsubtype_ = 0;
+}
+inline ::Protocol::ITEM_SUBTYPE ItemInfo::_internal_itemsubtype() const {
+  return static_cast< ::Protocol::ITEM_SUBTYPE >(_impl_.itemsubtype_);
+}
+inline ::Protocol::ITEM_SUBTYPE ItemInfo::itemsubtype() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.itemSubType)
+  return _internal_itemsubtype();
+}
+inline void ItemInfo::_internal_set_itemsubtype(::Protocol::ITEM_SUBTYPE value) {
+  
+  _impl_.itemsubtype_ = value;
+}
+inline void ItemInfo::set_itemsubtype(::Protocol::ITEM_SUBTYPE value) {
+  _internal_set_itemsubtype(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.itemSubType)
+}
+
+// uint64 objectId = 8;
+inline void ItemInfo::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
+}
+inline uint64_t ItemInfo::_internal_objectid() const {
+  return _impl_.objectid_;
+}
+inline uint64_t ItemInfo::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.objectId)
+  return _internal_objectid();
+}
+inline void ItemInfo::_internal_set_objectid(uint64_t value) {
+  
+  _impl_.objectid_ = value;
+}
+inline void ItemInfo::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.objectId)
 }
 
 #ifdef __GNUC__

@@ -4,6 +4,7 @@
 #include "DevScene.h"
 #include "MyPlayer.h"
 #include "SceneManager.h"
+#include "QuestManager.h"
 #include "Game.h"
 #include "Monster.h"
 #include "HitEffect.h"
@@ -12,9 +13,12 @@
 #include "Player.h"
 #include "MyPlayer.h"
 #include "Chat.h"
+#include "Inventory.h"
 #include "ChatManager.h"
 #include "NetworkManager.h"
 #include "SoundManager.h"
+#include "ResourceManager.h"
+#include "ItemManager.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 len)
 {
@@ -53,6 +57,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 			Handle_S_Fire(session, buffer, len);
 			break;
 
+		case S_MPRecover:
+			Handle_S_MPRecover(session, buffer, len);
+			break;
+
 		case S_SendMessage:
 			Handle_S_SendMessage(session, buffer, len);
 			break;
@@ -81,8 +89,20 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 			Handle_S_QuestList(session, buffer, len);
 			break;
 
+		case S_QuestState:
+			Handle_S_QuestState(session, buffer, len);
+			break;
+
 		case S_Reset:
 			Handle_S_Reset(session, buffer, len);
+			break;
+
+		case S_ItemDrop:
+			Handle_S_ItemDrop(session, buffer, len);
+			break;
+
+		case S_AddItem:
+			Handle_S_AddItem(session, buffer, len);
 			break;
 	}
 }
@@ -111,9 +131,6 @@ void ClientPacketHandler::Handle_S_TEST(ServerSessionRef session, BYTE* buffer, 
 
 void ClientPacketHandler::Handle_S_Reset(ServerSessionRef session, BYTE* buffer, int32 len)
 {
-	// 모든 액터, ui 초기화
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-
 	// Scene 초기화
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
@@ -141,17 +158,29 @@ void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buff
 	Protocol::S_MyPlayer pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
+	bool revive = pkt.revive();
+
 	// 마이 플레이어 배치 및 정보 동기화
 	const Protocol::ObjectInfo& info = pkt.info();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 	{
-		MyPlayer* myPlayer = scene->SpawnObject<MyPlayer>(Vec2Int{ info.posx(), info.posy() });
+		shared_ptr<MyPlayer> myPlayer = scene->SpawnObject<MyPlayer>(Vec2Int{ info.posx(), info.posy() });
 		myPlayer->info = info;
 		myPlayer->SetDir(info.dir());
 		myPlayer->SetState(info.state());
 		GET_SINGLE(SceneManager)->SetMyPlayer(myPlayer);
+		GET_SINGLE(QuestManager)->BeginPlay();
+
+		if (revive)
+		{
+			// 인벤토리 초기화
+			GET_SINGLE(ItemManager)->ResetInventory();
+
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_SyncInventory(myPlayer->GetObjectID());
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
 	}
 }
 
@@ -164,7 +193,7 @@ void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buf
 	Protocol::S_AddObject pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 		scene->Handle_S_AddObject(pkt);
 
@@ -179,7 +208,7 @@ void ClientPacketHandler::Handle_S_RemoveObject(ServerSessionRef session, BYTE* 
 	Protocol::S_RemoveObject pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 		scene->Handle_S_RemoveObject(pkt);
 }
@@ -187,7 +216,7 @@ void ClientPacketHandler::Handle_S_RemoveObject(ServerSessionRef session, BYTE* 
 void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
-	//uint16 id = header->id;
+	
 	uint16 size = header->size;
 
 	Protocol::S_Move pkt;
@@ -196,21 +225,30 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 	//
 	const Protocol::ObjectInfo& info = pkt.info();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 	{
-		uint64 myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
-		if (myPlayerId == info.objectid())
+		shared_ptr<GameObject> gameObject = scene->GetObjects(info.objectid());
+		if (gameObject == nullptr)
 			return;
 
-		GameObject* gameObject = scene->GetObjects(info.objectid());
-		if (gameObject)
+		uint64 myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
+
+		if (myPlayerId == info.objectid())
+		{
+			//gameObject->info.set_arrows(info.arrows());
+			gameObject->info.set_hp(info.hp());
+			//gameObject->info.set_mp(info.mp());
+			//gameObject->info.set_gold(info.gold());
+		}
+		else
 		{
 			gameObject->SetDir(info.dir());
 			gameObject->SetState(info.state());
 			gameObject->SetCellPos(Vec2Int{ info.posx(), info.posy() });
 			gameObject->SetWeaponType(info.weapontype());
 			gameObject->info.set_arrows(info.arrows());
+			gameObject->info.set_hp(info.hp());
 			gameObject->info.set_mp(info.mp());
 			gameObject->info.set_gold(info.gold());
 		}
@@ -231,14 +269,14 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	uint64 attackerId = pkt.attackerid();
 	int32 damage = pkt.damage();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	Creature* creature = dynamic_cast<Creature*>(scene->GetObjects(objectId));
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	shared_ptr<Creature> creature = dynamic_pointer_cast<Creature>(scene->GetObjects(objectId));
 
 	if (creature == nullptr)
 		return;
 
 	{
-		Player* player = dynamic_cast<Player*>(creature);
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(creature);
 
 		if (player)
 			GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
@@ -262,17 +300,33 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 	//
 	const Protocol::ObjectInfo& info = pkt.info();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	// 화살의 주인 플레이어를 가져옴
 	if (scene)
 	{
-		GameObject* gameObject = scene->GetObjects(pkt.ownerid());
-		Player* player = static_cast<Player*>(gameObject);
+		auto player = GET_SINGLE(SceneManager)->GetPlayerByID(pkt.ownerid());
 		if (player)
 		{
 			player->Handle_S_Fire(info, pkt.ownerid());
 		}
 	}
+}
+
+void ClientPacketHandler::Handle_S_MPRecover(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_MPRecover pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	shared_ptr<MyPlayer> myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	if (myPlayer)
+	{
+		myPlayer->info.set_mp(pkt.mp());
+	}
+
 }
 
 void ClientPacketHandler::Handle_S_SendMessage(ServerSessionRef session, BYTE* buffer, int32 len)
@@ -296,7 +350,7 @@ void ClientPacketHandler::Handle_S_SendMessage(ServerSessionRef session, BYTE* b
 	string str = texts.str();
 	wstring wstr = GET_SINGLE(ChatManager)->StringToWStr(str);
 
-	Chat* chat = GET_SINGLE(ChatManager)->GetChat();
+	shared_ptr<Chat> chat = GET_SINGLE(ChatManager)->GetChat();
 
 	chat->AddText(format(L"[{0}] {1} :{2}", nowTime, wname.c_str(), wstr));
 }
@@ -312,14 +366,14 @@ void ClientPacketHandler::Handle_S_Teleport(ServerSessionRef session, BYTE* buff
 
 	//
 	uint64 objectId = pkt.objectid();
-	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	shared_ptr<Player> player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
 
 	if (player)
 	{
-		MyPlayer* myPlayer = static_cast<MyPlayer*>(player);
+		shared_ptr<MyPlayer> myPlayer = static_pointer_cast<MyPlayer>(player);
 		myPlayer->Teleport(Vec2Int {pkt.posx(), pkt.posy()});
 
-		DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 		scene->SpawnObject<TeleportEffect>(Vec2Int{ pkt.posx(), pkt.posy() });
 	}
 }
@@ -337,11 +391,10 @@ void ClientPacketHandler::Handle_S_Gold(ServerSessionRef session, BYTE* buffer, 
 	uint64 objectId = pkt.objectid();
 	int32 gold = pkt.gold();
 
-	Player* player = GET_SINGLE(SceneManager)->GetPlayerByID(objectId);
+	shared_ptr<MyPlayer> myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
-	if (player)
+	if (myPlayer)
 	{
-		MyPlayer* myPlayer = static_cast<MyPlayer*>(player);
 		myPlayer->info.set_gold(myPlayer->info.gold() + gold);
 		GET_SINGLE(ChatManager)->AddMessage(format(L"{0} 골드 획득", gold));
 	}
@@ -357,7 +410,7 @@ void ClientPacketHandler::Handle_S_Quests(ServerSessionRef session, BYTE* buffer
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
 	//
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 
 	const Protocol::QuestInfo& questInfo = pkt.questinfo();
 
@@ -381,8 +434,8 @@ void ClientPacketHandler::Handle_S_QuestProcess(ServerSessionRef session, BYTE* 
 	uint64 questId = pkt.questinfo().questid();
 	int process = pkt.questinfo().process();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	shared_ptr<MyPlayer> player = GET_SINGLE(SceneManager)->GetMyPlayer();
 	player->SetQuestProgress(questId, process);
 
 	{
@@ -408,8 +461,8 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 	uint64 questId = pkt.questinfo().questid();
 	int process = pkt.questinfo().process();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
-	MyPlayer* player = GET_SINGLE(SceneManager)->GetMyPlayer();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	shared_ptr<MyPlayer> player = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	if (player)
 	{
@@ -422,7 +475,6 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 
 void ClientPacketHandler::Handle_S_QuestList(ServerSessionRef session, BYTE* buffer, int32 len)
 {
-
 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
@@ -433,11 +485,78 @@ void ClientPacketHandler::Handle_S_QuestList(ServerSessionRef session, BYTE* buf
 	//
 	Protocol::QuestInfo info = pkt.questinfo();
 
-	DevScene* scene = GET_SINGLE(SceneManager)->GetDevScene();
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene)
 	{
 		scene->SetQuests( info.questid(), info);
 	}
+}
+
+void ClientPacketHandler::Handle_S_QuestState(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_QuestList pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	Protocol::QuestInfo info = pkt.questinfo();
+
+	int questID = info.questid();
+	Protocol::QUEST_STATE questState = info.queststate();
+	int progress = info.process();
+
+	shared_ptr<MyPlayer> myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+
+	if (myPlayer)
+	{
+		myPlayer->SetQuestState(questID, questState);
+		myPlayer->SetQuestProgress(questID, progress);
+	}
+}
+
+void ClientPacketHandler::Handle_S_ItemDrop(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_ItemDrop pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//
+	Protocol::ItemInfo info = pkt.iteminfo();
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		scene->SpawnItem(info);
+	}
+}
+
+void ClientPacketHandler::Handle_S_AddItem(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_AddItem pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	int objectID = pkt.objectid();
+	int itemID = pkt.itemid();
+	int itemCounts = pkt.itemcounts();
+
+	shared_ptr<MyPlayer> myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	shared_ptr<Inventory> inventory = GET_SINGLE(ItemManager)->GetInventory();
+
+	if (myPlayer && inventory)
+	{
+		GET_SINGLE(ItemManager)->SetItemToInventory(itemID, itemCounts);
+	}
+
 }
 
 // 패킷 보내기
@@ -447,7 +566,7 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 	Protocol::C_Move pkt;
 
 	// MyPlayer를 가져옴
-	MyPlayer* myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	shared_ptr<MyPlayer> myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
 	// 패킷의 info를 수정해 myPlayer의 정보를 패킷에 담음
 	*pkt.mutable_info() = myPlayer->info;
@@ -465,7 +584,18 @@ SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
 	return MakeSendBuffer(pkt, C_Fire);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t time, string str)
+SendBufferRef ClientPacketHandler::Make_C_Hit(uint64 objectId, uint64 attackerId)
+{
+	// 패킷 생성
+	Protocol::C_Hit pkt;
+
+	pkt.set_attackerid(attackerId);
+	pkt.set_objectid(objectId);
+
+	return MakeSendBuffer(pkt, C_Hit);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t time, string str, bool broadcast)
 {
 	Protocol::C_SendMessage pkt;
 
@@ -473,17 +603,9 @@ SendBufferRef ClientPacketHandler::Make_C_SendMessage(uint64 objectId, time_t ti
 	texts->set_objectid(objectId);
 	texts->set_time(time);
 	texts->set_str(str);
+	texts->set_broadcast(broadcast);
 
 	return MakeSendBuffer(pkt, C_SendMessage);
-}
-
-SendBufferRef ClientPacketHandler::Make_C_RemoveObject(uint64 objectId)
-{
-	Protocol::C_RemoveObject pkt;
-
-	pkt.set_id(objectId);
-
-	return MakeSendBuffer(pkt, C_RemoveObject);
 }
 
 SendBufferRef ClientPacketHandler::Make_C_Revive(Protocol::ObjectInfo& objectInfo)
@@ -491,6 +613,10 @@ SendBufferRef ClientPacketHandler::Make_C_Revive(Protocol::ObjectInfo& objectInf
 	Protocol::C_Revive pkt;
 
 	*pkt.mutable_info() = objectInfo;
+
+	int objectId = objectInfo.objectid();
+
+	GET_SINGLE(ChatManager)->SendMessageToServer(L"부활 요청.", false);
 
 	return MakeSendBuffer(pkt, C_Revive);
 }
@@ -502,8 +628,21 @@ SendBufferRef ClientPacketHandler::Make_C_Quest(uint64 objectId, uint64 questId)
 	pkt.set_objectid(objectId);
 	pkt.set_questid(questId);
 	GET_SINGLE(ChatManager)->AddMessage(L"퀘스트를 수락했습니다.");
+	GET_SINGLE(ChatManager)->SendMessageToServer(::format(L"Quest {0}을 수락함.", questId), false);
 
 	return MakeSendBuffer(pkt, C_Quest);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_QuestFinish(uint64 objectId, uint64 questId)
+{
+	Protocol::C_QuestFinish pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_questid(questId);
+	GET_SINGLE(ChatManager)->AddMessage(L"퀘스트를 완료했습니다.");
+	GET_SINGLE(ChatManager)->SendMessageToServer(::format(L"Quest {0}을 완료함.", questId), false);
+
+	return MakeSendBuffer(pkt, C_QuestFinish);
 }
 
 SendBufferRef ClientPacketHandler::Make_C_QuestList()
@@ -520,13 +659,46 @@ SendBufferRef ClientPacketHandler::Make_C_Heal(uint64 objectId)
 	return MakeSendBuffer(pkt, C_Heal);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_AddItem(uint64 objectId, int itemId, int itemCounts)
+SendBufferRef ClientPacketHandler::Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index)
 {
 	Protocol::C_AddItem pkt;
 
-	pkt.set_objectid(objectId);
-	pkt.set_itemid(itemId);
-	pkt.set_itemcounts(itemCounts);
+	auto* item = pkt.mutable_iteminfo();
+
+	item->set_objectid(objectId);
+	item->set_itemid(itemId);
+	item->set_itemcount(itemCounts);
+	item->set_itemtype(itemType);
+	pkt.set_index(index);
 
 	return MakeSendBuffer(pkt, C_AddItem);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_EquipItem(uint64 objectId, int itemId, bool equip)
+{
+	Protocol::C_EquipItem pkt;
+
+	pkt.set_objectid(objectId);
+	pkt.set_itemid(itemId);
+	pkt.set_equip(equip);
+
+	return MakeSendBuffer(pkt, C_EquipItem);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_SyncInventory(uint64 objectID)
+{
+	Protocol::C_SyncInventory pkt;
+
+	pkt.set_objectid(objectID);
+
+	return MakeSendBuffer(pkt, C_SyncInventory);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_KillPlayer(uint64 objectID)
+{
+	Protocol::C_KillPlayer pkt;
+
+	pkt.set_objectid(objectID);
+
+	return MakeSendBuffer(pkt, C_KillPlayer);
 }

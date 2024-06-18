@@ -26,8 +26,7 @@ enum
 	C_Revive = 32,
 	C_Teleport = 33,
 	S_Teleport = 34,
-
-	S_Gold = 36,
+	C_SyncInventory = 35,
 
 	C_Quest = 40,
 	S_Quest = 41,
@@ -35,15 +34,27 @@ enum
 	C_QuestAccept = 42,
 	S_QuestProcess = 43,
 	S_QuestComplete = 44,
+	C_QuestFinish = 45,
 
 	C_QuestList = 46,
 	S_QuestList = 47,
+	S_QuestState = 48,	// 부활 후 진행도 재계산
 
 	C_Heal = 49,
+	C_MPRecover = 50,
+	S_MPRecover = 51,
 
 	C_AddItem = 70,
+	C_EquipItem = 71,
+	S_AddItem = 72,
+	S_EquipItem = 73,
+
+	S_ItemDrop = 80,
+	S_Gold = 81,
 
 	S_Reset = 99,
+
+	C_KillPlayer = 990,	// 디버그 전용 커맨드, 테스트 이후 제거 필요
 };
 
 struct BuffData
@@ -59,14 +70,18 @@ public:
 
 	// 받기
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
-	//static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Revive(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Quest(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_QuestFinish(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_QuestList(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Heal(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_EquipItem(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_SyncInventory(GameSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_C_KillPlayer(GameSessionRef session, BYTE* buffer, int32 len);
 
 	
 	// 보내기
@@ -74,19 +89,22 @@ public:
 	static SendBufferRef Make_S_Hit(uint64 objectId, uint64 attackerId, int32 damage);
 	static SendBufferRef Make_S_Reset();
 	static SendBufferRef Make_S_EnterGame();
-	static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
-	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
+	static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info, bool revive = false);
+	static SendBufferRef Make_S_AddObject(Protocol::S_AddObject& pkt, bool revive = false);
 	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
 	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
 	static SendBufferRef Make_S_SendMessage(uint64 objectId, uint64 time, string str);
 	static SendBufferRef Make_S_Teleport(uint64 objectId, int32 cellPosX, int32 cellPosY);
 	static SendBufferRef Make_S_Gold(uint64 objectId, int32 gold);
+	static SendBufferRef Make_S_MPRecover(uint64 objectId, int mp);
 	static SendBufferRef Make_S_QuestProcess(uint64 objectid, uint64 questid, uint64 process);
 	static SendBufferRef Make_S_QuestComplete(uint64 objectid, uint64 questid, uint64 process);
 	static SendBufferRef Make_S_QuestList(uint64 objectid, const Protocol::QuestInfo& info);
+	static SendBufferRef Make_S_QuestState(const Protocol::QuestInfo& info);
+	static SendBufferRef Make_S_ItemDrop(const Protocol::ItemInfo& info);
+	static SendBufferRef Make_S_AddItem(uint64 objectID, int itemID, int itemCounts);
+	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 objectID);
 
-	// Arrow의 info를 넘김
-	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
 
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)

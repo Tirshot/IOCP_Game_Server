@@ -4,7 +4,6 @@ class Sprite;
 class QuickSlot :  public Panel
 {
 	using Super = Panel;
-	DECLARE_SINGLE(QuickSlot);
 
 public:
 	virtual ~QuickSlot();
@@ -14,7 +13,7 @@ public:
 	virtual void Render(HDC hdc) override;
 
 public:
-	void SetQuickSlot(ITEM* item, int index);
+	void SetQuickSlot(shared_ptr<ITEM> item, int index);
 
 	int GetSelectedIndex() { return _selectedIndex; }
 	wstring GetSelectedSubType() { return _selectedItemSubType; }
@@ -24,9 +23,9 @@ public:
 
 protected:
 	vector<ITEM> _slots;
-	Sprite* _slotBackground = nullptr;
-	Sprite* _slotSelectedSprite = nullptr;
-	ITEM* _selectedItem = nullptr;
+	shared_ptr<Sprite> _slotBackground = nullptr;
+	shared_ptr<Sprite> _slotSelectedSprite = nullptr;
+	shared_ptr<ITEM> _selectedItem = nullptr;
 	int _selectedIndex = 0;
 	wstring _selectedItemSubType = L"";
 

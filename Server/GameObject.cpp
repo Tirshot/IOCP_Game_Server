@@ -7,6 +7,11 @@
 #include "Item.h"
 #include "GameRoom.h"
 #include "Arrow.h"
+#include "Inventory.h"
+#include "Trigger.h"
+#include "Snake.h"
+#include "Moblin.h"
+#include "Quest1Trigger.h"
 
 atomic<uint64> GameObject::s_idGenerator = 1;
 
@@ -32,19 +37,36 @@ void GameObject::BroadcastMove()
 PlayerRef GameObject::CreatePlayer()
 {
 	PlayerRef player = make_shared<Player>();
+
 	player->info.set_objectid(s_idGenerator++);
 	player->info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
 	player->info.set_name("Player");
 	return player;
 }
 
-MonsterRef GameObject::CreateMonster()
+MonsterRef GameObject::CreateMonster(Protocol::MONSTER_TYPE monsterType)
 {
-	MonsterRef monster = make_shared<Monster>();
-	monster->info.set_objectid(s_idGenerator++);
-	monster->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
-	 
-	return monster;
+	switch (monsterType)
+	{
+	case Protocol::MONSTER_TYPE_SNAKE:
+	{
+		SnakeRef snake = make_shared<Snake>();
+		snake->info.set_objectid(s_idGenerator++);
+		snake->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
+		return snake;
+	}
+
+	case Protocol::MONSTER_TYPE_MOBLIN:
+	{
+		MoblinRef moblin = make_shared<Moblin>();
+		moblin->info.set_objectid(s_idGenerator++);
+		moblin->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
+		return moblin;
+	}
+
+	default:
+		return nullptr;
+	}
 }
 
 NPCRef GameObject::CreateNPC()
@@ -82,6 +104,37 @@ ArrowRef GameObject::CreateArrow()
 	arrow->info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 
 	return arrow->weak_from_this().lock();
+}
+
+InventoryRef GameObject::CreateInventory(PlayerRef player)
+{
+	InventoryRef inventory = make_shared<Inventory>();
+	inventory->Init();
+	inventory->SetOwner(player->GetObjectID());
+	inventory->info.set_objecttype(Protocol::OBJECT_TYPE_INVENTORY);
+	inventory->SetObjectID(player->GetObjectID());
+	return inventory;
+}
+
+TriggerRef GameObject::CreateTrigger(uint64 questId)
+{
+	TriggerRef trigger;
+	switch (questId)
+	{
+	case 1:
+		trigger = make_shared<Quest1Trigger>();
+		break;
+
+	default:
+		trigger = make_shared<Trigger>();
+		break;
+	}
+
+	trigger->info.set_objectid(s_idGenerator++);
+	trigger->info.set_objecttype(Protocol::OBJECT_TYPE_TRIGGER);
+	trigger->SetQuestID(questId);
+	return trigger;
+
 }
 
 void GameObject::SetState(ObjectState state, bool broadcast)

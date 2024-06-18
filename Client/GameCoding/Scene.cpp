@@ -5,6 +5,8 @@
 #include "SceneManager.h"
 #include "InputManager.h"
 #include "TimeManager.h"
+#include "ChatManager.h"
+#include "ResourceManager.h"
 #include "Creature.h"
 #include "Panel.h"
 #include "Chat.h"
@@ -14,22 +16,22 @@
 
 Scene::Scene()
 {
-
+	
 }
 
 Scene::~Scene()
 {
-
+	
 }
 
 void Scene::Init()
 {
 	//
-	for (const vector<Actor*>& actors : _actors)
-		for (Actor* actor : actors)
+	for (const vector<shared_ptr<Actor>>& actors : _actors)
+		for (shared_ptr<Actor> actor : actors)
 			actor->BeginPlay();
 
-	for (UI* ui : _uis)
+	for (auto& ui : _uis)
 		ui->BeginPlay();
 }
 
@@ -38,53 +40,58 @@ void Scene::Update()
 	if (_isPaused)
 		return;
 
-	for (const vector<Actor*> actors : _actors)
-		for (Actor* actor : actors)
+	for (const vector<shared_ptr<Actor>> actors : _actors)
+		for (shared_ptr<Actor> actor : actors)
 			actor->Tick();
 
-	for (UI* ui : _uis)
+	for (auto& ui : _uis)
 	{
+		if (_isPaused)
+			return;
+
 		if (ui == nullptr)
 			return;
 
-		if (ui->GetVisible())
+		bool visiblity = ui->GetVisible();
+
+		if (visiblity)
 			ui->Tick();
 	}
 
-	Chat* chat = FindUI<Chat>(_uis);
+	shared_ptr<Chat> chat = FindUI<Chat>(_uis);
 	if(chat)
 		chat->Tick();
 
-	Inventory* inven = FindUI<Inventory>(_uis);
-	if (inven && inven->GetVisible() == false)
+	shared_ptr<Inventory> inven = FindUI<Inventory>(_uis);
+	if (inven)
 		inven->Tick();
 }
 
 void Scene::Render(HDC hdc)
 {
 	// y 좌표가 더 큰쪽이 위로 오도록 설정
-	vector<Actor*>& actors = _actors[LAYER_OBJECT];
-	std::sort(actors.begin(), actors.end(), [=](Actor* a, Actor* b)
+	vector<shared_ptr<Actor>>& actors = _actors[LAYER_OBJECT];
+	std::sort(actors.begin(), actors.end(), [=](shared_ptr<Actor> a, shared_ptr<Actor> b)
 		{
 			return a->GetPos().y < b->GetPos().y;
 		});
 
 	// UIID가 더 높은 쪽이 위로 오도록 설정
-	std::sort(_uis.begin(), _uis.end(), [=](UI* a, UI* b)
+	std::sort(_uis.begin(), _uis.end(), [=](auto& a, auto& b)
 		{
 			return a->GetUIID() < b->GetUIID();
 		});
 
-	for (const vector<Actor*>& actors : _actors)
-		for (Actor* actor : actors)
+	for (const vector<shared_ptr<Actor>>& actors : _actors)
+		for (shared_ptr<Actor> actor : actors)
 			actor->Render(hdc);
 
-	for (UI* ui : _uis)
+	for (auto& ui : _uis)
 		if (ui->GetVisible())
 			ui->Render(hdc);
 }
 
-void Scene::AddActor(Actor* actor)
+void Scene::AddActor(shared_ptr<Actor> actor)
 {
 	if (actor == nullptr)
 		return;
@@ -92,17 +99,17 @@ void Scene::AddActor(Actor* actor)
 	_actors[actor->GetLayer()].push_back(actor);
 }
 
-void Scene::RemoveActor(Actor* actor)
+void Scene::RemoveActor(shared_ptr<Actor> actor)
 {
 	if (actor == nullptr)
 		return;
 
-	vector<Actor*>& v = _actors[actor->GetLayer()];
+	vector<shared_ptr<Actor>>& v = _actors[actor->GetLayer()];
 
 	v.erase(std::remove(v.begin(), v.end(), actor), v.end());
 }
 
-void Scene::AddUI(UI* ui)
+void Scene::AddUI(shared_ptr<UI> ui)
 {
 	if (ui == nullptr)
 		return;
@@ -110,21 +117,21 @@ void Scene::AddUI(UI* ui)
 	_uis.push_back(ui);
 }
 
-void Scene::RemoveUI(UI* ui)
+void Scene::RemoveUI(shared_ptr<UI> ui)
 {
 	if (ui == nullptr)
 		return;
 
-	vector<UI*>& v = _uis;
+	vector<shared_ptr<UI>>& v = _uis;
 
 	v.erase(std::remove(v.begin(), v.end(), ui), v.end());
 }
 
-Creature* Scene::GetCreatureAt(Vec2Int cellPos)
+shared_ptr<Creature> Scene::GetCreatureAt(Vec2Int cellPos)
 {
-	for (auto* actor : _actors[LAYER_OBJECT])
+	for (auto& actor : _actors[LAYER_OBJECT])
 	{
-		Creature* creature = dynamic_cast<Creature*>(actor);
+		auto creature = dynamic_pointer_cast<Creature>(actor);
 		if (creature && creature->GetCellPos() == cellPos)
 			return creature;
 	}
@@ -132,13 +139,13 @@ Creature* Scene::GetCreatureAt(Vec2Int cellPos)
 	return nullptr;
 }
 
-Player* Scene::GetPlayerByID(uint64 objectId)
+shared_ptr<Player> Scene::GetPlayerByID(uint64 objectId)
 {
 	for (auto& actor : _actors)
 	{
 		for (auto& creature : actor)
 		{
-			Player* player = dynamic_cast<Player*>(creature);
+			auto player = dynamic_pointer_cast<Player>(creature);
 
 			if (!player)
 				continue;
@@ -149,15 +156,16 @@ Player* Scene::GetPlayerByID(uint64 objectId)
 	}
 }
 
-vector<UI*> Scene::GetVisibleUIs()
+vector<shared_ptr<UI>> Scene::GetVisibleUIs()
 {
-	_visibleUIs.clear();
+	vector<shared_ptr<UI>> visibleUIs;
 
-	for (UI* ui : _uis)
+	auto _uis = GetUIs();
+
+	for (auto& ui : _uis)
 	{
-		if (ui->GetVisible() == true)
-			_visibleUIs.push_back(ui);
+		if (ui->GetVisible())
+			visibleUIs.push_back(ui);
 	}
-
-	return _visibleUIs;
+	return visibleUIs;
 }
