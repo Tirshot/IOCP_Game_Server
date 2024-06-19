@@ -109,6 +109,7 @@ struct ITEM
 {
 	int ItemId = 0;
 	int ItemCount = 0;
+	int MaxCount = 0;
 	wstring Name = L"";
 	wstring KorName = L"";
 	wstring Type = L"";

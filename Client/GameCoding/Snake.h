@@ -19,6 +19,7 @@ public:
 	virtual void UpdateAnimation() override;
 
 protected:
+	shared_ptr<Flipbook> _flipbookIdle[4] = {};
 	shared_ptr<Flipbook> _flipbookMove[4] = {};
 	shared_ptr<Flipbook> _flipbookHit[4] = {};
 

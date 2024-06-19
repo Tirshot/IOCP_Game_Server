@@ -48,6 +48,7 @@ public:
 	wstring GetType(vector <wstring> row);
 	wstring GetSubType(vector <wstring> row);
 	wstring GetDescription(vector <wstring> row);
+	int GetMaxCounts(vector <wstring> row);
 	int GetPrice(vector <wstring> row);
 	shared_ptr<Sprite> GetSprite(wstring wstr);
 	shared_ptr<Sprite> GetSprite(int itemID);
@@ -55,5 +56,12 @@ public:
 private:
 	shared_ptr<Inventory> _inventory = nullptr;
 	shared_ptr<QuickSlot> _quickSlot = nullptr;
+
+public:
+	void SetPotionEffectMultiply(int multiply) { _potionEffectMultiply = multiply; }
+	int GetPotionEffectMultiply() { return _potionEffectMultiply; }
+
+private:
+	int _potionEffectMultiply = 1;
 };
 

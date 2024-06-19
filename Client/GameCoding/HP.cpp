@@ -20,8 +20,8 @@ HP::~HP()
 
 void HP::BeginPlay()
 {
-	_hp = 5;
-	_maxHp = 5;
+	_hp = 50;
+	_maxHp = 50;
 }
 
 void HP::Tick()
@@ -37,7 +37,7 @@ void HP::Tick()
 
 void HP::Render(HDC hdc)
 {
-	for (int i = 0; i < _maxHp; i++)
+	for (int i = 0; i < (_maxHp / 10); i++)
 	{	// Black Heart
 		TransparentBlt(hdc,
 			_pos.x + 25 * i,
@@ -52,9 +52,9 @@ void HP::Render(HDC hdc)
 			_blackHeart->GetTransparent());
 	}
 
-	for (int i = 0; i < _hp; i++)
+	for (int i = 0; i < (_hp / 10); i++)
 	{
-		// Heart
+		// 일반적인 하트를 그릴 때
 		TransparentBlt(hdc,
 			_pos.x + 25 * i,
 			_pos.y,
@@ -64,6 +64,25 @@ void HP::Render(HDC hdc)
 			25,
 			0,
 			25,
+			21,
+			_heart->GetTransparent());
+	}
+
+	// 마지막 하트를 부분적으로 그릴 때
+	if (_hp % 10 != 0)
+	{
+		int remainHp = _hp % 10;
+		int width = (remainHp * 25) / 10;
+
+		TransparentBlt(hdc,
+			_pos.x + 25 * (_hp / 10),
+			_pos.y,
+			width,
+			21,
+			_heart->GetDC(),
+			25,
+			0,
+			width,
 			21,
 			_heart->GetTransparent());
 	}

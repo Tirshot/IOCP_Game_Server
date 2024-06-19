@@ -1,27 +1,27 @@
-아이템 ID,Item Name,아이템 이름,타입,보조 타입,설명,가격,효과
-1,SwordItem,검,Wearable,Sword,근접 공격을 한다.;공격 버튼을 길게 눌러 회전 공격을 한다.,0,
-2,BowItem,활,Wearable,Bow,원거리 공격을 한다.;화살을 소모하여 먼 거리의 적을 공격한다.,0,
-3,StaffItem,스태프,Wearable,Staff,3칸 앞으로 순간이동한다.;전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.,0,
-4,ArrowItem,화살,Consumable,Arrow,소모품.;원거리 공격을 하기 위한 화살.,10,
-5,Potion,HP 회복포션,Consumable,Potion,소모품.;체력을 한 칸 회복한다.,30,
-6,MaxHeartItem,맥스 하트,Consumable,Heal,즉시 최대 체력을 1 증가시킨다.;최대 체력은 10을 넘을 수 없다.,1000,
-7,HeartItem,하트,Consumable,Heal,체력을 1 회복한다.,0,
-8,Potion,Dummy1,Dummy2,Dummy3,Dummy4,0,
-9,Potion,Dummy1,Dummy2,Dummy3,Dummy4,0,
-10,Helmet00,강철 투구,Wearable,Helmet,강철 투구,100,
-11,Helmet01,워리어 투구,Wearable,Helmet,워리어 투구,300,
-12,Helmet02,기사의 투구,Wearable,Helmet,기사의 투구,500,
-13,Helmet03,장군의 투구,Wearable,Helmet,장군의 투구,800,
-14,Armor00,강철 갑옷,Wearable,Armor,강철 갑옷,150,
-15,Armor01,워리어 갑옷,Wearable,Armor,워리어 갑옷,400,
-16,Armor02,기사의 갑옷,Wearable,Armor,기사의 갑옷,600,
-17,Armor03,장군의 갑옷,Wearable,Armor,장군의 갑옷,900,
-18,Pants00,작은 허리가방,Wearable,Pants,작은 허리가방,100,
-19,Pants01,허리가방,Wearable,Pants,허리가방,300,
-20,Pants02,큰 허리가방,Wearable,Pants,큰 허리가방,500,
-21,Pants03,전술 허리가방,Wearable,Pants,전술 허리가방,700,
-22,Boots00,가죽신발,Wearable,Boots,가죽신발,100,
-23,Boots01,튼튼한 가죽신발,Wearable,Boots,튼튼한 가죽신발,300,
-24,Boots02,강철신발,Wearable,Boots,강철신발,500,
-25,Boots03,튼튼한 강철신발,Wearable,Boots,튼튼한 강철신발,800,
-26,SnakeSkin,뱀의 가죽,ETC,Drop,뱀을 처치하고 얻은 전리품.;모아서 상인에게 가져다주자.,10,
+아이템 ID,Item Name,아이템 이름,타입,보조 타입,설명,가격,최대 수량,ATK,DEF
+1,SwordItem,검,Wearable,Sword,근접 공격을 한다.;공격 버튼을 길게 눌러 회전 공격을 한다.,0,1,,
+2,BowItem,활,Wearable,Bow,원거리 공격을 한다.;화살을 소모하여 먼 거리의 적을 공격한다.,0,1,,
+3,StaffItem,스태프,Wearable,Staff,3칸 앞으로 순간이동한다.;전방이 막혀있으면 이동 가능한 거리만큼만 이동한다.,0,1,,
+4,ArrowItem,화살,Consumable,Arrow,소모품.;원거리 공격을 하기 위한 화살.,10,100,,
+5,Potion,HP 회복포션,Consumable,Potion,소모품.;체력을 반 칸 회복한다.,30,0,,
+6,MaxHeartItem,맥스 하트,Consumable,Heal,즉시 최대 체력을 한 칸 증가시킨다.;최대 체력은 열 칸을 넘을 수 없다.,1000,10,,
+7,HeartItem,하트,Consumable,Heal,즉시 체력을 10 회복한다.,0,99,,
+8,Dummy1,Dummy1,Dummy2,Dummy3,Dummy4,0,0,,
+9,Dummy2,Dummy1,Dummy2,Dummy3,Dummy4,0,0,,
+10,Helmet00,강철 투구,Wearable,Helmet,철로 만들어진 투구.;공격력 + 2,100,99,2,0
+11,Helmet01,워리어 투구,Wearable,Helmet,전사를 위한 투구.;공격력 + 5,300,99,5,0
+12,Helmet02,기사의 투구,Wearable,Helmet,용맹한 기사를 위한 투구.;공격력 + 8,500,99,8,0
+13,Helmet03,장군의 투구,Wearable,Helmet,악을 물리칠 당신을 위한 최고의 투구.;공격력 + 10,800,99,10,0
+14,Armor00,강철 갑옷,Wearable,Armor,철로 만들어진 갑옷.;방어력 + 2,150,99,0,2
+15,Armor01,워리어 갑옷,Wearable,Armor,전사를 위한 갑옷.;방어력 + 4,400,99,0,4
+16,Armor02,기사의 갑옷,Wearable,Armor,용맹한 기사를 위한 갑옷.;방어력 + 6,600,99,0,6
+17,Armor03,장군의 갑옷,Wearable,Armor,악을 물리칠 당신을 위한 최고의 갑옷.;방어력 + 9,900,99,0,9
+18,Pants00,작은 허리가방,Wearable,Pants,허름한 가죽을 덧대어 만든 허리가방.;물약 5개 소지 가능,100,99,0,0
+19,Pants01,허리가방,Wearable,Pants,무두질한 가죽을 덧대어 만든 허리가방.;물약 10개 소지 가능,300,99,0,0
+20,Pants02,큰 허리가방,Wearable,Pants,튼튼한 가죽을 덧대어 만든 허리가방.;물약 15개 소지 가능,500,99,0,0
+21,Pants03,전술 허리가방,Wearable,Pants,악을 물리칠 당신을 위한 최고의 허리가방.;물약 10개 소지 가능;물약 효과 2배,700,99,0,0
+22,Boots00,가죽신발,Wearable,Boots,허름한 가죽을 덧대어 만든 신발.;방어력 + 1,100,99,0,1
+23,Boots01,튼튼한 가죽신발,Wearable,Boots,무두질한 가죽을 덧대어 만든 신발.;방어력 + 3,300,99,0,3
+24,Boots02,강철신발,Wearable,Boots,튼튼한 가죽을 덧대어 만든 신발.;방어력 + 5,500,99,0,5
+25,Boots03,튼튼한 강철신발,Wearable,Boots,악을 물리칠 당신을 위한 최고의 신발.;방어력 + 8,800,99,0,8
+26,SnakeSkin,뱀의 가죽,ETC,Drop,뱀을 처치하고 얻은 전리품.;모아서 상인에게 가져다주자.,10,99,,

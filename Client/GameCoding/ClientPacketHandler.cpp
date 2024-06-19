@@ -275,6 +275,16 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	if (creature == nullptr)
 		return;
 
+	if (creature->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+	{
+		GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
+	}
+	else if (creature->info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+	{
+		scene->SpawnObject<HitEffect>(creature->GetCellPos());
+		GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
+	}
+
 	creature->info.set_hp(clamp(creature->info.hp() - damage, 0, creature->info.maxhp()));
 }
 

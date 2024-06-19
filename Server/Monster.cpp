@@ -68,6 +68,10 @@ void Monster::UpdateIdle()
 		int32 dist = abs(dir.x) + abs(dir.y);
 		if (dist == 1)
 		{
+			// 주변의 클라이언트에 알림
+			SetState(SKILL, true);
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
 			// 공격하기
 			SetDir(GetLookAtDir(target->GetCellPos()));
 			target->OnDamaged(shared_from_this());
@@ -76,10 +80,6 @@ void Monster::UpdateIdle()
 				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(target->info.objectid(), info.objectid(), damage);
 				target->session->Send(sendBuffer);
 			}
-
-			// 주변의 클라이언트에 알림
-			SetState(SKILL, true);
-			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
 		}
 		else
 		{
@@ -228,6 +228,24 @@ void Monster::GoldDrop(CreatureRef owner)
 void Monster::OnDamaged(CreatureRef attacker, bool debug)
 {
 	Super::OnDamaged(attacker);
+
+	// 피격 후 타겟 전환
+
+	// 타겟이 없는 경우
+	if (_target.expired())
+	{
+		auto player = dynamic_pointer_cast<Player>(attacker);
+		if (player)
+			_target = player;
+	}
+	else if (_target.lock() != attacker)
+	{
+		_target.reset();
+
+		auto player = dynamic_pointer_cast<Player>(attacker);
+		if (player)
+			_target = player;
+	}
 
 	// 인 게임 디버그 커맨드로 몬스터가 처치당했을 때
 	if (debug)

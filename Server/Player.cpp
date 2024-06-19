@@ -10,11 +10,11 @@ Player::Player()
 {
 	info.set_name("Player");
 	info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
-	info.set_hp(5);
+	info.set_hp(50);
 	info.set_mp(50);
-	info.set_maxhp(5);
+	info.set_maxhp(50);
 	info.set_maxmp(50);
-	info.set_attack(20);
+	info.set_attack(10);
 	info.set_defence(0);
 	info.set_arrows(10);
 	info.set_gold(1500);

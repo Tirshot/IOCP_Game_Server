@@ -62,13 +62,13 @@ void Item::Tick()
 		switch (itemInfo.itemid())
 		{
 		case 6:	// MaxHeart
-			myPlayer->info.set_maxhp(clamp(myPlayer->info.maxhp() + 1, 0, 10));
-			GET_SINGLE(ChatManager)->AddMessage(L"최대 체력이 1 증가했습니다.");
+			myPlayer->info.set_maxhp(clamp(myPlayer->info.maxhp() + MAX_HP_AMOUNT, 0, 10));
+			GET_SINGLE(ChatManager)->AddMessage(L"최대 체력이 한 칸 증가했습니다.");
 			break;
 
 		case 7:	// Heart
-			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + 1, 0, myPlayer->info.maxhp()));
-			GET_SINGLE(ChatManager)->AddMessage(L"체력이 1 회복 되었습니다.");
+			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + POTION_HEALING_AMOUNT * 2, 0, myPlayer->info.maxhp()));
+			GET_SINGLE(ChatManager)->AddMessage(L"체력이 10 회복 되었습니다.");
 			break;
 
 		default:	// 습득 가능한 아이템

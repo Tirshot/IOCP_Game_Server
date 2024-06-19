@@ -80,6 +80,7 @@ ITEM ItemManager::GetItem(int itemID)
     // 아이템 정보 할당
     item->ItemId = itemID;
     item->ItemCount = 1;
+    item->MaxCount = GetMaxCounts(ItemInfo);
     item->Name = GetName(ItemInfo);
     item->KorName = GetKorName(ItemInfo);
     item->Description = GetDescription(ItemInfo);
@@ -189,7 +190,6 @@ void ItemManager::SyncToServer()
             slot->ItemCount;
         }
     }
-
 }
 
 void ItemManager::OpenInventory()
@@ -237,6 +237,11 @@ wstring ItemManager::GetSubType(vector<wstring> row)
 wstring ItemManager::GetDescription(vector<wstring> row)
 {
     return row[5];
+}
+
+int ItemManager::GetMaxCounts(vector<wstring> row)
+{
+    return stoi(row[7]);
 }
 
 int ItemManager::GetPrice(vector<wstring> row)

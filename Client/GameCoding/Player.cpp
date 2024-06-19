@@ -153,8 +153,15 @@ void Player::TickSkill()
 				if (monster->info.hp() <=0)
 				{
 					monster->SetState(HIT);
+
+					// 공격 판정
+					scene->SpawnObject<HitEffect>(monster->GetCellPos());
+
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster->GetCellPos());
 
 				monster->SetWait(50);
 				monster->SetState(HIT);
@@ -208,6 +215,10 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster->GetCellPos());
+
 				monster->SetWait(50);
 				monster->SetState(HIT);
 				monster->KnockBack(shared_from_this());
@@ -220,6 +231,10 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster2->GetCellPos());
+
 				monster2->SetWait(50);
 				monster2->SetState(HIT);
 				monster2->KnockBack(shared_from_this());
@@ -232,6 +247,10 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster3->GetCellPos());
+
 				monster3->SetWait(50);
 				monster3->SetState(HIT);
 				monster3->KnockBack(shared_from_this());
@@ -244,6 +263,10 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster4->GetCellPos());
+
 				monster4->SetWait(50);
 				monster4->SetState(HIT);
 				monster4->KnockBack(shared_from_this());

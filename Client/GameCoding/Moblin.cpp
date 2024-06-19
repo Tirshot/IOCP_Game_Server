@@ -8,7 +8,6 @@
 #include "DevScene.h"
 #include "Tilemap.h"
 #include "Player.h"
-#include "HitEffect.h"
 #include "ClientPacketHandler.h"
 
 Moblin::Moblin()
@@ -28,10 +27,10 @@ Moblin::Moblin()
 	_flipbookAttack[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinAttackLeft");
 	_flipbookAttack[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinAttackRight");
 
-	_flipbookHit[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinUpHit");
-	_flipbookHit[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinDownHit");
-	_flipbookHit[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinLeftHit");
-	_flipbookHit[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinRightHit");
+	_flipbookHit[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinHitUp");
+	_flipbookHit[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinHitDown");
+	_flipbookHit[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinHitLeft");
+	_flipbookHit[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinHitRight");
 }
 
 Moblin::~Moblin()
@@ -86,6 +85,19 @@ void Moblin::TickMove()
 void Moblin::TickSkill()
 {
 	Super::TickSkill();
+
+	// 서버와 동일하게 1초 대기
+	auto deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	_waitSeconds += deltaTime;
+
+	auto animDuration = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoblinAttackUp")->GetInfo().duration;
+
+	if (_waitSeconds <= animDuration)
+		return;
+
+	_waitSeconds = 0.f;
+
+	SetState(IDLE);
 }
 
 void Moblin::TickHit()

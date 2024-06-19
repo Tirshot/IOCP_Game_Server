@@ -621,6 +621,7 @@ void Inventory::SetItemSlot(ITEM& slot)
     slot.Type = GET_SINGLE(ItemManager)->GetType(ItemInfo);
     slot.SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
     slot.Sprite = GET_SINGLE(ItemManager)->GetSprite(slot.Name);
+    slot.MaxCount = GET_SINGLE(ItemManager)->GetMaxCounts(ItemInfo);
 }
 
 void Inventory::SetEquipSlotRects()
@@ -791,6 +792,7 @@ bool Inventory::AddItem(shared_ptr<ITEM> item)
                     {
                         slot->Description = item->Description;
                         slot->ItemCount = 1;
+                        slot->MaxCount = item->MaxCount;
                         slot->ItemId = ItemId;
                         slot->KorName = item->KorName;
                         slot->Name = item->Name;
@@ -845,6 +847,7 @@ bool Inventory::AddItem(shared_ptr<ITEM> item)
                 {
                     slot->Description = item->Description;
                     slot->ItemCount = 1;
+                    slot->MaxCount = item->MaxCount;
                     slot->ItemId = ItemId;
                     slot->KorName = item->KorName;
                     slot->Name = item->Name;
@@ -930,12 +933,16 @@ bool Inventory::AddItem(int ItemId)
                 {
                     if (slot->ItemId == ItemId)
                     {
-                        slot->index = index;
-                        slot->ItemCount++; // 수량 증가
-                        // 소모성 아이템 동기화
-                        SyncUseableItemToServer(ItemId, 1);
-                        SetItemSlot(*slot.get());
-                        return true;
+                        // 추가한 양이 최대 개수보다 적을 때
+                        if (slot->ItemCount + 1 < slot->MaxCount)
+                        {
+                            slot->index = index;
+                            slot->ItemCount++; // 수량 증가
+                            // 소모성 아이템 동기화
+                            SyncUseableItemToServer(ItemId, 1);
+                            SetItemSlot(*slot.get());
+                            return true;
+                        }
                     }
                     index++;
                 }
@@ -948,11 +955,15 @@ bool Inventory::AddItem(int ItemId)
                 {
                     if (slot->ItemId == ItemId)
                     {
-                        slot->index = index;
-                        slot->ItemCount++; // 수량 증가
-                        SyncItemToServer(ItemId, 1);
-                        SetItemSlot(*slot.get());
-                        return true;
+                        // 추가한 양이 최대 개수보다 적을 때
+                        if (slot->ItemCount + 1 < slot->MaxCount)
+                        {
+                            slot->index = index;
+                            slot->ItemCount++; // 수량 증가
+                            SyncItemToServer(ItemId, 1);
+                            SetItemSlot(*slot.get());
+                            return true;
+                        }
                     }
                     index++;
                 }
@@ -1059,12 +1070,16 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot->ItemId == ItemId)
                     {
-                        slot->index = index;
-                        // 수량 증가
-                        slot->ItemCount += ItemCount;
-                        SyncUseableItemToServer(ItemId, ItemCount);
-                        SetItemSlot(*slot.get());
-                        return true;
+                        // 추가한 양이 최대 개수보다 적을 때
+                        if (slot->ItemCount + ItemCount < slot->MaxCount)
+                        {
+                            slot->index = index;
+                            // 수량 증가
+                            slot->ItemCount += ItemCount;
+                            SyncUseableItemToServer(ItemId, ItemCount);
+                            SetItemSlot(*slot.get());
+                            return true;
+                        }
                     }
                     index++;
                 }
@@ -1076,12 +1091,16 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                 {
                     if (slot->ItemId == ItemId)
                     {
-                        slot->index = index;
-                        // 수량 증가
-                        slot->ItemCount += ItemCount;
-                        SyncItemToServer(ItemId, ItemCount);
-                        SetItemSlot(*slot.get());
-                        return true;
+                        // 추가한 양이 최대 개수보다 적을 때
+                        if (slot->ItemCount + ItemCount < slot->MaxCount)
+                        {
+                            slot->index = index;
+                            // 수량 증가
+                            slot->ItemCount += ItemCount;
+                            SyncItemToServer(ItemId, ItemCount);
+                            SetItemSlot(*slot.get());
+                            return true;
+                        }
                     }
                     index++;
                 }
@@ -1142,13 +1161,17 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
 
                     if (slot->ItemId == 0)
                     {
-                        slot = make_shared<ITEM>();
-                        slot->index = index;
-                        slot->ItemId = ItemId;
-                        slot->ItemCount += ItemCount;
-                        SyncUseableItemToServer(ItemId, ItemCount);
-                        SetItemSlot(*slot.get());
-                        return true;
+                        // 추가한 양이 최대 개수보다 적을 때
+                        if (slot->ItemCount + ItemCount < slot->MaxCount)
+                        {
+                            slot = make_shared<ITEM>();
+                            slot->index = index;
+                            slot->ItemId = ItemId;
+                            slot->ItemCount += ItemCount;
+                            SyncUseableItemToServer(ItemId, ItemCount);
+                            SetItemSlot(*slot.get());
+                            return true;
+                        }
                     }
                     index++;
                 }
@@ -1169,12 +1192,16 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
 
                     if (slot->ItemId == 0)
                     {
-                        slot->index = index;
-                        slot->ItemId = ItemId;
-                        slot->ItemCount += ItemCount;
-                        SyncItemToServer(ItemId, ItemCount);
-                        SetItemSlot(*slot.get());
-                        return true;
+                        // 추가한 양이 최대 개수보다 적을 때
+                        if (slot->ItemCount + ItemCount < slot->MaxCount)
+                        {
+                            slot->index = index;
+                            slot->ItemId = ItemId;
+                            slot->ItemCount += ItemCount;
+                            SyncItemToServer(ItemId, ItemCount);
+                            SetItemSlot(*slot.get());
+                            return true;
+                        }
                     }
                     index++;
                 }

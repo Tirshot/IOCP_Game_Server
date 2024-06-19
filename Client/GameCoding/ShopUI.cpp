@@ -95,29 +95,35 @@ void ShopUI::BeginPlay()
 	{ 
 		// Arrow
 		AddSellItem(4);
+
 		// MaxHP+
 		AddSellItem(6);
+
 		// 포션
 		AddSellItem(5);
-		// 투구00
+
+		// 장비
+		AddSellItem(10);
+		AddSellItem(11);
 		AddSellItem(12);
-		// 투구01
 		AddSellItem(13);
-		// 투구01
+
 		AddSellItem(14);
-		// 투구01
 		AddSellItem(15);
-		// 투구01
 		AddSellItem(16);
-		// 투구01
 		AddSellItem(17);
+
 		AddSellItem(18);
 		AddSellItem(19);
 		AddSellItem(20);
 		AddSellItem(21);
+
 		AddSellItem(22);
 		AddSellItem(23);
+		AddSellItem(24);
 		AddSellItem(25);
+
+		// 기타
 		AddSellItem(26);
 		AddSellItem(1);
 		AddSellItem(2);
@@ -351,10 +357,14 @@ void ShopUI::OnPopClickAcceptDelegate()
 	if (!myPlayer)
 		return;
 
+	if (_sellItem->ItemId <= 3)
+		return;
+
 	int gold = myPlayer->info.gold();
 	int arrows = myPlayer->info.arrows();
 	int maxHP = myPlayer->info.maxhp();
 	int myPotion = myPlayer->GetPotionNums();
+	int itemCounts = 0;
 
 	if (gold < _allCost)
 	{
@@ -373,7 +383,7 @@ void ShopUI::OnPopClickAcceptDelegate()
 		if (gold < _allCost)
 			return;
 
-		myPlayer->info.set_maxhp(clamp(maxHP + _counts, 0, 10));
+		myPlayer->info.set_maxhp(clamp(maxHP + MAX_HP_AMOUNT * _counts, 0, 100));
 		myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);
 
 		// 골드 소모 정보 전송 - objectinfo 내에 골드 정보가 저장되어있음
@@ -384,19 +394,20 @@ void ShopUI::OnPopClickAcceptDelegate()
 		}
 	}
 
+	for (auto& slot : inventory->GetSlots())
+	{
+		// 구매하려는 아이템이 인벤토리에 이미 있는지 확인
+		if (slot->ItemId == _sellItem->ItemId)
+		{
+			found = true;
+			itemCounts = slot->ItemCount;
+			break;
+		}
+	}
+
 	// IsInventoryFull을 사용하여 모든 슬롯이 꽉찼는지 확인
 	if (GET_SINGLE(ItemManager)->IsInventoryFull() == true)
 	{
-		for (auto& slot : inventory->GetSlots())
-		{
-			// 구매하려는 아이템이 인벤토리에 이미 있는지 확인
-			if (slot->ItemId == _sellItem->ItemId)
-			{
-				found = true;
-				break;
-			}
-		}
-
 		// 인벤토리에 이미 있다면
 		if (found)
 		{
@@ -420,19 +431,19 @@ void ShopUI::OnPopClickAcceptDelegate()
 	}
 	else // 인벤토리가 아직 꽉차지 않았을 때
 	{
-		// 아이템을 추가하면 인벤토리가 가득 차게 되는지 확인
-		for (auto& slot : inventory->GetSlots())
-		{
-			// 구매하려는 아이템이 인벤토리에 이미 있는지 확인
-			if (slot->ItemId == _sellItem->ItemId)
-			{
-				found = true;
-				break;
-			}
-		}
-
 		if (found)
 		{
+			int maxCount = _sellItem->MaxCount;
+
+			// 구입하려는 수량이 최대 수량을 초과할 때 리턴
+			if (_sellItem->Type != L"Wearable" && itemCounts + _counts > maxCount)
+			{
+				auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+				alert->SetIcon(L"Warning");
+				alert->SetText(format(L"아이템의 최대 보유 가능 수량 ({0})개를 초과했습니다.", maxCount));
+				return;
+			}
+
 			// 갑옷 등 중첩이 불가능한 아이템 갯수가 남은 슬롯보다 많으면 리턴
 			if (_sellItem->Type == L"Wearable" && GET_SINGLE(ItemManager)->GetEmptySlots() < _counts)
 			{
@@ -444,6 +455,14 @@ void ShopUI::OnPopClickAcceptDelegate()
 		}
 	}
 
+	if (GET_SINGLE(ItemManager)->AddItemToInventory(_sellItem->ItemId, _counts) == false)
+	{
+		auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
+		alert->SetIcon(L"Warning");
+		alert->SetText(L"아이템을 구매하지 못했습니다.");
+		return;
+	}
+
 	myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);
 
 	// 골드 소모 정보 전송 - objectinfo 내에 골드 정보가 저장되어있음
@@ -451,8 +470,6 @@ void ShopUI::OnPopClickAcceptDelegate()
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
-
-	GET_SINGLE(ItemManager)->AddItemToInventory(_sellItem->ItemId, _counts);
 	SetPause(false);
 }
 

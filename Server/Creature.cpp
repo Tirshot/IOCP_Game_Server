@@ -110,7 +110,10 @@ void Creature::KnockBack(CreatureRef attacker)
 
 	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
 	if (CanGo(backPos))
+	{
 		SetCellPos(backPos);
+		_waitUntil = GetTickCount64() + 1000;
+	}
 }
 
 wstring Creature::GetName()

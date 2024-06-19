@@ -74,15 +74,6 @@ void Monster::TickSkill()
 {
 	if (_flipbook == nullptr)
 		return;
-
-	// 공격 판정
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (scene)
-		scene->SpawnObject<HitEffect>(GetFrontCellPos());
-
-	GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
-
-	SetState(IDLE);
 }
 
 void Monster::TickHit()
@@ -90,12 +81,5 @@ void Monster::TickHit()
 	_now = GetTickCount64();
 
 	if (_now > _wait)
-	{
-		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-		if (scene)
-			scene->SpawnObject<HitEffect>(GetCellPos());
-
-		GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
 		SetState(IDLE);
-	}
 }

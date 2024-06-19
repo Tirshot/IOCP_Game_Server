@@ -118,7 +118,11 @@ void Arrow::TickHit()
 
 	// 앞이 비어있으면 전진, 몬스터라면 타격
 	/*Monster* _target = dynamic_cast<Monster*>(scene->GetCreatureAt(nextPos));*/
-	scene->SpawnObject<HitEffect>(GetCellPos());
+	auto creature = scene->GetCreatureAt(GetFrontCellPos());
+
+	if (creature)
+		scene->SpawnObject<HitEffect>(GetFrontCellPos());
+
 	scene->RemoveActor(shared_from_this());
 }
 

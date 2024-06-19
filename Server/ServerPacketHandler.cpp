@@ -97,7 +97,7 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 
 void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
 {
-	// DEBUG!!!
+	// DEBUG : 원거리 몬스터 처치 커맨드!!!
 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
@@ -116,7 +116,6 @@ void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int
 
 		if (monster && player)
 			monster->OnDamaged(player, true);
-
 	}
 }
 
@@ -144,7 +143,6 @@ void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, in
 			}
 		}
 	}
-
 }
 
 void ServerPacketHandler::Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len)
