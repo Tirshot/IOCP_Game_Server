@@ -236,10 +236,7 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 
 		if (myPlayerId == info.objectid())
 		{
-			//gameObject->info.set_arrows(info.arrows());
-			gameObject->info.set_hp(info.hp());
-			//gameObject->info.set_mp(info.mp());
-			//gameObject->info.set_gold(info.gold());
+			return;
 		}
 		else
 		{
@@ -281,7 +278,6 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	}
 	else if (creature->info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
 	{
-		scene->SpawnObject<HitEffect>(creature->GetCellPos());
 		GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
 	}
 

@@ -47,6 +47,8 @@ public:
 	shared_ptr<ITEM> GetEquippedItem(wstring wstr);
 
 	void EquipItem(shared_ptr<ITEM> item);
+	void UnEquipItem(shared_ptr<ITEM> item);
+
 	void QuickEquipItem(int itemID);
 	void PressToSetQuickItem(ITEM slot);
 

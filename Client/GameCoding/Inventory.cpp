@@ -159,6 +159,12 @@ void Inventory::Tick()
         _dragRect.right = _dragRect.left + 290;
         _dragRect.bottom = _dragRect.top + 35;
     }
+    {
+        _equipRect.left = (int)_pos.x + 5;
+        _equipRect.top = (int)_pos.y + 220;
+        _equipRect.right = _equipRect.left + 110;
+        _equipRect.bottom = _equipRect.top + 110;
+    }
 
     //// 각 장비 슬롯에 RECT 할당
     {
@@ -303,12 +309,10 @@ void Inventory::Tick()
                         // 장비창의 아이템을 인벤토리의 아이템에게로 드래그 & 드랍 했을 때
                         if (_isEquipedItem == true)
                         {
-                            // 같은 종류일 때만 교환
-                            if (_selectedItem->SubType == _destinatedItem->SubType)
-                            {
-                                ChangeItem(*_selectedItem, *_destinatedItem);
-                                break;
-                            }
+                            // 아이템 교체
+                            ChangeItem(*_selectedItem, *_destinatedItem);
+                            _isEquipedItem = false;
+                            break;
                         }
                         else
                         {
@@ -339,6 +343,7 @@ void Inventory::Tick()
                 if (IsMouseInRect(_equipRect))
                 {
                     EquipItem(_selectedItem);
+                    _selectedItem = nullptr;
                     break;
                 }
             }
@@ -347,56 +352,60 @@ void Inventory::Tick()
             if (GET_SINGLE(InputManager)->IsMouseOutRect(_invenRect)
                 && GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
             {
-                // Shop UI가 켜져있으면 판매
-                if (_selectedItem != nullptr)
+                // 장비템을 드래그하지 않을 때만
+                if (_isEquipedItem == false)
                 {
-                    auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-                    if (scene)
+                // Shop UI가 켜져있으면 판매
+                    if (_selectedItem != nullptr)
                     {
-                       shared_ptr<ShopUI> shop = scene->FindUI<ShopUI>(scene->GetUIs());
-                        if (shop && shop->GetVisible())
+                        auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+                        if (scene)
                         {
-                            shop->SellItemToShop(_selectedItem);
-                            _selectedItem = nullptr;
-                            break;
+                            shared_ptr<ShopUI> shop = scene->FindUI<ShopUI>(scene->GetUIs());
+                            if (shop && shop->GetVisible())
+                            {
+                                shop->SellItemToShop(_selectedItem);
+                                _selectedItem = nullptr;
+                                break;
+                            }
                         }
-                    }
 
-                    if (_deleteItem)
-                        break;
+                        if (_deleteItem)
+                            break;
 
-                    // 일반적으로는 아이템 버리기
-                    _deleteItem = _selectedItem;
+                        // 일반적으로는 아이템 버리기
+                        _deleteItem = _selectedItem;
+                        _selectedItem = nullptr;
 
-                    int deleteItemID = _deleteItem->ItemId;
+                        int deleteItemID = _deleteItem->ItemId;
 
-                    if (deleteItemID == 1 || deleteItemID == 2 || deleteItemID == 3)
-                    {
-                        shared_ptr<AlertBox> alert = MakeAlertBox({ GWinSizeX / 2,GWinSizeY / 2 }, { 300,150 }, &Inventory::OnPopClickAcceptDelegate, false);
-                        SetPause(true);
+                        if (deleteItemID == 1 || deleteItemID == 2 || deleteItemID == 3)
+                        {
+                            shared_ptr<AlertBox> alert = MakeAlertBox({ GWinSizeX / 2,GWinSizeY / 2 }, { 300,150 }, &Inventory::OnPopClickAcceptDelegate, false);
+                            SetPause(true);
 
-                        alert->SetText(L"기본 무기는 버릴 수 없습니다.");
-                        alert->SetIcon(L"Alert");
-                    }
-                    else
-                    {
-                        shared_ptr<AlertBox> alert = MakeAlertBox({ GWinSizeX / 2,GWinSizeY / 2 }, { 300,150 }, &Inventory::OnPopClickAcceptDelegate);
-                        SetPause(true);
+                            alert->SetText(L"기본 무기는 버릴 수 없습니다.");
+                            alert->SetIcon(L"Alert");
+                        }
+                        else
+                        {
+                            shared_ptr<AlertBox> alert = MakeAlertBox({ GWinSizeX / 2,GWinSizeY / 2 }, { 300,150 }, &Inventory::OnPopClickAcceptDelegate);
+                            SetPause(true);
 
-                        alert->SetText(L"아이템을 모두 버리겠습니까?\n다시 주울 수 없습니다.");
-                        alert->SetIcon(L"Danger");
+                            alert->SetText(L"아이템을 모두 버리겠습니까?\n다시 주울 수 없습니다.");
+                            alert->SetIcon(L"Danger");
+                        }
                     }
                     continue;
                 }
-
-                _selectedItem = nullptr;
             }
-        }
 
-        // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
-        if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
-        {
-            _selectedItem = nullptr;
+            // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
+            if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse)
+                && IsMouseOutRect(_equipRect))
+            {
+                //_selectedItem = nullptr;
+            }
         }
 
         // 장비창
@@ -458,17 +467,28 @@ void Inventory::Tick()
             if (GET_SINGLE(InputManager)->IsMouseOutRect(_equipRect)
                 && GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
             {
-                if (slot.second->ItemId <= 3)
-                    return;
+                if (_selectedItem == nullptr)
+                    continue;
 
-                AddItem(slot.second->ItemId);
-                slot.second->Reset();
+                if (_selectedItem->ItemId <= 3)
+                    continue;
+
+                AddItem(_selectedItem->ItemId);
+                for (auto& equip : _equips)
+                {
+                    if (equip.second->ItemId == _selectedItem->ItemId)
+                    {
+                        equip.second->Reset();
+                    }
+                }
                 SyncEquips(_owner->GetObjectID(), false);
                 _isEquipedItem = false;
+                _selectedItem = nullptr;
             }
         }
     }
 }
+
 
 void Inventory::Render(HDC hdc)
 {
@@ -1208,6 +1228,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
             }
         }
     }
+    return false;
 }
 
 bool Inventory::RemoveItem(shared_ptr<ITEM> item)
@@ -1245,6 +1266,9 @@ bool Inventory::RemoveItem(shared_ptr<ITEM> item)
 
 bool Inventory::RemoveItem(shared_ptr<ITEM> item, int ItemCount)
 {
+    if (item == nullptr)
+        return false;
+
     // 기본 무기는 제거 불가
     int itemId = item->ItemId;
     if (itemId == 1 || itemId == 2 || itemId == 3)
@@ -1486,7 +1510,7 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
         if (_equips[1].second->ItemId == 0)
         {
             _equips[1].second = make_shared<ITEM>(newItem);
-            SyncEquips(item->ItemId);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
@@ -1494,7 +1518,7 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
             ITEM temp = *_equips[1].second;
             _equips[1].second = make_shared<ITEM>(newItem);
             AddItem(temp.ItemId);
-            SyncEquips(item->ItemId);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
     }
@@ -1506,16 +1530,16 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
         // 장착되어 있지 않은 경우
         if (_equips[2].second->ItemId == 0)
         {
-            _equips[2].second = item;
-            SyncEquips(item->ItemId);
+            _equips[2].second = make_shared<ITEM>(newItem);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
             ITEM temp = *_equips[2].second.get();
-            _equips[2].second = item;
+            _equips[2].second = make_shared<ITEM>(newItem);
             AddItem(temp.ItemId);
-            SyncEquips(item->ItemId);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
     }
@@ -1523,16 +1547,16 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     {        // 장착되어 있지 않은 경우
         if (_equips[3].second->ItemId == 0)
         {
-            _equips[3].second = item;
-            SyncEquips(item->ItemId);
+            _equips[3].second = make_shared<ITEM>(newItem);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
             ITEM temp = *_equips[3].second;
-            _equips[3].second = item;
+            _equips[3].second = make_shared<ITEM>(newItem);
             AddItem(temp.ItemId);
-            SyncEquips(item->ItemId);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
     }
@@ -1540,16 +1564,16 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     {        // 장착되어 있지 않은 경우
         if (_equips[4].second->ItemId == 0)
         {
-            _equips[4].second = item;
-            SyncEquips(item->ItemId);
+            _equips[4].second = make_shared<ITEM>(newItem);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
             ITEM temp = *_equips[4].second;
-            _equips[4].second = item;
+            _equips[4].second = make_shared<ITEM>(newItem);
             AddItem(temp.ItemId);
-            SyncEquips(item->ItemId);
+            SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
     }

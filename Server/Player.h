@@ -15,6 +15,7 @@ private:
 	virtual void UpdateIdle();
 	virtual void UpdateMove();
 	virtual void UpdateSkill();
+	virtual void UpdateHit();
 	virtual void UpdateSpin();
 	virtual void UpdateTeleport();
 

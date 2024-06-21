@@ -25,6 +25,7 @@ public:
 	virtual void OnDamaged(CreatureRef attacker, bool debug = false) override;
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
 	wstring GetName();
+	virtual void KnockBack() override;
 
 protected:
 	uint64 _waitUntil = 0;

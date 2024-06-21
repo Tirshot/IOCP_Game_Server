@@ -116,6 +116,8 @@ struct ITEM
 	wstring SubType = L"";
 	wstring Description = L"";
 	int Price = 0;
+	int Attack = 0;
+	int Defence = 0;
 	shared_ptr<class Sprite> Sprite = nullptr;
 	RECT Rect = {};
 	int index = 0;

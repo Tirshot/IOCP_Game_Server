@@ -377,7 +377,7 @@ void ShopUI::OnPopClickAcceptDelegate()
 	// ¸Æ½º ÇÏÆ®
 	if (_sellItem->ItemId == 6)
 	{
-		if (maxHP + _counts > 10)
+		if ((maxHP / 10) + _counts > 10)
 			return;
 
 		if (gold < _allCost)

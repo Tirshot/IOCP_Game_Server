@@ -26,6 +26,7 @@ public:
 	void SetCellPos(Vec2Int cellPos, bool broadcast = false);
 	Vec2Int GetCellPos() { return Vec2Int{ info.posx(), info.posy() }; }
 	Vec2Int GetFrontCellPos();
+	Vec2Int GetBackCellPos();
 
 	int64 GetObjectID() { return info.objectid(); }
 	void SetObjectID(int64 id) { info.set_objectid(id); }

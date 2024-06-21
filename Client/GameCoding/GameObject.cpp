@@ -38,14 +38,15 @@ void GameObject::Tick()
 	case IDLE:
 		TickIdle();
 		break;
+
 	case MOVE:
 		TickMove();
 		break;
+
 	case SKILL:
 		TickSkill();
 		break;
 	
-		// Projectiles only state
 	case HIT:
 		TickHit();
 		break;

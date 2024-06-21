@@ -19,7 +19,8 @@ public:
 	virtual void TickSkill()  override;
 	virtual void TickHit() override;
 
-	shared_ptr<Player> _target = nullptr;
+protected:
 	float _waitSeconds = 0.f;
+	bool _isEffectSpawned = false;
 };
 

@@ -697,8 +697,6 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 	if (gameObject == nullptr)
 		return;
 
-	// set state, dir, pos + weaponType
-
 	gameObject->info = pkt.info();
 
 	// 클라이언트의 패킷을 브로드캐스트

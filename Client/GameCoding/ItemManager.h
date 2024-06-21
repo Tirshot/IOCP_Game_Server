@@ -50,6 +50,13 @@ public:
 	wstring GetDescription(vector <wstring> row);
 	int GetMaxCounts(vector <wstring> row);
 	int GetPrice(vector <wstring> row);
+	
+	int GetAttack(vector <wstring> row);
+	int GetAttack(int objectID);
+
+	int GetDefence(int objectID);
+	int GetDefence(vector <wstring> row);
+
 	shared_ptr<Sprite> GetSprite(wstring wstr);
 	shared_ptr<Sprite> GetSprite(int itemID);
 

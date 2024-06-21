@@ -91,6 +91,7 @@ void Snake::TickSkill()
 		return;
 
 	_waitSeconds = 0.f;
+	_isEffectSpawned = false;
 
 	SetState(IDLE);
 }
@@ -109,6 +110,10 @@ void Snake::UpdateAnimation()
 		break;
 
 	case MOVE:
+		SetFlipbook(_flipbookMove[info.dir()]);
+		break;
+
+	case SKILL:
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 

@@ -156,7 +156,6 @@ void Player::TickSkill()
 
 					// 공격 판정
 					scene->SpawnObject<HitEffect>(monster->GetCellPos());
-
 					return;
 				}
 
@@ -165,7 +164,7 @@ void Player::TickSkill()
 
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack(shared_from_this());
+				monster->KnockBack();
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
@@ -186,6 +185,16 @@ void Player::TickSkill()
 		}
 		SetState(IDLE);
 	}
+}
+
+void Player::TickHit()
+{
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		scene->SpawnObject<HitEffect>(GetCellPos());
+	}
+	SetState(IDLE);
 }
 
 void Player::TickSpin()
@@ -221,7 +230,7 @@ void Player::TickSpin()
 
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack(shared_from_this());
+				monster->KnockBack();
 			}
 
 			if (monster2)
@@ -237,7 +246,7 @@ void Player::TickSpin()
 
 				monster2->SetWait(50);
 				monster2->SetState(HIT);
-				monster2->KnockBack(shared_from_this());
+				monster2->KnockBack();
 			}
 
 			if (monster3)
@@ -253,7 +262,7 @@ void Player::TickSpin()
 
 				monster3->SetWait(50);
 				monster3->SetState(HIT);
-				monster3->KnockBack(shared_from_this());
+				monster3->KnockBack();
 			}
 
 			if (monster4)
@@ -269,7 +278,7 @@ void Player::TickSpin()
 
 				monster4->SetWait(50);
 				monster4->SetState(HIT);
-				monster4->KnockBack(shared_from_this());
+				monster4->KnockBack();
 			}
 		}
 		SetState(MOVE);

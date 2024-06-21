@@ -75,6 +75,7 @@ void Monster::UpdateIdle()
 			// 공격하기
 			SetDir(GetLookAtDir(target->GetCellPos()));
 			target->OnDamaged(shared_from_this());
+			target->SetState(HIT, true);
 			{
 				int32 damage = info.attack() - target->info.defence();
 				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(target->info.objectid(), info.objectid(), damage);
@@ -236,7 +237,11 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 	{
 		auto player = dynamic_pointer_cast<Player>(attacker);
 		if (player)
+		{
 			_target = player;
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+		}
+
 	}
 	else if (_target.lock() != attacker)
 	{
@@ -244,7 +249,10 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 
 		auto player = dynamic_pointer_cast<Player>(attacker);
 		if (player)
+		{
 			_target = player;
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+		}
 	}
 
 	// 인 게임 디버그 커맨드로 몬스터가 처치당했을 때
@@ -300,4 +308,12 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 wstring Monster::GetName()
 {
 	return GET_SINGLE(ItemManager)->StringToWString(info.name());
+}
+
+void Monster::KnockBack()
+{
+	Super::KnockBack();
+
+	// 몬스터의 경우 넉백당하면 타겟을 리셋
+	_target.reset();
 }

@@ -209,3 +209,22 @@ Vec2Int GameObject::GetFrontCellPos()
 	return pos;
 }
 
+Vec2Int GameObject::GetBackCellPos()
+{
+	Vec2Int pos = GetCellPos();
+
+	switch (info.dir())
+	{
+	case DIR_DOWN:
+		return pos + Vec2Int{ 0,-1 };
+	case DIR_LEFT:
+		return pos + Vec2Int{ 1,0 };
+	case DIR_RIGHT:
+		return pos + Vec2Int{ -1,0 };
+	case DIR_UP:
+		return pos + Vec2Int{ 0,1 };
+	}
+
+	return pos;
+}
+

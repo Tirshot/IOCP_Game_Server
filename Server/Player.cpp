@@ -49,6 +49,10 @@ void Player::Update()
 		UpdateSkill();
 		break;
 
+	case HIT:
+		UpdateHit();
+		break;
+
 	case SPIN:
 		UpdateSpin();
 		break;
@@ -110,7 +114,6 @@ void Player::UpdateSkill()
 				return;
 
 			creature->SetWait(50);
-			creature->KnockBack(shared_from_this());
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
@@ -121,7 +124,12 @@ void Player::UpdateSkill()
 	{
 		
 	}
-	SetState(IDLE, true);
+	SetState(IDLE);
+}
+
+void Player::UpdateHit()
+{
+	SetState(IDLE);
 }
 
 void Player::UpdateSpin()
@@ -150,7 +158,6 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature->SetWait(50);
-			creature->KnockBack(shared_from_this());
 		}
 
 		if (creature2)
@@ -169,7 +176,6 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature2->SetWait(50);
-			creature2->KnockBack(shared_from_this());
 		}
 
 		if (creature3)
@@ -188,7 +194,6 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature3->SetWait(50);
-			creature3->KnockBack(shared_from_this());
 		}
 
 		if (creature4)
@@ -208,7 +213,6 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature4->SetWait(50);
-			creature4->KnockBack(shared_from_this());
 		}
 	}
 	SetState(MOVE);

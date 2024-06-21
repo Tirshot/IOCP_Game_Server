@@ -74,6 +74,21 @@ void Monster::TickSkill()
 {
 	if (_flipbook == nullptr)
 		return;
+
+	if (_isEffectSpawned)
+		return;
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		auto pos = GetFrontCellPos();
+		auto creature = scene->GetCreatureAt(pos);
+		if (creature)
+		{
+			scene->SpawnObject<HitEffect>(pos);
+			_isEffectSpawned = true;
+		}
+	}
 }
 
 void Monster::TickHit()

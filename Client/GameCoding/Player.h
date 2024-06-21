@@ -19,6 +19,7 @@ protected:
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
 	virtual void TickSkill() override;
+	virtual void TickHit() override;
 	virtual void TickSpin() override;
 	virtual void TickTeleport() override;
 	virtual void UpdateAnimation() override;

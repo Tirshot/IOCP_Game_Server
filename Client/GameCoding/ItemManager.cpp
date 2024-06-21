@@ -89,6 +89,12 @@ ITEM ItemManager::GetItem(int itemID)
     item->SubType = GetSubType(ItemInfo);
     item->Sprite = GetSprite(item->Name);
 
+    if (item->Type == L"Wearable")
+    {
+        item->Attack = GetAttack(ItemInfo);
+        item->Defence = GetDefence(ItemInfo);
+    }
+
     // 동적으로 할당한 ITEM 객체의 참조를 반환
     return *item;
 }
@@ -247,6 +253,44 @@ int ItemManager::GetMaxCounts(vector<wstring> row)
 int ItemManager::GetPrice(vector<wstring> row)
 {
     return stoi(row[6]);
+}
+
+int ItemManager::GetAttack(vector<wstring> row)
+{
+    return stoi(row[8]);
+}
+
+int ItemManager::GetAttack(int objectID)
+{
+    auto item = GetItem(objectID);
+    if (item == nullptr)
+        return -1;
+
+    if (item.Type == L"Wearable")
+    {
+        return item.Attack;
+    }
+
+    return -1;
+}
+
+int ItemManager::GetDefence(int objectID)
+{
+    auto item = GetItem(objectID);
+    if (item == nullptr)
+        return -1;
+
+    if (item.Type == L"Wearable")
+    {
+        return item.Defence;
+    }
+
+    return -1;
+}
+
+int ItemManager::GetDefence(vector<wstring> row)
+{
+    return stoi(row[9]);
 }
 
 shared_ptr<Sprite> ItemManager::GetSprite(wstring wstr)

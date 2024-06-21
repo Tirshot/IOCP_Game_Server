@@ -96,6 +96,7 @@ void Moblin::TickSkill()
 		return;
 
 	_waitSeconds = 0.f;
+	_isEffectSpawned = false;
 
 	SetState(IDLE);
 }
