@@ -13,6 +13,7 @@ public:
 	virtual void Render(HDC hdc) override;
 
 	void SetItemInfo(Protocol::ItemInfo info) { itemInfo = info; }
+	Protocol::ItemInfo GetItemInfo() { return itemInfo; }
 
 protected:
 	virtual void TickIdle();
@@ -20,7 +21,7 @@ protected:
 	wstring _name = L"";
 	wstring _korName = L"";
 
-private:
+public:
 	Protocol::ItemInfo itemInfo;
 };
 

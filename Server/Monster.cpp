@@ -194,12 +194,12 @@ void Monster::ItemDrop(CreatureRef owner)
 
 	if (group.size() == 0)
 	{
-		GChat->AddText(L"<ERROR> 드랍 아이템을 찾을 수 없음. 몬스터 별 전리품(ETC)이 있는지 확인.");
+		GChat->AddText(L"<ERROR> 드랍 테이블을 찾을 수 없음. 몬스터 별 전리품(ETC)이 있는지 확인.");
 		return;
 	}
 
 	// 아이템 생성, 패킷 전송
-	GET_SINGLE(ItemManager)->MakeItem(group, owner, {GetCellPos().x, GetCellPos().y});
+	auto item = GET_SINGLE(ItemManager)->MakeItem(group, owner, {GetCellPos().x, GetCellPos().y});
 }
 
 void Monster::GoldDrop(CreatureRef owner)
@@ -215,14 +215,16 @@ void Monster::GoldDrop(CreatureRef owner)
 	// 최소 ~ 최대 사이의 값을 추출
 	int randValue = rand() % step + 1;
 
+	int gold = minGold + randValue;
+
 	// 골드 생성 후 패킷 전송
-	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Gold(owner->GetObjectID(), randValue);
+	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Gold(owner->GetObjectID(), gold);
 	PlayerRef player = static_pointer_cast<Player>(GRoom->FindObject(owner->GetObjectID()));
 
 	if (player)
 	{
 		player->session->Send(sendBuffer);
-		GChat->AddText(format(L"Player{0}, {1} gold 획득.", owner->GetObjectID(), randValue));
+		GChat->AddText(format(L"Player{0}, {1} gold 획득.", owner->GetObjectID(), gold));
 	}
 }
 

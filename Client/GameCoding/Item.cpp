@@ -10,7 +10,7 @@
 
 Item::Item()
 {
-	SetLayer(LAYER_BACKGROUND);
+	SetLayer(LAYER_OBJECT);
 	SetState(IDLE);
 }
 
@@ -22,6 +22,8 @@ void Item::BeginPlay()
 {
 	Super::BeginPlay();
 
+	info.set_objectid(itemInfo.objectid());
+
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
 
@@ -30,7 +32,6 @@ void Item::BeginPlay()
 
 	if (myPlayer == nullptr)
 		return;
-
 
 	int itemID = itemInfo.itemid();
 	auto item = GET_SINGLE(ItemManager)->GetItem(itemID);
@@ -62,7 +63,7 @@ void Item::Tick()
 		switch (itemInfo.itemid())
 		{
 		case 6:	// MaxHeart
-			myPlayer->info.set_maxhp(clamp(myPlayer->info.maxhp() + MAX_HP_AMOUNT, 0, 10));
+			myPlayer->info.set_maxhp(clamp(myPlayer->info.maxhp() + MAX_HP_AMOUNT, 0, MAX_HP_AMOUNT * 10));
 			GET_SINGLE(ChatManager)->AddMessage(L"최대 체력이 한 칸 증가했습니다.");
 			break;
 
@@ -92,7 +93,7 @@ void Item::Render(HDC hdc)
 	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
 
 	::TransparentBlt(hdc,
-		(int32)_pos.x - ((int32)_sprite->GetSize().x / 2) - ((int32)cameraPos.x - GWinSizeX / 2),
+		(int32)_pos.x - ((int32)cameraPos.x - GWinSizeX / 2) - 16,
 		(int32)_pos.y - ((int32)cameraPos.y - GWinSizeY / 2),
 		32,
 		32,

@@ -107,7 +107,7 @@ void QuestTrackerUI::AddQuestToTracking(int questID, wstring name, wstring descr
 	list->SetBackground(_background);
 	list->SetPos({ _pos.x, _pos.y });
 	list->SetPadding(5, 5);
-	list->SetTransparent(true);
+	list->SetTransparent(false);
 	list->SetAlpha(150);
 	list->SetVisible(true);
 	list->SetText(str);

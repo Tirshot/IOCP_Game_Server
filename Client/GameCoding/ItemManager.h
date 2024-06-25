@@ -57,6 +57,9 @@ public:
 	int GetDefence(int objectID);
 	int GetDefence(vector <wstring> row);
 
+	int GetPotionMultiplier(vector <wstring> row);
+	int GetPotionMaxCount(vector <wstring> row);
+
 	shared_ptr<Sprite> GetSprite(wstring wstr);
 	shared_ptr<Sprite> GetSprite(int itemID);
 

@@ -183,3 +183,36 @@ vector<vector<wstring>> ResourceManager::GetDataFromCSV(const string& filename)
 	return data;
 }
 
+void ResourceManager::DrawImage(HDC hdc, shared_ptr<Sprite> sprite)
+{
+	if (sprite == nullptr)
+		return;
+
+	auto pos = sprite->GetPos();
+	auto size = sprite->GetSize();
+	auto width = size.x;
+	auto height = size.y;
+
+	RECT rect = { pos.x, pos.y, pos.x + width, pos.y + height };
+
+	// 현재 뷰포트 크기 가져오기
+	RECT window = { 0, 0, GWinSizeX, GWinSizeY };
+
+	// 겹치기 영역 확인
+	RECT intersection;
+	if (IntersectRect(&intersection, &window, &rect))
+	{
+		TransparentBlt(hdc,
+			pos.x,
+			pos.y,
+			width,
+			height,
+			sprite->GetDC(),
+			0,
+			0,
+			width,
+			height,
+			sprite->GetTransparent());
+	}
+}
+

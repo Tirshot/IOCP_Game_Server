@@ -28,6 +28,7 @@ public:
 	int GetDropItemID(vector<wstring> row) { return stoi(row[2]); }
 	wstring GetDropItemName(vector<wstring> row) { return row[3]; }
 	int GetDropItemProbablity(vector<wstring> row) { return stoi(row[4]); }
+	int GetDropItemRemoveTime(vector<wstring> row) { return stoi(row[5]); }
 	vector<wstring> GetMonsterDropItemInfo(Protocol::MONSTER_TYPE monsterType);
 
 public:
@@ -39,7 +40,8 @@ public:
 
 	int CalculateItemTotalProbablity(vector<vector<wstring>> dropTable);
 	int GetItemFromGroup(vector<vector<wstring>> dropTable);
-	void MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec2Int pos);
+	int GetItemRemoveTimeFromGroup(vector<vector<wstring>> dropTable, int itemID);
+	shared_ptr<class Item> MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec2Int pos);
 
 public:
 	// 아이템 정보
@@ -48,6 +50,7 @@ public:
 	Protocol::ITEM_TYPE GetItemTypeByID(int itemID);
 	Protocol::ITEM_SUBTYPE GetItemSubType(int itemID);
 	string GetItemSubTypeByID(int itemID);
+	int GetItemRemoveTimeByID(int itemID);
 
 
 private:

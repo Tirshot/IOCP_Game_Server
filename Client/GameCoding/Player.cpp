@@ -169,6 +169,12 @@ void Player::TickSkill()
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
 		{	
+			if (info.arrows() <= 0)
+			{
+				SetState(IDLE);
+				return;
+			}
+
 			auto myPlayer = dynamic_pointer_cast<MyPlayer>(shared_from_this());
 
 			// 화살 버그 수정 - 패킷 생성시 플레이어 수 만큼 나감 주의!!

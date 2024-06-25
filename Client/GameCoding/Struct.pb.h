@@ -1225,6 +1225,7 @@ class ItemInfo final :
     kPosYFieldNumber = 6,
     kItemSubTypeFieldNumber = 7,
     kObjectIdFieldNumber = 8,
+    kRemoveTimeFieldNumber = 9,
   };
   // string ItemName = 4;
   void clear_itemname();
@@ -1303,6 +1304,15 @@ class ItemInfo final :
   void _internal_set_objectid(uint64_t value);
   public:
 
+  // int32 removeTime = 9;
+  void clear_removetime();
+  int32_t removetime() const;
+  void set_removetime(int32_t value);
+  private:
+  int32_t _internal_removetime() const;
+  void _internal_set_removetime(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ItemInfo)
  private:
   class _Internal;
@@ -1319,6 +1329,7 @@ class ItemInfo final :
     int32_t posy_;
     int itemsubtype_;
     uint64_t objectid_;
+    int32_t removetime_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2446,6 +2457,26 @@ inline void ItemInfo::_internal_set_objectid(uint64_t value) {
 inline void ItemInfo::set_objectid(uint64_t value) {
   _internal_set_objectid(value);
   // @@protoc_insertion_point(field_set:Protocol.ItemInfo.objectId)
+}
+
+// int32 removeTime = 9;
+inline void ItemInfo::clear_removetime() {
+  _impl_.removetime_ = 0;
+}
+inline int32_t ItemInfo::_internal_removetime() const {
+  return _impl_.removetime_;
+}
+inline int32_t ItemInfo::removetime() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.removeTime)
+  return _internal_removetime();
+}
+inline void ItemInfo::_internal_set_removetime(int32_t value) {
+  
+  _impl_.removetime_ = value;
+}
+inline void ItemInfo::set_removetime(int32_t value) {
+  _internal_set_removetime(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.removeTime)
 }
 
 #ifdef __GNUC__

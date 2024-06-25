@@ -219,44 +219,89 @@ void ItemManager::ResetInventory()
 
 wstring ItemManager::GetName(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[1] == L"")
+        return L"";
+
     return row[1];
 }
 
 wstring ItemManager::GetKorName(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[2] == L"")
+        return L"";
+
     return row[2];
 }
 
 wstring ItemManager::GetType(vector<wstring> row)
 {
-    if (!row.empty())
-        return row[3];
+    if (row.empty())
+        return L"";
 
-    return L"";
+    if (row[3] == L"")
+        return L"";
+
+   return row[3];
 }
 
 wstring ItemManager::GetSubType(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[4] == L"")
+        return L"";
+
     return row[4];
 }
 
 wstring ItemManager::GetDescription(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[5] == L"")
+        return L"";
+
     return row[5];
 }
 
 int ItemManager::GetMaxCounts(vector<wstring> row)
 {
+    if (row.empty())
+        return 0;
+
+    if (row[7] == L"")
+        return 0;
+
     return stoi(row[7]);
 }
 
 int ItemManager::GetPrice(vector<wstring> row)
 {
+    if (row.empty())
+        return 0;
+
+    if (row[6] == L"")
+        return 0;
+
     return stoi(row[6]);
 }
 
 int ItemManager::GetAttack(vector<wstring> row)
 {
+    if (row.empty())
+        return 0;
+
+    if (row[8] == L"")
+        return 0;
+
     return stoi(row[8]);
 }
 
@@ -290,7 +335,37 @@ int ItemManager::GetDefence(int objectID)
 
 int ItemManager::GetDefence(vector<wstring> row)
 {
+    if (row.empty())
+        return 0;
+
+    if (row[9] == L"")
+        return 0;
+
     return stoi(row[9]);
+}
+
+int ItemManager::GetPotionMultiplier(vector<wstring> row)
+{
+    if (row.empty())
+        return 0;
+
+    // 아이템의 서브 타입을 점검해서 바지(가방)인지 체크
+    if (row[4] != L"Pants")
+        return 0;
+
+    return stoi(row[10]);
+}
+
+int ItemManager::GetPotionMaxCount(vector<wstring> row)
+{
+    if (row.empty())
+        return 0;
+
+    // 아이템의 서브 타입을 점검해서 바지(가방)인지 체크
+    if (row[4] != L"Pants")
+        return 0;
+
+    return stoi(row[11]);
 }
 
 shared_ptr<Sprite> ItemManager::GetSprite(wstring wstr)

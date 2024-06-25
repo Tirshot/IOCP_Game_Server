@@ -29,6 +29,10 @@ protected:
 	bool _get = false;
 	uint64 _ownerId = 0;
 
+	// 시간 경과 후 자동 제거
+	uint64 _tickStart = 0;
+	uint64 _tickNow = 0;
+
 public:
 	Protocol::ItemInfo itemInfo;
 };

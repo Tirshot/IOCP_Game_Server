@@ -21,7 +21,7 @@ public:
 private:
 	void SetItemSlot(ITEM& slot);
 	void SetEquipSlotRects();
-	void SlotRectsPosUpdate(shared_ptr<RECT> rect);
+	void SlotRectsPosUpdate(RECT rect);
 	void SyncUseableItemToServer(int itemID, int counts);
 	void SyncItemToServer(int itemID, int counts);
 	void SyncEquips(int itemID, bool equip = true);
@@ -64,7 +64,7 @@ protected:
 	vector<RECT> _rects;
 
 	// ÀåÂø ½½·Ô
-	vector<::pair<shared_ptr<RECT>, shared_ptr<ITEM>>> _equips;
+	vector<::pair<RECT, shared_ptr<ITEM>>> _equips;
 	vector<RECT> _equipRects;
 	
 	shared_ptr<class TextBox> _itemName = nullptr;
@@ -79,6 +79,7 @@ private:
 	bool _initialized = false;
 	bool _revive = false;
 	bool _isItemDropped = false;
+	bool _once = true;
 
 	// µå·¡±× ¾Ø µå¶ø
 	shared_ptr<ITEM> _selectedItem;

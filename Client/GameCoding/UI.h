@@ -42,6 +42,7 @@ protected:
 	shared_ptr<UI> _parent = nullptr;
 	int _id = 0;
 	bool _pause = false;
+	float _sumTime = 0.f;
 
 	// id ºÎ¿©
 	static int ui_idGenerator;

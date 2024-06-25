@@ -7,6 +7,7 @@
 Quest1Trigger::Quest1Trigger()
 {
 	_questID = 1;
+	info.set_objecttype(Protocol::OBJECT_TYPE_TRIGGER);
 }
 
 Quest1Trigger::~Quest1Trigger()

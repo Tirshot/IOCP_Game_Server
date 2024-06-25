@@ -106,10 +106,7 @@ void GameRoom::Update()
 		if (item.second->IsGet())
 		{
 			_deleteObjects[id] = item.second;
-
-			int itemID = item.second.get()->GetItemInfo().itemid();
-
-			wstring itemStr = to_wstring(itemID);
+			wstring itemStr = to_wstring(id);
 
 			// 제거 후 로그
 			GChat->AddText(L"ItemID : " + itemStr + L" 아이템 서버에서 제거.");
@@ -356,11 +353,11 @@ void GameRoom::RemoveObject(uint64 id)
 		break;
 
 	case Protocol::OBJECT_TYPE_PROJECTILE:
-		_arrows.erase(id);
+		_deleteObjects[id] = gameObject;
 		break;
 
 	case Protocol::OBJECT_TYPE_ITEM:
-		_items.erase(id);
+		_deleteObjects[id] = gameObject;
 		break;
 
 	default:

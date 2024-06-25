@@ -32,6 +32,7 @@ public:
 	vector<shared_ptr<UI>> GetUIs() { return _uis; }
 	vector<shared_ptr<UI>>& GetUIRef() { return _uis; }
 
+	vector<shared_ptr<Actor>> GetActors() { return _actors[LAYER_OBJECT]; }
 
 	template<typename T>
 	void SetChildVisible(bool visible)

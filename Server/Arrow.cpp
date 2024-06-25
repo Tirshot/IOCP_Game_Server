@@ -11,11 +11,12 @@
 Arrow::Arrow()
 {
 	info.set_attack(20);
+	info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 }
 
 Arrow::~Arrow()
 {
-	cout << "~Arrow" << endl;
+
 }
 
 void Arrow::BeginPlay()

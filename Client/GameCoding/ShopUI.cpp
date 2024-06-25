@@ -433,7 +433,7 @@ void ShopUI::OnPopClickAcceptDelegate()
 	{
 		if (found)
 		{
-			int maxCount = _sellItem->MaxCount;
+			int maxCount = GET_SINGLE(ItemManager)->GetItem(_sellItem->ItemId).MaxCount;
 
 			// 구입하려는 수량이 최대 수량을 초과할 때 리턴
 			if (_sellItem->Type != L"Wearable" && itemCounts + _counts > maxCount)

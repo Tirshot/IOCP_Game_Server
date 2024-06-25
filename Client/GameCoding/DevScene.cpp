@@ -100,6 +100,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowItem", L"Sprite\\Item\\ArrowItem.bmp", RGB(255, 0, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"EquipItem", L"Sprite\\Item\\Equips.bmp", RGB(255, 0, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"SnakeSkin", L"Sprite\\Item\\SnakeSkin.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MoblinSpear", L"Sprite\\Item\\MoblinSpear.bmp", RGB(128, 128, 128));
 
 	// UI 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"BlackMp", L"Sprite\\UI\\BlackMp.bmp");
@@ -160,6 +161,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots02", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 83, 90, 30, 30);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots03", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 127, 90, 30, 30);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"SnakeSkin", GET_SINGLE(ResourceManager)->GetTexture(L"SnakeSkin"), 0, 0, 64, 62);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"MoblinSpear", GET_SINGLE(ResourceManager)->GetTexture(L"MoblinSpear"), 0, 0, 64, 64);
 
 
 	// UI 스프라이트
@@ -1036,6 +1038,7 @@ void DevScene::SpawnItem(Protocol::ItemInfo info)
 	ret->SetItemInfo(info);
 
 	ret->SetCellPos({info.posx(), info.posy()}, true);
+	ret->info.set_objectid(info.objectid());
 	ret->SetState(IDLE);
 	AddActor(ret);
 
@@ -1047,8 +1050,26 @@ shared_ptr<GameObject> DevScene::GetObjects(uint64 id)
 	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
 	{
 		shared_ptr<GameObject> gameObject = dynamic_pointer_cast<GameObject>(actor);
-		if (gameObject && gameObject->info.objectid() == id)
+		if (gameObject == nullptr)
+			continue;
+
+		if (gameObject->info.objectid() == id)
 			return gameObject;
+	}
+
+	return nullptr;
+}
+
+shared_ptr<Item> DevScene::GetItem(uint64 id)
+{
+	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
+	{
+		shared_ptr<Item> item = dynamic_pointer_cast<Item>(actor);
+		if (item == nullptr)
+			continue;
+
+		if (item->info.objectid() == id)
+			return item;
 	}
 
 	return nullptr;

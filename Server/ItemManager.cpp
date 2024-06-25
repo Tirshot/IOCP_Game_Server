@@ -217,17 +217,31 @@ int ItemManager::GetItemFromGroup(vector<vector<wstring>> dropTable)
 	return -1;  // 오류 처리
 }
 
-void ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec2Int pos)
+int ItemManager::GetItemRemoveTimeFromGroup(vector<vector<wstring>> dropTable, int itemID)
+{
+	for (const auto& row : dropTable)
+	{
+		if (stoi(row[2]) == itemID)
+			return stoi(row[5]);
+	}
+
+	assert(false);
+	return -1;  // 오류 처리
+}
+
+shared_ptr<Item> ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec2Int pos)
 {
 	int itemID = GetItemFromGroup(group);
 	string name = GET_SINGLE(ItemManager)->GetItemNameByID(itemID);
 	auto type = GET_SINGLE(ItemManager)->GetItemTypeByID(itemID);
 	auto subType = GET_SINGLE(ItemManager)->GetItemSubTypeByID(itemID);
 	wstring wname = GET_SINGLE(ItemManager)->StringToWString(name);
+	auto removeTime = GET_SINGLE(ItemManager)->GetItemRemoveTimeFromGroup(group, itemID);
 
 	if (GRoom)
 	{
 		ItemRef item1 = GameObject::CreateItem();
+		auto itemObjectID = item1->GetObjectID();
 		item1->info.set_posx(pos.x);
 		item1->info.set_posy(pos.y);
 		item1->info.set_defence(9999);
@@ -238,13 +252,14 @@ void ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec
 		GRoom->AddObject(item1);
 		{
 			auto& itemInfo = item1->itemInfo;
-
+			itemInfo.set_objectid(itemObjectID);
 			itemInfo.set_posx(pos.x);
 			itemInfo.set_posy(pos.y);
 			itemInfo.set_itemid(itemID);
 			itemInfo.set_itemcount(1);
 			itemInfo.set_itemtype(type);
 			itemInfo.set_itemname(name);
+			itemInfo.set_removetime(removeTime);
 
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_ItemDrop(itemInfo);
 			PlayerRef player = static_pointer_cast<Player>(GRoom->FindObject(owner->GetObjectID()));
@@ -255,6 +270,8 @@ void ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec
 				GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 {3} 아이템 드랍", owner->GetObjectID(), pos.x, pos.y, wname));
 			}
 		}
+		item1->BeginPlay();
+		return item1;
 	}
 }
 
@@ -335,4 +352,11 @@ string ItemManager::GetItemSubTypeByID(int itemID)
 	auto info = GetItemInfo(itemID);
 
 	return WStringToString(info[4]);
+}
+
+int ItemManager::GetItemRemoveTimeByID(int itemID)
+{
+	auto info = GetItemInfo(itemID);
+
+	return GetDropItemRemoveTime(info);
 }

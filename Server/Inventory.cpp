@@ -7,6 +7,7 @@
 
 Inventory::Inventory()
 {
+    info.set_objecttype(Protocol::OBJECT_TYPE_INVENTORY);
 }
 
 Inventory::~Inventory()

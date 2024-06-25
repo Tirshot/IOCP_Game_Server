@@ -43,6 +43,8 @@ public:
 
 	unordered_map<wstring, shared_ptr<Sprite>> GetSprites() { return _sprites; }
 
+	void DrawImage(HDC hdc, shared_ptr<Sprite> sprite);
+
 private:
 	HWND _hwnd = {};
 	fs::path _resourcePath;

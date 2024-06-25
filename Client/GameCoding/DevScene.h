@@ -81,6 +81,7 @@ public:
 
 public:
 	shared_ptr<GameObject> GetObjects(uint64 id);
+	shared_ptr<Item> GetItem(uint64 id);
 	shared_ptr<class Monster> GetMonster();
 
 	// 패킷 핸들
