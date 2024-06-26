@@ -67,13 +67,14 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "ERCHANT\020\001*p\n\013QUEST_STATE\022\024\n\020QUEST_STATE_"
   "IDLE\020\000\022\026\n\022QUEST_STATE_ACCEPT\020\001\022\031\n\025QUEST_"
   "STATE_COMPLETED\020\002\022\030\n\024QUEST_STATE_FINISHE"
-  "D\020\003*V\n\014MONSTER_TYPE\022\025\n\021MONSTER_TYPE_NONE"
+  "D\020\003*p\n\014MONSTER_TYPE\022\025\n\021MONSTER_TYPE_NONE"
   "\020\000\022\026\n\022MONSTER_TYPE_SNAKE\020\001\022\027\n\023MONSTER_TY"
-  "PE_MOBLIN\020\002b\006proto3"
+  "PE_MOBLIN\020\002\022\030\n\024MONSTER_TYPE_OCTOROC\020\003b\006p"
+  "roto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 1619, descriptor_table_protodef_Enum_2eproto,
+    false, false, 1645, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -260,6 +261,7 @@ bool MONSTER_TYPE_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
       return true;
     default:
       return false;

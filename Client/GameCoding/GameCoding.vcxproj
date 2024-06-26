@@ -182,8 +182,10 @@
     <ClInclude Include="MP.h" />
     <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="NamePlate.h" />
+    <ClInclude Include="Octoroc.h" />
     <ClInclude Include="PopUp.h" />
     <ClInclude Include="Potion.h" />
+    <ClInclude Include="ProjectileRock.h" />
     <ClInclude Include="Quest.h" />
     <ClInclude Include="QuestManager.h" />
     <ClInclude Include="QuestTrackerUI.h" />
@@ -276,8 +278,10 @@
     <ClCompile Include="MP.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="NamePlate.cpp" />
+    <ClCompile Include="Octoroc.cpp" />
     <ClCompile Include="PopUp.cpp" />
     <ClCompile Include="Potion.cpp" />
+    <ClCompile Include="ProjectileRock.cpp" />
     <ClCompile Include="Protocol.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>

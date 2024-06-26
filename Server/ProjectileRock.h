@@ -1,11 +1,11 @@
 #pragma once
 #include "Projectile.h"
-class Arrow : public Projectile, public enable_shared_from_this<Arrow>
+class ProjectileRock :  public Projectile, public enable_shared_from_this<ProjectileRock>
 {
 	using Super = Projectile;
 public:
-	Arrow();
-	virtual ~Arrow() override;
+	ProjectileRock();
+	virtual ~ProjectileRock() override;
 
 	void BeginPlay();
 	void Tick();
@@ -16,10 +16,10 @@ public:
 	void TickHit();
 
 public:
-	MonsterRef& GetTarget() { return _target; }
+	PlayerRef& GetTarget() { return _target; }
 
 protected:
 	float _waitUntil = 0;
-	MonsterRef _target;
+	PlayerRef _target;
 };
 

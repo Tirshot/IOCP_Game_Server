@@ -41,6 +41,7 @@ public:
 	static SignRef CreateSign();
 	static ItemRef CreateItem();
 	static ArrowRef CreateArrow();
+	static ProjectileRockRef CreateRock();
 	static InventoryRef CreateInventory(PlayerRef player);
 	static TriggerRef CreateTrigger(uint64 questId);
 

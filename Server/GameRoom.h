@@ -53,6 +53,7 @@ public:
 	Vec2Int GetRandomEmptyCellPos();
 	Vec2Int GetRandomEmptySpawnCellPos();
 	CreatureRef GetCreatureAt(Vec2Int cellPos);
+	bool IsOtherMonstersAround(MonsterRef monster);
 
 	void RandomMonsterSpawn();
 
@@ -76,7 +77,7 @@ public:
 	map<uint64, weak_ptr<Player>> GetTemps() { return _temps; }
 	map<uint64, MonsterRef> GetMonsters() { return _monsters; }
 	map<uint64, NPCRef> GetNPCs() { return _npcs; }
-	map<uint64, ArrowRef> GetArrows() { return _arrows; }
+	map<uint64, ProjectileRef> GetProjectiles() { return _projectiles; }
 	map<uint64, Protocol::QuestInfo> GetQuests() { return _quests; }
 	map<uint64, InventoryRef> GetInventorys() { return _inventorys; }
 	map<uint64, ItemRef> GetItems() { return _items; }
@@ -98,7 +99,7 @@ private:
 	map<uint64, weak_ptr<Player>> _temps;
 	map<uint64, MonsterRef> _monsters;
 	map<uint64, NPCRef> _npcs;
-	map<uint64, ArrowRef> _arrows;
+	map<uint64, ProjectileRef> _projectiles;
 	map<uint64, ItemRef> _items;
 	map<uint64, Protocol::QuestInfo> _quests;		// 퀘스트 관리
 	map<uint64, map<int, PlayerQuestState>> _questsStates;	// 플레이어 별 퀘스트 상태 관리

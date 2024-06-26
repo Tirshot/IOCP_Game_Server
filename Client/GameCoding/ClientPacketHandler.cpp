@@ -7,6 +7,7 @@
 #include "QuestManager.h"
 #include "Game.h"
 #include "Monster.h"
+#include "Octoroc.h"
 #include "HitEffect.h"
 #include "TeleportEffect.h"
 #include "Creature.h"
@@ -281,7 +282,10 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 		GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
 	}
 
-	creature->info.set_hp(clamp(creature->info.hp() - damage, 0, creature->info.maxhp()));
+	auto hp = creature->info.hp();
+	auto maxhp = creature->info.maxhp();
+
+	creature->info.set_hp(clamp(hp - damage, 0, maxhp));
 }
 
 void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len)
@@ -292,19 +296,28 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 
 	Protocol::S_Fire pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
+	
 	//
 	const Protocol::ObjectInfo& info = pkt.info();
 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	// 화살의 주인 플레이어를 가져옴
+	// 투사체의 주인에 따라 발사
 	if (scene)
 	{
-		auto player = scene->GetPlayerByID(pkt.ownerid());
+		auto gameObject = scene->GetObjects(pkt.ownerid());
 
+		auto player = dynamic_pointer_cast<Player>(gameObject);
 		if (player)
 		{
 			player->MakeArrow();
+			return;
+		}
+
+		auto octoroc = dynamic_pointer_cast<Octoroc>(gameObject);
+		if (octoroc)
+		{
+			octoroc->MakeRock();
+			return;
 		}
 	}
 }

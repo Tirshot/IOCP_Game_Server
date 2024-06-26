@@ -5,6 +5,7 @@
 
 Projectile::Projectile()
 {
+	SetLayer(LAYER_EFFECT);
 }
 
 Projectile::~Projectile()

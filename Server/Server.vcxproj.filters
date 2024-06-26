@@ -131,6 +131,12 @@
     <ClCompile Include="Snake.cpp">
       <Filter>소스 파일\Game\Object\Creature</Filter>
     </ClCompile>
+    <ClCompile Include="Octoroc.cpp">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileRock.cpp">
+      <Filter>소스 파일\Game\Object\Projectile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -210,6 +216,12 @@
     </ClInclude>
     <ClInclude Include="Moblin.h">
       <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="Octoroc.h">
+      <Filter>소스 파일\Game\Object\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileRock.h">
+      <Filter>소스 파일\Game\Object\Projectile</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

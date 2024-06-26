@@ -1,30 +1,24 @@
 #include "pch.h"
-#include "Arrow.h"
-#include "GameRoom.h"
-#include "Creature.h"
+#include "ProjectileRock.h"
 #include "Monster.h"
 #include "Player.h"
-#include "ServerPacketHandler.h"
-#include "GameSession.h"
 #include "Chat.h"
+#include "GameRoom.h"
+#include "GameSession.h"
 
-Arrow::Arrow()
+ProjectileRock::ProjectileRock()
 {
-	info.set_attack(10);
-	info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 }
 
-Arrow::~Arrow()
+ProjectileRock::~ProjectileRock()
 {
-
 }
 
-void Arrow::BeginPlay()
+void ProjectileRock::BeginPlay()
 {
-	
 }
 
-void Arrow::Tick()
+void ProjectileRock::Tick()
 {
 	if (this == nullptr)
 		return;
@@ -45,7 +39,7 @@ void Arrow::Tick()
 	}
 }
 
-void Arrow::TickIdle()
+void ProjectileRock::TickIdle()
 {
 	if (room == nullptr)
 		return;
@@ -56,13 +50,13 @@ void Arrow::TickIdle()
 	float tick = (float)(GetTickCount64()) / 1000.0f;
 	if (_waitUntil <= 0.0f)
 	{
-		_waitUntil = tick + 0.05f;
+		_waitUntil = tick + 0.062f;
 	}
 
 	if (tick < _waitUntil)
 		return;
 
-	_waitUntil = tick + 0.05f;
+	_waitUntil = tick + 0.062f;
 
 	// 다음 위치에 갈 수 있는지 확인
 	if (CanGo(nextPos))
@@ -86,37 +80,33 @@ void Arrow::TickIdle()
 	_hit = false;
 }
 
-void Arrow::TickMove()
+void ProjectileRock::TickMove()
 {
 	SetState(IDLE);
 }
 
-void Arrow::TickHit()
+void ProjectileRock::TickHit()
 {
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int pos = Vec2Int{ info.posx(), info.posy() };
 	Vec2Int nextPos = pos + deltaXY[info.dir()];
 
 	// 앞이 비어있으면 전진, 몬스터라면 타격
-	_target = dynamic_pointer_cast<Monster>(room->GetCreatureAt(nextPos));
+	_target = dynamic_pointer_cast<Player>(room->GetCreatureAt(nextPos));
 	if (_target)
 	{
 		int damage = _owner->info.attack() - _target->info.defence();
-
-		_target->OnDamaged(_owner);
 		{
-			int32 damage = info.attack() - _target->info.defence();
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(_target->info.objectid(), _owner->info.objectid(), damage);
-			
-			PlayerRef player = dynamic_pointer_cast<Player>(_owner);
-			player->session->Send(sendBuffer);
+			GRoom->Broadcast(sendBuffer);
 		}
+		_target->OnDamaged(_owner);
 
-		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 Monster {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
+		GChat->AddText(format(L"Octoroc {0}이(가) 발사한 돌이 Player {1}에게 적중", _owner->GetObjectID(), _target->GetObjectID()));
 	}
 	else
 	{
-		GChat->AddText(format(L"Player {0}이(가) 발사한 화살이 벽에 맞음", _owner->GetObjectID()));
+		GChat->AddText(format(L"Octoroc {0}이(가) 발사한 돌이 벽에 맞음", _owner->GetObjectID()));
 	}
 	_hit = true;
 }

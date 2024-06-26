@@ -68,12 +68,13 @@ void Monster::UpdateIdle()
 		int32 dist = abs(dir.x) + abs(dir.y);
 		if (dist == 1)
 		{
+			SetDir(GetLookAtDir(target->GetCellPos()));
+
 			// 주변의 클라이언트에 알림
 			SetState(SKILL, true);
 			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
 
 			// 공격하기
-			SetDir(GetLookAtDir(target->GetCellPos()));
 			target->OnDamaged(shared_from_this());
 			target->SetState(HIT, true);
 			{

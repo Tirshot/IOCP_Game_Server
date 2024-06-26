@@ -11,6 +11,8 @@
 #include "Trigger.h"
 #include "Snake.h"
 #include "Moblin.h"
+#include "Octoroc.h"
+#include "ProjectileRock.h"
 #include "Quest1Trigger.h"
 
 atomic<uint64> GameObject::s_idGenerator = 1;
@@ -64,6 +66,14 @@ MonsterRef GameObject::CreateMonster(Protocol::MONSTER_TYPE monsterType)
 		return moblin;
 	}
 
+	case Protocol::MONSTER_TYPE_OCTOROC:
+	{
+		OctorocRef octoroc = make_shared<Octoroc>();
+		octoroc->info.set_objectid(s_idGenerator++);
+		octoroc->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
+		return octoroc;
+	}
+
 	default:
 		return nullptr;
 	}
@@ -104,6 +114,15 @@ ArrowRef GameObject::CreateArrow()
 	arrow->info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 
 	return arrow->weak_from_this().lock();
+}
+
+ProjectileRockRef GameObject::CreateRock()
+{
+	ProjectileRockRef rock = make_shared<ProjectileRock>();
+	rock->info.set_objectid(s_idGenerator++);
+	rock->info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
+
+	return rock->weak_from_this().lock();
 }
 
 InventoryRef GameObject::CreateInventory(PlayerRef player)
