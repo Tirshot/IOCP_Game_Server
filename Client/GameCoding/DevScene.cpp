@@ -247,6 +247,16 @@ void DevScene::Init()
 void DevScene::Update()
 {
 	Super::Update();
+
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::ESC))
+	{
+		if (IsAnyPopUpVisible() == false)
+		{
+			auto setting = FindUI<SettingPanel>(_uis);
+			if (setting)
+				setting->SetVisible(true);
+		}
+	}
 }
 
 void DevScene::Render(HDC hdc)
@@ -1096,10 +1106,14 @@ void DevScene::LoadUI()
 			GET_SINGLE(ItemManager)->Init();
 		}
 	}
-	{	// 설정 패널
+	{
+		// 설정 패널
 		shared_ptr<SettingPanel> settings = make_shared<SettingPanel>();
-		settings->SetVisible(false);
-		AddUI(settings);
+		if (settings)
+		{
+			settings->SetVisible(false);
+			AddUI(settings);
+		}
 	}
 }
 
@@ -1133,6 +1147,37 @@ void DevScene::LoadQuest()
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
 	_questInitialized = true;
+}
+
+bool DevScene::IsAnyPopUpVisible()
+{
+	auto visibleUIs = GetVisibleUIs();
+	if (visibleUIs.empty() == false)
+	{
+		for (auto& ui : visibleUIs)
+		{
+			auto panel = dynamic_pointer_cast<Panel>(ui);
+			if (panel == nullptr)
+				continue;
+
+			auto& children = panel->GetChildren();
+
+			if (children.empty())
+				continue;
+
+			for (auto& child : children)
+			{
+				auto popUp = dynamic_pointer_cast<PopUp>(child);
+
+				if (popUp == nullptr)
+					continue;
+
+				if (popUp->GetVisible())
+					return true;
+			}
+		}
+	}
+	return false;
 }
 
 void DevScene::SpawnItem(Protocol::ItemInfo info)

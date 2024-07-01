@@ -33,6 +33,8 @@ Inventory::~Inventory()
 
 void Inventory::BeginPlay()
 {
+    Super::BeginPlay();
+
     _invenRect = {};        // 485, 160, 770, 460
     {
         _invenRect.left = (int)_pos.x + 5;
@@ -91,9 +93,6 @@ void Inventory::BeginPlay()
         AddChild(_itemCount);
     }
 
-    for (auto& child : _children)
-        child->BeginPlay();
-
     SetInitialPos(GetPos());
 
     // 아이템 슬롯 초기화
@@ -129,8 +128,9 @@ void Inventory::BeginPlay()
 
 void Inventory::Tick()
 {
-    auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    Super::Tick();
 
+    auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
     if (myPlayer)
     {
         _owner = myPlayer;
@@ -216,10 +216,6 @@ void Inventory::Tick()
         SetItemCount(5, myPlayer->info.potion());
     }
 
-    for (auto& child : _children)
-        if (child->GetVisible())
-            child->Tick();
-
     // popup이 있으면 일시정지
     if (_pause)
         return;
@@ -240,12 +236,12 @@ void Inventory::Tick()
             _invenRect.bottom = _invenRect.top + 335;
         }
 
-        //// 자식의 팝업이 켜져있을 때 상호작용 불가
-        //if (IsChildPopUpVisible())
-        //    return;
+        // 자식의 팝업이 켜져있을 때 상호작용 불가
+        if (IsChildPopUpVisible())
+            return;
 
-        //if (IsAnyPopUpVisible())
-        //    return;
+        if (IsAnyPopUpVisible())
+            return;
 
         // 아이템 슬롯 초기화
         for (int j = 0; j < 5; j++)
@@ -572,9 +568,7 @@ void Inventory::Render(HDC hdc)
             _equips[i].second->Sprite->GetTransparent());
     }
 
-    for (auto& child : _children)
-        if (child->GetVisible())
-            child->Render(hdc);
+    Super::Render(hdc);
 
     // 드래그 중인 아이템
     if (_selectedItem == nullptr)
@@ -964,7 +958,7 @@ bool Inventory::AddItem(int ItemId)
                     if (slot->ItemId == ItemId)
                     {
                         // 추가한 양이 최대 개수보다 적을 때
-                        if (slot->ItemCount + 1 < itemMaxCount)
+                        if (slot->ItemCount + 1 <= itemMaxCount)
                         {
                             slot->index = index;
                             slot->ItemCount++; // 수량 증가
@@ -986,7 +980,7 @@ bool Inventory::AddItem(int ItemId)
                     if (slot->ItemId == ItemId)
                     {
                         // 추가한 양이 최대 개수보다 적을 때
-                        if (slot->ItemCount + 1 < itemMaxCount)
+                        if (slot->ItemCount + 1 <= itemMaxCount)
                         {
                             slot->index = index;
                             slot->ItemCount++; // 수량 증가
@@ -1102,7 +1096,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                     if (slot->ItemId == ItemId)
                     {
                         // 추가한 양이 최대 개수보다 적을 때
-                        if (slot->ItemCount + ItemCount < itemMaxCount)
+                        if (slot->ItemCount + ItemCount <= itemMaxCount)
                         {
                             slot->index = index;
                             // 수량 증가
@@ -1123,7 +1117,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                     if (slot->ItemId == ItemId)
                     {
                         // 추가한 양이 최대 개수보다 적을 때
-                        if (slot->ItemCount + ItemCount < itemMaxCount)
+                        if (slot->ItemCount + ItemCount <= itemMaxCount)
                         {
                             slot->index = index;
                             // 수량 증가
@@ -1193,7 +1187,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                     if (slot->ItemId == 0)
                     {
                         // 추가한 양이 최대 개수보다 적을 때
-                        if (slot->ItemCount + ItemCount < itemMaxCount)
+                        if (slot->ItemCount + ItemCount <= itemMaxCount)
                         {
                             slot = make_shared<ITEM>();
                             slot->index = index;
@@ -1224,7 +1218,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                     if (slot->ItemId == 0)
                     {
                         // 추가한 양이 최대 개수보다 적을 때
-                        if (slot->ItemCount + ItemCount < itemMaxCount)
+                        if (slot->ItemCount + ItemCount <= itemMaxCount)
                         {
                             slot->index = index;
                             slot->ItemId = ItemId;
@@ -1678,8 +1672,6 @@ void Inventory::OnPopClickAcceptDelegate()
 {
     if (RemoveItem(_deleteItem, _deleteItem->ItemCount))
         _deleteItem = nullptr;
-
-    _isItemDropped = true;
 }
 
 void Inventory::ResetInventory()

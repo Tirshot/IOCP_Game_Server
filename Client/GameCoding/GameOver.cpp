@@ -32,6 +32,8 @@ GameOver::~GameOver()
 
 void GameOver::BeginPlay()
 {
+	Super::BeginPlay();
+
 	{ // 부활 버튼
 		shared_ptr<Button> revive = make_shared<Button>();
 		revive->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"Revive_Off"), BS_Default);
@@ -55,9 +57,6 @@ void GameOver::BeginPlay()
 		exit->AddOnClickDelegate(this, &GameOver::OnClickExitButton);
 		AddChild(exit);
 	}
-
-	for (auto& child : _children)
-		child->BeginPlay();
 }
 
 void GameOver::Tick()

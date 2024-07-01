@@ -20,8 +20,6 @@ Panel::~Panel()
 
 void Panel::BeginPlay()
 {
-	Super::BeginPlay();
-
 	_initialPos = _pos;
 
 	for (auto& child : _children)
@@ -30,8 +28,6 @@ void Panel::BeginPlay()
 
 void Panel::Tick()
 {
-	Super::Tick();
-
 	if (_visible == false)
 		_pos = _initialPos;
 
@@ -41,8 +37,6 @@ void Panel::Tick()
 
 void Panel::Render(HDC hdc)
 {
-	Super::Render(hdc);
-
 	for (auto& child : _children)
 		child->Render(hdc);
 }

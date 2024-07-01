@@ -23,6 +23,8 @@ QuestUI::~QuestUI()
 
 void QuestUI::BeginPlay()
 {
+	Super::BeginPlay();
+
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"ShopUIBackground");
 	_rect = {};
 	// _pos = 135, 80
@@ -94,13 +96,12 @@ void QuestUI::BeginPlay()
 	}
 
 	_initialPos = _pos;
-
-	for (auto& child : _children)
-		child->BeginPlay();
 }
 
 void QuestUI::Tick()
 {
+	Super::Tick();
+
 	{
 		_rect.left = _pos.x;
 		_rect.top = _pos.y;
@@ -109,9 +110,6 @@ void QuestUI::Tick()
 	}
 
 	_maxPage = 1 + (int)(_quests.size() / 5);
-
-	for (auto& child : _children)
-		child->Tick();
 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)

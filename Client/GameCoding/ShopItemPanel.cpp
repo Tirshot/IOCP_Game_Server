@@ -82,11 +82,6 @@ void ShopItemPanel::BeginPlay()
 		_description->SetInitialPos(Vec2{ 503, 115 });
 		AddChild(_description);
 	}
-
-	for (auto& child : _children)
-	{
-		child->BeginPlay();
-	}
 }
 
 void ShopItemPanel::Tick()
@@ -95,9 +90,6 @@ void ShopItemPanel::Tick()
 	_rect.top = _pos.y;
 	_rect.right = _pos.x + _size.x;
 	_rect.bottom = _pos.y + _size.y;
-
-	for (auto& child : _children)
-		child->Tick();
 	
 	// 아이템 설명
 	if (IsMouseInRect(_rect))
@@ -168,10 +160,6 @@ void ShopItemPanel::Render(HDC hdc)
 		RECT _textRect = { _pos.x + 150,_pos.y + 40,_textRect.left + 30,_textRect.top + 18 };
 		DrawTextW(hdc, itemCost.c_str(), -1, &_textRect, DT_CENTER);
 	}
-
-	for (auto& child : _children)
-		if (child->GetVisible() == true)
-			child->Render(hdc);
 }
 
 void ShopItemPanel::OnPopClickAcceptDelegate()

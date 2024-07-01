@@ -2,6 +2,7 @@
 #include "Panel.h"
 class Texture;
 class AlertBox;
+class ItemCountsPopUp;
 class ShopUI :  public Panel
 {
 	using Super = Panel;
@@ -21,12 +22,13 @@ public:
 	void SellItemToShop(shared_ptr<ITEM> item);
 
 	void ResetInitializingTime() { _initializeTime = 0.f; }
-	void ResetPage() { _page = 1; }
+	void ResetPage() { _page = 1; SetPause(false); }
 
 	RECT GetShopRect() { return _rect; }
 
 public:
 	shared_ptr<AlertBox> MakeAlertBox(Vec2 pos, Vec2Int size, void (ShopUI::* func)() = nullptr, bool twoButtons = true);
+	shared_ptr<ItemCountsPopUp> MakeCountsBox(Vec2 pos, Vec2Int size, int itemID, void (ShopUI::* func)() = nullptr);
 
 private:
 	void OnPopClickAcceptDelegate();
@@ -49,8 +51,6 @@ protected:
 	RECT _rect = {};
 	RECT _dragRect = {};
 	shared_ptr<Texture> _background = nullptr;
-	shared_ptr<class ItemCountsPopUp> _countsPopUp = nullptr;
-	shared_ptr<class	AlertBox> _alert = {};
 	vector<shared_ptr<ITEM>> _items = {};	// 판매할 아이템이 저장되어 있음
 	shared_ptr<ITEM> _sellItem = {};
 	shared_ptr<ITEM> _sellToShop = {};
@@ -61,5 +61,5 @@ protected:
 	int _page = 1;	// 열린 페이지
 
 private:
-	int _buyPriceDivider = 5;
+	int _buyPriceDivider = 5; // 상점에 아이템을 판매할 때 받는 돈
 };

@@ -19,6 +19,8 @@ QuestTrackerUI::~QuestTrackerUI()
 
 void QuestTrackerUI::BeginPlay()
 {
+	Super::BeginPlay();
+
 	_size = { 150, 150 };
 	_pos.x = 800 - (int)_size.x;
 	_pos.y = 150;
@@ -34,6 +36,8 @@ void QuestTrackerUI::BeginPlay()
 float _sumTime = 0.f;
 void QuestTrackerUI::Tick()
 {
+	Super::Tick();
+
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	_sumTime += deltaTime;
@@ -81,11 +85,7 @@ void QuestTrackerUI::Tick()
 
 void QuestTrackerUI::Render(HDC hdc)
 {
-	if (_visible)
-	{
-		for (auto& child : _children)
-			child->Render(hdc);
-	}
+	Super::Render(hdc);
 }
 
 void QuestTrackerUI::AddQuestToTracking(int questID, wstring name, wstring description, int target)

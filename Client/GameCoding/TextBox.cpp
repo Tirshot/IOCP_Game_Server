@@ -37,11 +37,6 @@ void TextBox::BeginPlay()
 
 void TextBox::Tick()
 {
-
-}
-
-void TextBox::Render(HDC hdc)
-{
 	if (_isFloating)
 	{
 		if (_text == L"")
@@ -80,7 +75,7 @@ void TextBox::Render(HDC hdc)
 			_rect.left = mousePos.x + _leftPadding;
 			_rect.right = _rect.left + _size.x - _leftPadding;
 			_rect.top = mousePos.y + _topPadding - 26;
-			_rect.bottom = _rect.top + _size.y ;
+			_rect.bottom = _rect.top + _size.y;
 		}
 	}
 	else
@@ -90,6 +85,12 @@ void TextBox::Render(HDC hdc)
 		_rect.top = _pos.y + _topPadding;
 		_rect.bottom = _rect.top + _size.y;
 	}
+}
+
+void TextBox::Render(HDC hdc)
+{
+	if (_text == L"")
+		return;
 
 	// 텍스트 크기 계산
 	RECT calcRect = _rect;

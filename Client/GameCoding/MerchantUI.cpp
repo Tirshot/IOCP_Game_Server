@@ -34,6 +34,8 @@ MerchantUI::~MerchantUI()
 
 void MerchantUI::BeginPlay()
 {
+	Super::BeginPlay();
+
 	{ // 대화 내용
 		wstring wstr = L"어서오세요!\n최고 품질의 아이템만 제공하는 언덕 집 상인입니다.\n저렴한 가격에 모시고 있습니다.";
 		auto textBox = make_shared<TextBox>(wstr);
@@ -79,17 +81,13 @@ void MerchantUI::BeginPlay()
 		AddChild(namePlate);
 	}
 
-	for (auto& child : _children)
-		child->BeginPlay();
-
 	_initialized = true;
 }
 
 void MerchantUI::Tick()
 {
-	for (auto& child : _children)
-		child->Tick(); 
-	
+	Super::Tick();
+
 	if (_initialized)
 	{	// 퀘스트 리스트 받아오기
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_QuestList();
@@ -124,8 +122,7 @@ void MerchantUI::Render(HDC hdc)
 		100,
 		SRCCOPY);
 
-	for (auto& child : _children)
-		child->Render(hdc);
+	Super::Render(hdc);
 }
 
 void MerchantUI::OnClickShopButton()

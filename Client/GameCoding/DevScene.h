@@ -54,6 +54,8 @@ public:
 	void LoadSound();
 	void LoadQuest();
 
+	bool IsAnyPopUpVisible();
+
 	template<typename T>
 	shared_ptr<T> SpawnObject(Vec2Int pos)
 	{

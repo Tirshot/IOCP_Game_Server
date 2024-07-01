@@ -78,8 +78,6 @@ private:
 	int _slotSize = 28;
 	bool _initialized = false;
 	bool _revive = false;
-	bool _isItemDropped = false;
-	bool _once = true;
 
 	// 드래그 앤 드랍
 	shared_ptr<ITEM> _selectedItem;
@@ -88,7 +86,6 @@ private:
 	RECT _invenRect;	// 인벤토리 영역 체크용 Rect
 	RECT _dragRect;		// 인벤토리 드래그 Rect
 	RECT _equipRect;	// 장비창 영역 체크용 Rect
-	shared_ptr<class AlertBox> _alert = nullptr;
 	bool _isEquipedItem = false;
 	shared_ptr<class MyPlayer> _owner = nullptr;
 	float _sumTime = 0.f;

@@ -30,7 +30,6 @@ protected:
 	RECT _rect = {};
 	shared_ptr<class TextBox> _description = nullptr;
 	shared_ptr<class TextBox> _itemName = nullptr;
-	shared_ptr<class ItemCountsPopUp> _countsPopUp = nullptr;
 	int _index = 0;
 };
 

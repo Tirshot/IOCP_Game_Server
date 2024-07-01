@@ -27,5 +27,14 @@ public:
 
 	void SetPos(Vec2 pos) { _pos = { pos.x - (int)_size.x / 2, pos.y - (int)_size.y / 2 }; }
 	void SetVisible(bool visible);
+
+	shared_ptr<class Button> MakeAcceptButton();
+	shared_ptr<class Button> MakeDenyButton();
+
+protected:
+	virtual void OnClickAcceptButton();
+	virtual void OnClickDenyButton();
+
+	int _buttonsCount = 0;
 };
 

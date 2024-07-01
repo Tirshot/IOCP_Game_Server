@@ -71,16 +71,14 @@ QuestUIPanel::~QuestUIPanel()
 
 void QuestUIPanel::BeginPlay()
 {
-	for (auto& child : _children)
-		child->BeginPlay();
+	Super::BeginPlay();
 }
 
 void QuestUIPanel::Tick()
 {
-	_rect = { (int)_pos.x, (int)_pos.y, (int)_pos.x + GetSize().x, (int)_pos.y + GetSize().y };
+	Super::Tick();
 
-	for (auto& child : _children)
-		child->Tick();
+	_rect = { (int)_pos.x, (int)_pos.y, (int)_pos.x + GetSize().x, (int)_pos.y + GetSize().y };
 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	uint64 myPlayerId = GET_SINGLE(SceneManager)->GetMyPlayerId();
@@ -135,6 +133,5 @@ void QuestUIPanel::Render(HDC hdc)
 		DrawTextW(hdc, wstr.c_str(), -1, &_textRect, DT_LEFT);
 	}
 
-	for (auto& child : _children)
-		child->Render(hdc);
+	Super::Render(hdc);
 }

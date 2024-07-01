@@ -18,11 +18,12 @@ MiniMap::~MiniMap()
 
 void MiniMap::BeginPlay()
 {
-
+    Super::BeginPlay();
 }
 
 void MiniMap::Tick()
 {
+    Super::Tick();
 }
 
 void MiniMap::Render(HDC hdc)
@@ -41,7 +42,7 @@ void MiniMap::Render(HDC hdc)
         _pos.x - 3,
         _pos.y,
         _size.x + 3,
-        _size.y + 23,
+        _size.y + 3,
         _background->GetDC(),
         0,
         0,
@@ -101,4 +102,12 @@ void MiniMap::Render(HDC hdc)
             }
         }
     }
+
+    wstring text = format(L"({0}, {1})", cellPos.x, cellPos.y);
+    RECT textRect = { _pos.x, _pos.y + _size.y - 20, _pos.x + _size.x, _pos.y + _size.y};
+
+    SetTextColor(hdc, RGB(255, 255, 255));
+    DrawTextW(hdc, text.c_str(), -1, &textRect, DT_RIGHT | DT_VCENTER | DT_WORDBREAK);
+
+    Super::Render(hdc);
 }

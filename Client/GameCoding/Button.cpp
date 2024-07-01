@@ -85,12 +85,7 @@ void Button::Render(HDC hdc)
 				_currentSprite->GetSize().y,
 				RGB(128,128,128));
 		}
-		else
-		{
-			/*Utils::DrawRect(hdc, _pos, _size.x, _size.y);*/
-		}
 	}
-	
 }
 
 void Button::SetButtonState(ButtonState state)

@@ -26,6 +26,8 @@ MerchantDialogueUI::~MerchantDialogueUI()
 
 void MerchantDialogueUI::BeginPlay()
 {
+	Super::BeginPlay();
+
 	_rect = {135, 340, 670, 520};
 	_size = { 535, 180 };
 	_pos = { 135, 340 };
@@ -122,13 +124,12 @@ void MerchantDialogueUI::BeginPlay()
 		back->SetButtonName(L"back");
 		AddChild(back);
 	}
-
-	for (auto& child : _children)
-		child->BeginPlay();
 }
 
 void MerchantDialogueUI::Tick()
 {
+	Super::Tick();
+
 	if (_scripts.size() == 0)
 		return;
 
@@ -186,11 +187,6 @@ void MerchantDialogueUI::Tick()
 			}
 		}
 	}
-
-	// 퀘스트 상태 확인 - 완료시 확인 버튼 활성화
-
-	for (auto& child : _children)
-		child->Tick();
 }
 
 void MerchantDialogueUI::Render(HDC hdc)
@@ -219,9 +215,7 @@ void MerchantDialogueUI::Render(HDC hdc)
 		100,
 		SRCCOPY);
 
-	for (auto& child : _children)
-		if (child->GetVisible())
-			child->Render(hdc);
+	Super::Render(hdc);
 }
 
 void MerchantDialogueUI::SetDialogue(int questID)
