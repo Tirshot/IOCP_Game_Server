@@ -42,7 +42,7 @@ void MiniMap::Render(HDC hdc)
         _pos.x - 3,
         _pos.y,
         _size.x + 3,
-        _size.y + 3,
+        _size.y + 21,
         _background->GetDC(),
         0,
         0,
@@ -103,11 +103,31 @@ void MiniMap::Render(HDC hdc)
         }
     }
 
+    // 좌표
     wstring text = format(L"({0}, {1})", cellPos.x, cellPos.y);
-    RECT textRect = { _pos.x, _pos.y + _size.y - 20, _pos.x + _size.x, _pos.y + _size.y};
+    RECT textRect = { _pos.x, _pos.y + _size.y, _pos.x + _size.x, _pos.y + _size.y + 20};
 
     SetTextColor(hdc, RGB(255, 255, 255));
     DrawTextW(hdc, text.c_str(), -1, &textRect, DT_RIGHT | DT_VCENTER | DT_WORDBREAK);
+
+    // 안전구역 표시
+    wstring safeZoneText = L"";
+
+    bool bSafeZone = myPlayer->IsSafeZone(myPlayer->GetCellPos());
+
+    if (bSafeZone)
+    {
+        safeZoneText = L"안전 구역";
+        SetTextColor(hdc, RGB(0, 255, 0));
+    }
+    else
+    {
+        safeZoneText = L"전투 구역";
+        SetTextColor(hdc, RGB(255, 0, 0));
+    }
+
+    RECT safeZoneRect = { _pos.x, _pos.y + _size.y, _pos.x + _size.x, _pos.y + _size.y + 20 };
+    DrawTextW(hdc, safeZoneText.c_str(), -1, &safeZoneRect, DT_LEFT | DT_VCENTER | DT_WORDBREAK);
 
     Super::Render(hdc);
 }

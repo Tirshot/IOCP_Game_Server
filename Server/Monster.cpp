@@ -63,6 +63,13 @@ void Monster::UpdateIdle()
 
 	if (target)
 	{
+		// 플레이어가 안전 구역 내에 있을 경우 타겟 해제
+		if (target->IsInSafeZone())
+		{
+			_target.reset();
+			return;
+		}
+
 		// 공격 판단
 		Vec2Int dir = target->GetCellPos() - GetCellPos();
 		int32 dist = abs(dir.x) + abs(dir.y);

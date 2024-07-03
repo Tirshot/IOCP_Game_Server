@@ -135,13 +135,18 @@ void Player::TickSkill()
 	if (_flipbook == nullptr)
 		return;
 
+	auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	if (scene == nullptr)
+		return;
+
+	if (IsSafeZone(GetCellPos()))
+	{
+		SetState(IDLE);
+		return;
+	}
+
 	if (IsAnimationEnded())
 	{
-		// 공격 판정
-		auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		if (scene == nullptr)
-			return;
-
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
@@ -207,6 +212,12 @@ void Player::TickSpin()
 {
 	if (_flipbook == nullptr)
 		return;
+
+	if (IsSafeZone(GetCellPos()))
+	{
+		SetState(IDLE);
+		return;
+	}
 
 	if (IsAnimationEnded())
 	{
@@ -314,6 +325,17 @@ void Player::UpdateAnimation()
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 
+	default:
+		break;
+	}
+
+	if (IsSafeZone(GetCellPos()))
+	{
+		return;
+	}
+
+	switch (info.state())
+	{
 	case SKILL:
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{

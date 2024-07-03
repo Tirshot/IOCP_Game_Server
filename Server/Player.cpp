@@ -45,6 +45,23 @@ void Player::Update()
 		UpdateMove();
 		break;
 
+	default:
+		break;
+	}
+
+	// 안전 구역에서 스킬 사용 불가
+	auto player = dynamic_pointer_cast<Player>(shared_from_this());
+	if (player)
+	{
+		if (IsInSafeZone())
+		{
+			SetState(IDLE, true);
+			return;
+		}
+	}
+
+	switch (info.state())
+	{
 	case SKILL:
 		UpdateSkill();
 		break;
@@ -60,6 +77,9 @@ void Player::Update()
 	case TELEPORT:
 		UpdateTeleport();
 		break;
+
+	default:
+		return;
 	}
 
 	// 매 1.5초마다 플레이어의 mp를 회복시킴

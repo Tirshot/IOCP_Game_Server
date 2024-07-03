@@ -95,6 +95,7 @@ public:
 
 	bool CanGo(Vec2Int cellPos);
 	bool MonsterCanGo(Vec2Int cellPos);
+	bool IsSafeZone(Vec2Int cellPos);
 	Vec2 ConvertPos(Vec2Int cellPos);
 	Vec2Int GetRandomEmptyCellPos();
 

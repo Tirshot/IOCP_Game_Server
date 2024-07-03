@@ -106,8 +106,9 @@ bool GameObject::CanGo(Vec2Int cellPos)
 	if (scene == nullptr)
 		return false;
 
-	// 몬스터와 충돌
-	if (this->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+	// 몬스터와 충돌, 또는 안전 구역에서의 투사체 판정 제거
+	if (this->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER
+		|| this->info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
 		return scene->MonsterCanGo(cellPos);
 
 	return scene->CanGo(cellPos);

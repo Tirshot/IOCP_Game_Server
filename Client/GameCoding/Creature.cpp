@@ -40,4 +40,15 @@ void Creature::KnockBack()
 	if (CanGo(backPos))
 		SetCellPos(backPos, true);
 }
+
+bool Creature::IsSafeZone(Vec2Int cellPos)
+{
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		return scene->IsSafeZone(cellPos);
+	}
+
+	return false;
+}
  

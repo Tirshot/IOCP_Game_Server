@@ -23,6 +23,8 @@ public:
 	bool CanGo(Vec2Int cellPos);
 	Dir GetLookAtDir(Vec2Int cellPos);
 
+	bool IsInSafeZone();
+
 	void SetCellPos(Vec2Int cellPos, bool broadcast = false);
 	Vec2Int GetCellPos() { return Vec2Int{ info.posx(), info.posy() }; }
 	Vec2Int GetFrontCellPos();

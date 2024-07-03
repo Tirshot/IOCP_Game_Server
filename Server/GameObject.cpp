@@ -180,8 +180,9 @@ bool GameObject::CanGo(Vec2Int cellPos)
 	if (room == nullptr)
 		return false;
 
-	// 몬스터와 충돌
-	if (this->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+	// 몬스터와 충돌, 또는 안전 구역에서의 투사체 판정 제거
+	if (this->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER
+		|| this->info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
 		return room->MonsterCanGo(cellPos);
 
 	return room->CanGo(cellPos);
@@ -198,6 +199,16 @@ Dir GameObject::GetLookAtDir(Vec2Int cellPos)
 		return DIR_DOWN;
 	else
 		return DIR_UP;
+}
+
+bool GameObject::IsInSafeZone()
+{
+	auto cellPos = GetCellPos();
+
+	if (room->IsSafeZone(cellPos))
+		return true;
+
+	return false;
 }
 
 void GameObject::SetCellPos(Vec2Int cellPos, bool broadcast)

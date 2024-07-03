@@ -61,7 +61,7 @@ void Arrow::TickIdle()
 	}
 	else
 	{
-		// 앞이 비어있으면 전진, 몬스터라면 타격
+		// 앞이 비어있으면 전진
 		auto creature = scene->GetCreatureAt(nextPos);
 
 		if (creature == _owner)
@@ -72,6 +72,7 @@ void Arrow::TickIdle()
 		}
 	}
 
+	// 앞이 비어있지 않으며 발사체 주인이 아닐 경우 타격
 	SetState(HIT);
 }
 

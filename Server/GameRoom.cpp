@@ -416,6 +416,13 @@ PlayerRef GameRoom::FindClosestPlayer(Vec2Int cellPos)
 		const auto& player = item.second;
 		if (player)
 		{
+			// 플레이어가 안전 구역에 있으면 타겟팅하지 않음
+			if (player->IsInSafeZone())
+			{
+				ret = nullptr;
+				continue;
+			}
+
 			Vec2Int dir = cellPos - player->GetCellPos();
 			float dist = dir.LengthSquared();
 			if (dist < best)
@@ -576,6 +583,18 @@ bool GameRoom::MonsterCanGo(Vec2Int cellPos)
 		return false;
 
 	return tile->value == 0;
+}
+
+bool GameRoom::IsSafeZone(Vec2Int cellPos)
+{
+	Tile* tile = _tilemap.GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	if (tile->value != 2)
+		return false;
+
+	return tile->value == 2;
 }
 
 Vec2Int GameRoom::GetRandomEmptyCellPos()

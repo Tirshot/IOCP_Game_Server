@@ -1529,6 +1529,25 @@ bool DevScene::MonsterCanGo(Vec2Int cellPos)
 	return tile->value == 0;
 }
 
+bool DevScene::IsSafeZone(Vec2Int cellPos)
+{
+	if (_tilemapActor == nullptr)
+		return false;
+
+	shared_ptr<Tilemap> tm = _tilemapActor->GetTilemap();
+	if (tm == nullptr)
+		return false;
+
+	auto tile = tm->GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	if (tile->value != 2)
+		return false;
+
+	return tile->value == 2;
+}
+
 Vec2 DevScene::ConvertPos(Vec2Int cellPos)
 {
 	Vec2 ret = {};
