@@ -565,6 +565,13 @@ void ClientPacketHandler::Handle_S_AddItem(ServerSessionRef session, BYTE* buffe
 	if (myPlayer && inventory)
 	{
 		GET_SINGLE(ItemManager)->SetItemToInventory(itemID, itemCounts);
+
+		bool isEquipped = pkt.isequipped();
+		if (isEquipped)
+		{
+			auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(itemID);
+			GET_SINGLE(ItemManager)->EquipItem(item);
+		}
 	}
 
 }

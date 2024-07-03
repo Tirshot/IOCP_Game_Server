@@ -29,7 +29,8 @@ MerchantUI::MerchantUI()
 
 MerchantUI::~MerchantUI()
 {
-
+	_merchantSprite = nullptr;
+	_backGround = nullptr;
 }
 
 void MerchantUI::BeginPlay()

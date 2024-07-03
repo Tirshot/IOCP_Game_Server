@@ -15,6 +15,8 @@ QuestTrackerUI::QuestTrackerUI()
 
 QuestTrackerUI::~QuestTrackerUI()
 {
+	_quests.clear();
+	_background.reset();
 }
 
 void QuestTrackerUI::BeginPlay()

@@ -64,7 +64,13 @@ Player::Player()
 
 Player::~Player()
 {
-
+	_flipbookIdle->reset();
+	_flipbookMove->reset();
+	_flipbookAttack->reset();
+	_flipbookSpin->reset();
+	_flipbookSpinReady->reset();
+	_flipbookBow->reset();
+	_flipbookStaff->reset();
 }
 
 void Player::BeginPlay()
@@ -139,10 +145,13 @@ void Player::TickSkill()
 	if (scene == nullptr)
 		return;
 
-	if (IsSafeZone(GetCellPos()))
+	if (GetWeaponType() != Protocol::WEAPON_TYPE_STAFF)
 	{
-		SetState(IDLE);
-		return;
+		if (IsSafeZone(GetCellPos()))
+		{
+			SetState(IDLE);
+			return;
+		}
 	}
 
 	if (IsAnimationEnded())
@@ -324,6 +333,14 @@ void Player::UpdateAnimation()
 		GET_SINGLE(SoundManager)->Play(L"Land");
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
+
+	case SKILL:
+		if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
+		{
+			GET_SINGLE(SoundManager)->Play(L"Teleport");
+			SetFlipbook(_flipbookStaff[info.dir()]);
+			break;
+		}
 
 	default:
 		break;

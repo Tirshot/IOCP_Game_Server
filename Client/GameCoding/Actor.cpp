@@ -9,27 +9,29 @@ Actor::Actor()
 
 Actor::~Actor()
 {
+	for (auto& component : _components)
+		RemoveComponent(component);
 }
 
 void Actor::BeginPlay()
 {
-	for (Component* component : _components)
+	for (shared_ptr<Component> component : _components)
 		component->BeginPlay();
 }
 
 void Actor::Tick()
 {
-	for (Component* component : _components)
+	for (shared_ptr<Component> component : _components)
 		component->TickComponent();
 }
 
 void Actor::Render(HDC hdc)
 {
-	for (Component* component : _components)
+	for (shared_ptr<Component> component : _components)
 		component->Render(hdc);
 }
 
-void Actor::AddComponent(Component* component)
+void Actor::AddComponent(shared_ptr<Component> component)
 {
 	if (component == nullptr)
 		return;
@@ -38,7 +40,7 @@ void Actor::AddComponent(Component* component)
 	_components.push_back(component);
 }
 
-void Actor::RemoveComponent(Component* component)
+void Actor::RemoveComponent(shared_ptr<Component> component)
 {
 	auto findIt = std::find(_components.begin(), _components.end(), component);
 	if (findIt == _components.end())

@@ -54,6 +54,13 @@ ShopItemPanel::ShopItemPanel(ITEM item, int index, Vec2 initialPos)
 
 ShopItemPanel::~ShopItemPanel()
 {
+	_item.reset();
+	_rect = {};
+
+	_background = nullptr;
+	_goldImage = nullptr;
+	_description = nullptr;
+	_itemName = nullptr;
 }
 
 void ShopItemPanel::BeginPlay()
@@ -120,18 +127,23 @@ void ShopItemPanel::Render(HDC hdc)
 		0,
 		SRCCOPY);
 
+
+	auto sprite = _item->Sprite;
+	if (sprite)
 	// 아이템 이미지
-	::TransparentBlt(hdc,
-		_pos.x + 10,
-		_pos.y + 10,
-		43,
-		43,
-		_item->Sprite->GetDC(),
-		_item->Sprite->GetPos().x,
-		_item->Sprite->GetPos().y,
-		_item->Sprite->GetSize().x,
-		_item->Sprite->GetSize().y,
-		_item->Sprite->GetTransparent());
+	{
+		::TransparentBlt(hdc,
+			_pos.x + 10,
+			_pos.y + 10,
+			43,
+			43,
+			sprite->GetDC(),
+			sprite->GetPos().x,
+			sprite->GetPos().y,
+			sprite->GetSize().x,
+			sprite->GetSize().y,
+			sprite->GetTransparent());
+	}
 
 	// 아이템 이름
 	{

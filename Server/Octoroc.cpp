@@ -11,7 +11,7 @@ Octoroc::Octoroc()
 	info.set_monstertype(Protocol::MONSTER_TYPE_OCTOROC);
 	info.set_hp(30);
 	info.set_maxhp(30);
-	info.set_attack(10);
+	info.set_attack(50);
 	info.set_defence(0);
 	info.set_speed(120);
 }

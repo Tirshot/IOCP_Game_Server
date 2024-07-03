@@ -22,6 +22,10 @@ MerchantDialogueUI::MerchantDialogueUI()
 
 MerchantDialogueUI::~MerchantDialogueUI()
 {
+	_scripts.clear();
+
+	_merchantSprite = nullptr;
+	_backGround = nullptr;
 }
 
 void MerchantDialogueUI::BeginPlay()

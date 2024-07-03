@@ -29,6 +29,9 @@ Octoroc::Octoroc()
 
 Octoroc::~Octoroc()
 {
+	_flipbookIdle->reset();
+	_flipbookMove->reset();
+	_flipbookSkill->reset();
 }
 
 void Octoroc::BeginPlay()

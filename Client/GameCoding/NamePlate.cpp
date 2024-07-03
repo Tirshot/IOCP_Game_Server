@@ -29,6 +29,7 @@ NamePlate::NamePlate(wstring wstr)
 
 NamePlate::~NamePlate()
 {
+	_sprite = nullptr;
 }
 
 void NamePlate::BeginPlay()

@@ -9,6 +9,7 @@ Tilemap::Tilemap()
 
 Tilemap::~Tilemap()
 {
+	_tiles.clear();
 }
 
 void Tilemap::LoadFile(const wstring& path)

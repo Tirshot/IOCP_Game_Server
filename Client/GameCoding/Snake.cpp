@@ -30,6 +30,9 @@ Snake::Snake()
 
 Snake::~Snake()
 {
+	_flipbookIdle->reset();
+	_flipbookMove->reset();
+	_flipbookHit->reset();
 }
 
 void Snake::BeginPlay()

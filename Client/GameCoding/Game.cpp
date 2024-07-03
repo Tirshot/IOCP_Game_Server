@@ -14,7 +14,7 @@
 
 Game::Game()
 {
-	
+
 }
 
 Game::~Game()
@@ -53,6 +53,8 @@ void Game::Init(HWND hwnd)
 
 void Game::Update()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	srand(unsigned(time(0)));
 	GET_SINGLE(TimeManager)->Update();
 	GET_SINGLE(InputManager)->Update();

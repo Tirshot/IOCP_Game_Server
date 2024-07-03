@@ -15,7 +15,8 @@ Panel::Panel()
 
 Panel::~Panel()
 {
-	_children.clear();
+	for (auto& child : _children)
+		RemoveChild(child);
 }
 
 void Panel::BeginPlay()

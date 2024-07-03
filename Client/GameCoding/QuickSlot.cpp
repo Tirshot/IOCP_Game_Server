@@ -9,6 +9,11 @@
 
 QuickSlot::~QuickSlot()
 {
+	_slots.clear();
+
+	_slotBackground = nullptr;
+	_slotSelectedSprite = nullptr;
+	_selectedItem = nullptr;
 }
 
 void QuickSlot::BeginPlay()

@@ -38,8 +38,8 @@ public:
 	void SetMaxCounts(int maxCount) { _maxCounts = maxCount; }
 
 private:
-	class shared_ptr<Sprite> _background = nullptr;
-	class shared_ptr<Sprite> _icon = nullptr;
+	shared_ptr<class Sprite> _background = nullptr;
+	shared_ptr<class Sprite> _icon = nullptr;
 	RECT _rect = {};
 	int _itemID = 0;
 	int _counts = 1;

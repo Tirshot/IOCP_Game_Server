@@ -20,6 +20,7 @@ MerchantTrigger::MerchantTrigger()
 
 MerchantTrigger::~MerchantTrigger()
 {
+	_merchantUI = nullptr;
 }
 
 void MerchantTrigger::BeginPlay()

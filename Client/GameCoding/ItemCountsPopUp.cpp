@@ -23,7 +23,8 @@ ItemCountsPopUp::ItemCountsPopUp()
 
 ItemCountsPopUp::~ItemCountsPopUp()
 {
-
+	_background = nullptr;
+	_icon = nullptr;
 }
 
 void ItemCountsPopUp::BeginPlay()

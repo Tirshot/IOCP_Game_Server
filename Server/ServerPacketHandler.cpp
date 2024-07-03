@@ -672,13 +672,14 @@ SendBufferRef ServerPacketHandler::Make_S_ItemDrop(const Protocol::ItemInfo& inf
 	return MakeSendBuffer(pkt, S_ItemDrop);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_AddItem(uint64 objectID, int itemID, int itemCounts)
+SendBufferRef ServerPacketHandler::Make_S_AddItem(uint64 objectID, int itemID, int itemCounts, bool isEquipped)
 {
 	Protocol::S_AddItem pkt;
 
 	pkt.set_objectid(objectID);
 	pkt.set_itemid(itemID);
 	pkt.set_itemcounts(itemCounts);
+	pkt.set_isequipped(isEquipped);
 
 	return MakeSendBuffer(pkt, S_AddItem);
 }

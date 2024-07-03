@@ -479,6 +479,7 @@ PROTOBUF_CONSTEXPR S_AddItem::S_AddItem(
     /*decltype(_impl_.objectid_)*/uint64_t{0u}
   , /*decltype(_impl_.itemid_)*/0u
   , /*decltype(_impl_.itemcounts_)*/0u
+  , /*decltype(_impl_.isequipped_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_AddItemDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_AddItemDefaultTypeInternal()
@@ -799,6 +800,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddItem, _impl_.objectid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddItem, _impl_.itemid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AddItem, _impl_.itemcounts_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_AddItem, _impl_.isequipped_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_EquipItem, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -858,9 +860,9 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 237, -1, -1, sizeof(::Protocol::C_AddItem)},
   { 245, -1, -1, sizeof(::Protocol::C_EquipItem)},
   { 254, -1, -1, sizeof(::Protocol::S_AddItem)},
-  { 263, -1, -1, sizeof(::Protocol::S_EquipItem)},
-  { 272, -1, -1, sizeof(::Protocol::S_ItemDrop)},
-  { 279, -1, -1, sizeof(::Protocol::C_KillPlayer)},
+  { 264, -1, -1, sizeof(::Protocol::S_EquipItem)},
+  { 273, -1, -1, sizeof(::Protocol::S_ItemDrop)},
+  { 280, -1, -1, sizeof(::Protocol::C_KillPlayer)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -948,13 +950,13 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\006C_Heal\022\020\n\010objectId\030\001 \001(\004\"@\n\tC_AddItem\022$"
   "\n\010ItemInfo\030\001 \001(\0132\022.Protocol.ItemInfo\022\r\n\005"
   "index\030\002 \001(\r\">\n\013C_EquipItem\022\020\n\010objectId\030\001"
-  " \001(\004\022\016\n\006itemid\030\002 \001(\r\022\r\n\005equip\030\003 \001(\010\"A\n\tS"
+  " \001(\004\022\016\n\006itemid\030\002 \001(\r\022\r\n\005equip\030\003 \001(\010\"U\n\tS"
   "_AddItem\022\020\n\010objectId\030\001 \001(\004\022\016\n\006itemid\030\002 \001"
-  "(\r\022\022\n\nitemCounts\030\003 \001(\r\">\n\013S_EquipItem\022\020\n"
-  "\010objectId\030\001 \001(\004\022\016\n\006itemid\030\002 \001(\r\022\r\n\005equip"
-  "\030\003 \001(\010\"2\n\nS_ItemDrop\022$\n\010itemInfo\030\001 \001(\0132\022"
-  ".Protocol.ItemInfo\" \n\014C_KillPlayer\022\020\n\010ob"
-  "jectid\030\001 \001(\004b\006proto3"
+  "(\r\022\022\n\nitemCounts\030\003 \001(\r\022\022\n\nisEquipped\030\004 \001"
+  "(\010\">\n\013S_EquipItem\022\020\n\010objectId\030\001 \001(\004\022\016\n\006i"
+  "temid\030\002 \001(\r\022\r\n\005equip\030\003 \001(\010\"2\n\nS_ItemDrop"
+  "\022$\n\010itemInfo\030\001 \001(\0132\022.Protocol.ItemInfo\" "
+  "\n\014C_KillPlayer\022\020\n\010objectid\030\001 \001(\004b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -962,7 +964,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 2020, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 2040, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 37,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -7934,12 +7936,13 @@ S_AddItem::S_AddItem(const S_AddItem& from)
       decltype(_impl_.objectid_){}
     , decltype(_impl_.itemid_){}
     , decltype(_impl_.itemcounts_){}
+    , decltype(_impl_.isequipped_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.itemcounts_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.itemcounts_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.isequipped_) -
+    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.isequipped_));
   // @@protoc_insertion_point(copy_constructor:Protocol.S_AddItem)
 }
 
@@ -7951,6 +7954,7 @@ inline void S_AddItem::SharedCtor(
       decltype(_impl_.objectid_){uint64_t{0u}}
     , decltype(_impl_.itemid_){0u}
     , decltype(_impl_.itemcounts_){0u}
+    , decltype(_impl_.isequipped_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -7979,8 +7983,8 @@ void S_AddItem::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.itemcounts_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.itemcounts_));
+      reinterpret_cast<char*>(&_impl_.isequipped_) -
+      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.isequipped_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -8010,6 +8014,14 @@ const char* S_AddItem::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           _impl_.itemcounts_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // bool isEquipped = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.isequipped_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -8061,6 +8073,12 @@ uint8_t* S_AddItem::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt32ToArray(3, this->_internal_itemcounts(), target);
   }
 
+  // bool isEquipped = 4;
+  if (this->_internal_isequipped() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(4, this->_internal_isequipped(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -8092,6 +8110,11 @@ size_t S_AddItem::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_itemcounts());
   }
 
+  // bool isEquipped = 4;
+  if (this->_internal_isequipped() != 0) {
+    total_size += 1 + 1;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -8119,6 +8142,9 @@ void S_AddItem::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   if (from._internal_itemcounts() != 0) {
     _this->_internal_set_itemcounts(from._internal_itemcounts());
   }
+  if (from._internal_isequipped() != 0) {
+    _this->_internal_set_isequipped(from._internal_isequipped());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -8137,8 +8163,8 @@ void S_AddItem::InternalSwap(S_AddItem* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_AddItem, _impl_.itemcounts_)
-      + sizeof(S_AddItem::_impl_.itemcounts_)
+      PROTOBUF_FIELD_OFFSET(S_AddItem, _impl_.isequipped_)
+      + sizeof(S_AddItem::_impl_.isequipped_)
       - PROTOBUF_FIELD_OFFSET(S_AddItem, _impl_.objectid_)>(
           reinterpret_cast<char*>(&_impl_.objectid_),
           reinterpret_cast<char*>(&other->_impl_.objectid_));

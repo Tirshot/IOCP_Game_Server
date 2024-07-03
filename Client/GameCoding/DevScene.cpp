@@ -61,7 +61,7 @@ DevScene::DevScene()
 
 DevScene::~DevScene()
 {
-
+	_quests.clear();
 }
 
 void DevScene::Init()

@@ -28,6 +28,7 @@ TextBox::TextBox(wstring wstr)
 
 TextBox::~TextBox()
 {
+	_backGround = nullptr;
 }
 
 void TextBox::BeginPlay()

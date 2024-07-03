@@ -11,6 +11,7 @@ MerchantTutorialTrigger::MerchantTutorialTrigger()
 
 MerchantTutorialTrigger::~MerchantTutorialTrigger()
 {
+	_tutorial = nullptr;
 }
 
 void MerchantTutorialTrigger::BeginPlay()

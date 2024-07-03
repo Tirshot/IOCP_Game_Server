@@ -12,7 +12,7 @@ TutorialTrigger::TutorialTrigger()
 
 TutorialTrigger::~TutorialTrigger()
 {
-
+	_tutorial = nullptr;
 }
 
 void TutorialTrigger::BeginPlay()

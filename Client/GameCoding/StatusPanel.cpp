@@ -12,6 +12,7 @@ StatusPanel::StatusPanel()
 
 StatusPanel::~StatusPanel()
 {
+	_rect = {};
 }
 
 void StatusPanel::BeginPlay()

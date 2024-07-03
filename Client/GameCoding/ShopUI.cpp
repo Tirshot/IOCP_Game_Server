@@ -27,7 +27,13 @@ ShopUI::ShopUI()
 
 ShopUI::~ShopUI()
 {
+	_children.clear();
+	_items.clear();
 
+	_sellItem.reset();
+	_sellToShop.reset();
+
+	_background.reset();
 }
 
 void ShopUI::BeginPlay()

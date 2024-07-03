@@ -102,7 +102,7 @@ public:
 	static SendBufferRef Make_S_QuestList(uint64 objectid, const Protocol::QuestInfo& info);
 	static SendBufferRef Make_S_QuestState(const Protocol::QuestInfo& info);
 	static SendBufferRef Make_S_ItemDrop(const Protocol::ItemInfo& info);
-	static SendBufferRef Make_S_AddItem(uint64 objectID, int itemID, int itemCounts);
+	static SendBufferRef Make_S_AddItem(uint64 objectID, int itemID, int itemCounts, bool isEquipped = false);
 	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 objectID);
 
 

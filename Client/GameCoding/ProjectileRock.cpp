@@ -21,7 +21,7 @@ ProjectileRock::ProjectileRock()
 
 ProjectileRock::~ProjectileRock()
 {
-
+	_flipbookMove->reset();
 }
 
 void ProjectileRock::BeginPlay()

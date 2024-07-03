@@ -8,7 +8,8 @@ NPC::NPC()
 
 NPC::~NPC()
 {
-
+	_flipbookIdle = nullptr;
+	_flipbookMove = nullptr;
 }
 
 void NPC::BeginPlay()

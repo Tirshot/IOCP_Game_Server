@@ -12,6 +12,7 @@ ChatInput::ChatInput()
 
 ChatInput::~ChatInput()
 {
+
 }
 
 void ChatInput::BeginPlay()

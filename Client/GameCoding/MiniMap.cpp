@@ -14,6 +14,8 @@ MiniMap::MiniMap()
 
 MiniMap::~MiniMap()
 {
+    _map = nullptr;
+    _background = nullptr;
 }
 
 void MiniMap::BeginPlay()

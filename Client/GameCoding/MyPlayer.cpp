@@ -27,13 +27,13 @@
 
 MyPlayer::MyPlayer()
 {
-	CameraComponent* camera = new CameraComponent();
+	auto camera = make_shared<CameraComponent>();
 	AddComponent(camera);
 }
 
 MyPlayer::~MyPlayer()
 {
-
+	_questsStates.clear();
 }
 
 void MyPlayer::BeginPlay()

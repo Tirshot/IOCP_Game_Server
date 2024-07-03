@@ -22,8 +22,8 @@ private:
 	void SetItemSlot(ITEM& slot);
 	void SetEquipSlotRects();
 	void SlotRectsPosUpdate(RECT rect);
-	void SyncUseableItemToServer(int itemID, int counts);
-	void SyncItemToServer(int itemID, int counts);
+	void AddUseableItemToServer(int itemID, int counts);
+	void AddItemToServer(int itemID, int counts);
 	void SyncEquips(int itemID, bool equip = true);
 
 public:
@@ -39,12 +39,13 @@ public:
 	RECT GetInvenRect() { return _invenRect; }
 
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
+	void SyncUseableItem();
 
 	shared_ptr<ITEM> FindItemFromInventory(int itemId);
 	int FindItemIndexFromInventory(int itemId);
 	shared_ptr<ITEM> FindItemFromInventory(shared_ptr<ITEM> item);
 	
-	shared_ptr<ITEM> GetEquippedItem(wstring wstr);
+	ITEM GetEquippedItem(wstring wstr);
 
 	void EquipItem(shared_ptr<ITEM> item);
 	void UnEquipItem(shared_ptr<ITEM> item);
@@ -64,7 +65,7 @@ protected:
 	vector<RECT> _rects;
 
 	// ÀåÂø ½½·Ô
-	vector<::pair<RECT, shared_ptr<ITEM>>> _equips;
+	vector<::pair<RECT, ITEM>> _equips;
 	vector<RECT> _equipRects;
 	
 	shared_ptr<class TextBox> _itemName = nullptr;

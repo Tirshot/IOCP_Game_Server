@@ -16,6 +16,7 @@ Item::Item()
 
 Item::~Item()
 {
+	itemInfo = {};
 }
 
 void Item::BeginPlay()

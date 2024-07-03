@@ -35,6 +35,10 @@ Moblin::Moblin()
 
 Moblin::~Moblin()
 {
+	_flipbookIdle->reset();
+	_flipbookMove->reset();
+	_flipbookAttack->reset();
+	_flipbookHit->reset();
 }
 
 void Moblin::BeginPlay()

@@ -11,6 +11,7 @@ Projectile::Projectile()
 
 Projectile::~Projectile()
 {
+	_owner = nullptr;
 }
 
 void Projectile::BeginPlay()

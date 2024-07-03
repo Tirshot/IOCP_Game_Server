@@ -24,7 +24,7 @@ Arrow::Arrow()
 
 Arrow::~Arrow()
 {
-
+	_flipbookMove->reset();
 }
 
 void Arrow::BeginPlay()

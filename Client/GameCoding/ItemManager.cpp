@@ -198,6 +198,11 @@ void ItemManager::SyncToServer()
     }
 }
 
+void ItemManager::SyncUseableItem()
+{
+    _inventory->SyncUseableItem();
+}
+
 void ItemManager::OpenInventory()
 {
     if (_inventory->GetVisible())

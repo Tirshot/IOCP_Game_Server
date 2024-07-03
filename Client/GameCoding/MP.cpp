@@ -17,6 +17,9 @@ MP::MP()
 
 MP::~MP()
 {
+	_myPlayer = nullptr;
+	_blackMp = nullptr;
+	_blueMp = nullptr;
 }
 
 void MP::BeginPlay()

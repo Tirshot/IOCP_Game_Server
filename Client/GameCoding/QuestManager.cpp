@@ -13,6 +13,7 @@
 
 QuestManager::~QuestManager()
 {
+    _quests.clear();
 }
 
 void QuestManager::BeginPlay()
@@ -196,11 +197,11 @@ vector<wstring> QuestManager::GetQuestScript(int questID)
 	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayerId();
 	auto questTable = GET_SINGLE(ResourceManager)->GetQuestTable();
 
-	if (questTable.size() < questID)
+	if (questTable.empty())
 		return {};
 
 	vector<wstring> questInfo = questTable[questID];
-	if (questInfo.size() == 0)
+	if (questInfo.empty())
 		return {};
 
 	// 퀘스트 진행도에 따라 스크립트를 불러오기

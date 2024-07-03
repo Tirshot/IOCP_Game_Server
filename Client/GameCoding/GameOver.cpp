@@ -27,7 +27,8 @@ GameOver::GameOver()
 
 GameOver::~GameOver()
 {
-
+	_background = nullptr;
+	_gameOver = nullptr;
 }
 
 void GameOver::BeginPlay()

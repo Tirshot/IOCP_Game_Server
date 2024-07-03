@@ -9,6 +9,7 @@ CameraComponent::CameraComponent()
 
 CameraComponent::~CameraComponent()
 {
+
 }
 
 void CameraComponent::BeginPlay()

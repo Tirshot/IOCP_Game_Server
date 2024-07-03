@@ -161,5 +161,19 @@ void Inventory::SyncToClient(uint64 objectID)
                  player->session->Send(sendBuffer);
         }
     }
+
+    for (const auto& slot : _equips)
+    {
+        int itemID = slot.itemID;
+        int itemCounts = slot.itemCounts;
+
+        {
+            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddItem(objectID, itemID, itemCounts, true);
+            PlayerRef player = GRoom->GetPlayer(objectID);
+
+            if (player)
+                player->session->Send(sendBuffer);
+        }
+    }
 }
 

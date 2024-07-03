@@ -11,6 +11,9 @@ Button::Button()
 
 Button::~Button()
 {
+	_sprites->reset();
+	_onClick = nullptr;
+	_currentSprite.reset();
 }
 
 void Button::BeginPlay()

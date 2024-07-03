@@ -29,12 +29,7 @@ void ResourceManager::Clear()
 	_sprites.clear();
 	_flipbooks.clear();
 	_tilemaps.clear();
-
-	for (auto& sound : _sounds)
-		SAFE_DELETE(sound.second);
-
 	_sounds.clear();
-
 }
 
 shared_ptr<Texture> ResourceManager::LoadTexture(const wstring& key, const wstring& path, uint32 transparent)
@@ -124,7 +119,7 @@ shared_ptr<Tilemap> ResourceManager::LoadTilemap(const wstring& key, const wstri
 	return tm;
 }
 
-Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path, SoundType type)
+shared_ptr<Sound> ResourceManager::LoadSound(const wstring& key, const wstring& path, SoundType type)
 {
 	// 이미 존재하면 찾아서 반환
 	if (_sounds.find(key) != _sounds.end())
@@ -133,7 +128,7 @@ Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path, Sound
 	// 없으면 새로 생성
 	fs::path fullPath = _resourcePath / path;
 
-	Sound* sound = new Sound();
+	shared_ptr<Sound> sound = make_shared<Sound>();
 	sound->LoadWave(fullPath);
 	sound->SetType(type);
 	_sounds[key] = sound;

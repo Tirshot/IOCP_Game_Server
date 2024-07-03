@@ -12,7 +12,7 @@ Trigger::Trigger()
 
 Trigger::~Trigger()
 {
-
+	_ui = nullptr;
 }
 
 void Trigger::BeginPlay()

@@ -67,6 +67,11 @@ QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, Vec2 pos, int idx)
 
 QuestUIPanel::~QuestUIPanel()
 {
+	_background = nullptr;
+	_questImage = nullptr;
+	_goldImage = nullptr;
+	_accept = nullptr;
+	_complete = nullptr;
 }
 
 void QuestUIPanel::BeginPlay()

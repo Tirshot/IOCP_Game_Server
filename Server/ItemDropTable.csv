@@ -17,3 +17,11 @@
 2,Consumable,7,HeartItem,30,30
 2,Consumable,6,MaxHeartItem,5,180
 2,ETC,27,MoblinSpear,30,30
+3,Wearable,11,Helmet01,10,60
+3,Wearable,15,Armor01,5,60
+3,Wearable,19,Pants01,10,60
+3,Wearable,23,Boots01,5,60
+3,Consumable,4,ArrowItem,30,30
+3,Consumable,5,Potion,20,30
+3,Consumable,7,HeartItem,30,30
+3,Consumable,6,MaxHeartItem,5,180

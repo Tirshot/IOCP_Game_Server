@@ -15,7 +15,9 @@ HP::HP()
 
 HP::~HP()
 {
-
+	_myPlayer = nullptr;
+	_blackHeart = nullptr;
+	_heart = nullptr;
 }
 
 void HP::BeginPlay()

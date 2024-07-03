@@ -38,6 +38,7 @@ public:
 
 	shared_ptr<ITEM> FindItemFromInventory(int itemId);
 	void SyncToServer();
+	void SyncUseableItem();
 	void OpenInventory();
 
 	void ResetInventory();

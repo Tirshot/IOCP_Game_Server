@@ -21,8 +21,8 @@ protected:
 	RECT _rect = {};
 	int _alpha = 0;
 	float _sumTime = 0.f;
-	class shared_ptr<Sprite> _merchantSprite = nullptr;
-	class shared_ptr<Sprite> _backGround = nullptr;
+	shared_ptr<class Sprite> _merchantSprite = nullptr;
+	shared_ptr<class Sprite> _backGround = nullptr;
 	bool _initialized = false;
 };
 // AddChild를 통해 버튼, ui, textbox를 _children에 추가하여 사용한다.

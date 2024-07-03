@@ -19,6 +19,9 @@ QuestUI::QuestUI()
 
 QuestUI::~QuestUI()
 {
+	_quests.clear();
+
+	_background.reset();
 }
 
 void QuestUI::BeginPlay()

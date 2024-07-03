@@ -5639,6 +5639,7 @@ class S_AddItem final :
     kObjectIdFieldNumber = 1,
     kItemidFieldNumber = 2,
     kItemCountsFieldNumber = 3,
+    kIsEquippedFieldNumber = 4,
   };
   // uint64 objectId = 1;
   void clear_objectid();
@@ -5667,6 +5668,15 @@ class S_AddItem final :
   void _internal_set_itemcounts(uint32_t value);
   public:
 
+  // bool isEquipped = 4;
+  void clear_isequipped();
+  bool isequipped() const;
+  void set_isequipped(bool value);
+  private:
+  bool _internal_isequipped() const;
+  void _internal_set_isequipped(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.S_AddItem)
  private:
   class _Internal;
@@ -5678,6 +5688,7 @@ class S_AddItem final :
     uint64_t objectid_;
     uint32_t itemid_;
     uint32_t itemcounts_;
+    bool isequipped_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -8580,6 +8591,26 @@ inline void S_AddItem::_internal_set_itemcounts(uint32_t value) {
 inline void S_AddItem::set_itemcounts(uint32_t value) {
   _internal_set_itemcounts(value);
   // @@protoc_insertion_point(field_set:Protocol.S_AddItem.itemCounts)
+}
+
+// bool isEquipped = 4;
+inline void S_AddItem::clear_isequipped() {
+  _impl_.isequipped_ = false;
+}
+inline bool S_AddItem::_internal_isequipped() const {
+  return _impl_.isequipped_;
+}
+inline bool S_AddItem::isequipped() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_AddItem.isEquipped)
+  return _internal_isequipped();
+}
+inline void S_AddItem::_internal_set_isequipped(bool value) {
+  
+  _impl_.isequipped_ = value;
+}
+inline void S_AddItem::set_isequipped(bool value) {
+  _internal_set_isequipped(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_AddItem.isEquipped)
 }
 
 // -------------------------------------------------------------------

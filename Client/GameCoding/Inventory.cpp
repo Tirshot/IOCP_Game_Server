@@ -23,12 +23,23 @@ Inventory::Inventory()
     _descriptionSprite = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
 
     _slots.assign(40, { 0 });
-    _equips.assign(5, make_pair(RECT(), make_shared<ITEM>()));
+    _equips.assign(5, { RECT(), ITEM() });
 }
 
 Inventory::~Inventory()
 {
-    
+    _slots.clear();
+    _equips.clear();
+    _rects.clear();
+    _equipRects.clear();
+
+    _owner = nullptr;
+    _itemName = nullptr;
+    _itemCount = nullptr;
+    _itemDescription = nullptr;
+    _background = nullptr;
+    _itemSprite = nullptr;
+    _descriptionSprite = nullptr;
 }
 
 void Inventory::BeginPlay()
@@ -116,12 +127,8 @@ void Inventory::BeginPlay()
     }
 
     // 기본 무기 지급
-    for (int i = 1; i < 5; i++)
+    for (int i = 1; i < 4; i++)
         AddItem(i);
-
-    //// 테스트용 장비 지급
-    //for (int i = 10; i < 25; i++)
-    //    AddItem(i);
 
     _initialized = true;
 }
@@ -209,12 +216,7 @@ void Inventory::Tick()
         }
     }
 
-    // 서버와 동기화되는 소모템 연동
-    if (myPlayer)
-    {
-        SetItemCount(4, myPlayer->info.arrows());
-        SetItemCount(5, myPlayer->info.potion());
-    }
+    SyncUseableItem();
 
     // popup이 있으면 일시정지
     if (_pause)
@@ -278,6 +280,17 @@ void Inventory::Tick()
                 // 아이템 설명
                 _itemName->SetText(slot->KorName);
                 _itemDescription->SetText(slot->Description);
+
+                if (slot->Type == L"Consumable" || slot->Type == L"ETC")
+                {
+                    _itemCount->SetVisible(true);
+                    _itemCount->SetText(format(L"{0}개", slot->ItemCount));
+                }
+                else
+                {
+                    _itemCount->SetVisible(false);
+                    _itemCount->SetText(L"");
+                }
 
                 // 아이템 장착
                 if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::RightMouse))
@@ -420,50 +433,39 @@ void Inventory::Tick()
             {
                 _mousePos = GET_SINGLE(InputManager)->GetMousePos();
 
-                if (slot.second == nullptr)
+                if (slot.second.Sprite == nullptr)
                     break;
 
                 // 아이템 설명
-                _itemName->SetText(slot.second->KorName);
-                _itemDescription->SetText(slot.second->Description);
+                _itemName->SetText(slot.second.KorName);
+                _itemDescription->SetText(slot.second.Description);
 
                 // 아이템 장착 해제
                 if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::RightMouse))
                 {
-                    if (slot.second == nullptr)
+                    if (slot.second.Sprite == nullptr)
                         break;
 
-                    if (slot.second->ItemId <= 3)
+                    if (slot.second.ItemId <= 3)
                         break;
 
-                    AddItem(slot.second);
-                    slot.second->Reset();
+                    AddItem(slot.second.ItemId);
+                    slot.second.Reset();
                     SyncEquips(_owner->GetObjectID(), false);
                 }
 
                 // 드래그 시작
                 if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
                 {
-                    if (slot.second == nullptr)
+                    if (slot.second.Sprite == nullptr)
                         break;
 
                     // 빈 슬롯은 드래그 불가
-                    if (slot.second->ItemId <= 0)
+                    if (slot.second.ItemId <= 0)
                         return;
 
                     _isEquipedItem = true;
-                    _selectedItem = slot.second;
-                }
-
-                // 아이템 개수 표시
-                if (slot.second->Type == L"Consumable")
-                {
-                    _itemCount->SetVisible(true);
-                    _itemCount->SetText(to_wstring(slot.second->ItemCount) + L"개");
-                }
-                else
-                {
-                    _itemCount->SetVisible(false);
+                    _selectedItem = make_shared<ITEM>(slot.second);
                 }
 
                 // 인벤토리 바깥으로 드랍 -> 아이템 장착 해제
@@ -479,9 +481,9 @@ void Inventory::Tick()
                     AddItem(_selectedItem->ItemId);
                     for (auto& equip : _equips)
                     {
-                        if (equip.second->ItemId == _selectedItem->ItemId)
+                        if (equip.second.ItemId == _selectedItem->ItemId)
                         {
-                            equip.second->Reset();
+                            equip.second.Reset();
                         }
                     }
                     SyncEquips(_owner->GetObjectID(), false);
@@ -546,10 +548,7 @@ void Inventory::Render(HDC hdc)
 
     for (int i = 0; i < 5; i++)
     {
-        if (_equips[i].second == nullptr)
-            continue;
-
-        if (_equips[i].second->Sprite == nullptr)
+        if (_equips[i].second.Sprite == nullptr)
             continue;
 
         float spritePosX = _equips[i].first.left;
@@ -560,12 +559,12 @@ void Inventory::Render(HDC hdc)
             spritePosY,
             _slotSize,
             _slotSize,
-            _equips[i].second->Sprite->GetDC(),
-            _equips[i].second->Sprite->GetPos().x,
-            _equips[i].second->Sprite->GetPos().y,
-            _equips[i].second->Sprite->GetSize().x,
-            _equips[i].second->Sprite->GetSize().y,
-            _equips[i].second->Sprite->GetTransparent());
+            _equips[i].second.Sprite->GetDC(),
+            _equips[i].second.Sprite->GetPos().x,
+            _equips[i].second.Sprite->GetPos().y,
+            _equips[i].second.Sprite->GetSize().x,
+            _equips[i].second.Sprite->GetSize().y,
+            _equips[i].second.Sprite->GetTransparent());
     }
 
     Super::Render(hdc);
@@ -621,6 +620,10 @@ void Inventory::SetItemSlot(ITEM& slot)
     if (slot.ItemId <= 0)
         return;
 
+    auto item = GET_SINGLE(ItemManager)->GetItem(slot.ItemId);
+    if (item.Sprite == nullptr)
+        return;
+
     if (slot.ItemCount <= 0)
     {
         RECT rect = slot.Rect;
@@ -668,7 +671,32 @@ void Inventory::SlotRectsPosUpdate(RECT rect)
     rect.top = _pos.y + 45;
 }
 
-void Inventory::SyncUseableItemToServer(int itemID, int counts)
+void Inventory::SyncUseableItem()
+{
+    auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    if (myPlayer)
+    {
+        auto arrows = myPlayer->info.arrows();
+        auto potions = myPlayer->info.potion();
+
+        auto arrow = FindItemFromInventory(4);
+        auto potion = FindItemFromInventory(5);
+
+        if (arrow)
+        {
+            arrow->ItemCount = arrows;
+            myPlayer->info.set_arrows(arrow->ItemCount);
+        }
+
+        if (potion)
+        {
+            potion->ItemCount = potions;
+            myPlayer->info.set_potion(potion->ItemCount);
+        }
+    }
+}
+
+void Inventory::AddUseableItemToServer(int itemID, int counts)
 {
     // 서버와 동기화되는 소모품 관리 -> 서버 관리 인벤토리에 추가할 필요가 있음
     auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
@@ -704,7 +732,7 @@ void Inventory::SyncUseableItemToServer(int itemID, int counts)
     }
 }
 
-void Inventory::SyncItemToServer(int itemID, int counts)
+void Inventory::AddItemToServer(int itemID, int counts)
 {
     int objectID = -1;
     objectID = GET_SINGLE(SceneManager)->GetMyPlayerId();
@@ -741,7 +769,7 @@ void Inventory::AutoSyncInventory()
     // 인벤토리 정보 서버로 송신
     for (auto& slot : _slots)
     {
-        SyncItemToServer(slot->ItemId, slot->ItemCount);
+        AddItemToServer(slot->ItemId, slot->ItemCount);
     }
 }
 
@@ -824,7 +852,7 @@ bool Inventory::AddItem(shared_ptr<ITEM> item)
                         slot->SubType = item->SubType;
                         slot->Type = item->Type;
 
-                        SyncItemToServer(ItemId, 1);
+                        AddItemToServer(ItemId, 1);
                         SetItemSlot(*slot.get());
                         return true;
                     }
@@ -838,7 +866,7 @@ bool Inventory::AddItem(shared_ptr<ITEM> item)
                     {
                         slot->ItemCount++; // 수량 증가
                         // 소모성 아이템 동기화
-                        SyncUseableItemToServer(ItemId, 1);
+                        //AddUseableItemToServer(ItemId, 1);
                         SetItemSlot(*slot.get());
                         return true;
                     }
@@ -849,7 +877,7 @@ bool Inventory::AddItem(shared_ptr<ITEM> item)
                 for (auto& slot : _slots)
                 {
                     slot->ItemCount++; // 수량 증가
-                    SyncItemToServer(ItemId, 1);
+                    AddItemToServer(ItemId, 1);
                     SetItemSlot(*slot.get());
                     return true;
                 }
@@ -878,7 +906,7 @@ bool Inventory::AddItem(shared_ptr<ITEM> item)
                     slot->Sprite = item->Sprite;
                     slot->SubType = item->SubType;
                     slot->Type = item->Type;
-                    SyncItemToServer(ItemId, 1);
+                    AddItemToServer(ItemId, 1);
                     SetItemSlot(*slot.get());
                     return true;
                 }
@@ -942,7 +970,7 @@ bool Inventory::AddItem(int ItemId)
                         slot->index = index;
                         slot->ItemId = ItemId;
                         slot->ItemCount = 1;
-                        SyncItemToServer(ItemId, 1);
+                        AddItemToServer(ItemId, 1);
                         SetItemSlot(*slot.get());
                         return true;
                     }
@@ -963,7 +991,7 @@ bool Inventory::AddItem(int ItemId)
                             slot->index = index;
                             slot->ItemCount++; // 수량 증가
                             // 소모성 아이템 동기화
-                            SyncUseableItemToServer(ItemId, 1);
+                            AddUseableItemToServer(ItemId, 1);
                             SetItemSlot(*slot.get());
                             return true;
                         }
@@ -984,7 +1012,7 @@ bool Inventory::AddItem(int ItemId)
                         {
                             slot->index = index;
                             slot->ItemCount++; // 수량 증가
-                            SyncItemToServer(ItemId, 1);
+                            AddItemToServer(ItemId, 1);
                             SetItemSlot(*slot.get());
                             return true;
                         }
@@ -1011,8 +1039,8 @@ bool Inventory::AddItem(int ItemId)
                     slot->index = index;
                     slot->ItemId = ItemId;
                     slot->ItemCount += 1;
-                    SyncUseableItemToServer(ItemId, 1);
-                    SyncItemToServer(ItemId, 1);
+                    AddUseableItemToServer(ItemId, 1);
+                    AddItemToServer(ItemId, 1);
                     SetItemSlot(*slot.get());
                     return true;
                 }
@@ -1079,7 +1107,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                         addItemCount++;
                         slot->ItemId = ItemId;
                         slot->ItemCount = 1;
-                        SyncItemToServer(ItemId, 1);
+                        AddItemToServer(ItemId, 1);
                         SetItemSlot(*slot.get());
 
                         if (addItemCount == ItemCount)
@@ -1101,7 +1129,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                             slot->index = index;
                             // 수량 증가
                             slot->ItemCount += ItemCount;
-                            SyncUseableItemToServer(ItemId, ItemCount);
+                            AddUseableItemToServer(ItemId, ItemCount);
                             SetItemSlot(*slot.get());
                             return true;
                         }
@@ -1122,7 +1150,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                             slot->index = index;
                             // 수량 증가
                             slot->ItemCount += ItemCount;
-                            SyncItemToServer(ItemId, ItemCount);
+                            AddItemToServer(ItemId, ItemCount);
                             SetItemSlot(*slot.get());
                             return true;
                         }
@@ -1159,7 +1187,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                         addItemCount++;
                         slot->ItemId = ItemId;
                         slot->ItemCount = 1;
-                        SyncItemToServer(ItemId, 1);
+                        AddItemToServer(ItemId, 1);
                         SetItemSlot(*slot.get());
 
                         if (addItemCount == ItemCount)
@@ -1193,7 +1221,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                             slot->index = index;
                             slot->ItemId = ItemId;
                             slot->ItemCount += ItemCount;
-                            SyncUseableItemToServer(ItemId, ItemCount);
+                            AddUseableItemToServer(ItemId, ItemCount);
                             SetItemSlot(*slot.get());
                             return true;
                         }
@@ -1223,7 +1251,7 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                             slot->index = index;
                             slot->ItemId = ItemId;
                             slot->ItemCount += ItemCount;
-                            SyncItemToServer(ItemId, ItemCount);
+                            AddItemToServer(ItemId, ItemCount);
                             SetItemSlot(*slot.get());
                             return true;
                         }
@@ -1252,9 +1280,9 @@ bool Inventory::RemoveItem(shared_ptr<ITEM> item)
             slot->index = index;
             slot->ItemCount--;
 
-            SyncUseableItemToServer(item->ItemId, -1);
+            AddUseableItemToServer(item->ItemId, -1);
 
-            SyncItemToServer(itemId, -1);
+            AddItemToServer(itemId, -1);
 
             if (slot->ItemCount <= 0)
             {
@@ -1288,8 +1316,8 @@ bool Inventory::RemoveItem(shared_ptr<ITEM> item, int ItemCount)
             slot->index = index;
             slot->ItemCount = 0;
 
-            SyncUseableItemToServer(item->ItemId, 0);
-            SyncItemToServer(itemId, -ItemCount);
+            AddUseableItemToServer(item->ItemId, 0);
+            AddItemToServer(itemId, -ItemCount);
 
             if (slot->ItemCount <= 0)
             {
@@ -1326,8 +1354,8 @@ bool Inventory::RemoveItem(int itemId)
             slot->index = index;
             slot->ItemCount--; // 수량 감소
 
-            SyncUseableItemToServer(itemId, -1);
-            SyncItemToServer(itemId, -1);
+            AddUseableItemToServer(itemId, -1);
+            AddItemToServer(itemId, -1);
 
             if (slot->ItemCount <= 0)
             {
@@ -1369,8 +1397,8 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
 
             slot->ItemCount -= ItemCount; // 수량 감소
 
-            SyncUseableItemToServer(itemId, -ItemCount);
-            SyncItemToServer(itemId, -ItemCount);
+            AddUseableItemToServer(itemId, -ItemCount);
+            AddItemToServer(itemId, -ItemCount);
 
             if (slot->ItemCount <= 0)
             {
@@ -1388,14 +1416,23 @@ bool Inventory::RemoveItem(int itemId, int ItemCount)
 
 void Inventory::SetItemCount(int itemId, int ItemCount)
 {
+    if (itemId <= 0)
+        return;
+
     shared_ptr<ITEM> item = FindItemFromInventory(itemId);
     if (item == nullptr)
     {
-        AddItem(itemId, ItemCount);
-        return;
+        if (AddItem(itemId, 1))
+        {
+            shared_ptr<ITEM> addedItem = FindItemFromInventory(itemId);
+            addedItem->ItemCount = ItemCount;
+            return;
+        }
     }
-
-    item->ItemCount = ItemCount;
+    else
+    {
+        item->ItemCount = ItemCount;
+    }
 }
 
 void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
@@ -1448,7 +1485,7 @@ shared_ptr<ITEM> Inventory::FindItemFromInventory(shared_ptr<ITEM> item)
     return nullptr;
 }
 
-shared_ptr<ITEM> Inventory::GetEquippedItem(wstring wstr)
+ITEM Inventory::GetEquippedItem(wstring wstr)
 {
     if (wstr == L"Weapon")
         return _equips[0].second;
@@ -1465,7 +1502,7 @@ shared_ptr<ITEM> Inventory::GetEquippedItem(wstring wstr)
     if (wstr == L"Boots")
         return _equips[4].second;
 
-    return nullptr;
+    return {};
 }
 
 void Inventory::EquipItem(shared_ptr<ITEM> item)
@@ -1484,44 +1521,44 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
 
     if (item->SubType == L"Sword")
     {
-        if (_equips[0].second->ItemId == item->ItemId)
+        if (_equips[0].second.ItemId == item->ItemId)
             return;
 
-        _equips[0].second = make_shared<ITEM>(newItem);
+        _equips[0].second = newItem;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
     }
     else if (item->SubType == L"Bow")
     {
-        if (_equips[0].second->ItemId == item->ItemId)
+        if (_equips[0].second.ItemId == item->ItemId)
             return;
 
-        _equips[0].second = make_shared<ITEM>(newItem);
+        _equips[0].second = newItem;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_BOW);
     }
     else if (item->SubType == L"Staff")
     {
-        if (_equips[0].second->ItemId == item->ItemId)
+        if (_equips[0].second.ItemId == item->ItemId)
             return;
 
-        _equips[0].second = make_shared<ITEM>(newItem);
+        _equips[0].second = newItem;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
     }
     else if (item->SubType == L"Helmet")
     {
-        if (_equips[1].second->ItemId == item->ItemId)
+        if (_equips[1].second.ItemId == item->ItemId)
             return;
 
         // 장착되어 있지 않은 경우
-        if (_equips[1].second->ItemId == 0)
+        if (_equips[1].second.ItemId == 0)
         {
-            _equips[1].second = make_shared<ITEM>(newItem);
+            _equips[1].second = newItem;
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
-            ITEM temp = *_equips[1].second;
-            _equips[1].second = make_shared<ITEM>(newItem);
+            ITEM temp = _equips[1].second;
+            _equips[1].second = newItem;
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
@@ -1529,20 +1566,20 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     }
     else if (item->SubType == L"Armor")
     {
-        if (_equips[2].second->ItemId == item->ItemId)
+        if (_equips[2].second.ItemId == item->ItemId)
             return;
 
         // 장착되어 있지 않은 경우
-        if (_equips[2].second->ItemId == 0)
+        if (_equips[2].second.ItemId == 0)
         {
-            _equips[2].second = make_shared<ITEM>(newItem);
+            _equips[2].second = newItem;
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
-            ITEM temp = *_equips[2].second.get();
-            _equips[2].second = make_shared<ITEM>(newItem);
+            ITEM temp = _equips[2].second;
+            _equips[2].second = newItem;
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
@@ -1550,16 +1587,16 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     }
     else if (item->SubType == L"Pants")
     {        // 장착되어 있지 않은 경우
-        if (_equips[3].second->ItemId == 0)
+        if (_equips[3].second.ItemId == 0)
         {
-            _equips[3].second = make_shared<ITEM>(newItem);
+            _equips[3].second = newItem;
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
-            ITEM temp = *_equips[3].second;
-            _equips[3].second = make_shared<ITEM>(newItem);
+            ITEM temp = _equips[3].second;
+            _equips[3].second = newItem;
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
@@ -1567,16 +1604,16 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     }
     else if (item->SubType == L"Boots")
     {        // 장착되어 있지 않은 경우
-        if (_equips[4].second->ItemId == 0)
+        if (_equips[4].second.ItemId == 0)
         {
-            _equips[4].second = make_shared<ITEM>(newItem);
+            _equips[4].second = newItem;
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
-            ITEM temp = *_equips[4].second;
-            _equips[4].second = make_shared<ITEM>(newItem);
+            ITEM temp = _equips[4].second;
+            _equips[4].second = newItem;
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
@@ -1600,26 +1637,26 @@ void Inventory::QuickEquipItem(int itemID)
 
     if (item.SubType == L"Sword")
     {
-        if (_equips[0].second->ItemId == item.ItemId)
+        if (_equips[0].second.ItemId == item.ItemId)
             return;
 
-        _equips[0].second = make_shared<ITEM>(item);
+        _equips[0].second = item;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
     }
     else if (item.SubType == L"Bow")
     {
-        if (_equips[0].second->ItemId == item.ItemId)
+        if (_equips[0].second.ItemId == item.ItemId)
             return;
 
-        _equips[0].second = make_shared<ITEM>(item);
+        _equips[0].second = item;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_BOW);
     }
     else if (item.SubType == L"Staff")
     {
-        if (_equips[0].second->ItemId == item.ItemId)
+        if (_equips[0].second.ItemId == item.ItemId)
             return;
 
-        _equips[0].second = make_shared<ITEM>(item);
+        _equips[0].second = item;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
     }
     else if (item.SubType == L"Potion")
@@ -1687,7 +1724,7 @@ void Inventory::ResetInventory()
     for (auto& slot : _equips)
     {
         auto tempRect = slot.first;
-        slot.second->Reset();
+        slot.second.Reset();
         slot.first = tempRect;
     }
 
