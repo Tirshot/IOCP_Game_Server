@@ -29,6 +29,8 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
+	srand(time(0));
+
 	filesystem::path currentPath = filesystem::current_path();
 	filesystem::path tilemapDirectory = currentPath / ".." / "Client" / "Resources" / "Tilemap" / "Tilemap01.txt";
 	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
@@ -64,15 +66,59 @@ void GameRoom::Init()
 		npc3->info.set_name("Merchant_Sign");
 		AddObject(npc3);
 	}
+	// 튜토리얼
+	{
+		NPCRef npc4 = GameObject::CreateNPC();
+		npc4->info.set_posx(18);
+		npc4->info.set_posy(4);
+		npc4->info.set_defence(9999);
+		npc4->info.set_name("Tutorial");
+		// npc 종류 입력
+		npc4->info.set_npctype(Protocol::NPC_TYPE_TUTORIAL);
+		AddObject(npc4);
+	}
 	{
 		GET_SINGLE(Quest)->CreateQuest();
+	}
+
+	for (auto& item : _players)
+	{
+		item.second->Init();
+	}
+
+	for (auto& item : _monsters)
+	{
+		item.second->Init();
+	}
+
+	for (auto& item : _npcs)
+	{
+		item.second->BeginPlay();
+	}
+
+	for (auto& item : _items)
+	{
+		item.second->BeginPlay();
+	}
+
+	for (auto& item : _triggers)
+	{
+		item.second->BeginPlay();
+	}
+
+	for (auto& inven : _inventorys)
+	{
+		inven.second->BeginPlay();
+	}
+
+	for (auto& item : _projectiles)
+	{
+		item.second->BeginPlay();
 	}
 }
 
 void GameRoom::Update()
 {
-	srand(time(0));
-
 	RandomMonsterSpawn();
 
 	for (auto& item : _players)
@@ -690,12 +736,10 @@ void GameRoom::RandomMonsterSpawn()
 
 	Vec2Int randPos = GetRandomEmptyCellPos();
 
-	// 확률에 따라 뱀, 모블린, 옥타록 랜덤 생성
-	auto randValue = 3; /*rand() % 3 + 1;*/
+	// 확률에 따라 뱀(가중치 30), 모블린(10), 옥타록(20) 랜덤 생성
+	auto randValue = rand() % 60 + 1;
 
-	switch (randValue)
-	{
-	case 1:
+	if (randValue <= 30)
 	{
 		auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
 		while (true)
@@ -711,13 +755,13 @@ void GameRoom::RandomMonsterSpawn()
 				break;
 			}
 		}
-		AddObject(snake);
-		_monsterCount++;
-		GChat->AddText(::format(L"snake {0} 생성.", snake->info.objectid()));
+		{
+			AddObject(snake);
+			_monsterCount++;
+			GChat->AddText(::format(L"snake {0} 생성.", snake->info.objectid()));
+		}
 	}
-	break;
-
-	case 2:
+	else if (randValue > 30 && randValue <= 40)
 	{
 		auto moblin = GameObject::CreateMonster(Protocol::MONSTER_TYPE_MOBLIN);
 		while (true)
@@ -733,14 +777,11 @@ void GameRoom::RandomMonsterSpawn()
 				break;
 			}
 		}
-		moblin->SetCellPos(randPos, true);
 		AddObject(moblin);
 		_monsterCount++;
 		GChat->AddText(::format(L"moblin {0} 생성.", moblin->info.objectid()));
 	}
-	break;
-
-	case 3:
+	else if (randValue > 40 && randValue <= 60)
 	{
 		auto octoroc = GameObject::CreateMonster(Protocol::MONSTER_TYPE_OCTOROC);
 		while (true)
@@ -756,12 +797,9 @@ void GameRoom::RandomMonsterSpawn()
 				break;
 			}
 		}
-		octoroc->SetCellPos(randPos, true);
 		AddObject(octoroc);
 		_monsterCount++;
 		GChat->AddText(::format(L"octoroc {0} 생성.", octoroc->info.objectid()));
-	}
-	break;
 	}
 }
 

@@ -62,19 +62,19 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "MABLE_TYPE_POTION\020\005\022\030\n\024WEARABLE_TYPE_WEA"
   "PON\020\006\022\030\n\024WEARABLE_TYPE_HELMET\020\007\022\027\n\023WEARA"
   "BLE_TYPE_ARMOR\020\010\022\027\n\023WEARABLE_TYPE_PANTS\020"
-  "\t\022\027\n\023WEARABLE_TYPE_BOOTS\020\n\022\007\n\003ETC\020\013*4\n\010N"
+  "\t\022\027\n\023WEARABLE_TYPE_BOOTS\020\n\022\007\n\003ETC\020\013*K\n\010N"
   "PC_TYPE\022\021\n\rNPC_TYPE_SIGN\020\000\022\025\n\021NPC_TYPE_M"
-  "ERCHANT\020\001*p\n\013QUEST_STATE\022\024\n\020QUEST_STATE_"
-  "IDLE\020\000\022\026\n\022QUEST_STATE_ACCEPT\020\001\022\031\n\025QUEST_"
-  "STATE_COMPLETED\020\002\022\030\n\024QUEST_STATE_FINISHE"
-  "D\020\003*p\n\014MONSTER_TYPE\022\025\n\021MONSTER_TYPE_NONE"
-  "\020\000\022\026\n\022MONSTER_TYPE_SNAKE\020\001\022\027\n\023MONSTER_TY"
-  "PE_MOBLIN\020\002\022\030\n\024MONSTER_TYPE_OCTOROC\020\003b\006p"
-  "roto3"
+  "ERCHANT\020\001\022\025\n\021NPC_TYPE_TUTORIAL\020\002*p\n\013QUES"
+  "T_STATE\022\024\n\020QUEST_STATE_IDLE\020\000\022\026\n\022QUEST_S"
+  "TATE_ACCEPT\020\001\022\031\n\025QUEST_STATE_COMPLETED\020\002"
+  "\022\030\n\024QUEST_STATE_FINISHED\020\003*p\n\014MONSTER_TY"
+  "PE\022\025\n\021MONSTER_TYPE_NONE\020\000\022\026\n\022MONSTER_TYP"
+  "E_SNAKE\020\001\022\027\n\023MONSTER_TYPE_MOBLIN\020\002\022\030\n\024MO"
+  "NSTER_TYPE_OCTOROC\020\003b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 1645, descriptor_table_protodef_Enum_2eproto,
+    false, false, 1668, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -230,6 +230,7 @@ bool NPC_TYPE_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
+    case 2:
       return true;
     default:
       return false;

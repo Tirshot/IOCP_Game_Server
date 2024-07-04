@@ -69,6 +69,7 @@ public:
 	static void HandlePacket(GameSessionRef session, BYTE* buffer, int32 len);
 
 	// ¹Þ±â
+	static void Handle_C_LeaveGame(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);

@@ -62,6 +62,7 @@ DevScene::DevScene()
 DevScene::~DevScene()
 {
 	_quests.clear();
+	ClearActors();
 }
 
 void DevScene::Init()
@@ -1119,8 +1120,8 @@ void DevScene::LoadUI()
 
 void DevScene::LoadSound()
 {
-	/*GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav");
-	GET_SINGLE(SoundManager)->Play(L"BGM", true, SoundType::BGM);*/
+	GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav", SoundType::BGM);
+	GET_SINGLE(SoundManager)->Play(L"BGM", true);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Land", L"Sound\\Land.wav", SoundType::Effect);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav", SoundType::UI);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Sword", L"Sound\\Sword.wav", SoundType::Effect);
@@ -1136,7 +1137,7 @@ void DevScene::LoadSound()
 	GET_SINGLE(ResourceManager)->LoadSound(L"QuestFinished", L"Sound\\QuestFinished.wav", SoundType::UI);
 	GET_SINGLE(ResourceManager)->LoadSound(L"MonsterOnDamaged", L"Sound\\MonsterOnDamaged.wav", SoundType::Effect);
 	GET_SINGLE(ResourceManager)->LoadSound(L"PlayerOnDamaged", L"Sound\\PlayerOnDamaged.wav", SoundType::Effect);
-	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav", SoundType::UI);
+	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav", SoundType::Effect);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Merchant", L"Sound\\Merchant.wav", SoundType::UI);
 }
 
@@ -1320,6 +1321,16 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 				npc->SetState(info.state());
 			}
 				break;
+
+			case Protocol::NPC_TYPE_TUTORIAL:
+			{
+				auto npc = SpawnObject<Merchant>(Vec2Int{ info.posx(), info.posy() });
+
+				npc->info = info;
+				npc->SetDir(DIR_DOWN);
+				npc->SetState(info.state());
+			}
+			break;
 
 			default:
 				return;

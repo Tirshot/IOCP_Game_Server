@@ -25,7 +25,7 @@ Monster::Monster()
 
 Monster::~Monster()
 {
-	GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
+	
 }
 
 void Monster::BeginPlay()

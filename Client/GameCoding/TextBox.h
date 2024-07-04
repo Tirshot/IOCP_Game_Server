@@ -3,7 +3,7 @@
 class Sprite;
 class TextBox : public Panel
 {
-	using Super = UI;
+	using Super = Panel;
 
 public:
 	TextBox();

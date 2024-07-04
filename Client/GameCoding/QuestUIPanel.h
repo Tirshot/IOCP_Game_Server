@@ -5,9 +5,10 @@ class Sprite;
 class Button;
 class QuestUIPanel : public Panel
 {
-	using Super = UI;
+	using Super = Panel;
 
 public:
+
 	QuestUIPanel();
 	QuestUIPanel(Protocol::QuestInfo& info, Vec2 pos, int idx);
 

@@ -685,13 +685,21 @@ void Inventory::SyncUseableItem()
         if (arrow)
         {
             arrow->ItemCount = arrows;
-            myPlayer->info.set_arrows(arrow->ItemCount);
+        }
+        else
+        {
+            AddItem(4, arrows);
+            myPlayer->info.set_arrows(arrows);
         }
 
         if (potion)
         {
             potion->ItemCount = potions;
-            myPlayer->info.set_potion(potion->ItemCount);
+        }
+        else
+        {
+            AddItem(5, potions);
+            myPlayer->info.set_potion(potions);
         }
     }
 }
@@ -1619,6 +1627,26 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
             RemoveItem(item);
         }
     }
+
+    int itemAttack = 0;
+    int itemDefence = 0;
+
+    for (const auto& item : _equips)
+    {
+        if (item.second.SubType == L"Pants")
+        {
+            item.second.PotionEffect;
+            item.second.PotionMaxCount;
+        }
+
+        itemAttack += item.second.Attack;
+        itemDefence += item.second.Defence;
+    }
+
+    // 기본 공격력 + 아이템 공격력
+    myPlayer->info.set_attack(10 + itemAttack);
+    myPlayer->info.set_defence(itemDefence);
+
 }
 
 void Inventory::QuickEquipItem(int itemID)

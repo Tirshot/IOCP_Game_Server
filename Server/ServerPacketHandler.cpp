@@ -23,6 +23,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	// 클라이언트 -> 서버
 	switch (header.id)
 	{
+	case C_LeaveGame:
+		Handle_C_LeaveGame(session, buffer, len);
+		break;
+
 	case C_Move:
 		Handle_C_Move(session, buffer, len);
 		break;
@@ -78,6 +82,20 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	default:
 		break;
 	}
+}
+
+void ServerPacketHandler::Handle_C_LeaveGame(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_LeaveGame pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	GameRoomRef room = session->gameRoom.lock();
+	
+	session->Disconnect(L"플레이어가 게임을 종료");
 }
 
 void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len)
@@ -192,7 +210,7 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 
 	if (room)
 	{
-		room->LeaveRoom(session);
+		room->RemoveObject(id);
 
 		// 플레이어 초기화
 		PlayerRef player = GameObject::CreatePlayer();
@@ -200,8 +218,8 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 		player->info.set_objectid(id);
 		player->info.set_hp(info.maxhp());
 		player->info.set_mp(info.maxmp());
-		player->info.set_posx(5);
-		player->info.set_posy(5);
+		player->info.set_posx(44);
+		player->info.set_posy(26);
 		player->info.set_weapontype(Protocol::WEAPON_TYPE_SWORD);
 
 		// 클라이언트 서로의 존재를 연결

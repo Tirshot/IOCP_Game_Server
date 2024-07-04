@@ -11,6 +11,7 @@ public:
 	void Update();
 
 	ServerSessionRef CreateSession();
+	void RemoveSession();
 	void SendPacket(SendBufferRef sendBuffer);
 
 private:

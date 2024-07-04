@@ -75,28 +75,33 @@ ITEM ItemManager::GetItem(int itemID)
     vector<wstring> ItemInfo = FindItemInfo(itemID);
 
     // ITEM 객체를 동적으로 할당
-    auto item = make_shared<ITEM>();
+    auto item = ITEM();
 
     // 아이템 정보 할당
-    item->ItemId = itemID;
-    item->ItemCount = 1;
-    item->MaxCount = GetMaxCounts(ItemInfo);
-    item->Name = GetName(ItemInfo);
-    item->KorName = GetKorName(ItemInfo);
-    item->Description = GetDescription(ItemInfo);
-    item->Price = GetPrice(ItemInfo);
-    item->Type = GetType(ItemInfo);
-    item->SubType = GetSubType(ItemInfo);
-    item->Sprite = GetSprite(item->Name);
+    item.ItemId = itemID;
+    item.ItemCount = 1;
+    item.MaxCount = GetMaxCounts(ItemInfo);
+    item.Name = GetName(ItemInfo);
+    item.KorName = GetKorName(ItemInfo);
+    item.Description = GetDescription(ItemInfo);
+    item.Price = GetPrice(ItemInfo);
+    item.Type = GetType(ItemInfo);
+    item.SubType = GetSubType(ItemInfo);
+    item.Sprite = GetSprite(item.Name);
 
-    if (item->Type == L"Wearable")
+    if (item.Type == L"Wearable")
     {
-        item->Attack = GetAttack(ItemInfo);
-        item->Defence = GetDefence(ItemInfo);
+        item.Attack = GetAttack(ItemInfo);
+        item.Defence = GetDefence(ItemInfo);
     }
 
-    // 동적으로 할당한 ITEM 객체의 참조를 반환
-    return *item;
+    if (item.SubType == L"Pants")
+    {
+        item.PotionEffect = GetPotionMultiplier(ItemInfo);
+        item.PotionMaxCount = GetPotionMaxCount(ItemInfo);
+    }
+
+    return item;
 }
 
 bool ItemManager::AddItemToInventory(int itemId)

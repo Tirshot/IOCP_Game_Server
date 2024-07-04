@@ -26,10 +26,12 @@ public:
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
 	wstring GetName();
 	virtual void KnockBack() override;
+	void MonsterQuestProgress(PlayerRef player);
 
 protected:
 	uint64 _waitUntil = 0;
 	uint64 _waitHit = 0;
 	weak_ptr<Player> _target;
+	Vec2Int _initialPos = {};
 };
 

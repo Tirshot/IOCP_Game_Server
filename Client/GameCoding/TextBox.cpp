@@ -33,11 +33,13 @@ TextBox::~TextBox()
 
 void TextBox::BeginPlay()
 {
-
+	Super::BeginPlay();
 }
 
 void TextBox::Tick()
 {
+	Super::Tick();
+
 	if (_isFloating)
 	{
 		if (_text == L"")
@@ -154,6 +156,8 @@ void TextBox::Render(HDC hdc)
 		::DrawTextW(hdc, _text.c_str(), -1, &_rect, DT_RIGHT | DT_VCENTER | DT_WORDBREAK);
 		break;
 	}
+
+	Super::Render(hdc);
 }
 
 void TextBox::SetText(wstring text)

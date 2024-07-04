@@ -11,7 +11,7 @@
 Monster::Monster()
 {
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
-	info.set_monstertype(Protocol::MONSTER_TYPE_SNAKE);
+	info.set_monstertype(Protocol::MONSTER_TYPE_NONE);
 	info.set_hp(50);
 	info.set_maxhp(50);
 	info.set_attack(1);
@@ -20,15 +20,20 @@ Monster::Monster()
 
 Monster::~Monster()
 {
+	_target.reset();
 }
 
 void Monster::Init()
 {
+	Super::BeginPlay();
 
+	_initialPos = GetCellPos();
 }
 
 void Monster::Update()
 {
+	Super::Tick();
+
 	switch (info.state())
 	{
 	case IDLE:
@@ -51,6 +56,8 @@ void Monster::Update()
 
 void Monster::UpdateIdle()
 {
+	Super::TickIdle();
+
 	// GameObject가 들고 있는 게임 룸을 체크
 	if (room == nullptr)
 		return;
@@ -123,10 +130,81 @@ void Monster::UpdateIdle()
 			}
 		}
 	}
+	else
+	{
+		// 타겟이 없을 경우 랜덤한 방향으로 움직임
+		int randValue = rand() % 4 + 1;
+		switch (randValue)
+		{
+		case 1:
+			SetDir(DIR_UP, true);
+			break;
+
+		case 2:
+			SetDir(DIR_DOWN, true);
+			break;
+
+		case 3:
+			SetDir(DIR_LEFT, true);
+			break;
+
+		case 4:
+			SetDir(DIR_RIGHT, true);
+			break;
+		}
+
+		if (room->MonsterCanGo(GetFrontCellPos()))
+		{
+			SetCellPos(GetFrontCellPos());
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
+			// 주위의 클라이언트에 알림
+			SetState(MOVE, true);
+		}
+
+		// 거리가 너무 멀어지면 원래 자리로 복귀
+		{
+			auto pos = GetCellPos();
+
+			auto dist = _initialPos - pos;
+			auto len = dist.Length();
+
+			if (len >= 3)
+			{
+				// 좌표 찾기
+				vector<Vec2Int> path;
+				// 최초 위치로 되돌아는 길을 찾음
+				if (room->FindPath(GetCellPos(), _initialPos, OUT path))
+				{
+					if (path.size() > 1)
+					{
+						// 한 칸만 이동
+						Vec2Int nextPos = path[1];
+						if (room->MonsterCanGo(nextPos))
+						{
+							SetDir(GetLookAtDir(nextPos));
+							SetCellPos(nextPos);
+							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
+							// 주위의 클라이언트에 알림
+							SetState(MOVE, true);
+						}
+					}
+					else
+						// 길을 못 찾았으면 정지
+					{
+						SetCellPos(path[0]);
+					}
+				}
+			}
+		}
+	}
 }
 
 void Monster::UpdateMove()
 {
+	Super::TickMove();
+
 	uint64 now = GetTickCount64();
 
 	if (_waitUntil > now)
@@ -137,6 +215,8 @@ void Monster::UpdateMove()
 
 void Monster::UpdateSkill()
 {
+	Super::TickSkill();
+
 	uint64 now = GetTickCount64();
 
 	if (_waitUntil > now)
@@ -147,6 +227,8 @@ void Monster::UpdateSkill()
 
 void Monster::UpdateHit()
 {
+	Super::TickHit();
+
 	uint64 now = GetTickCount64();
 
 	if (_waitHit > now)
@@ -291,7 +373,7 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 		}
 	}
 
-	if (info.hp() == 0)
+	if (info.hp() <= 0)
 	{
 		// 사망 처리
 		if (room)
@@ -300,7 +382,9 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 
 			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
 			if (player)
-				player->QuestProgress(0);
+			{
+				MonsterQuestProgress(player);
+			}
 
 			// 채팅 출력
 			GChat->AddText(format(L"{0} {1}이(가) {2}에 의해 처치됨.",
@@ -326,4 +410,19 @@ void Monster::KnockBack()
 
 	// 몬스터의 경우 넉백당하면 타겟을 리셋
 	_target.reset();
+}
+
+void Monster::MonsterQuestProgress(PlayerRef player)
+{
+	if (info.monstertype() == Protocol::MONSTER_TYPE_SNAKE)
+	{
+		if (player)
+			player->QuestProgress(0);
+	}
+
+	if (info.monstertype() == Protocol::MONSTER_TYPE_OCTOROC)
+	{
+		if (player)
+			player->QuestProgress(3);
+	}
 }

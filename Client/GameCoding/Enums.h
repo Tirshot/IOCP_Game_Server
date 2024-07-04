@@ -118,6 +118,8 @@ struct ITEM
 	int Price = 0;
 	int Attack = 0;
 	int Defence = 0;
+	int PotionEffect = 0;
+	int PotionMaxCount = 0;
 	shared_ptr<class Sprite> Sprite = nullptr;
 	RECT Rect = {};
 	int index = 0;
@@ -135,14 +137,17 @@ struct ITEM
 
 	void Reset()
 	{
-		this->ItemId = 0;
-		this->ItemCount = 0;
-		this->KorName = L"";
-		this->Name = L"";
-		this->Description = L"";
-		this->Price = 0;
-		this->Sprite = nullptr;
-		this->SubType = L"";
-		this->Type = L"";
+		if (SubType == L"Potion" || SubType == L"Arrow")
+			return;
+
+		ItemId = 0;
+		ItemCount = 0;
+		KorName.clear();
+		Name.clear();
+		Description.clear();
+		Price = 0;
+		Sprite.reset();
+		SubType.clear();
+		Type.clear();
 	}
 };

@@ -4,7 +4,7 @@ class Texture;
 class Sprite;
 class ShopItemPanel : public Panel
 {
-	using Super = UI;
+	using Super = Panel;
 
 public:
 	ShopItemPanel();

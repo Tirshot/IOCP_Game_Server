@@ -65,6 +65,8 @@ ShopItemPanel::~ShopItemPanel()
 
 void ShopItemPanel::BeginPlay()
 {
+	Super::BeginPlay();
+
 	// 아이템 이름
 	{
 		_itemName = make_shared<TextBox>();
@@ -93,6 +95,8 @@ void ShopItemPanel::BeginPlay()
 
 void ShopItemPanel::Tick()
 {
+	Super::Tick();
+
 	_rect.left = _pos.x;
 	_rect.top = _pos.y;
 	_rect.right = _pos.x + _size.x;
@@ -172,6 +176,8 @@ void ShopItemPanel::Render(HDC hdc)
 		RECT _textRect = { _pos.x + 150,_pos.y + 40,_textRect.left + 30,_textRect.top + 18 };
 		DrawTextW(hdc, itemCost.c_str(), -1, &_textRect, DT_CENTER);
 	}
+
+	Super::Render(hdc);
 }
 
 void ShopItemPanel::OnPopClickAcceptDelegate()

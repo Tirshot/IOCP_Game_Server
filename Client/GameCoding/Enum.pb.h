@@ -261,12 +261,13 @@ inline bool ITEM_SUBTYPE_Parse(
 enum NPC_TYPE : int {
   NPC_TYPE_SIGN = 0,
   NPC_TYPE_MERCHANT = 1,
+  NPC_TYPE_TUTORIAL = 2,
   NPC_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   NPC_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool NPC_TYPE_IsValid(int value);
 constexpr NPC_TYPE NPC_TYPE_MIN = NPC_TYPE_SIGN;
-constexpr NPC_TYPE NPC_TYPE_MAX = NPC_TYPE_MERCHANT;
+constexpr NPC_TYPE NPC_TYPE_MAX = NPC_TYPE_TUTORIAL;
 constexpr int NPC_TYPE_ARRAYSIZE = NPC_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* NPC_TYPE_descriptor();

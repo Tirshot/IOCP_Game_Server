@@ -12,6 +12,7 @@ public:
 	void Stop(bool reset = false);
 	void SetVolume(long vol);
 	void SetType(SoundType soundType) { _type = soundType; }
+	void Clear();
 	SoundType GetType() { return _type; }
 
 private:

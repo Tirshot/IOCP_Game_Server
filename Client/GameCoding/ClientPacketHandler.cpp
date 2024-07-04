@@ -719,3 +719,12 @@ SendBufferRef ClientPacketHandler::Make_C_KillPlayer(uint64 objectID)
 
 	return MakeSendBuffer(pkt, C_KillPlayer);
 }
+
+SendBufferRef ClientPacketHandler::Make_C_LeaveGame(uint64 objectID)
+{
+	Protocol::C_LeaveGame pkt;
+
+	pkt.set_accountid(objectID);
+
+	return MakeSendBuffer(pkt, C_LeaveGame);
+}

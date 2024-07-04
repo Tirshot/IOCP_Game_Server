@@ -115,6 +115,7 @@ public:
 	static SendBufferRef Make_C_EquipItem(uint64 objectId, int itemId, bool equip = true);
 	static SendBufferRef Make_C_SyncInventory(uint64 objectID);
 	static SendBufferRef Make_C_KillPlayer(uint64 objectID);
+	static SendBufferRef Make_C_LeaveGame(uint64 objectID);
 
 };
 

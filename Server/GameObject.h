@@ -13,6 +13,7 @@ public:
 	virtual void TickIdle() {};
 	virtual void TickMove() {};
 	virtual void TickSkill() {};
+	virtual void TickHit() {};
 	
 public:
 	// 전투 관련 코드

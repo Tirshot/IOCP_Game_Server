@@ -12,7 +12,6 @@
 
 ResourceManager::~ResourceManager()
 {
-
 }
 
 void ResourceManager::Init(HWND hwnd, fs::path resourcePath)
@@ -29,6 +28,10 @@ void ResourceManager::Clear()
 	_sprites.clear();
 	_flipbooks.clear();
 	_tilemaps.clear();
+
+	for (auto& sound : _sounds)
+		sound.second->Clear();
+
 	_sounds.clear();
 }
 

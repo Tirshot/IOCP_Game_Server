@@ -11,7 +11,7 @@ Octoroc::Octoroc()
 	info.set_monstertype(Protocol::MONSTER_TYPE_OCTOROC);
 	info.set_hp(30);
 	info.set_maxhp(30);
-	info.set_attack(50);
+	info.set_attack(5);
 	info.set_defence(0);
 	info.set_speed(120);
 }
@@ -98,6 +98,75 @@ void Octoroc::UpdateIdle()
 			else
 			{
 				_target.reset();
+			}
+		}
+	}
+	else
+	{
+		// 타겟이 없을 경우 랜덤한 방향으로 움직임
+		int randValue = rand() % 4 + 1;
+		switch (randValue)
+		{
+		case 1:
+			SetDir(DIR_UP, true);
+			break;
+
+		case 2:
+			SetDir(DIR_DOWN, true);
+			break;
+
+		case 3:
+			SetDir(DIR_LEFT, true);
+			break;
+
+		case 4:
+			SetDir(DIR_RIGHT, true);
+			break;
+		}
+
+		if (room->MonsterCanGo(GetFrontCellPos()))
+		{
+			SetCellPos(GetFrontCellPos());
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
+			// 주위의 클라이언트에 알림
+			SetState(MOVE, true);
+		}
+
+		// 거리가 너무 멀어지면 원래 자리로 복귀
+		{
+			auto pos = GetCellPos();
+
+			auto dist = _initialPos - pos;
+			auto len = dist.Length();
+
+			if (len >= 5)
+			{
+				// 좌표 찾기
+				vector<Vec2Int> path;
+				// 최초 위치로 되돌아는 길을 찾음
+				if (room->FindPath(GetCellPos(), _initialPos, OUT path))
+				{
+					if (path.size() > 1)
+					{
+						// 한 칸만 이동
+						Vec2Int nextPos = path[1];
+						if (room->MonsterCanGo(nextPos))
+						{
+							SetDir(GetLookAtDir(nextPos));
+							SetCellPos(nextPos);
+							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
+							// 주위의 클라이언트에 알림
+							SetState(MOVE, true);
+						}
+					}
+					else
+						// 길을 못 찾았으면 정지
+					{
+						SetCellPos(path[0]);
+					}
+				}
 			}
 		}
 	}

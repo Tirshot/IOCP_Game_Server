@@ -203,9 +203,16 @@ void GameOver::OnClickExitButton()
 		if (scene)
 		{
 			scene->RemoveUI(shared_from_this());
-		}
 
-		// 프로그램 종료
-		PostQuitMessage(0);
+			auto myPlayerID = GET_SINGLE(SceneManager)->GetMyPlayerId();
+
+			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_LeaveGame(myPlayerID);
+			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		}
+		GET_SINGLE(NetworkManager)->RemoveSession();
+		GET_SINGLE(SceneManager)->ChangeScene(SceneType::TitleScene);
+
+		//// 프로그램 종료
+		//PostQuitMessage(0);
 	}
 }
