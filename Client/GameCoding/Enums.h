@@ -137,17 +137,9 @@ struct ITEM
 
 	void Reset()
 	{
-		if (SubType == L"Potion" || SubType == L"Arrow")
-			return;
-
-		ItemId = 0;
-		ItemCount = 0;
-		KorName.clear();
-		Name.clear();
-		Description.clear();
-		Price = 0;
-		Sprite.reset();
-		SubType.clear();
-		Type.clear();
+		auto temp = Rect;
+		*this = ITEM();
+		Rect = temp;
+		temp = {};
 	}
 };

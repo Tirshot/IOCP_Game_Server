@@ -94,10 +94,8 @@ void MyPlayer::UsePotion()
 	if (info.maxhp() == info.hp())
 		return;
 
-	auto potionEffectMultiply = GET_SINGLE(ItemManager)->GetPotionEffectMultiply();
-
-	// Values.h 에서 수치 조정 가능
-	info.set_hp(clamp(info.hp() + POTION_HEALING_AMOUNT * potionEffectMultiply, 0, info.maxhp()));
+	// myPlayer에서 수치 조정, 각 수치는 아이템(바지)에 할당되어있음.
+	info.set_hp(clamp(info.hp() + POTION_HEALING_AMOUNT * _potionEffect, 0, info.maxhp()));
 
 	GET_SINGLE(SoundManager)->Play(L"Potion");
 	info.set_potion(clamp(info.potion() - 1, 0, 99));

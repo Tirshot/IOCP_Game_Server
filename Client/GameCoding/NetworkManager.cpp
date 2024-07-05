@@ -48,10 +48,20 @@ ServerSessionRef NetworkManager::CreateSession()
 void NetworkManager::RemoveSession()
 {
 	_session->Disconnect(L"게임 종료");
+	_session.reset();
+	_service.reset();
 }
 
 void NetworkManager::SendPacket(SendBufferRef sendBuffer)
 {
 	if (_session)
 		_session->Send(sendBuffer);
+}
+
+bool NetworkManager::isSessionAlive()
+{
+	if (_session)
+		return true;
+	
+	return false;
 }

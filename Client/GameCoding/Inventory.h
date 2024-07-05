@@ -25,6 +25,7 @@ private:
 	void AddUseableItemToServer(int itemID, int counts);
 	void AddItemToServer(int itemID, int counts);
 	void SyncEquips(int itemID, bool equip = true);
+	void ApplyStatus();
 
 public:
 	bool AddItem(shared_ptr<ITEM> item);
@@ -69,7 +70,6 @@ protected:
 	vector<RECT> _equipRects;
 	
 	shared_ptr<class TextBox> _itemName = nullptr;
-	shared_ptr<class TextBox> _itemCount = nullptr;
 	shared_ptr<class TextBox> _itemDescription = nullptr;
 	shared_ptr<class Sprite> _background = nullptr;
 	shared_ptr<class Sprite> _itemSprite = nullptr;

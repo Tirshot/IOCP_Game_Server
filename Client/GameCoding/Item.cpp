@@ -69,7 +69,7 @@ void Item::Tick()
 			break;
 
 		case 7:	// Heart
-			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + POTION_HEALING_AMOUNT * 2, 0, myPlayer->info.maxhp()));
+			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + myPlayer->GetPotionEffect() * 2, 0, myPlayer->info.maxhp()));
 			GET_SINGLE(ChatManager)->AddMessage(L"체력이 10 회복 되었습니다.");
 			break;
 

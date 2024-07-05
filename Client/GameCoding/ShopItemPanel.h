@@ -28,8 +28,6 @@ protected:
 	shared_ptr<Texture> _goldImage = nullptr;
 	shared_ptr<ITEM> _item = nullptr;
 	RECT _rect = {};
-	shared_ptr<class TextBox> _description = nullptr;
-	shared_ptr<class TextBox> _itemName = nullptr;
 	int _index = 0;
 };
 

@@ -18,6 +18,11 @@ public:
 
 	void UsePotion();
 	int GetPotionNums() { return info.potion(); }
+	int GetPotionMaxCount() { return _potionMaxCount; }
+	int GetPotionEffect() { return _potionEffect; }
+
+	void SetPotionMaxCount(int count) { _potionMaxCount = count; }
+	void SetPotionEffect(int effect) { _potionEffect = effect; }
 
 private:
 	void TickInput();
@@ -54,5 +59,7 @@ private:
 	float _sumTimes = 0.f;
 	int _selectedSlot = 0;
 	int _potionNums = 0;
+	int _potionMaxCount = 5;
+	int _potionEffect = 1;	// 포션 효과 배율
 };
 

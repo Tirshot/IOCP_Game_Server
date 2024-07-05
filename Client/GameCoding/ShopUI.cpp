@@ -98,6 +98,31 @@ void ShopUI::BeginPlay()
 		plus->SetInitialPos(plus->GetPos());
 		AddChild(plus);
 	}
+
+	// 아이템 이름
+	{
+		_itemName = make_shared<TextBox>();
+		_itemName->SetText(L"");
+		_itemName->SetSize(Vec2Int{ 160 , 30 });
+		_itemName->SetPadding(0, 10);
+		_itemName->AlignText(TextAlign::Center);
+		_itemName->SetVisible(false);
+		_itemName->SetPos(Vec2{ 503, 85 });
+		_itemName->SetInitialPos(Vec2{ 503, 85 });
+		AddChild(_itemName);
+	}
+
+	// 아이템 설명
+	{
+		_description = make_shared<TextBox>();
+		_description->SetText(L"");
+		_description->SetSize(Vec2Int{ 160 , 250 });
+		_description->SetPadding(5, 5);
+		_description->SetVisible(false);
+		_description->SetPos(Vec2{ 503, 115 });
+		_description->SetInitialPos(Vec2{ 503, 115 });
+		AddChild(_description);
+	}
 	{ 
 		// Arrow
 		AddSellItem(4);
@@ -138,8 +163,7 @@ void ShopUI::BeginPlay()
 
 	_initialPos = _pos;
 
-	for (auto& child : _children)
-		child->BeginPlay();
+	Super::BeginPlay();
 }
 
 void ShopUI::Tick()
@@ -148,9 +172,7 @@ void ShopUI::Tick()
 
 	if (_visible)
 	{
-		for (auto& child : _children)
-			if (child)
-				child->Tick();
+		Super::Tick();
 
 		if (_pause)
 			return;
@@ -190,6 +212,26 @@ void ShopUI::Tick()
 
 			if (IsMouseInRect(ItemRect))
 			{
+				// 이름 및 설명 노출
+				auto itemPanel = dynamic_pointer_cast<ShopItemPanel>(child);
+				if (itemPanel)
+				{
+					auto item = itemPanel->GetItem();
+					if (item)
+					{
+						auto name = item->KorName;
+						auto description = item->Description;
+						_itemName->SetText(name);
+						_description->SetText(description);
+					}
+				}
+				else
+				{
+					_itemName->SetText(L"");
+					_description->SetText(L"");
+				}
+
+				// 구매 로직
 				auto inventory = GET_SINGLE(ItemManager)->GetInventory();
 				if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
 				{
@@ -207,7 +249,17 @@ void ShopUI::Tick()
 					auto counts = MakeCountsBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 180 }, _sellItem->ItemId, &ShopUI::OnPopClickAcceptDelegate);
 					counts->SetText(_sellItem->KorName + L"을(를) 몇 개 구입하시겠습니까?");
 					counts->SetPrice(_price);
-					counts->SetMaxCounts(99);
+
+					auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(_sellItem->ItemId);
+					if (item)
+					{
+						auto ownedCount = item->ItemCount;
+						counts->SetMaxCounts(_sellItem->MaxCount - ownedCount);
+					}
+					else
+					{
+						counts->SetMaxCounts(_sellItem->MaxCount);
+					}
 
 					SetPause(true);
 					_initializeTime = 0.f;
@@ -303,7 +355,6 @@ shared_ptr<AlertBox> ShopUI::MakeAlertBox(Vec2 pos, Vec2Int size, void(ShopUI::*
 		// AlertBox 초기화
 		alert->SetSize(size);
 		alert->SetPos({ pos.x, pos.y });
-		alert->SetVisible(true);
 		alert->SetInitialPos(alert->GetPos());
 		alert->MakeAcceptButton();
 
@@ -312,6 +363,7 @@ shared_ptr<AlertBox> ShopUI::MakeAlertBox(Vec2 pos, Vec2Int size, void(ShopUI::*
 
 		alert->AddParentDelegate(this, func);
 		alert->BeginPlay();
+		alert->SetVisible(true);
 	}
 
 	AddChild(alert);
@@ -327,13 +379,13 @@ shared_ptr<ItemCountsPopUp> ShopUI::MakeCountsBox(Vec2 pos, Vec2Int size, int it
 		// AlertBox 초기화
 		counts->SetSize(size);
 		counts->SetPos({ pos.x, pos.y });
-		counts->SetVisible(true);
 		counts->SetInitialPos(counts->GetPos());
 		counts->MakeAcceptButton();
 		counts->MakeDenyButton();
 		counts->SetItemID(itemID);
 		counts->AddParentDelegate(this, func);
 		counts->BeginPlay();
+		counts->SetVisible(true);
 	}
 
 	AddChild(counts);
@@ -343,7 +395,7 @@ shared_ptr<ItemCountsPopUp> ShopUI::MakeCountsBox(Vec2 pos, Vec2Int size, int it
 
 void ShopUI::OnPopClickAcceptDelegate()
 {
-
+	SetPause(false);
 }
 
 void ShopUI::OnPopClickAlertAcceptDelegate()

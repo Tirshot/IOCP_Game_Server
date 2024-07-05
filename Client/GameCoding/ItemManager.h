@@ -68,11 +68,5 @@ private:
 	shared_ptr<Inventory> _inventory = nullptr;
 	shared_ptr<QuickSlot> _quickSlot = nullptr;
 
-public:
-	void SetPotionEffectMultiply(int multiply) { _potionEffectMultiply = multiply; }
-	int GetPotionEffectMultiply() { return _potionEffectMultiply; }
-
-private:
-	int _potionEffectMultiply = 1;
 };
 

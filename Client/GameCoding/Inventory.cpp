@@ -35,7 +35,6 @@ Inventory::~Inventory()
 
     _owner = nullptr;
     _itemName = nullptr;
-    _itemCount = nullptr;
     _itemDescription = nullptr;
     _background = nullptr;
     _itemSprite = nullptr;
@@ -93,17 +92,6 @@ void Inventory::BeginPlay()
         AddChild(_itemName);
     }
 
-    { // 아이템 개수
-        wstring wstr = L"개수";
-        _itemCount = make_shared<TextBox>(wstr);
-        _itemCount->SetPos({ _pos.x + 240, _pos.y + 225 });      // 710, 350
-        _itemCount->SetSize({ 40, 25 });
-        _itemCount->SetPadding(5, 5);
-        _itemCount->SetInitialPos(_itemCount->GetPos());
-        _itemCount->SetVisible(false);
-        AddChild(_itemCount);
-    }
-
     SetInitialPos(GetPos());
 
     // 아이템 슬롯 초기화
@@ -149,6 +137,7 @@ void Inventory::Tick()
         // 검 기본 장착
         shared_ptr<ITEM> item1 = FindItemFromInventory(1);
         EquipItem(item1);
+        ApplyStatus();
 
         _initialized = false;
     }
@@ -186,7 +175,6 @@ void Inventory::Tick()
     {   // 마우스가 슬롯 밖에 있음
         // 아이템 설명 초기화
         _itemName->SetText(L"");
-        _itemCount->SetText(L"");
         _itemDescription->SetText(L"");
     }
 
@@ -283,13 +271,7 @@ void Inventory::Tick()
 
                 if (slot->Type == L"Consumable" || slot->Type == L"ETC")
                 {
-                    _itemCount->SetVisible(true);
-                    _itemCount->SetText(format(L"{0}개", slot->ItemCount));
-                }
-                else
-                {
-                    _itemCount->SetVisible(false);
-                    _itemCount->SetText(L"");
+                    _itemDescription->SetText(format(L"{0}개\n{1}", slot->ItemCount, slot->Description));
                 }
 
                 // 아이템 장착
@@ -308,7 +290,7 @@ void Inventory::Tick()
 
                     _selectedItem = slot;
                 }
-                else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+                if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
                 {
                     // 다른 슬롯으로 드랍
                     if (_selectedItem != nullptr)
@@ -341,17 +323,6 @@ void Inventory::Tick()
 
                 // 퀵 슬롯에 등록
                 PressToSetQuickItem(*slot);
-
-                // 아이템 개수 표시
-                if (slot->Type == L"Consumable" || slot->Type == L"ETC")
-                {
-                    _itemCount->SetVisible(true);
-                    _itemCount->SetText(to_wstring(slot->ItemCount) + L"개");
-                }
-                else
-                {
-                    _itemCount->SetVisible(false);
-                }
             }
             // 슬롯에서 장비창으로 드래그
             else if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
@@ -419,15 +390,21 @@ void Inventory::Tick()
 
             // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
             if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse)
-                && IsMouseOutRect(_equipRect))
+                && IsMouseOutRect(slot->Rect))
             {
-                //_selectedItem = nullptr;
+                _selectedItem = nullptr;
             }
         }
 
         // 장비창
         for (auto& slot : _equips)
         {
+            // first : RECT, second : ITEM
+            if (slot.second.ItemCount <= 0)
+            {       
+                slot.second.Reset();
+            }
+
             // 아이템 드래그 앤 드랍
             if (IsMouseInRect(slot.first))
             {
@@ -599,7 +576,6 @@ shared_ptr<AlertBox> Inventory::MakeAlertBox(Vec2 pos, Vec2Int size, void (Inven
         // AlertBox 초기화
         alert->SetSize(size);
         alert->SetPos({ pos.x, pos.y });
-        alert->SetVisible(true);
         alert->SetInitialPos(alert->GetPos());
         alert->MakeAcceptButton();
 
@@ -608,6 +584,7 @@ shared_ptr<AlertBox> Inventory::MakeAlertBox(Vec2 pos, Vec2Int size, void (Inven
 
         alert->AddParentDelegate(this, func);
         alert->BeginPlay();
+        alert->SetVisible(true);
     }
 
     AddChild(alert);
@@ -786,6 +763,8 @@ void Inventory::SyncEquips(int itemID, bool equip)
     if (_owner == nullptr)
         return;
 
+    ApplyStatus();
+
     if (equip)
     {
         SendBufferRef sendBuffer = ClientPacketHandler::Make_C_EquipItem(_owner->GetObjectID(), itemID);
@@ -795,6 +774,47 @@ void Inventory::SyncEquips(int itemID, bool equip)
     {
         SendBufferRef sendBuffer = ClientPacketHandler::Make_C_EquipItem(_owner->GetObjectID(), itemID , false);
         GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+    }
+}
+
+void Inventory::ApplyStatus()
+{
+    auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+    if (myPlayer)
+    {
+        int itemAttack = 0;
+        int itemDefence = 0;
+
+        for (int i = 0; i < _equips.size(); i++)
+        {
+            if (i == 3 /*Pants*/)
+            {
+                int potionEffect = 0;
+                int potionMaxCount = 0;
+
+                // 바지 장착칸이 비어있으면 기본 효과를 가짐
+                if (_equips[i].second.ItemId == 0)
+                {
+                    potionEffect = POTION_DEFAULT_MULTIPLIER;
+                    potionMaxCount = POTION_DEFAULT_MAXCOUNT;
+                }
+                else
+                {
+                    potionEffect = _equips[i].second.PotionEffect;
+                    potionMaxCount = _equips[i].second.PotionMaxCount;
+                }
+
+                myPlayer->SetPotionEffect(potionEffect);
+                myPlayer->SetPotionMaxCount(potionMaxCount);
+            }
+
+            itemAttack += _equips[i].second.Attack;
+            itemDefence += _equips[i].second.Defence;
+        }
+
+        // 기본 공격력은 무기에 포함됨 + 아이템 공격력
+        myPlayer->info.set_attack(itemAttack);
+        myPlayer->info.set_defence(itemDefence);
     }
 }
 
@@ -1570,6 +1590,7 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
+            temp = {};
         }
     }
     else if (item->SubType == L"Armor")
@@ -1591,6 +1612,7 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
+            temp = {};
         }
     }
     else if (item->SubType == L"Pants")
@@ -1608,6 +1630,7 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
+            temp = {};
         }
     }
     else if (item->SubType == L"Boots")
@@ -1625,28 +1648,11 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
             AddItem(temp.ItemId);
             SyncEquips(newItem.ItemId);
             RemoveItem(item);
+            temp = {};
         }
     }
 
-    int itemAttack = 0;
-    int itemDefence = 0;
-
-    for (const auto& item : _equips)
-    {
-        if (item.second.SubType == L"Pants")
-        {
-            item.second.PotionEffect;
-            item.second.PotionMaxCount;
-        }
-
-        itemAttack += item.second.Attack;
-        itemDefence += item.second.Defence;
-    }
-
-    // 기본 공격력 + 아이템 공격력
-    myPlayer->info.set_attack(10 + itemAttack);
-    myPlayer->info.set_defence(itemDefence);
-
+    ApplyStatus();
 }
 
 void Inventory::QuickEquipItem(int itemID)

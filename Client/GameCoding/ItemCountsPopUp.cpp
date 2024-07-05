@@ -183,7 +183,6 @@ shared_ptr<AlertBox> ItemCountsPopUp::MakeAlertBox(Vec2 pos, Vec2Int size, void(
 		// AlertBox ÃÊ±âÈ­
 		alert->SetSize(size);
 		alert->SetPos({ pos.x, pos.y });
-		alert->SetVisible(true);
 		alert->SetInitialPos(alert->GetPos());
 		alert->MakeAcceptButton();
 
@@ -192,6 +191,7 @@ shared_ptr<AlertBox> ItemCountsPopUp::MakeAlertBox(Vec2 pos, Vec2Int size, void(
 
 		alert->AddParentDelegate(this, func);
 		alert->BeginPlay();
+		alert->SetVisible(true);
 	}
 
 	auto panel = dynamic_pointer_cast<Panel>(_parent);
@@ -246,6 +246,7 @@ void ItemCountsPopUp::OnClickAcceptButton()
 	wstring itemType = L"";
 
 	auto item = GET_SINGLE(ItemManager)->GetItem(_itemID);
+
 	if (item.ItemId > 0)
 	{
 		_price = item.Price;

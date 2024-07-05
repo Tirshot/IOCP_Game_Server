@@ -54,6 +54,9 @@ protected:
 	vector<shared_ptr<ITEM>> _items = {};	// 판매할 아이템이 저장되어 있음
 	shared_ptr<ITEM> _sellItem = {};
 	shared_ptr<ITEM> _sellToShop = {};
+	shared_ptr<class TextBox> _description = nullptr;
+	shared_ptr<class TextBox> _itemName = nullptr;
+
 	int _counts = 1;	// 아이템 구매 갯수
 	int _price = 0;
 	int _allCost = 0;

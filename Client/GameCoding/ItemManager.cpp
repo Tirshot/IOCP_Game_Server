@@ -101,6 +101,13 @@ ITEM ItemManager::GetItem(int itemID)
         item.PotionMaxCount = GetPotionMaxCount(ItemInfo);
     }
 
+    if (item.SubType == L"Potion")
+    {
+        auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+        if (myPlayer)
+            item.MaxCount = myPlayer->GetPotionMaxCount();
+    }
+
     return item;
 }
 

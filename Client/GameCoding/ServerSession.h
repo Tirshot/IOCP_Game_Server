@@ -30,6 +30,6 @@ public:
 	virtual void OnDisconnected() override
 	{
 		GET_SINGLE(ChatManager)->AddMessage(L"서버와의 연결이 끊어졌습니다.");
-		GET_SINGLE(SceneManager)->SetPause(true);
+		GET_SINGLE(SceneManager)->SetPause(false);
 	}
 };
