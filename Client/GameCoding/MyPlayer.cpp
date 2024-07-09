@@ -97,14 +97,46 @@ void MyPlayer::UsePotion()
 	// myPlayer에서 수치 조정, 각 수치는 아이템(바지)에 할당되어있음.
 	info.set_hp(clamp(info.hp() + POTION_HEALING_AMOUNT * _potionEffect, 0, info.maxhp()));
 
-	GET_SINGLE(SoundManager)->Play(L"Potion");
 	info.set_potion(clamp(info.potion() - 1, 0, 99));
 	{
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Heal(info.objectid());
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	GET_SINGLE(SoundManager)->Play(L"Potion");
 	scene->SpawnObject<HealEffect>({ GetCellPos() });
+}
+
+void MyPlayer::UseConsumableItem(int itemID)
+{
+	switch (itemID)
+	{
+		case 5: // HP포션
+		{
+			UsePotion();
+			return;
+		}
+
+		case 8: // MP포션
+		{
+			int mp = info.mp();
+			int maxMp = info.maxmp();
+
+			if (mp >= maxMp)
+				return;
+
+			// 마나 회복
+			info.set_mp(clamp(mp + (maxMp / 2), 0, maxMp));
+			GET_SINGLE(SoundManager)->Play(L"Potion");
+			auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+			scene->SpawnObject<HealEffect>({ GetCellPos() });
+			break;
+		}
+	}
+
+	auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(itemID);
+	if (item)
+		item->ItemCount--;
 }
 
 void MyPlayer::TickInput()
@@ -136,10 +168,11 @@ void MyPlayer::TickInput()
 		_sumTimes = 0;
 	}
 
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
-	{
-		UsePotion();
-	}
+	//if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
+	//{
+	//	// 포션 사용은 퀵슬롯으로 통합
+	//	// UsePotion();
+	//}
 
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::I))
 	{

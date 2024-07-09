@@ -81,6 +81,7 @@ public:
 
     bool IsMouseOutRect(RECT& rect);
     bool IsPressedAnyKey();
+    bool IsPressedAnyNumberKey();
 
 private:
 	KeyState GetState(KeyType key) { return _states[static_cast<uint8>(key)]; }

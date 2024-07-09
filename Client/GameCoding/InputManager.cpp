@@ -65,3 +65,16 @@ bool InputManager::IsPressedAnyKey()
 	}
 	return false;
 }
+
+bool InputManager::IsPressedAnyNumberKey()
+{
+	// 49 ~ 57
+	for (int i = 49; i < 58; i++)
+	{
+		if (_states[i] == KeyState::Down)
+		{
+			return true;
+		}
+	}
+	return false;
+}

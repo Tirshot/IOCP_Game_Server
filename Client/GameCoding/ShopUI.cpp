@@ -132,6 +132,7 @@ void ShopUI::BeginPlay()
 
 		// 포션
 		AddSellItem(5);
+		AddSellItem(8);
 
 		// 장비
 		AddSellItem(10);
@@ -156,9 +157,7 @@ void ShopUI::BeginPlay()
 
 		// 기타
 		AddSellItem(26);
-		AddSellItem(1);
-		AddSellItem(2);
-		AddSellItem(3);
+		AddSellItem(27);
 	}
 
 	_initialPos = _pos;
@@ -250,15 +249,38 @@ void ShopUI::Tick()
 					counts->SetText(_sellItem->KorName + L"을(를) 몇 개 구입하시겠습니까?");
 					counts->SetPrice(_price);
 
-					auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(_sellItem->ItemId);
-					if (item)
+					auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+					if (myPlayer)
 					{
-						auto ownedCount = item->ItemCount;
-						counts->SetMaxCounts(_sellItem->MaxCount - ownedCount);
-					}
-					else
-					{
-						counts->SetMaxCounts(_sellItem->MaxCount);
+						int potionMaxCount = myPlayer->GetPotionMaxCount();
+
+						auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(_sellItem->ItemId);
+						if (item)
+						{
+							int maxCount = _sellItem->MaxCount - item->ItemCount;
+
+							// Pants 효과 적용
+							if (_sellItem->SubType == L"Potion")
+								maxCount = potionMaxCount - item->ItemCount;
+
+							if (maxCount <= 0)
+								maxCount = 0;
+
+							counts->SetMaxCounts(maxCount);
+						}
+						else
+						{
+							int maxCount = _sellItem->MaxCount;
+
+							// Pants 효과 적용
+							if (_sellItem->SubType == L"Potion")
+								maxCount = potionMaxCount;
+
+							if (maxCount <= 0)
+								maxCount = 0;
+
+							counts->SetMaxCounts(maxCount);
+						}
 					}
 
 					SetPause(true);

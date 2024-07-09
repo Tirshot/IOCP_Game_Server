@@ -77,6 +77,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tile", L"Sprite\\Map\\Tile.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Potion", L"Sprite\\Item\\Potion.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MPPotion", L"Sprite\\Item\\MPPotion.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Heart", L"Sprite\\UI\\Heart.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerUp", L"Sprite\\Player\\PlayerUp.bmp", RGB(128, 128, 128));
@@ -140,6 +141,7 @@ void DevScene::Init()
 	// Item 스프라이트
 	// 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Potion", GET_SINGLE(ResourceManager)->GetTexture(L"Potion"), 0, 0, 32, 32);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"MPPotion", GET_SINGLE(ResourceManager)->GetTexture(L"MPPotion"), 0, 0, 32, 32);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"HeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"HeartItem"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"FullHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"FullHeartItem"), 50, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"MaxHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"MaxHeartItem"), 0, 0, 48, 20);
@@ -1121,7 +1123,7 @@ void DevScene::LoadUI()
 void DevScene::LoadSound()
 {
 	GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav", SoundType::BGM);
-	GET_SINGLE(SoundManager)->Play(L"BGM", true);
+	/*GET_SINGLE(SoundManager)->Play(L"BGM", true);*/
 	GET_SINGLE(ResourceManager)->LoadSound(L"Land", L"Sound\\Land.wav", SoundType::Effect);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav", SoundType::UI);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Sword", L"Sound\\Sword.wav", SoundType::Effect);

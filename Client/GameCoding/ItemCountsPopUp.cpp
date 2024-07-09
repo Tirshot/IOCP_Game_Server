@@ -396,16 +396,16 @@ void ItemCountsPopUp::OnClickCountMinusButton()
 {
 	_counts--;
 
-	if (_counts <= 1)
-		_counts = 1;
+	if (_counts <= 0)
+		_counts = 0;
 }
 
 void ItemCountsPopUp::OnClickCountDoubleMinusButton()
 {
 	_counts -= 10;
 
-	if (_counts <= 1)
-		_counts = 1;
+	if (_counts <= 0)
+		_counts = 0;
 }
 
 void ItemCountsPopUp::SetText(wstring wstr)

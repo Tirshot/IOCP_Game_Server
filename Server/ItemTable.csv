@@ -6,7 +6,7 @@
 5,Potion,HP 회복포션,Consumable,Potion,소모품.;체력을 반 칸 회복한다.,30,5,5,,,
 6,MaxHeartItem,맥스 하트,Consumable,Heal,즉시 최대 체력을 한 칸 증가시킨다.;최대 체력은 열 칸을 넘을 수 없다.,1000,10,10,,,
 7,HeartItem,하트,Consumable,Heal,즉시 체력을 10 회복한다.,0,99,10,,,
-8,Dummy1,Dummy1,Dummy2,Dummy3,Dummy4,0,0,,,,
+8,MPPotion,MP 회복포션,Consumable,Potion,소모품.;마나를 절반 회복한다.,30,10,,,,
 9,Dummy2,Dummy1,Dummy2,Dummy3,Dummy4,0,0,,,,
 10,Helmet00,강철 투구,Wearable,Helmet,철로 만들어진 투구.;공격력 + 2,100,1,2,,,
 11,Helmet01,워리어 투구,Wearable,Helmet,전사를 위한 투구.;공격력 + 5,300,1,5,,,

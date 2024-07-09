@@ -38,8 +38,11 @@ void QuickSlot::BeginPlay()
 
 void QuickSlot::Tick()
 {
-	// 선택된 슬롯 하이라이트
-	SetPressedButton();
+	if (GET_SINGLE(InputManager)->IsPressedAnyNumberKey())
+	{
+		// 선택된 슬롯 하이라이트
+		SetPressedButton();
+	}
 }
 
 void QuickSlot::Render(HDC hdc)
@@ -59,7 +62,7 @@ void QuickSlot::Render(HDC hdc)
 
 	// 선택된 슬롯 하이라이트
 	::TransparentBlt(hdc,
-		_pos.x - _slotSize * 5 + _slotSize * (_pressedButton),
+		_pos.x - _slotSize * 5 + _slotSize * (_selectedIndex),
 		_pos.y - 65,
 		_slotSize,
 		_slotSize,
@@ -76,9 +79,12 @@ void QuickSlot::Render(HDC hdc)
 		if (_slots[i].Sprite == nullptr)
 			continue;
 
+		auto posX = _center_x + (_slotSize / 6) + _slotSize * (i - 1);
+		auto posY = _center_y + _slotSize / 6;
+
 		::TransparentBlt(hdc,
-			_center_x + (_slotSize / 6) + _slotSize * (i - 1),
-			_center_y + _slotSize / 6,
+			posX,
+			posY,
 			_slotSize / 1.5f,
 			_slotSize / 1.5f,
 			_slots[i].Sprite->GetDC(),
@@ -87,6 +93,24 @@ void QuickSlot::Render(HDC hdc)
 			_slots[i].Sprite->GetSize().x,
 			_slots[i].Sprite->GetSize().y,
 			_slots[i].Sprite->GetTransparent());
+
+		// 소모품 개수 표기
+		if (_slots[i].Type == L"Consumable")
+		{
+			auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(_slots[i].ItemId);
+			if (item == nullptr)
+				return;
+
+			int itemCount = item->ItemCount;
+
+			wstring str = to_wstring(itemCount);
+			RECT textRect = {};
+			textRect.left = posX + (_slotSize / 2);
+			textRect.right = textRect.left + 20;
+			textRect.top = posY - 5;
+			textRect.bottom = textRect.top + 20;
+			::DrawTextW(hdc, str.c_str(), -1, &textRect, DT_LEFT);
+		}
 	}
 }
 
@@ -175,9 +199,36 @@ void QuickSlot::SetPressedButton()
 		_pressedButton = 8;
 	}
 
+	int temp = _selectedIndex;
+
+	if (_selectedIndex == _pressedButton)
+	{
+		// 소모품이면 즉시 사용
+		if (_slots[_selectedIndex].Type == L"Consumable")
+		{
+			UseConsumableItem();
+		}
+	}
+	
 	_selectedIndex = _pressedButton;
 
 	// 유효하지 않은 아이템 장착 불가
 	if (_slots[_selectedIndex].ItemId != 0)
+	{
 		GET_SINGLE(ItemManager)->QuickEquipItem(_slots[_selectedIndex].ItemId);
+	}
+
+	_pressedButton = 0;
+}
+
+void QuickSlot::UseConsumableItem()
+{
+	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+	if (myPlayer == nullptr)
+		return;
+
+	auto& slot = _slots[_selectedIndex];
+	int itemID = slot.ItemId;
+
+	myPlayer->UseConsumableItem(itemID);
 }

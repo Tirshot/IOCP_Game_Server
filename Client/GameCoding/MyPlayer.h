@@ -17,6 +17,7 @@ public:
 	int GetSelectedSlot();
 
 	void UsePotion();
+	void UseConsumableItem(int itemID);
 	int GetPotionNums() { return info.potion(); }
 	int GetPotionMaxCount() { return _potionMaxCount; }
 	int GetPotionEffect() { return _potionEffect; }

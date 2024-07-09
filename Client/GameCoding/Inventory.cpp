@@ -519,8 +519,25 @@ void Inventory::Render(HDC hdc)
             _slots[i]->Sprite->GetSize().y,
             _slots[i]->Sprite->GetTransparent());
 
-        if (_slots[i]->ItemId == 0)
-            break;
+        // 소모품 개수 표기
+        if (_slots[i]->Type == L"Consumable")
+        {
+            auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(_slots[i]->ItemId);
+            if (item == nullptr)
+                return;
+
+            int itemCount = item->ItemCount;
+
+            SetTextColor(hdc, RGB(255, 255, 255));
+
+            wstring str = to_wstring(itemCount);
+            RECT textRect = {};
+            textRect.left = _slots[i]->Rect.left + (_slotSize / 2) - 4;
+            textRect.right = textRect.left + 20;
+            textRect.top = _slots[i]->Rect.top + (_slotSize / 2) - 2;
+            textRect.bottom = textRect.top + 20;
+            ::DrawTextW(hdc, str.c_str(), -1, &textRect, DT_CENTER);
+        }
     }
 
     for (int i = 0; i < 5; i++)

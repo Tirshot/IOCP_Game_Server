@@ -40,11 +40,6 @@ void StatusPanel::BeginPlay()
 		arrowUI->SetVisible(true);
 		AddChild(arrowUI);
 	}
-	{	// Potion UI
-		auto potion = make_shared<Potion>();
-		potion->SetVisible(true);
-		AddChild(potion);
-	}
 }
 
 void StatusPanel::Tick()
