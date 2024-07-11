@@ -2,6 +2,7 @@
 #include "HealEffect.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
 #include "Scene.h"
 
 HealEffect::HealEffect()
@@ -18,6 +19,8 @@ void HealEffect::BeginPlay()
 	Super::BeginPlay();
 
 	UpdateAnimation();
+
+	GET_SINGLE(SoundManager)->Play(L"Potion");
 }
 
 void HealEffect::Tick()

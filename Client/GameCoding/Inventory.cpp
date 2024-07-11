@@ -204,8 +204,6 @@ void Inventory::Tick()
         }
     }
 
-    SyncUseableItem();
-
     // popup이 있으면 일시정지
     if (_pause)
         return;
@@ -280,6 +278,10 @@ void Inventory::Tick()
                     EquipItem(slot);
                     return;
                 }
+
+                // 장비창에서 드래그 시작하면 무시
+                if (_isEquipedItem)
+                    break;
 
                 // 드래그 시작
                 if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
@@ -388,12 +390,12 @@ void Inventory::Tick()
                 }
             }
 
-            // 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
-            if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse)
-                && IsMouseOutRect(slot->Rect))
-            {
-                _selectedItem = nullptr;
-            }
+            //// 슬롯과 인벤토리 바깥이 아닌 영역으로 드랍
+            //if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse)
+            //    && IsMouseOutRect(slot->Rect))
+            //{
+            //    _selectedItem = nullptr;
+            //}
         }
 
         // 장비창
@@ -435,38 +437,42 @@ void Inventory::Tick()
                 if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
                 {
                     if (slot.second.Sprite == nullptr)
-                        break;
+                        continue;
 
                     // 빈 슬롯은 드래그 불가
                     if (slot.second.ItemId <= 0)
-                        return;
+                        continue;
 
                     _isEquipedItem = true;
                     _selectedItem = make_shared<ITEM>(slot.second);
-                }
 
-                // 인벤토리 바깥으로 드랍 -> 아이템 장착 해제
-                if (GET_SINGLE(InputManager)->IsMouseOutRect(_equipRect)
-                    && GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+                }
+            }
+
+            // 장비창 바깥으로 드랍 -> 아이템 장착 해제
+            if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::LeftMouse))
+            {
+                if (_selectedItem == nullptr)
+                    continue;
+
+                if (_selectedItem->ItemId <= 3)
                 {
-                    if (_selectedItem == nullptr)
-                        continue;
-
-                    if (_selectedItem->ItemId <= 3)
-                        continue;
-
-                    AddItem(_selectedItem->ItemId);
-                    for (auto& equip : _equips)
-                    {
-                        if (equip.second.ItemId == _selectedItem->ItemId)
-                        {
-                            equip.second.Reset();
-                        }
-                    }
-                    SyncEquips(_owner->GetObjectID(), false);
-                    _isEquipedItem = false;
                     _selectedItem = nullptr;
+                    _isEquipedItem = false;
+                    continue;
                 }
+
+                AddItem(_selectedItem->ItemId);
+                for (auto& equip : _equips)
+                {
+                    if (equip.second.ItemId == _selectedItem->ItemId)
+                    {
+                        equip.second.Reset();
+                    }
+                }
+                SyncEquips(_owner->GetObjectID(), false);
+                _isEquipedItem = false;
+                _selectedItem = nullptr;
             }
         }
     }
@@ -1482,6 +1488,10 @@ void Inventory::SetItemCount(int itemId, int ItemCount)
 
 void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
 {
+    // 장비창 복사 방지
+    if (_isEquipedItem)
+        return;
+
     ITEM temp = itemFrom;
     RECT fromRect = itemFrom.Rect;
     RECT toRect = itemTo.Rect;

@@ -103,7 +103,6 @@ void MyPlayer::UsePotion()
 		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 	}
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	GET_SINGLE(SoundManager)->Play(L"Potion");
 	scene->SpawnObject<HealEffect>({ GetCellPos() });
 }
 
@@ -114,6 +113,7 @@ void MyPlayer::UseConsumableItem(int itemID)
 		case 5: // HP포션
 		{
 			UsePotion();
+			GET_SINGLE(ItemManager)->SyncUseableItem();
 			return;
 		}
 
@@ -127,9 +127,9 @@ void MyPlayer::UseConsumableItem(int itemID)
 
 			// 마나 회복
 			info.set_mp(clamp(mp + (maxMp / 2), 0, maxMp));
-			GET_SINGLE(SoundManager)->Play(L"Potion");
 			auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 			scene->SpawnObject<HealEffect>({ GetCellPos() });
+			GET_SINGLE(ItemManager)->SyncUseableItem();
 			break;
 		}
 	}

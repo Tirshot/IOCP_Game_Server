@@ -407,6 +407,8 @@ void Player::MakeArrow()
 
 		auto arrows = info.arrows();
 		info.set_arrows(arrows - 1);
+
+		GET_SINGLE(ItemManager)->SyncUseableItem();
 	}
 }
 
