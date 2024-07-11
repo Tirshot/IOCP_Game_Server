@@ -30,8 +30,6 @@ MerchantDialogueUI::~MerchantDialogueUI()
 
 void MerchantDialogueUI::BeginPlay()
 {
-	Super::BeginPlay();
-
 	_rect = {135, 340, 670, 520};
 	_size = { 535, 180 };
 	_pos = { 135, 340 };
@@ -41,14 +39,6 @@ void MerchantDialogueUI::BeginPlay()
 		_merchantSprite = GET_SINGLE(ResourceManager)->GetSprite(L"MerchantSprite");
 		_backGround = GET_SINGLE(ResourceManager)->GetSprite(L"PopBackground");
 	}
-	{ // 대화 내용
-		wstring wstr = L"퀘스트 대화 내용입니다.";
-		auto textBox = make_shared<TextBox>(wstr);
-		textBox->SetPos({ _pos.x, _pos.y });
-		textBox->SetPadding( 15, 15 );
-		textBox->SetSize({ _size.x, _size.y });
-		AddChild(textBox);
-	}
 
 	{ // 네임 플레이트
 		auto namePlate = make_shared<NamePlate>(L"언덕 집 상인");
@@ -56,18 +46,10 @@ void MerchantDialogueUI::BeginPlay()
 		AddChild(namePlate);
 	}
 
-	{ // 보상
-		auto reward = make_shared<NamePlate>(L"보상");
-		auto posX = reward->GetSize().x;
-		reward->SetPos(Vec2{ _pos.x - 2 - (posX / 2), _pos.y - 100 });
-		reward->SetVisible(false);
-		AddChild(reward);
-	}
-
 	{ // 대화 내용
 		wstring wstr = L"퀘스트 대화 내용입니다.";
 		auto textBox = make_shared<TextBox>(wstr);
-		textBox->SetPos({ _pos.x, _pos.y });
+		textBox->SetPos({ _pos.x, _pos.y});
 		textBox->SetPadding(15, 15);
 		textBox->SetSize({ _size.x, _size.y });
 		AddChild(textBox);
@@ -128,6 +110,8 @@ void MerchantDialogueUI::BeginPlay()
 		back->SetButtonName(L"back");
 		AddChild(back);
 	}
+
+	Super::BeginPlay();
 }
 
 void MerchantDialogueUI::Tick()
@@ -142,14 +126,6 @@ void MerchantDialogueUI::Tick()
 	// 다이얼로그 진행 로직
 	for (auto& child : _children)
 	{
-		auto textBox = dynamic_pointer_cast<TextBox>(child);
-
-		if (textBox)
-		{
-			textBox->SetText(_scripts[_page]);
-			continue;
-		}
-
 		// 스크립트의 마지막 페이지에 도달
 		// 수락, 거절 버튼 활성화
 		if (_page == _maxPage - 1)
@@ -160,7 +136,6 @@ void MerchantDialogueUI::Tick()
 			{
 				_questState = scene->GetPlayerQuestState(myPlayerID, _questID);
 				VisibleButton();
-				VisibleReward();
 			}
 		}
 		else
@@ -171,6 +146,33 @@ void MerchantDialogueUI::Tick()
 				button->SetVisible(false);
 				continue;
 			}
+		}
+
+		auto textBox = dynamic_pointer_cast<TextBox>(child);
+		if (textBox)
+		{
+			textBox->SetText(_scripts[_page]);
+
+			if (_page == _maxPage - 1)
+			{
+				if (_rewardItem == 0)
+				{
+					textBox->SetText(_scripts[_page] + format(L"\n골드 : {0}", _rewardGold));
+				}
+				else if (_rewardGold == 0)
+				{
+					auto item = GET_SINGLE(ItemManager)->GetItem(_rewardItem);
+					auto itemName = item.KorName;
+					textBox->SetText(_scripts[_page] + format(L"\n아이템 : {0} {1}개", itemName, _rewardItemNum));
+				}
+				else
+				{
+					auto item = GET_SINGLE(ItemManager)->GetItem(_rewardItem);
+					auto itemName = item.KorName;
+					textBox->SetText(_scripts[_page] + format(L"\n골드 : {0}, 아이템 : {1} {2}개", _rewardGold, itemName, _rewardItemNum));
+				}
+			}
+			continue;
 		}
 	}
 
@@ -297,55 +299,6 @@ void MerchantDialogueUI::VisibleButton()
 			}
 		}
 	}
-}
-
-void MerchantDialogueUI::VisibleReward()
-{
-	// 버튼 활성화
-	for (auto& child : _children)
-	{
-		// 처음 수령하는 퀘스트인지 확인
-		auto namePlate = dynamic_pointer_cast<NamePlate>(child);
-		if (namePlate)
-		{
-			switch (_questState)
-			{
-			case Protocol::QUEST_STATE_IDLE:
-			{
-				if (namePlate->GetText() == L"보상")
-				{
-					namePlate->SetVisible(true);
-				}
-				continue;
-			}
-			case Protocol::QUEST_STATE_ACCEPT:
-			{
-				if (namePlate->GetText() == L"보상")
-				{
-					namePlate->SetVisible(false);
-				}
-				continue;
-			}
-			case Protocol::QUEST_STATE_COMPLETED:
-			{
-				if (namePlate->GetText() == L"보상")
-				{
-					namePlate->SetVisible(true);
-				}
-				continue;
-			}
-			default:
-			{
-				if (namePlate->GetText() == L"보상")
-				{
-					namePlate->SetVisible(false);
-				}
-				continue;
-			}
-			}
-		}
-	}
-
 }
 
 void MerchantDialogueUI::OnClickAcceptButton()

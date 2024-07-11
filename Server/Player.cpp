@@ -383,6 +383,65 @@ void Player::QuestProgress(int questid)
 	return;
 }
 
+void Player::KillQuestProgress(Protocol::MONSTER_TYPE monsterType)
+{
+	// 플레이어 본인의 퀘스트 상태를 가져옴
+	auto questsStates = room->GetQuestsStates(info.objectid());
+
+	int questsSize = room->GetQuestsSize();
+
+	for (int i = 0; i < questsSize; i++)
+	{
+		// 수주받지 않은 퀘스트면 스킵
+		Protocol::QUEST_STATE state = questsStates[i].state;
+		if (state != Protocol::QUEST_STATE_ACCEPT)
+			continue;
+
+		// 수주받은 퀘스트이며 해당하는 몬스터 타입일 경우 진행
+		Protocol::QuestInfo questInfo = room->GetQuest(i);
+		if (questInfo.targettype() == Protocol::OBJECT_TYPE_MONSTER
+			&& questInfo.targetid() == monsterType)
+		{
+			auto questState = room->GetQuestsStates(info.objectid(), i);
+
+			int targetNums = questInfo.targetnums();
+			int newProgress = questState.progress + 1;
+
+			if (state == Protocol::QUEST_STATE_FINISHED || state == Protocol::QUEST_STATE_COMPLETED)
+				return;
+
+			if (state == Protocol::QUEST_STATE_ACCEPT)
+			{
+				// 몬스터 처치 카운트 
+				{
+					room->SetQuestStateProgress(GetObjectID(), i, newProgress);
+					// newProgress ++
+					{
+						SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), i, newProgress);
+						session->Send(sendBuffer);
+					}
+
+					if (newProgress >= targetNums)
+					{
+						{
+							SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), i, newProgress);
+							session->Send(sendBuffer);
+							room->SetQuestStates(GetObjectID(), i, Protocol::QUEST_STATE_COMPLETED);
+							return;
+						}
+					}
+				}
+			}
+			return;
+
+		}
+	}
+
+
+
+	
+}
+
 map<int, PlayerQuestState> Player::GetAcceptedQuests()
 {
 	map<int, PlayerQuestState> playerQuestsStates;

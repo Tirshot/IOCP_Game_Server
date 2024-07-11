@@ -62,7 +62,7 @@ void QuestTrackerUI::Tick()
 			auto prevRect = prevBox->GetRect();
 
 			// 현재 TextBox를 이전 TextBox의 아래에 배치
-			box->SetPos({ _pos.x, (float)prevRect.bottom });
+			box->SetPos({ _pos.x, (float)prevRect.bottom + 10 });
 		}
 
 		if (_quests[i]->target <= 0)
@@ -109,13 +109,12 @@ void QuestTrackerUI::AddQuestToTracking(int questID, wstring name, wstring descr
 	list->SetBackground(_background);
 	list->SetPos({ _pos.x, _pos.y });
 	list->SetPadding(5, 5);
-	list->SetTransparent(false);
+	list->SetTransparent(true);
 	list->SetAlpha(150);
 	list->SetVisible(true);
 	list->SetText(str);
 	list->SetSize({ _size.x, 20 * 3 });
 	list->SetPos({ (float)_pos.x, _pos.y + ((float)_quests.size() * (float)list->GetSize().y) });
-
 	AddChild(list);
 	quest->textBox = list;
 	_quests.push_back(quest);

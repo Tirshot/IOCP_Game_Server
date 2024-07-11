@@ -49,6 +49,8 @@ QuestUIPanel::QuestUIPanel(Protocol::QuestInfo& info, Vec2 pos, int idx)
 	_reward = info.rewardgold();
 	_rewardItem = info.rewarditem();
 	_rewardItemNum = info.rewarditemnum();
+	_isLinkQuest = info.islinkquest();
+	_prevQuestID = info.prevquestid();
 
 	int page = 1 + _index / 3;
 
@@ -117,21 +119,25 @@ void QuestUIPanel::Render(HDC hdc)
 		RECT _textRect = { _pos.x + 70,_pos.y + 30, _textRect.left + 290, _textRect.top + 68 };
 		DrawTextW(hdc, _description.c_str(), -1, &_textRect, DT_LEFT | DT_WORDBREAK);
 	}
-	// 골드 이미지
+	if (_reward != 0)
 	{
-		::TransparentBlt(hdc,
-			_pos.x + 300,
-			_pos.y + 72,
-			_goldImage->GetSize().x / 3,
-			_goldImage->GetSize().y,
-			_goldImage->GetDC(),
-			0,
-			0,
-			_goldImage->GetSize().x / 3,
-			_goldImage->GetSize().y,
-			_goldImage->GetTransparent());
+		// 골드 이미지
+		{
+			::TransparentBlt(hdc,
+				_pos.x + 300,
+				_pos.y + 72,
+				_goldImage->GetSize().x / 3,
+				_goldImage->GetSize().y,
+				_goldImage->GetDC(),
+				0,
+				0,
+				_goldImage->GetSize().x / 3,
+				_goldImage->GetSize().y,
+				_goldImage->GetTransparent());
+		}
 	}
 	// 보상 Gold
+	if (_reward != 0)
 	{
 		wstring wstr = to_wstring(_reward);
 		RECT _textRect = { _pos.x + 325,_pos.y + 78, _textRect.left + 250, _textRect.top + 18 };

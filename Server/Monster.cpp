@@ -357,7 +357,9 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 
 			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
 			if (player)
-				player->QuestProgress(0);
+			{
+				MonsterQuestProgress(player);
+			}
 
 			// 채팅 출력
 			GChat->AddText(format(L"debug : {0} {1}이(가) {2}에 의해 처치됨.",
@@ -414,15 +416,16 @@ void Monster::KnockBack()
 
 void Monster::MonsterQuestProgress(PlayerRef player)
 {
-	if (info.monstertype() == Protocol::MONSTER_TYPE_SNAKE)
-	{
-		if (player)
-			player->QuestProgress(0);
-	}
+	player->KillQuestProgress(info.monstertype());
+	//if (info.monstertype() == Protocol::MONSTER_TYPE_SNAKE)
+	//{
+	//	if (player)
+	//		player->QuestProgress(0);
+	//}
 
-	if (info.monstertype() == Protocol::MONSTER_TYPE_OCTOROC)
-	{
-		if (player)
-			player->QuestProgress(3);
-	}
+	//if (info.monstertype() == Protocol::MONSTER_TYPE_OCTOROC)
+	//{
+	//	if (player)
+	//		player->QuestProgress(3);
+	//}
 }

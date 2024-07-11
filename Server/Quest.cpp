@@ -162,6 +162,14 @@ void Quest::CreateQuest()
 		int Gold = stoi(questTable[4]);
 		int ItemID = stoi(questTable[5]);
 		int ItemCounts = stoi(questTable[6]);
+		bool isLinkQuest = false;
+		int prevQuestid = -1;
+
+		if (questTable[9] != L"")
+		{
+			isLinkQuest = stoi(questTable[9]);
+			prevQuestid = stoi(questTable[10]);
+		}
 
 		quest->info.set_questid(Questid);
 		quest->info.set_targetid(TargetID);
@@ -191,6 +199,8 @@ void Quest::CreateQuest()
 		quest->info.set_rewardgold(Gold);
 		quest->info.set_rewarditem(ItemID);
 		quest->info.set_rewarditemnum(ItemCounts);
+		quest->info.set_islinkquest(isLinkQuest);
+		quest->info.set_prevquestid(prevQuestid);
 
 		GRoom->AddQuest(*quest);
 		GChat->AddText(::format(L"System : quest {0} »ý¼º Áß...", quest->info.questid()));

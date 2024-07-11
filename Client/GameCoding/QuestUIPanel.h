@@ -53,5 +53,7 @@ protected:
 	int _rewardItem = 0;
 	int _rewardItemNum = 0;
 	int _index = 0;
+	bool _isLinkQuest = false;
+	int _prevQuestID = -1;
 };
 

@@ -21,7 +21,6 @@ public:
 
 private:
 	void VisibleButton();
-	void VisibleReward();
 	void OnClickAcceptButton();
 	void OnClickDeclineButton();
 	void OnClickConfirmButton();
@@ -41,4 +40,5 @@ private:
 	int _rewardItem = 0;
 	int _rewardItemNum = 0;
 	int _rewardGold = 0;
+	bool _rewardVisible = false;
 };

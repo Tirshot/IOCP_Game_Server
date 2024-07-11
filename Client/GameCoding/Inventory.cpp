@@ -128,18 +128,19 @@ void Inventory::Tick()
     auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
     if (myPlayer)
     {
-        _owner = myPlayer;
-    }
+        // 최초 1회만 실행
+        if (_initialized)
+        {
+            _owner = myPlayer;
 
-    // 최초 1회만 실행
-    if (_initialized)
-    {
-        // 검 기본 장착
-        shared_ptr<ITEM> item1 = FindItemFromInventory(1);
-        EquipItem(item1);
-        ApplyStatus();
+            // 검 기본 장착
+            shared_ptr<ITEM> item1 = FindItemFromInventory(1);
+            EquipItem(item1);
+            ApplyStatus();
+            SyncUseableItem();
 
-        _initialized = false;
+            _initialized = false;
+        }
     }
 
     // Rect 위치 초기화
@@ -455,6 +456,7 @@ void Inventory::Tick()
                 if (_selectedItem == nullptr)
                     continue;
 
+                // 기본 무기는 스킵
                 if (_selectedItem->ItemId <= 3)
                 {
                     _selectedItem = nullptr;

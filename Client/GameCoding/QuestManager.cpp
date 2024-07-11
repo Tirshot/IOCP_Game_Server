@@ -91,7 +91,6 @@ void QuestManager::Tick()
                 {
                     myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
                     questComplete = true;
-                    _announce = false;
                     continue;
                 }
             }
@@ -110,12 +109,12 @@ void QuestManager::Tick()
             }
             else if (state == Protocol::QUEST_STATE_FINISHED)
             {
-                if (_announce == true)
+                if (_announce == false)
                 {
                     inventory->RemoveItem(targetID, targetNums);
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
                     _tracker->RemoveQuestFromTracker(questID);
-                    _announce = false;
+                    _announce = true;
                     continue;
                 }
             }
@@ -134,23 +133,23 @@ void QuestManager::Tick()
             }
             else if (state == Protocol::QUEST_STATE_COMPLETED)
             {
-                if (_announce == true)
+                if (_announce == false)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
                     GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
                     GET_SINGLE(SoundManager)->Play(L"QuestComplete");
-                    _announce = false;
+                    _announce = true;
                     continue;
                 }
             }
             else if (state == Protocol::QUEST_STATE_FINISHED)
             {
+                _tracker->RemoveQuestFromTracker(questID);
                 if (_announce == false)
                 {
-                    _tracker->RemoveQuestFromTracker(questID);
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
                     _announce = true;
-                    continue;
+                    break;
                 }
             }
             break;
@@ -161,6 +160,7 @@ void QuestManager::Tick()
         {
             GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 진행중.");
             _announce = true;
+            return;
         }
     }
 }

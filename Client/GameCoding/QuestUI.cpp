@@ -249,6 +249,19 @@ void QuestUI::ResetQuestList()
 				continue;
 
 			int questId = questInfo.second.questid();
+			bool isLinkQuest = questInfo.second.islinkquest();
+			if (isLinkQuest)
+			{
+				auto prevQuestid = questInfo.second.prevquestid();
+				if (prevQuestid >= 0)
+				{
+					auto prevQuestState = scene->GetPlayerQuestState(myPlayerId, prevQuestid);
+					if (prevQuestState != Protocol::QUEST_STATE_FINISHED)
+					{
+						continue;
+					}
+				}
+			}
 
 			_quests[questId] = questInfo.second;
 			SetQuestPanel(questInfo);
