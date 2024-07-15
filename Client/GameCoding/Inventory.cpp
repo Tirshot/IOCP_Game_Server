@@ -1186,6 +1186,15 @@ bool Inventory::AddItem(int ItemId, int ItemCount)
                             SetItemSlot(*slot.get());
                             return true;
                         }
+                        else
+                        {
+                            slot->index = index;
+                            // 수량 증가
+                            slot->ItemCount += ItemCount;
+                            AddUseableItemToServer(ItemId, ItemCount);
+                            SetItemSlot(*slot.get());
+                            return true;
+                        }
                     }
                     index++;
                 }

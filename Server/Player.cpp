@@ -70,7 +70,7 @@ void Player::Update()
 	{
 		if (IsInSafeZone())
 		{
-			SetState(IDLE, true);
+			SetState(IDLE);
 			return;
 		}
 	}
@@ -134,6 +134,7 @@ void Player::UpdateSkill()
 				return;
 
 			creature->SetWait(50);
+			creature->KnockBack();
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)

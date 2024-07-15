@@ -60,6 +60,8 @@ void Item::Tick()
 	// 플레이어와 드랍된 이 아이템과 접촉하면
 	if (myPlayer->GetCellPos() == GetCellPos())
 	{
+		auto healAmount = 0;
+
 		// 아이템 효과 적용
 		switch (itemInfo.itemid())
 		{
@@ -69,8 +71,9 @@ void Item::Tick()
 			break;
 
 		case 7:	// Heart
-			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + myPlayer->GetPotionEffect() * 2, 0, myPlayer->info.maxhp()));
-			GET_SINGLE(ChatManager)->AddMessage(L"체력이 10 회복 되었습니다.");
+			healAmount = myPlayer->info.hp() + POTION_HEALING_AMOUNT * 2;
+			myPlayer->info.set_hp(clamp(healAmount, 0, myPlayer->info.maxhp()));
+			GET_SINGLE(ChatManager)->AddMessage(format(L"체력이 {0} 회복 되었습니다.", healAmount));
 			break;
 
 		default:	// 습득 가능한 아이템

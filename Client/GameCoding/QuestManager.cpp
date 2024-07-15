@@ -82,11 +82,15 @@ void QuestManager::Tick()
         case Protocol::OBJECT_TYPE_ITEM:
         {
             auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(targetID);
-            int itemCount = item ? item->ItemCount : 0;
+            if (item == nullptr)
+                continue;
+            
+            int itemCount = item->ItemCount;
+
+            _tracker->SetProgress(questID, itemCount);
 
             if (state == Protocol::QUEST_STATE_ACCEPT)
             {
-                _tracker->SetProgress(questID, itemCount);
                 if (itemCount >= targetNums)
                 {
                     myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
@@ -96,8 +100,6 @@ void QuestManager::Tick()
             }
             else if (state == Protocol::QUEST_STATE_COMPLETED)
             {
-                _tracker->SetProgress(questID, itemCount);
-
                 if (_announce == false)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
@@ -109,18 +111,51 @@ void QuestManager::Tick()
             }
             else if (state == Protocol::QUEST_STATE_FINISHED)
             {
+                _tracker->RemoveQuestFromTracker(questID);
                 if (_announce == false)
                 {
-                    inventory->RemoveItem(targetID, targetNums);
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
-                    _tracker->RemoveQuestFromTracker(questID);
                     _announce = true;
-                    continue;
+                    break;
                 }
             }
             break;
         }
         case Protocol::OBJECT_TYPE_MONSTER:
+        {
+            if (state == Protocol::QUEST_STATE_ACCEPT)
+            {
+                if (progress == targetNums)
+                {
+                    myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
+                    questComplete = true;
+                    continue;
+                }
+            }
+            else if (state == Protocol::QUEST_STATE_COMPLETED)
+            {
+                if (_announce == false)
+                {
+                    GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
+                    GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
+                    GET_SINGLE(SoundManager)->Play(L"QuestComplete");
+                    _announce = true;
+                    continue;
+                }
+            }
+            else if (state == Protocol::QUEST_STATE_FINISHED)
+            {
+                _tracker->RemoveQuestFromTracker(questID);
+                if (_announce == false)
+                {
+                    GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
+                    _announce = true;
+                    break;
+                }
+            }
+            break;
+        }
+        case Protocol::OBJECT_TYPE_NONE:
         {
             if (state == Protocol::QUEST_STATE_ACCEPT)
             {

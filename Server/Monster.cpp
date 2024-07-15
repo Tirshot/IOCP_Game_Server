@@ -162,18 +162,18 @@ void Monster::UpdateIdle()
 			SetState(MOVE, true);
 		}
 
-		// 거리가 너무 멀어지면 원래 자리로 복귀
+		// 타겟이 사라졌고 최초 소환 위치와 거리가 너무 멀어지면 복귀
 		{
 			auto pos = GetCellPos();
 
 			auto dist = _initialPos - pos;
 			auto len = dist.Length();
 
-			if (len >= 3)
+			if (len >= 10)
 			{
 				// 좌표 찾기
 				vector<Vec2Int> path;
-				// 최초 위치로 되돌아는 길을 찾음
+				// 최초 위치로 되돌아가는 길을 찾음
 				if (room->FindPath(GetCellPos(), _initialPos, OUT path))
 				{
 					if (path.size() > 1)

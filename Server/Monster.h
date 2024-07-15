@@ -28,6 +28,8 @@ public:
 	virtual void KnockBack() override;
 	void MonsterQuestProgress(PlayerRef player);
 
+	void SetInitialPos(Vec2Int pos) { _initialPos = pos; }
+
 protected:
 	uint64 _waitUntil = 0;
 	uint64 _waitHit = 0;
