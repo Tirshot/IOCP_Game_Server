@@ -89,109 +89,76 @@ void QuestManager::Tick()
 
             _tracker->SetProgress(questID, itemCount);
 
-            if (state == Protocol::QUEST_STATE_ACCEPT)
+            if (state == Protocol::QUEST_STATE_COMPLETED)
             {
-                if (itemCount >= targetNums)
-                {
-                    myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
-                    questComplete = true;
-                    continue;
-                }
-            }
-            else if (state == Protocol::QUEST_STATE_COMPLETED)
-            {
-                if (_announce == false)
+                if (!_announce)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
                     GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
                     GET_SINGLE(SoundManager)->Play(L"QuestComplete");
                     _announce = true;
-                    continue;
                 }
             }
             else if (state == Protocol::QUEST_STATE_FINISHED)
             {
                 _tracker->RemoveQuestFromTracker(questID);
-                if (_announce == false)
+                if (!_announce)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
                     _announce = true;
-                    break;
                 }
             }
             break;
         }
         case Protocol::OBJECT_TYPE_MONSTER:
         {
-            if (state == Protocol::QUEST_STATE_ACCEPT)
+            if (state == Protocol::QUEST_STATE_COMPLETED)
             {
-                if (progress == targetNums)
-                {
-                    myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
-                    questComplete = true;
-                    continue;
-                }
-            }
-            else if (state == Protocol::QUEST_STATE_COMPLETED)
-            {
-                if (_announce == false)
+                if (!_announce)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
                     GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
                     GET_SINGLE(SoundManager)->Play(L"QuestComplete");
                     _announce = true;
-                    continue;
                 }
             }
             else if (state == Protocol::QUEST_STATE_FINISHED)
             {
                 _tracker->RemoveQuestFromTracker(questID);
-                if (_announce == false)
+                if (!_announce)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
                     _announce = true;
-                    break;
                 }
             }
             break;
         }
         case Protocol::OBJECT_TYPE_NONE:
         {
-            if (state == Protocol::QUEST_STATE_ACCEPT)
+            if (state == Protocol::QUEST_STATE_COMPLETED)
             {
-                if (progress == targetNums)
-                {
-                    myPlayer->SetQuestState(questID, Protocol::QUEST_STATE_COMPLETED);
-                    questComplete = true;
-                    continue;
-                }
-            }
-            else if (state == Protocol::QUEST_STATE_COMPLETED)
-            {
-                if (_announce == false)
+                if (!_announce)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" QUEST COMPLETE!!");
                     GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
                     GET_SINGLE(SoundManager)->Play(L"QuestComplete");
                     _announce = true;
-                    continue;
                 }
             }
             else if (state == Protocol::QUEST_STATE_FINISHED)
             {
                 _tracker->RemoveQuestFromTracker(questID);
-                if (_announce == false)
+                if (!_announce)
                 {
                     GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 완료.");
                     _announce = true;
-                    break;
                 }
             }
             break;
         }
         }
 
-        if (questComplete && _announce == false)
+        if (questComplete && !_announce)
         {
             GET_SINGLE(ChatManager)->AddMessage(questName + L" 퀘스트 진행중.");
             _announce = true;

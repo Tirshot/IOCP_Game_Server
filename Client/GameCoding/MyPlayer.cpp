@@ -33,6 +33,7 @@ MyPlayer::MyPlayer()
 
 MyPlayer::~MyPlayer()
 {
+	GET_SINGLE(ItemManager)->GetInventory()->AutoSyncInventory();
 	_questsStates.clear();
 }
 
@@ -272,20 +273,6 @@ void MyPlayer::TickInput()
 
 			GET_SINGLE(ChatManager)->AddMessage(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y));
 			GET_SINGLE(ChatManager)->SendMessageToServer(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y), false);
-		}
-	}
-
-	// Debug - 사망
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::M))
-	{
-		//info.set_hp(0);
-
-		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 사망");
-		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 사망", false);
-
-		{
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_KillPlayer(GetObjectID());
-			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 	}
 }

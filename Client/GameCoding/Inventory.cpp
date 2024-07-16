@@ -408,6 +408,9 @@ void Inventory::Tick()
                 slot.second.Reset();
             }
 
+            //if (_equips[0].second.ItemId == 0)
+            //    EquipItem(FindItemFromInventory(1));
+
             // 아이템 드래그 앤 드랍
             if (IsMouseInRect(slot.first))
             {
@@ -431,7 +434,7 @@ void Inventory::Tick()
 
                     AddItem(slot.second.ItemId);
                     slot.second.Reset();
-                    SyncEquips(_owner->GetObjectID(), false);
+                    SyncEquips(slot.second.ItemId, false);
                 }
 
                 // 드래그 시작
@@ -472,7 +475,7 @@ void Inventory::Tick()
                         equip.second.Reset();
                     }
                 }
-                SyncEquips(_owner->GetObjectID(), false);
+                SyncEquips(_selectedItem->ItemId, false);
                 _isEquipedItem = false;
                 _selectedItem = nullptr;
             }
@@ -649,6 +652,10 @@ void Inventory::SetItemSlot(ITEM& slot)
     slot.SubType = GET_SINGLE(ItemManager)->GetSubType(ItemInfo);
     slot.Sprite = GET_SINGLE(ItemManager)->GetSprite(slot.Name);
     slot.MaxCount = GET_SINGLE(ItemManager)->GetMaxCounts(ItemInfo);
+    slot.Attack = GET_SINGLE(ItemManager)->GetAttack(ItemInfo);
+    slot.Defence = GET_SINGLE(ItemManager)->GetDefence(ItemInfo);
+    slot.PotionEffect = GET_SINGLE(ItemManager)->GetPotionMultiplier(ItemInfo);
+    slot.PotionMaxCount = GET_SINGLE(ItemManager)->GetPotionMaxCount(ItemInfo);
 }
 
 void Inventory::SetEquipSlotRects()
@@ -1513,7 +1520,7 @@ void Inventory::ChangeItem(ITEM& itemFrom, ITEM& itemTo)
     itemTo.Rect = toRect;
 }
 
-shared_ptr<ITEM> Inventory::FindItemFromInventory(int itemId)
+shared_ptr<ITEM>& Inventory::FindItemFromInventory(int itemId)
 {
     for (auto& slot : _slots)
     {
@@ -1524,7 +1531,8 @@ shared_ptr<ITEM> Inventory::FindItemFromInventory(int itemId)
             return slot;
     }
 
-    return nullptr;
+    static shared_ptr<ITEM> nullItem = nullptr;
+    return nullItem;
 }
 
 int Inventory::FindItemIndexFromInventory(int itemId)
@@ -1541,14 +1549,16 @@ int Inventory::FindItemIndexFromInventory(int itemId)
     return -1;
 }
 
-shared_ptr<ITEM> Inventory::FindItemFromInventory(shared_ptr<ITEM> item)
+shared_ptr<ITEM>& Inventory::FindItemFromInventory(shared_ptr<ITEM> item)
 {
     for (auto& slot : _slots)
     {
         if (slot == item)
             return slot;
     }
-    return nullptr;
+
+    static shared_ptr<ITEM> nullItem = nullptr;
+    return nullItem;
 }
 
 ITEM Inventory::GetEquippedItem(wstring wstr)
@@ -1583,14 +1593,14 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     if (myPlayer == nullptr)
         return;
 
-    ITEM newItem = GET_SINGLE(ItemManager)->GetItem(item->ItemId);
+    SyncEquips(item->ItemId, true);
 
     if (item->SubType == L"Sword")
     {
         if (_equips[0].second.ItemId == item->ItemId)
             return;
 
-        _equips[0].second = newItem;
+        _equips[0].second = *item;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
     }
     else if (item->SubType == L"Bow")
@@ -1598,7 +1608,7 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
         if (_equips[0].second.ItemId == item->ItemId)
             return;
 
-        _equips[0].second = newItem;
+        _equips[0].second = *item;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_BOW);
     }
     else if (item->SubType == L"Staff")
@@ -1606,7 +1616,7 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
         if (_equips[0].second.ItemId == item->ItemId)
             return;
 
-        _equips[0].second = newItem;
+        _equips[0].second = *item;
         myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
     }
     else if (item->SubType == L"Helmet")
@@ -1617,16 +1627,14 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
         // 장착되어 있지 않은 경우
         if (_equips[1].second.ItemId == 0)
         {
-            _equips[1].second = newItem;
-            SyncEquips(newItem.ItemId);
+            _equips[1].second = *item;
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
             ITEM temp = _equips[1].second;
-            _equips[1].second = newItem;
+            _equips[1].second = *item;
             AddItem(temp.ItemId);
-            SyncEquips(newItem.ItemId);
             RemoveItem(item);
             temp = {};
         }
@@ -1639,16 +1647,14 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
         // 장착되어 있지 않은 경우
         if (_equips[2].second.ItemId == 0)
         {
-            _equips[2].second = newItem;
-            SyncEquips(newItem.ItemId);
+            _equips[2].second = *item;
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
             ITEM temp = _equips[2].second;
-            _equips[2].second = newItem;
+            _equips[2].second = *item;
             AddItem(temp.ItemId);
-            SyncEquips(newItem.ItemId);
             RemoveItem(item);
             temp = {};
         }
@@ -1657,16 +1663,14 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     {        // 장착되어 있지 않은 경우
         if (_equips[3].second.ItemId == 0)
         {
-            _equips[3].second = newItem;
-            SyncEquips(newItem.ItemId);
+            _equips[3].second = *item;
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
             ITEM temp = _equips[3].second;
-            _equips[3].second = newItem;
+            _equips[3].second = *item;
             AddItem(temp.ItemId);
-            SyncEquips(newItem.ItemId);
             RemoveItem(item);
             temp = {};
         }
@@ -1675,21 +1679,20 @@ void Inventory::EquipItem(shared_ptr<ITEM> item)
     {        // 장착되어 있지 않은 경우
         if (_equips[4].second.ItemId == 0)
         {
-            _equips[4].second = newItem;
-            SyncEquips(newItem.ItemId);
+            _equips[4].second = *item;
             RemoveItem(item);
         }
         else
         {   // 이미 장착되어 있는 경우
             ITEM temp = _equips[4].second;
-            _equips[4].second = newItem;
+            _equips[4].second = *item;
             AddItem(temp.ItemId);
-            SyncEquips(newItem.ItemId);
             RemoveItem(item);
             temp = {};
         }
     }
 
+    SyncEquips(item->ItemId);
     ApplyStatus();
 }
 
@@ -1698,44 +1701,19 @@ void Inventory::QuickEquipItem(int itemID)
     if (itemID <= 0)
         return;
 
-    ITEM item = GET_SINGLE(ItemManager)->GetItem(itemID);
+    auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(itemID);
 
-    if (item.Type != L"Wearable" && item.Type != L"Consumable")
+    if (item == nullptr)
+        return;
+
+    if (item->Type != L"Wearable")
         return;
 
     auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
     if (myPlayer == nullptr)
         return;
 
-    if (item.SubType == L"Sword")
-    {
-        if (_equips[0].second.ItemId == item.ItemId)
-            return;
-
-        _equips[0].second = item;
-        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_SWORD);
-    }
-    else if (item.SubType == L"Bow")
-    {
-        if (_equips[0].second.ItemId == item.ItemId)
-            return;
-
-        _equips[0].second = item;
-        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_BOW);
-    }
-    else if (item.SubType == L"Staff")
-    {
-        if (_equips[0].second.ItemId == item.ItemId)
-            return;
-
-        _equips[0].second = item;
-        myPlayer->SetWeaponType(Protocol::WEAPON_TYPE_STAFF);
-    }
-    else if (item.SubType == L"Potion")
-    {
-
-
-    }
+    EquipItem(item);
 }
 
 void Inventory::PressToSetQuickItem(ITEM slot)

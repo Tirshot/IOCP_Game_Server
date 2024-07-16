@@ -4,6 +4,8 @@
 #include "Arrow.h"
 #include "GameRoom.h"
 #include "GameSession.h"
+#include "ItemManager.h"
+#include "Inventory.h"
 #include "Chat.h"
 
 Player::Player()
@@ -179,6 +181,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature->SetWait(50);
+			creature->KnockBack();
 		}
 
 		if (creature2)
@@ -197,6 +200,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature2->SetWait(50);
+			creature2->KnockBack();
 		}
 
 		if (creature3)
@@ -215,6 +219,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature3->SetWait(50);
+			creature3->KnockBack();
 		}
 
 		if (creature4)
@@ -234,6 +239,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature4->SetWait(50);
+			creature4->KnockBack();
 		}
 	}
 	SetState(MOVE);
@@ -424,23 +430,62 @@ void Player::KillQuestProgress(Protocol::MONSTER_TYPE monsterType)
 
 					if (newProgress >= targetNums)
 					{
-						{
-							SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), i, newProgress);
-							session->Send(sendBuffer);
-							room->SetQuestStates(GetObjectID(), i, Protocol::QUEST_STATE_COMPLETED);
-							return;
-						}
+						SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), i, newProgress);
+						session->Send(sendBuffer);
+						room->SetQuestStates(GetObjectID(), i, Protocol::QUEST_STATE_COMPLETED);
 					}
 				}
 			}
-			return;
-
 		}
 	}
+}
 
+void Player::ItemQuestProgress(int itemID)
+{
+	// 플레이어 본인의 퀘스트 상태를 가져옴
+	auto questsStates = room->GetQuestsStates(info.objectid());
 
+	int questsSize = room->GetQuestsSize();
 
-	
+	for (int i = 0; i < questsSize; i++)
+	{
+		// 수주받지 않은 퀘스트면 스킵
+		Protocol::QUEST_STATE state = questsStates[i].state;
+		if (state != Protocol::QUEST_STATE_ACCEPT)
+			continue;
+
+		// 수주받은 퀘스트이며 해당하는 아이템 일 경우 진행
+		Protocol::QuestInfo questInfo = room->GetQuest(i);
+		if (questInfo.targettype() == Protocol::OBJECT_TYPE_ITEM
+			&& questInfo.targetid() == itemID)
+		{
+			auto questState = room->GetQuestsStates(info.objectid(), i);
+
+			int targetNums = questInfo.targetnums();
+			int itemCount = GET_SINGLE(ItemManager)->FindItemCountFromInventory(info.objectid(), itemID);
+			int newProgress = itemCount;
+
+			if (state == Protocol::QUEST_STATE_FINISHED || state == Protocol::QUEST_STATE_COMPLETED)
+				return;
+
+			if (state == Protocol::QUEST_STATE_ACCEPT)
+			{
+				room->SetQuestStateProgress(GetObjectID(), i, newProgress);
+				// newProgress ++
+				{
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), i, newProgress);
+					session->Send(sendBuffer);
+				}
+
+				if (newProgress >= targetNums)
+				{
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), i, newProgress);
+					session->Send(sendBuffer);
+					room->SetQuestStates(GetObjectID(), i, Protocol::QUEST_STATE_COMPLETED);
+				}
+			}
+		}
+	}
 }
 
 map<int, PlayerQuestState> Player::GetAcceptedQuests()

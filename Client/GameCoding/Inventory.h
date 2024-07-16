@@ -42,9 +42,9 @@ public:
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
 	void SyncUseableItem();
 
-	shared_ptr<ITEM> FindItemFromInventory(int itemId);
+	shared_ptr<ITEM>& FindItemFromInventory(int itemId);
 	int FindItemIndexFromInventory(int itemId);
-	shared_ptr<ITEM> FindItemFromInventory(shared_ptr<ITEM> item);
+	shared_ptr<ITEM>& FindItemFromInventory(shared_ptr<ITEM> item);
 	
 	ITEM GetEquippedItem(wstring wstr);
 

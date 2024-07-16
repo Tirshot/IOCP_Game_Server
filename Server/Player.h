@@ -27,6 +27,7 @@ public:
 	void Teleport();
 	void QuestProgress(int questid);
 	void KillQuestProgress(Protocol::MONSTER_TYPE monsterType);
+	void ItemQuestProgress(int itemID);
 
 public:
 	map<int, class PlayerQuestState> GetAcceptedQuests();

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "GameRoom.h"
 #include "GameSession.h"
+#include "Inventory.h"
 #include "Chat.h"
 #include <codecvt>
 
@@ -325,11 +326,15 @@ Protocol::ITEM_TYPE ItemManager::GetItemTypeByID(int itemID)
 
 Protocol::ITEM_SUBTYPE ItemManager::GetItemSubType(int itemID)
 {
-	auto info = GetItemInfo(itemID);
+	auto itemInfo = GetItemInfo(itemID);
 
-	wstring subType = info[4];
+	wstring subType = itemInfo[4];
 
-	if (subType == L"Helmet")
+	if (subType == L"Sword" || subType == L"Bow" || subType == L"Staff")
+	{
+		return Protocol::WEARABLE_TYPE_WEAPON;
+	}
+	else if (subType == L"Helmet")
 	{
 		return Protocol::WEARABLE_TYPE_HELMET;
 	}
@@ -359,4 +364,15 @@ int ItemManager::GetItemRemoveTimeByID(int itemID)
 	auto info = GetItemInfo(itemID);
 
 	return GetDropItemRemoveTime(info);
+}
+
+int ItemManager::FindItemCountFromInventory(int ownerID, int itemID)
+{
+	auto inventory = GRoom->GetInventory(ownerID);
+	if (inventory)
+	{
+		return inventory->FindItemCountFromInventory(itemID);
+	}
+
+	return 0;
 }

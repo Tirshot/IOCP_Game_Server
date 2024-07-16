@@ -186,8 +186,7 @@ void Monster::UpdateIdle()
 							SetCellPos(nextPos);
 							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
 
-							// 주위의 클라이언트에 알림
-							SetState(MOVE, true);
+							SetState(MOVE);
 						}
 					}
 					else
@@ -417,15 +416,4 @@ void Monster::KnockBack()
 void Monster::MonsterQuestProgress(PlayerRef player)
 {
 	player->KillQuestProgress(info.monstertype());
-	//if (info.monstertype() == Protocol::MONSTER_TYPE_SNAKE)
-	//{
-	//	if (player)
-	//		player->QuestProgress(0);
-	//}
-
-	//if (info.monstertype() == Protocol::MONSTER_TYPE_OCTOROC)
-	//{
-	//	if (player)
-	//		player->QuestProgress(3);
-	//}
 }

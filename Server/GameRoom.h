@@ -66,6 +66,9 @@ private:
 	// 몬스터 스폰 숫자
 	const int32 DESIRED_MONSTER_COUNT = 12;
 	int32 _monsterCount = 0;
+	int _snakeCount = 0;
+	int _moblinCount = 0;
+	int _octorocCount = 0;
 
 public:
 	void Handle_C_Move(Protocol::C_Move& pkt);

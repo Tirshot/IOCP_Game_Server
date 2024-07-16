@@ -318,10 +318,12 @@ void DevScene::RemoveActor(shared_ptr<Actor> actor)
 	}
 
 	// 사망시 메세지 및 UI 출력
-	shared_ptr<MyPlayer> player = dynamic_pointer_cast<MyPlayer>(actor);
-	if (player)
+	shared_ptr<MyPlayer> myPlayer = dynamic_pointer_cast<MyPlayer>(actor);
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(actor);
+
+	if (myPlayer)
 	{
-		SpawnObject<DeathEffect>(player->GetCellPos());
+		SpawnObject<DeathEffect>(myPlayer->GetCellPos());
 
 		GET_SINGLE(SoundManager)->Play(L"GameOver");
 
@@ -334,6 +336,11 @@ void DevScene::RemoveActor(shared_ptr<Actor> actor)
 			if (go)
 				go->SetVisible(true);
 		}
+	}
+	else if (player)
+	{
+		// 다른 플레이어의 이펙트 출력
+		SpawnObject<DeathEffect>(player->GetCellPos());
 	}
 }
 
@@ -1350,7 +1357,16 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 
 		shared_ptr<GameObject> object = GetObjects(id);
 		if (object)
+		{
+			auto creature = dynamic_pointer_cast<Creature>(object);
+			if (creature)
+			{
+				auto pos = creature->GetCellPos();
+
+			}
 			RemoveActor(object);
+
+		}
 	}
 }
 

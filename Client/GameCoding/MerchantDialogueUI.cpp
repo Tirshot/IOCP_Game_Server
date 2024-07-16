@@ -379,16 +379,31 @@ void MerchantDialogueUI::OnClickConfirmButton()
 
 				if (myPlayer)
 				{
-					if (GET_SINGLE(ItemManager)->IsInventoryFull())
+					auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(_rewardItem);
+
+					if (item)
 					{
-						// 인벤토리가 가득 차(찰 예정이라)서 퀘스트 완료 불가 -> 추후 코드 수정필요
+						int itemCount = item->ItemCount;
+						int maxCount = item->MaxCount;
+
+						if (GET_SINGLE(ItemManager)->IsInventoryFull()
+							|| itemCount > maxCount)
+						{
+							// 인벤토리가 가득 차(찰 예정이라)서 퀘스트 완료 불가 -> 추후 코드 수정필요
+							return;
+						}
+					}
+
+					if (_rewardItem != 0)
+					{
+						GET_SINGLE(ItemManager)->AddItemToInventory(_rewardItem, _rewardItemNum);
+					}
+					else if (_rewardGold == 0)	// 퀘스트의 보상이 아예 없을 경우
+					{
 						return;
 					}
 
 					myPlayer->info.set_gold(myPlayer->info.gold() + _rewardGold);
-					
-					if (_rewardItem != 0)
-						GET_SINGLE(ItemManager)->AddItemToInventory(_rewardItem, _rewardItemNum);
 				}
 				_questState = Protocol::QUEST_STATE_FINISHED;
 				scene->SetPlayerQuestState(myPlayerId, _questID, Protocol::QUEST_STATE_FINISHED);

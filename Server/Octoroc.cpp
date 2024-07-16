@@ -140,7 +140,7 @@ void Octoroc::UpdateIdle()
 			auto dist = _initialPos - pos;
 			auto len = dist.Length();
 
-			if (len >= 5)
+			if (len >= 10)
 			{
 				// 좌표 찾기
 				vector<Vec2Int> path;
@@ -157,8 +157,7 @@ void Octoroc::UpdateIdle()
 							SetCellPos(nextPos);
 							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
 
-							// 주위의 클라이언트에 알림
-							SetState(MOVE, true);
+							SetState(MOVE);
 						}
 					}
 					else

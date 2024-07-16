@@ -52,6 +52,10 @@ public:
 	string GetItemSubTypeByID(int itemID);
 	int GetItemRemoveTimeByID(int itemID);
 
+public:
+	// 인벤토리 순환
+	int FindItemCountFromInventory(int ownerID, int itemID);
+
 
 private:
 	vector<vector<wstring>> _itemGroupTable;

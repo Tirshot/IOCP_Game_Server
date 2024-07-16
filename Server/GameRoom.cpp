@@ -382,6 +382,22 @@ void GameRoom::RemoveObject(uint64 id)
 	if (gameObject == nullptr)
 		return;
 
+	// 몬스터 생성 비율에 따른 개체수 조절
+	switch (gameObject->info.monstertype())
+	{
+	case Protocol::MONSTER_TYPE_SNAKE:
+		_snakeCount--;
+		break;
+
+	case Protocol::MONSTER_TYPE_MOBLIN:
+		_moblinCount--;
+		break;
+
+	case Protocol::MONSTER_TYPE_OCTOROC:
+		_octorocCount--;
+		break;
+	}
+
 	switch (gameObject->info.objecttype())
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
@@ -464,10 +480,7 @@ PlayerRef GameRoom::FindClosestPlayer(Vec2Int cellPos)
 		{
 			// 플레이어가 안전 구역에 있으면 타겟팅하지 않음
 			if (player->IsInSafeZone())
-			{
-				ret = nullptr;
 				continue;
-			}
 
 			Vec2Int dir = cellPos - player->GetCellPos();
 			float dist = dir.Length();
@@ -739,92 +752,112 @@ bool GameRoom::IsOtherMonstersAround(MonsterRef monster)
 void GameRoom::RandomMonsterSpawn()
 {
 	// 매 0.5초마다 정해진 숫자 만큼만 스폰
-	if (_monsterCount >= 1/*DESIRED_MONSTER_COUNT*/)
+	if (_monsterCount >= DESIRED_MONSTER_COUNT)
 		return;
 
-	Vec2Int randPos = GetRandomEmptyCellPos();
-
-	// 인공지능 테스트
-
-	{
-		auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
-		{
-			snake->SetCellPos(randPos, true);
-			snake->SetInitialPos(randPos);
-
-			AddObject(snake);
-			_monsterCount++;
-			GChat->AddText(::format(L"snake {0} ({1}, {2})에 생성.", snake->info.objectid(), randPos.x, randPos.y));
-		}
-	}
-	//// 확률에 따라 뱀(가중치 30), 모블린(10), 옥타록(20) 랜덤 생성
-	//auto randValue = rand() % 60 + 1;
-
-	//if (randValue <= 30)
+	//// 인공지능 테스트
 	//{
 	//	auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
-	//	while (true)
 	//	{
-	//		snake->SetCellPos(randPos, true);
-	//		// 거리 3 이내에 다른 몬스터가 있으면 재배치
-	//		if (IsOtherMonstersAround(snake))
-	//		{
-	//			randPos = GetRandomEmptyCellPos();
-	//		}
-	//		else
-	//		{
-	//			snake->SetInitialPos(randPos);
-	//			break;
-	//		}
-	//	}
-	//	{
+	//		snake->SetCellPos({53, 24}, true);
+	//		snake->SetInitialPos({ 53, 24 });
+
 	//		AddObject(snake);
 	//		_monsterCount++;
-	//		GChat->AddText(::format(L"snake {0} 생성.", snake->info.objectid()));
+	//		GChat->AddText(::format(L"snake {0} ({1}, {2})에 생성.", snake->info.objectid(), 53, 24));
 	//	}
 	//}
-	//else if (randValue > 30 && randValue <= 40)
-	//{
-	//	auto moblin = GameObject::CreateMonster(Protocol::MONSTER_TYPE_MOBLIN);
-	//	while (true)
-	//	{
-	//		moblin->SetCellPos(randPos, true);
-	//		// 거리 3 이내에 다른 몬스터가 있으면 재배치
-	//		if (IsOtherMonstersAround(moblin))
-	//		{
-	//			randPos = GetRandomEmptyCellPos();
-	//		}
-	//		else
-	//		{
-	//			moblin->SetInitialPos(randPos);
-	//			break;
-	//		}
-	//	}
-	//	AddObject(moblin);
-	//	_monsterCount++;
-	//	GChat->AddText(::format(L"moblin {0} 생성.", moblin->info.objectid()));
-	//}
-	//else if (randValue > 40 && randValue <= 60)
-	//{
-	//	auto octoroc = GameObject::CreateMonster(Protocol::MONSTER_TYPE_OCTOROC);
-	//	while (true)
-	//	{
-	//		octoroc->SetCellPos(randPos, true);
-	//		// 거리 3 이내에 다른 몬스터가 있으면 재배치
-	//		if (IsOtherMonstersAround(octoroc))
-	//		{
-	//			randPos = GetRandomEmptyCellPos();
-	//		}
-	//		else
-	//		{
-	//			octoroc->SetInitialPos(randPos);
-	//			break;
-	//		}
-	//	}
-	//	AddObject(octoroc);
-	//	_monsterCount++;
-	//	GChat->AddText(::format(L"octoroc {0} 생성.", octoroc->info.objectid()));
-	//}
+
+	Vec2Int randPos = GetRandomEmptyCellPos();
+	int randValue = rand() % 3 + 1;
+	int maxSnakeCounts = DESIRED_MONSTER_COUNT * (3.f / 6);
+	int maxMoblinCounts = DESIRED_MONSTER_COUNT * (1.f / 6);
+	int maxOctorocCounts = DESIRED_MONSTER_COUNT * (2.f / 6);
+
+	//  뱀(가중치 30), 모블린(10), 옥타록(20), 3:1:2 비율 생성
+	switch (randValue)
+	{
+	case 1:
+	{
+		if (_snakeCount >= maxSnakeCounts)
+			return;
+
+		auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
+		while (true)
+		{
+			snake->SetCellPos(randPos, true);
+			// 거리 3 이내에 다른 몬스터가 있으면 재배치
+			if (IsOtherMonstersAround(snake))
+			{
+				randPos = GetRandomEmptyCellPos();
+			}
+			else
+			{
+				snake->SetInitialPos(randPos);
+				break;
+			}
+		}
+		AddObject(snake);
+		_monsterCount++;
+		_snakeCount++;
+		GChat->AddText(::format(L"snake {0} ({1}, {2})에 생성.", snake->info.objectid(), randPos.x, randPos.y));
+		break;
+	}
+
+	case 2:
+	{
+		if (_moblinCount >= maxMoblinCounts)
+			return;
+
+		auto moblin = GameObject::CreateMonster(Protocol::MONSTER_TYPE_MOBLIN);
+		while (true)
+		{
+			moblin->SetCellPos(randPos, true);
+			// 거리 3 이내에 다른 몬스터가 있으면 재배치
+			if (IsOtherMonstersAround(moblin))
+			{
+				randPos = GetRandomEmptyCellPos();
+			}
+			else
+			{
+				moblin->SetInitialPos(randPos);
+				break;
+			}
+		}
+		AddObject(moblin);
+		_monsterCount++;
+		_moblinCount++;
+		GChat->AddText(::format(L"moblin {0} ({1}, {2})에 생성.", moblin->info.objectid(), randPos.x, randPos.y));
+		break;
+	}
+
+	case 3:
+	{
+		if (_octorocCount >= maxOctorocCounts)
+			return;
+
+		auto octoroc = GameObject::CreateMonster(Protocol::MONSTER_TYPE_OCTOROC);
+		while (true)
+		{
+			octoroc->SetCellPos(randPos, true);
+			// 거리 3 이내에 다른 몬스터가 있으면 재배치
+			if (IsOtherMonstersAround(octoroc))
+			{
+				randPos = GetRandomEmptyCellPos();
+			}
+			else
+			{
+				octoroc->SetInitialPos(randPos);
+				break;
+			}
+		}
+		AddObject(octoroc);
+		_monsterCount++;
+		_octorocCount++;
+		GChat->AddText(::format(L"octoroc {0}  ({1}, {2})에 생성.", octoroc->info.objectid(), randPos.x, randPos.y));
+		break;
+	}
+	}
 }
 
 Protocol::QuestInfo& GameRoom::GetQuest(int questId)

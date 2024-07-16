@@ -10,6 +10,7 @@
 #include "Octoroc.h"
 #include "HitEffect.h"
 #include "TeleportEffect.h"
+#include "HealEffect.h"
 #include "Creature.h"
 #include "Player.h"
 #include "MyPlayer.h"
@@ -104,6 +105,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 
 		case S_AddItem:
 			Handle_S_AddItem(session, buffer, len);
+			break;
+
+		case S_HealEffect:
+			Handle_S_HealEffect(session, buffer, len);
 			break;
 	}
 }
@@ -477,9 +482,6 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 	if (player)
 	{
 		player->SetQuestState(questId, Protocol::QUEST_STATE_COMPLETED, process);
-		GET_SINGLE(ChatManager)->AddMessage(L"QUEST COMPLETE!!");
-		GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
-		GET_SINGLE(SoundManager)->Play(L"QuestComplete");
 	}
 }
 
@@ -570,10 +572,32 @@ void ClientPacketHandler::Handle_S_AddItem(ServerSessionRef session, BYTE* buffe
 		if (isEquipped)
 		{
 			auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(itemID);
-			GET_SINGLE(ItemManager)->EquipItem(item);
+			
+			if (item)
+				GET_SINGLE(ItemManager)->EquipItem(item);
 		}
 	}
 
+}
+
+void ClientPacketHandler::Handle_S_HealEffect(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_HealEffect pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	int objectID = pkt.objectid();
+	int posX = pkt.posx();
+	int posY = pkt.posy();
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		scene->SpawnObject<HealEffect>({ posX, posY });
+	}
 }
 
 // 패킷 보내기
@@ -709,15 +733,6 @@ SendBufferRef ClientPacketHandler::Make_C_SyncInventory(uint64 objectID)
 	pkt.set_objectid(objectID);
 
 	return MakeSendBuffer(pkt, C_SyncInventory);
-}
-
-SendBufferRef ClientPacketHandler::Make_C_KillPlayer(uint64 objectID)
-{
-	Protocol::C_KillPlayer pkt;
-
-	pkt.set_objectid(objectID);
-
-	return MakeSendBuffer(pkt, C_KillPlayer);
 }
 
 SendBufferRef ClientPacketHandler::Make_C_LeaveGame(uint64 objectID)

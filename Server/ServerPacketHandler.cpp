@@ -75,10 +75,6 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_SyncInventory(session, buffer, len);
 		break;
 
-	case C_KillPlayer:
-		Handle_C_KillPlayer(session, buffer, len);
-		break;
-
 	default:
 		break;
 	}
@@ -331,9 +327,19 @@ void ServerPacketHandler::Handle_C_Quest(GameSessionRef session, BYTE* buffer, i
 	uint64 questid = pkt.questid();
 	GameRoomRef room = session->gameRoom.lock();
 
+	// 아이템 퀘스트라면 이미 해당 아이템을 가지고 있는지 먼저 확인
 	if (room)
 	{
 		room->SetQuestStates(objectid, questid, Protocol::QUEST_STATE_ACCEPT);
+		auto player = dynamic_pointer_cast<Player>(room->FindObject(objectid));
+		if (player)
+		{
+			auto quest = room->GetQuest(questid);
+			{
+				auto itemID = quest.targetid();
+				player->ItemQuestProgress(itemID);
+			}
+		}
 	}
 }
 
@@ -402,6 +408,18 @@ void ServerPacketHandler::Handle_C_Heal(GameSessionRef session, BYTE* buffer, in
 	
 	PlayerRef healedPlayer = session->player.lock();
 	healedPlayer->info.set_hp(healedPlayer->info.hp() + 1);
+	int posX = healedPlayer->info.posx();
+	int posY = healedPlayer->info.posy();
+	
+	{
+		Protocol::S_HealEffect pkt;
+
+		pkt.set_posx(posX);
+		pkt.set_posy(posY);
+
+		SendBufferRef sendBuffer = MakeSendBuffer(pkt, S_HealEffect);
+		room->Broadcast(sendBuffer);
+	}
 }
 
 void ServerPacketHandler::Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len)
@@ -426,6 +444,9 @@ void ServerPacketHandler::Handle_C_AddItem(GameSessionRef session, BYTE* buffer,
 	if (room && myPlayer)
 	{
 		room->AddItemToPlayer(myPlayer->GetObjectID(), itemId, itemCounts, itemType, index);
+
+		// 퀘스트 연관된 아이템인지 확인
+		myPlayer->ItemQuestProgress(itemId);
 	}
 }
 
@@ -467,30 +488,6 @@ void ServerPacketHandler::Handle_C_SyncInventory(GameSessionRef session, BYTE* b
 	auto inventory = room->GetInventory(objectID);
 
 	inventory->SyncToClient(objectID);
-}
-
-void ServerPacketHandler::Handle_C_KillPlayer(GameSessionRef session, BYTE* buffer, int32 len)
-{
-	PacketHeader* header = (PacketHeader*)buffer;
-
-	uint16 size = header->size;
-
-	Protocol::C_KillPlayer pkt;
-	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
-	GameRoomRef room = session->gameRoom.lock();
-
-	int objectID = pkt.objectid();
-	
-	auto player = dynamic_pointer_cast<Player>(room->FindObject(objectID)); 
-	if (player)
-	{
-		player->info.set_hp(0);
-		{
-			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(player->info);
-			player->session->Send(sendBuffer);
-		}
-	}
 }
 
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)

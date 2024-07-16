@@ -199,11 +199,15 @@ void QuickSlot::SetPressedButton()
 		_pressedButton = 8;
 	}
 
-	int temp = _selectedIndex;
+	// 장비면 즉시 착용
+	if (_slots[_pressedButton].Type == L"Wearable")
+	{
+		GET_SINGLE(ItemManager)->QuickEquipItem(_slots[_pressedButton].ItemId);
+	}
 
 	if (_selectedIndex == _pressedButton)
 	{
-		// 소모품이면 즉시 사용
+		// 소모품이면 한 번 더 눌러서 사용
 		if (_slots[_selectedIndex].Type == L"Consumable")
 		{
 			UseConsumableItem();
@@ -211,12 +215,6 @@ void QuickSlot::SetPressedButton()
 	}
 	
 	_selectedIndex = _pressedButton;
-
-	// 유효하지 않은 아이템 장착 불가
-	if (_slots[_selectedIndex].ItemId != 0)
-	{
-		GET_SINGLE(ItemManager)->QuickEquipItem(_slots[_selectedIndex].ItemId);
-	}
 
 	_pressedButton = 0;
 }
