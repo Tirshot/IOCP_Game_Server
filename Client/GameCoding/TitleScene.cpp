@@ -89,6 +89,11 @@ void TitleScene::Update()
 	if (_backgroundAlpha >= 250)
 	{
 		GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+
+		if (GET_SINGLE(NetworkManager)->isSessionAlive() == false)
+		{
+			GET_SINGLE(NetworkManager)->Init();
+		}
 	}
 
 	if (_uis.empty())

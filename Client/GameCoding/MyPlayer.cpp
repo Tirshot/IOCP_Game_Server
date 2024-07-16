@@ -27,13 +27,14 @@
 
 MyPlayer::MyPlayer()
 {
-	CameraComponent* camera = new CameraComponent();
+	auto camera = make_shared<CameraComponent>();
 	AddComponent(camera);
 }
 
 MyPlayer::~MyPlayer()
 {
-
+	GET_SINGLE(ItemManager)->GetInventory()->AutoSyncInventory();
+	_questsStates.clear();
 }
 
 void MyPlayer::BeginPlay()
@@ -94,9 +95,9 @@ void MyPlayer::UsePotion()
 	if (info.maxhp() == info.hp())
 		return;
 
-	info.set_hp(clamp(info.hp() + 1, 0, info.maxhp()));
-	//
-	GET_SINGLE(SoundManager)->Play(L"Potion");
+	// myPlayer에서 수치 조정, 각 수치는 아이템(바지)에 할당되어있음.
+	info.set_hp(clamp(info.hp() + POTION_HEALING_AMOUNT * _potionEffect, 0, info.maxhp()));
+
 	info.set_potion(clamp(info.potion() - 1, 0, 99));
 	{
 		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Heal(info.objectid());
@@ -104,6 +105,39 @@ void MyPlayer::UsePotion()
 	}
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	scene->SpawnObject<HealEffect>({ GetCellPos() });
+}
+
+void MyPlayer::UseConsumableItem(int itemID)
+{
+	switch (itemID)
+	{
+		case 5: // HP포션
+		{
+			UsePotion();
+			GET_SINGLE(ItemManager)->SyncUseableItem();
+			return;
+		}
+
+		case 8: // MP포션
+		{
+			int mp = info.mp();
+			int maxMp = info.maxmp();
+
+			if (mp >= maxMp)
+				return;
+
+			// 마나 회복
+			info.set_mp(clamp(mp + (maxMp / 2), 0, maxMp));
+			auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+			scene->SpawnObject<HealEffect>({ GetCellPos() });
+			GET_SINGLE(ItemManager)->SyncUseableItem();
+			break;
+		}
+	}
+
+	auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(itemID);
+	if (item)
+		item->ItemCount--;
 }
 
 void MyPlayer::TickInput()
@@ -135,10 +169,11 @@ void MyPlayer::TickInput()
 		_sumTimes = 0;
 	}
 
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
-	{
-		UsePotion();
-	}
+	//if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::R))
+	//{
+	//	// 포션 사용은 퀵슬롯으로 통합
+	//	// UsePotion();
+	//}
 
 	if (GET_SINGLE(InputManager)->GetButtonUp(KeyType::I))
 	{
@@ -238,20 +273,6 @@ void MyPlayer::TickInput()
 
 			GET_SINGLE(ChatManager)->AddMessage(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y));
 			GET_SINGLE(ChatManager)->SendMessageToServer(format(L"DEBUG : ({0}, {1}) 위치의 몬스터를 처치.", monster->GetCellPos().x, monster->GetCellPos().y), false);
-		}
-	}
-
-	// Debug - 사망
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::M))
-	{
-		//info.set_hp(0);
-
-		GET_SINGLE(ChatManager)->AddMessage(L"DEBUG : 사망");
-		GET_SINGLE(ChatManager)->SendMessageToServer(L"DEBUG : 사망", false);
-
-		{
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_KillPlayer(GetObjectID());
-			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
 		}
 	}
 }
@@ -361,34 +382,6 @@ void MyPlayer::TickTeleport()
 	SetState(IDLE);
 }
 
-//void MyPlayer::MakeArrow(uint64 ownerID)
-//{
-//	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-//	if (scene)
-//	{
-//		_now = GetTickCount64();
-//
-//		if (_now - _prev >= 50)
-//		{
-//			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(ownerID);
-//			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-//
-//			int arrows = this->info.arrows();
-//			if (arrows <= 0)
-//				return;
-//
-//			auto nextPos = shared_from_this()->GetCellPos();
-//
-//			auto arrow = scene->SpawnObject<Arrow>(nextPos);
-//
-//			arrow->SetDir(shared_from_this()->info.dir());
-//			arrow->SetOwner(shared_from_this());
-//
-//			shared_from_this()->info.set_arrows(arrows - 1);
-//		}
-//	}
-//	_prev = _now;
-//}
 void MyPlayer::SyncToServer()
 {
 	// 매 1000프레임마다 동기화하긴 불합리

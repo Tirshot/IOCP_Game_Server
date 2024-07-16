@@ -23,6 +23,10 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 	// 클라이언트 -> 서버
 	switch (header.id)
 	{
+	case C_LeaveGame:
+		Handle_C_LeaveGame(session, buffer, len);
+		break;
+
 	case C_Move:
 		Handle_C_Move(session, buffer, len);
 		break;
@@ -71,13 +75,23 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 		Handle_C_SyncInventory(session, buffer, len);
 		break;
 
-	case C_KillPlayer:
-		Handle_C_KillPlayer(session, buffer, len);
-		break;
-
 	default:
 		break;
 	}
+}
+
+void ServerPacketHandler::Handle_C_LeaveGame(GameSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_LeaveGame pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	GameRoomRef room = session->gameRoom.lock();
+	
+	session->Disconnect(L"플레이어가 게임을 종료");
 }
 
 void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len)
@@ -97,7 +111,7 @@ void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, in
 
 void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len)
 {
-	// DEBUG!!!
+	// DEBUG : 원거리 몬스터 처치 커맨드!!!
 	PacketHeader* header = (PacketHeader*)buffer;
 	//uint16 id = header->id;
 	uint16 size = header->size;
@@ -116,38 +130,33 @@ void ServerPacketHandler::Handle_C_Hit(GameSessionRef session, BYTE* buffer, int
 
 		if (monster && player)
 			monster->OnDamaged(player, true);
-
 	}
 }
 
 void ServerPacketHandler::Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len)
 {
 	PacketHeader* header = (PacketHeader*)buffer;
-	uint16 id = header->id;
+	//uint16 id = header->id;
 	uint16 size = header->size;
 
 	Protocol::C_Fire pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	auto ownerID = pkt.ownerid();
-
 	GameRoomRef room = session->gameRoom.lock();
 	if (room)
 	{
-		GameObjectRef object = room->FindObject(ownerID);
-
-		if (object == nullptr)
-			return;
-
-		auto player = dynamic_pointer_cast<Player>(object);
-		if (player)
+		auto id = pkt.ownerid();
+		auto object = room->FindObject(id);
+		GChat->AddText(format(L"서버에서 player{0}가 화살 생성", pkt.ownerid()));
+		if (object)
 		{
-			//PlayerRef player = static_pointer_cast<Player>(object);
-			// 화살발사?
-			player->MakeArrow();
+			auto player = dynamic_pointer_cast<Player>(object);
+			if (player)
+			{
+				player->MakeArrow();
+			}
 		}
 	}
-
 }
 
 void ServerPacketHandler::Handle_C_SendMessage(GameSessionRef session, BYTE* buffer, int32 len)
@@ -197,7 +206,7 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 
 	if (room)
 	{
-		room->LeaveRoom(session);
+		room->RemoveObject(id);
 
 		// 플레이어 초기화
 		PlayerRef player = GameObject::CreatePlayer();
@@ -205,8 +214,8 @@ void ServerPacketHandler::Handle_C_Revive(GameSessionRef session, BYTE* buffer, 
 		player->info.set_objectid(id);
 		player->info.set_hp(info.maxhp());
 		player->info.set_mp(info.maxmp());
-		player->info.set_posx(5);
-		player->info.set_posy(5);
+		player->info.set_posx(44);
+		player->info.set_posy(26);
 		player->info.set_weapontype(Protocol::WEAPON_TYPE_SWORD);
 
 		// 클라이언트 서로의 존재를 연결
@@ -318,9 +327,19 @@ void ServerPacketHandler::Handle_C_Quest(GameSessionRef session, BYTE* buffer, i
 	uint64 questid = pkt.questid();
 	GameRoomRef room = session->gameRoom.lock();
 
+	// 아이템 퀘스트라면 이미 해당 아이템을 가지고 있는지 먼저 확인
 	if (room)
 	{
 		room->SetQuestStates(objectid, questid, Protocol::QUEST_STATE_ACCEPT);
+		auto player = dynamic_pointer_cast<Player>(room->FindObject(objectid));
+		if (player)
+		{
+			auto quest = room->GetQuest(questid);
+			{
+				auto itemID = quest.targetid();
+				player->ItemQuestProgress(itemID);
+			}
+		}
 	}
 }
 
@@ -389,6 +408,18 @@ void ServerPacketHandler::Handle_C_Heal(GameSessionRef session, BYTE* buffer, in
 	
 	PlayerRef healedPlayer = session->player.lock();
 	healedPlayer->info.set_hp(healedPlayer->info.hp() + 1);
+	int posX = healedPlayer->info.posx();
+	int posY = healedPlayer->info.posy();
+	
+	{
+		Protocol::S_HealEffect pkt;
+
+		pkt.set_posx(posX);
+		pkt.set_posy(posY);
+
+		SendBufferRef sendBuffer = MakeSendBuffer(pkt, S_HealEffect);
+		room->Broadcast(sendBuffer);
+	}
 }
 
 void ServerPacketHandler::Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len)
@@ -413,6 +444,9 @@ void ServerPacketHandler::Handle_C_AddItem(GameSessionRef session, BYTE* buffer,
 	if (room && myPlayer)
 	{
 		room->AddItemToPlayer(myPlayer->GetObjectID(), itemId, itemCounts, itemType, index);
+
+		// 퀘스트 연관된 아이템인지 확인
+		myPlayer->ItemQuestProgress(itemId);
 	}
 }
 
@@ -454,30 +488,6 @@ void ServerPacketHandler::Handle_C_SyncInventory(GameSessionRef session, BYTE* b
 	auto inventory = room->GetInventory(objectID);
 
 	inventory->SyncToClient(objectID);
-}
-
-void ServerPacketHandler::Handle_C_KillPlayer(GameSessionRef session, BYTE* buffer, int32 len)
-{
-	PacketHeader* header = (PacketHeader*)buffer;
-
-	uint16 size = header->size;
-
-	Protocol::C_KillPlayer pkt;
-	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
-	GameRoomRef room = session->gameRoom.lock();
-
-	int objectID = pkt.objectid();
-	
-	auto player = dynamic_pointer_cast<Player>(room->FindObject(objectID)); 
-	if (player)
-	{
-		player->info.set_hp(0);
-		{
-			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(player->info);
-			player->session->Send(sendBuffer);
-		}
-	}
 }
 
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
@@ -677,13 +687,14 @@ SendBufferRef ServerPacketHandler::Make_S_ItemDrop(const Protocol::ItemInfo& inf
 	return MakeSendBuffer(pkt, S_ItemDrop);
 }
 
-SendBufferRef ServerPacketHandler::Make_S_AddItem(uint64 objectID, int itemID, int itemCounts)
+SendBufferRef ServerPacketHandler::Make_S_AddItem(uint64 objectID, int itemID, int itemCounts, bool isEquipped)
 {
 	Protocol::S_AddItem pkt;
 
 	pkt.set_objectid(objectID);
 	pkt.set_itemid(itemID);
 	pkt.set_itemcounts(itemCounts);
+	pkt.set_isequipped(isEquipped);
 
 	return MakeSendBuffer(pkt, S_AddItem);
 }

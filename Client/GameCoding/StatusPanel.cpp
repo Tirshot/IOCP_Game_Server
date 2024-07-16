@@ -12,10 +12,13 @@ StatusPanel::StatusPanel()
 
 StatusPanel::~StatusPanel()
 {
+	_rect = {};
 }
 
 void StatusPanel::BeginPlay()
 {
+	Super::BeginPlay();
+
 	{	// HP
 		auto hp = make_shared<HP>();
 		hp->SetVisible(true);
@@ -37,24 +40,14 @@ void StatusPanel::BeginPlay()
 		arrowUI->SetVisible(true);
 		AddChild(arrowUI);
 	}
-	{	// Potion UI
-		auto potion = make_shared<Potion>();
-		potion->SetVisible(true);
-		AddChild(potion);
-	}
-
-	for (auto& child : _children)
-		child->BeginPlay();
 }
 
 void StatusPanel::Tick()
 {
-	for (auto& child : _children)
-		child->Tick();
+	Super::Tick();
 }
 
 void StatusPanel::Render(HDC hdc)
 {
-	for (auto& child : _children)
-		child->Render(hdc);
+	Super::Render(hdc);
 }

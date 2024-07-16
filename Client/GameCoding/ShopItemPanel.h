@@ -4,7 +4,7 @@ class Texture;
 class Sprite;
 class ShopItemPanel : public Panel
 {
-	using Super = UI;
+	using Super = Panel;
 
 public:
 	ShopItemPanel();
@@ -28,9 +28,6 @@ protected:
 	shared_ptr<Texture> _goldImage = nullptr;
 	shared_ptr<ITEM> _item = nullptr;
 	RECT _rect = {};
-	shared_ptr<class TextBox> _description = nullptr;
-	shared_ptr<class TextBox> _itemName = nullptr;
-	shared_ptr<class ItemCountsPopUp> _countsPopUp = nullptr;
 	int _index = 0;
 };
 

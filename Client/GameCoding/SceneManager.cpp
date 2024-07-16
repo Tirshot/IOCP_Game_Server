@@ -27,7 +27,8 @@ void SceneManager::Render(HDC hdc)
 
 void SceneManager::Clear()
 {
-	/*SAFE_DELETE(_scene);*/
+	_scene = nullptr;
+	_myPlayer = nullptr;
 }
 
 void SceneManager::ChangeScene(SceneType sceneType)

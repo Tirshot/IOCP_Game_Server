@@ -21,10 +21,11 @@ public:
 private:
 	void SetItemSlot(ITEM& slot);
 	void SetEquipSlotRects();
-	void SlotRectsPosUpdate(shared_ptr<RECT> rect);
-	void SyncUseableItemToServer(int itemID, int counts);
-	void SyncItemToServer(int itemID, int counts);
+	void SlotRectsPosUpdate(RECT rect);
+	void AddUseableItemToServer(int itemID, int counts);
+	void AddItemToServer(int itemID, int counts);
 	void SyncEquips(int itemID, bool equip = true);
+	void ApplyStatus();
 
 public:
 	bool AddItem(shared_ptr<ITEM> item);
@@ -39,14 +40,17 @@ public:
 	RECT GetInvenRect() { return _invenRect; }
 
 	void ChangeItem(ITEM& itemFrom, ITEM& itemTo);
+	void SyncUseableItem();
 
-	shared_ptr<ITEM> FindItemFromInventory(int itemId);
+	shared_ptr<ITEM>& FindItemFromInventory(int itemId);
 	int FindItemIndexFromInventory(int itemId);
-	shared_ptr<ITEM> FindItemFromInventory(shared_ptr<ITEM> item);
+	shared_ptr<ITEM>& FindItemFromInventory(shared_ptr<ITEM> item);
 	
-	shared_ptr<ITEM> GetEquippedItem(wstring wstr);
+	ITEM GetEquippedItem(wstring wstr);
 
 	void EquipItem(shared_ptr<ITEM> item);
+	void UnEquipItem(shared_ptr<ITEM> item);
+
 	void QuickEquipItem(int itemID);
 	void PressToSetQuickItem(ITEM slot);
 
@@ -62,11 +66,10 @@ protected:
 	vector<RECT> _rects;
 
 	// 장착 슬롯
-	vector<::pair<shared_ptr<RECT>, shared_ptr<ITEM>>> _equips;
+	vector<::pair<RECT, ITEM>> _equips;
 	vector<RECT> _equipRects;
 	
 	shared_ptr<class TextBox> _itemName = nullptr;
-	shared_ptr<class TextBox> _itemCount = nullptr;
 	shared_ptr<class TextBox> _itemDescription = nullptr;
 	shared_ptr<class Sprite> _background = nullptr;
 	shared_ptr<class Sprite> _itemSprite = nullptr;
@@ -76,7 +79,6 @@ private:
 	int _slotSize = 28;
 	bool _initialized = false;
 	bool _revive = false;
-	bool _isItemDropped = false;
 
 	// 드래그 앤 드랍
 	shared_ptr<ITEM> _selectedItem;
@@ -85,7 +87,6 @@ private:
 	RECT _invenRect;	// 인벤토리 영역 체크용 Rect
 	RECT _dragRect;		// 인벤토리 드래그 Rect
 	RECT _equipRect;	// 장비창 영역 체크용 Rect
-	shared_ptr<class AlertBox> _alert = nullptr;
 	bool _isEquipedItem = false;
 	shared_ptr<class MyPlayer> _owner = nullptr;
 	float _sumTime = 0.f;

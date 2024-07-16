@@ -5,9 +5,10 @@ class Sprite;
 class Button;
 class QuestUIPanel : public Panel
 {
-	using Super = UI;
+	using Super = Panel;
 
 public:
+
 	QuestUIPanel();
 	QuestUIPanel(Protocol::QuestInfo& info, Vec2 pos, int idx);
 
@@ -52,5 +53,7 @@ protected:
 	int _rewardItem = 0;
 	int _rewardItemNum = 0;
 	int _index = 0;
+	bool _isLinkQuest = false;
+	int _prevQuestID = -1;
 };
 

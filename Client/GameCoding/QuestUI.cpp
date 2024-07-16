@@ -19,10 +19,15 @@ QuestUI::QuestUI()
 
 QuestUI::~QuestUI()
 {
+	_quests.clear();
+
+	_background.reset();
 }
 
 void QuestUI::BeginPlay()
 {
+	Super::BeginPlay();
+
 	_background = GET_SINGLE(ResourceManager)->GetTexture(L"ShopUIBackground");
 	_rect = {};
 	// _pos = 135, 80
@@ -94,13 +99,12 @@ void QuestUI::BeginPlay()
 	}
 
 	_initialPos = _pos;
-
-	for (auto& child : _children)
-		child->BeginPlay();
 }
 
 void QuestUI::Tick()
 {
+	Super::Tick();
+
 	{
 		_rect.left = _pos.x;
 		_rect.top = _pos.y;
@@ -109,9 +113,6 @@ void QuestUI::Tick()
 	}
 
 	_maxPage = 1 + (int)(_quests.size() / 5);
-
-	for (auto& child : _children)
-		child->Tick();
 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	if (scene == nullptr)
@@ -248,6 +249,19 @@ void QuestUI::ResetQuestList()
 				continue;
 
 			int questId = questInfo.second.questid();
+			bool isLinkQuest = questInfo.second.islinkquest();
+			if (isLinkQuest)
+			{
+				auto prevQuestid = questInfo.second.prevquestid();
+				if (prevQuestid >= 0)
+				{
+					auto prevQuestState = scene->GetPlayerQuestState(myPlayerId, prevQuestid);
+					if (prevQuestState != Protocol::QUEST_STATE_FINISHED)
+					{
+						continue;
+					}
+				}
+			}
 
 			_quests[questId] = questInfo.second;
 			SetQuestPanel(questInfo);

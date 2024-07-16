@@ -32,35 +32,23 @@ void Creature::Render(HDC hdc)
 	Super::Render(hdc);
 }
 
-void Creature::KnockBack(shared_ptr<Creature> attacker)
+void Creature::KnockBack()
 {
-	// 플레이어가 몬스터를 바라보는 방향
-	auto dir = attacker->GetLookAtDir(this->GetCellPos());
-	Vec2Int backPos = {};
-
-	switch (dir)
-	{
-	case DIR_UP:
-		backPos = GetCellPos() + Vec2Int {0, -1};
-		break;
-
-	case DIR_DOWN:
-		backPos = GetCellPos() + Vec2Int{ 0, 1 };
-		break;
-
-	case DIR_LEFT:
-		backPos = GetCellPos() + Vec2Int{ -1, 0 };
-		break;
-
-	case DIR_RIGHT:
-		backPos = GetCellPos() + Vec2Int{ 1, 0 };
-		break;
-
-	default:
-		return;
-	}
+	Vec2Int backPos = GetBehindCellPos();
 
 	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
 	if (CanGo(backPos))
 		SetCellPos(backPos, true);
 }
+
+bool Creature::IsSafeZone(Vec2Int cellPos)
+{
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		return scene->IsSafeZone(cellPos);
+	}
+
+	return false;
+}
+ 

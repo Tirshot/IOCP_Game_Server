@@ -10,17 +10,20 @@
 
 Item::Item()
 {
-	SetLayer(LAYER_BACKGROUND);
+	SetLayer(LAYER_OBJECT);
 	SetState(IDLE);
 }
 
 Item::~Item()
 {
+	itemInfo = {};
 }
 
 void Item::BeginPlay()
 {
 	Super::BeginPlay();
+
+	info.set_objectid(itemInfo.objectid());
 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
 	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
@@ -30,7 +33,6 @@ void Item::BeginPlay()
 
 	if (myPlayer == nullptr)
 		return;
-
 
 	int itemID = itemInfo.itemid();
 	auto item = GET_SINGLE(ItemManager)->GetItem(itemID);
@@ -58,17 +60,20 @@ void Item::Tick()
 	// 플레이어와 드랍된 이 아이템과 접촉하면
 	if (myPlayer->GetCellPos() == GetCellPos())
 	{
+		auto healAmount = 0;
+
 		// 아이템 효과 적용
 		switch (itemInfo.itemid())
 		{
 		case 6:	// MaxHeart
-			myPlayer->info.set_maxhp(clamp(myPlayer->info.maxhp() + 1, 0, 10));
-			GET_SINGLE(ChatManager)->AddMessage(L"최대 체력이 1 증가했습니다.");
+			myPlayer->info.set_maxhp(clamp(myPlayer->info.maxhp() + MAX_HP_AMOUNT, 0, MAX_HP_AMOUNT * 10));
+			GET_SINGLE(ChatManager)->AddMessage(L"최대 체력이 한 칸 증가했습니다.");
 			break;
 
 		case 7:	// Heart
-			myPlayer->info.set_hp(clamp(myPlayer->info.hp() + 1, 0, myPlayer->info.maxhp()));
-			GET_SINGLE(ChatManager)->AddMessage(L"체력이 1 회복 되었습니다.");
+			healAmount = myPlayer->info.hp() + POTION_HEALING_AMOUNT * 2;
+			myPlayer->info.set_hp(clamp(healAmount, 0, myPlayer->info.maxhp()));
+			GET_SINGLE(ChatManager)->AddMessage(format(L"체력이 {0} 회복 되었습니다.", healAmount));
 			break;
 
 		default:	// 습득 가능한 아이템
@@ -92,7 +97,7 @@ void Item::Render(HDC hdc)
 	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
 
 	::TransparentBlt(hdc,
-		(int32)_pos.x - ((int32)_sprite->GetSize().x / 2) - ((int32)cameraPos.x - GWinSizeX / 2),
+		(int32)_pos.x - ((int32)cameraPos.x - GWinSizeX / 2) - 16,
 		(int32)_pos.y - ((int32)cameraPos.y - GWinSizeY / 2),
 		32,
 		32,

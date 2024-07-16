@@ -7,6 +7,7 @@
 Trigger::Trigger()
 {
 	_prev = GetTickCount64();
+	info.set_objecttype(Protocol::OBJECT_TYPE_TRIGGER);
 }
 
 Trigger::~Trigger()

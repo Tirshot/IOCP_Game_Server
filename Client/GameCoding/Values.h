@@ -6,3 +6,8 @@ const int32 GMinimapSizeX = 200;
 const int32 GMinimapSizeY = 128;
 
 const float PI = 3.1415926f;
+
+const int POTION_HEALING_AMOUNT = 5;
+const int MAX_HP_AMOUNT = 10;
+const int POTION_DEFAULT_MULTIPLIER = 1;
+const int POTION_DEFAULT_MAXCOUNT = 5;

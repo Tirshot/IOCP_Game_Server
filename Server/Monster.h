@@ -25,10 +25,15 @@ public:
 	virtual void OnDamaged(CreatureRef attacker, bool debug = false) override;
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
 	wstring GetName();
+	virtual void KnockBack() override;
+	void MonsterQuestProgress(PlayerRef player);
+
+	void SetInitialPos(Vec2Int pos) { _initialPos = pos; }
 
 protected:
 	uint64 _waitUntil = 0;
 	uint64 _waitHit = 0;
 	weak_ptr<Player> _target;
+	Vec2Int _initialPos = {};
 };
 

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "GameRoom.h"
 #include "GameSession.h"
+#include "Inventory.h"
 #include "Chat.h"
 #include <codecvt>
 
@@ -190,6 +191,12 @@ int ItemManager::GetItemFromGroup(vector<vector<wstring>> dropTable)
 	// 테이블의 총 확률 계산
 	int total = GET_SINGLE(ItemManager)->CalculateItemTotalProbablity(dropTable);
 
+	if (total <= 0)
+	{
+		GChat->AddText(::format(L"<ERROR> 드랍 테이블 총 확률이 0으로 계산됨."));
+		return 0;
+	}
+
 	// 주사위 굴리기
 	int randItemValue = rand() % total + 1;
 
@@ -211,17 +218,31 @@ int ItemManager::GetItemFromGroup(vector<vector<wstring>> dropTable)
 	return -1;  // 오류 처리
 }
 
-void ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec2Int pos)
+int ItemManager::GetItemRemoveTimeFromGroup(vector<vector<wstring>> dropTable, int itemID)
+{
+	for (const auto& row : dropTable)
+	{
+		if (stoi(row[2]) == itemID)
+			return stoi(row[5]);
+	}
+
+	assert(false);
+	return -1;  // 오류 처리
+}
+
+shared_ptr<Item> ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec2Int pos)
 {
 	int itemID = GetItemFromGroup(group);
 	string name = GET_SINGLE(ItemManager)->GetItemNameByID(itemID);
 	auto type = GET_SINGLE(ItemManager)->GetItemTypeByID(itemID);
 	auto subType = GET_SINGLE(ItemManager)->GetItemSubTypeByID(itemID);
 	wstring wname = GET_SINGLE(ItemManager)->StringToWString(name);
+	auto removeTime = GET_SINGLE(ItemManager)->GetItemRemoveTimeFromGroup(group, itemID);
 
 	if (GRoom)
 	{
 		ItemRef item1 = GameObject::CreateItem();
+		auto itemObjectID = item1->GetObjectID();
 		item1->info.set_posx(pos.x);
 		item1->info.set_posy(pos.y);
 		item1->info.set_defence(9999);
@@ -232,13 +253,14 @@ void ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec
 		GRoom->AddObject(item1);
 		{
 			auto& itemInfo = item1->itemInfo;
-
+			itemInfo.set_objectid(itemObjectID);
 			itemInfo.set_posx(pos.x);
 			itemInfo.set_posy(pos.y);
 			itemInfo.set_itemid(itemID);
 			itemInfo.set_itemcount(1);
 			itemInfo.set_itemtype(type);
 			itemInfo.set_itemname(name);
+			itemInfo.set_removetime(removeTime);
 
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_ItemDrop(itemInfo);
 			PlayerRef player = static_pointer_cast<Player>(GRoom->FindObject(owner->GetObjectID()));
@@ -249,6 +271,8 @@ void ItemManager::MakeItem(vector<vector<wstring>> group, CreatureRef owner, Vec
 				GChat->AddText(format(L"소유자 Player{0}, [{1}, {2}] 위치에 {3} 아이템 드랍", owner->GetObjectID(), pos.x, pos.y, wname));
 			}
 		}
+		item1->BeginPlay();
+		return item1;
 	}
 }
 
@@ -302,11 +326,15 @@ Protocol::ITEM_TYPE ItemManager::GetItemTypeByID(int itemID)
 
 Protocol::ITEM_SUBTYPE ItemManager::GetItemSubType(int itemID)
 {
-	auto info = GetItemInfo(itemID);
+	auto itemInfo = GetItemInfo(itemID);
 
-	wstring subType = info[4];
+	wstring subType = itemInfo[4];
 
-	if (subType == L"Helmet")
+	if (subType == L"Sword" || subType == L"Bow" || subType == L"Staff")
+	{
+		return Protocol::WEARABLE_TYPE_WEAPON;
+	}
+	else if (subType == L"Helmet")
 	{
 		return Protocol::WEARABLE_TYPE_HELMET;
 	}
@@ -329,4 +357,22 @@ string ItemManager::GetItemSubTypeByID(int itemID)
 	auto info = GetItemInfo(itemID);
 
 	return WStringToString(info[4]);
+}
+
+int ItemManager::GetItemRemoveTimeByID(int itemID)
+{
+	auto info = GetItemInfo(itemID);
+
+	return GetDropItemRemoveTime(info);
+}
+
+int ItemManager::FindItemCountFromInventory(int ownerID, int itemID)
+{
+	auto inventory = GRoom->GetInventory(ownerID);
+	if (inventory)
+	{
+		return inventory->FindItemCountFromInventory(itemID);
+	}
+
+	return 0;
 }

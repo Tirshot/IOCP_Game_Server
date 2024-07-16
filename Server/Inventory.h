@@ -2,6 +2,7 @@
 #include "GameObject.h"
 class Inventory : public GameObject
 {
+public:
 	struct Item
 	{
 		int itemID;
@@ -21,6 +22,7 @@ public:
 	void AddItemToInventory(int itemID, int itemCounts, Protocol::ITEM_TYPE itemType, int index, bool reset = false);
 	void EquipItem(int itemID, bool equip);
 	void SyncToClient(uint64 objectID);
+	int FindItemCountFromInventory(int itemID);
 
 private:
 	vector<Item> _slots;

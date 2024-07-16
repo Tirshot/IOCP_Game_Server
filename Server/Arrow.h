@@ -17,13 +17,9 @@ public:
 
 public:
 	MonsterRef& GetTarget() { return _target; }
-	bool IsHit() { return _hit; }
 
 protected:
 	float _waitUntil = 0;
 	MonsterRef _target;
-
-	// 삭제를 위한 적중 여부
-	bool _hit = false;
 };
 

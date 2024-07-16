@@ -18,7 +18,8 @@ Gold::Gold()
 
 Gold::~Gold()
 {
-
+	_myPlayer = nullptr;
+	_golds = nullptr;
 }
 
 void Gold::BeginPlay()

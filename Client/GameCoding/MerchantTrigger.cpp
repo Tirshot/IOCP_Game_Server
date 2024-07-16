@@ -6,6 +6,7 @@
 #include "MerchantUI.h"
 #include "MerchantDialogueUI.h"
 #include "ShopUI.h"
+#include "PopUp.h"
 #include "QuestUI.h"
 #include "ClientPacketHandler.h"
 #include "ResourceManager.h"
@@ -19,6 +20,7 @@ MerchantTrigger::MerchantTrigger()
 
 MerchantTrigger::~MerchantTrigger()
 {
+	_merchantUI = nullptr;
 }
 
 void MerchantTrigger::BeginPlay()
@@ -77,6 +79,20 @@ void MerchantTrigger::HideUIs()
 			shopUI->SetVisible(false);
 			shopUI->ResetInitializingTime();
 			shopUI->ResetPage();
+
+			auto& children = shopUI->GetChildren();
+
+			if (children.empty() == false)
+			{
+				for (auto& child : children)
+				{
+					auto popup = dynamic_pointer_cast<PopUp>(child);
+					if (popup)
+					{
+						shopUI->RemoveChild(popup);
+					}
+				}
+			}
 		}
 
 		if (dialogueUI)

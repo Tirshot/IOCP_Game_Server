@@ -261,12 +261,13 @@ inline bool ITEM_SUBTYPE_Parse(
 enum NPC_TYPE : int {
   NPC_TYPE_SIGN = 0,
   NPC_TYPE_MERCHANT = 1,
+  NPC_TYPE_TUTORIAL = 2,
   NPC_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   NPC_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool NPC_TYPE_IsValid(int value);
 constexpr NPC_TYPE NPC_TYPE_MIN = NPC_TYPE_SIGN;
-constexpr NPC_TYPE NPC_TYPE_MAX = NPC_TYPE_MERCHANT;
+constexpr NPC_TYPE NPC_TYPE_MAX = NPC_TYPE_TUTORIAL;
 constexpr int NPC_TYPE_ARRAYSIZE = NPC_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* NPC_TYPE_descriptor();
@@ -314,12 +315,13 @@ enum MONSTER_TYPE : int {
   MONSTER_TYPE_NONE = 0,
   MONSTER_TYPE_SNAKE = 1,
   MONSTER_TYPE_MOBLIN = 2,
+  MONSTER_TYPE_OCTOROC = 3,
   MONSTER_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   MONSTER_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool MONSTER_TYPE_IsValid(int value);
 constexpr MONSTER_TYPE MONSTER_TYPE_MIN = MONSTER_TYPE_NONE;
-constexpr MONSTER_TYPE MONSTER_TYPE_MAX = MONSTER_TYPE_MOBLIN;
+constexpr MONSTER_TYPE MONSTER_TYPE_MAX = MONSTER_TYPE_OCTOROC;
 constexpr int MONSTER_TYPE_ARRAYSIZE = MONSTER_TYPE_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MONSTER_TYPE_descriptor();

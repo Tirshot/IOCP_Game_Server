@@ -11,11 +11,14 @@ void NetworkManager::Init()
 	// 소켓 생성
 	SocketUtils::Init();
 
-	_service = make_shared<ClientService>(
-		NetAddress(L"127.0.0.1", 7777),
-		make_shared<IocpCore>(),
-		[=]() { return CreateSession(); }, // 관찰 대상 등록
-		1);
+	if (_service == nullptr)
+	{
+		_service = make_shared<ClientService>(
+			NetAddress(L"127.0.0.1", 7777),
+			make_shared<IocpCore>(),
+			[=]() { return CreateSession(); }, // 관찰 대상 등록
+			1);
+	}
 
 	assert(_service->Start());
 
@@ -42,8 +45,23 @@ ServerSessionRef NetworkManager::CreateSession()
 	return _session = make_shared<ServerSession>();
 }
 
+void NetworkManager::RemoveSession()
+{
+	_session->Disconnect(L"게임 종료");
+	_session.reset();
+	_service.reset();
+}
+
 void NetworkManager::SendPacket(SendBufferRef sendBuffer)
 {
 	if (_session)
 		_session->Send(sendBuffer);
+}
+
+bool NetworkManager::isSessionAlive()
+{
+	if (_session)
+		return true;
+	
+	return false;
 }

@@ -24,7 +24,6 @@ protected:
 	shared_ptr<Flipbook> _flipbookAttack[4] = {};
 	shared_ptr<Flipbook> _flipbookHit[4] = {};
 
-	shared_ptr<Player> _target = nullptr;
 	float _waitSeconds = 0.f;
 };
 

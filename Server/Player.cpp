@@ -4,17 +4,19 @@
 #include "Arrow.h"
 #include "GameRoom.h"
 #include "GameSession.h"
+#include "ItemManager.h"
+#include "Inventory.h"
 #include "Chat.h"
 
 Player::Player()
 {
 	info.set_name("Player");
 	info.set_objecttype(Protocol::OBJECT_TYPE_PLAYER);
-	info.set_hp(5);
+	info.set_hp(50);
 	info.set_mp(50);
-	info.set_maxhp(5);
+	info.set_maxhp(50);
 	info.set_maxmp(50);
-	info.set_attack(20);
+	info.set_attack(10);
 	info.set_defence(0);
 	info.set_arrows(10);
 	info.set_gold(1500);
@@ -35,6 +37,17 @@ void Player::Update()
 {
 	_now = GetTickCount64();
 
+	// 매 1.5초마다 플레이어의 mp를 회복시킴
+	if (_now - _prev >= 1500 && info.mp() < info.maxmp())
+	{
+		info.set_mp(clamp(info.mp() + 5, 0, info.maxmp()));
+
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MPRecover(info.objectid(), info.mp());
+		session->Send(sendBuffer);
+
+		_prev = _now;
+	}
+
 	switch (info.state())
 	{
 	case IDLE:
@@ -45,28 +58,41 @@ void Player::Update()
 		UpdateMove();
 		break;
 
+	case TELEPORT:
+		UpdateTeleport();
+		break;
+
+	default:
+		break;
+	}
+
+	// 안전 구역에서 스킬 사용 불가
+	auto player = dynamic_pointer_cast<Player>(shared_from_this());
+	if (player)
+	{
+		if (IsInSafeZone())
+		{
+			SetState(IDLE);
+			return;
+		}
+	}
+
+	switch (info.state())
+	{
 	case SKILL:
 		UpdateSkill();
+		break;
+
+	case HIT:
+		UpdateHit();
 		break;
 
 	case SPIN:
 		UpdateSpin();
 		break;
 
-	case TELEPORT:
-		UpdateTeleport();
-		break;
-	}
-
-	// 매 1.5초마다 플레이어의 mp를 회복시킴
-	if (_now - _prev >= 1500 && info.mp() < info.maxmp())
-	{
-		info.set_mp(clamp(info.mp() + 5, 0, info.maxmp()));
-
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_MPRecover(info.objectid(), info.mp());
-		session->Send(sendBuffer);
-
-		_prev = _now;
+	default:
+		return;
 	}
 }
 
@@ -91,7 +117,7 @@ void Player::UpdateSkill()
 
 		if (creature)
 		{
-			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -110,7 +136,7 @@ void Player::UpdateSkill()
 				return;
 
 			creature->SetWait(50);
-			creature->KnockBack(shared_from_this());
+			creature->KnockBack();
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
@@ -121,6 +147,12 @@ void Player::UpdateSkill()
 	{
 		
 	}
+	SetState(IDLE);
+}
+
+void Player::UpdateHit()
+{
+	SetState(IDLE);
 }
 
 void Player::UpdateSpin()
@@ -135,7 +167,7 @@ void Player::UpdateSpin()
 
 		if (creature)
 		{
-			if (creature->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -149,12 +181,12 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature->SetWait(50);
-			creature->KnockBack(shared_from_this());
+			creature->KnockBack();
 		}
 
 		if (creature2)
 		{
-			if (creature2->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature2->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -168,12 +200,12 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature2->SetWait(50);
-			creature2->KnockBack(shared_from_this());
+			creature2->KnockBack();
 		}
 
 		if (creature3)
 		{
-			if (creature3->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature3->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -187,12 +219,12 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature3->SetWait(50);
-			creature3->KnockBack(shared_from_this());
+			creature3->KnockBack();
 		}
 
 		if (creature4)
 		{
-			if (creature4->GetType() == Protocol::OBJECT_TYPE_PLAYER)
+			if (creature4->GetType() != Protocol::OBJECT_TYPE_MONSTER)
 			{
 				SetState(IDLE);
 				return;
@@ -207,7 +239,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature4->SetWait(50);
-			creature4->KnockBack(shared_from_this());
+			creature4->KnockBack();
 		}
 	}
 	SetState(MOVE);
@@ -270,8 +302,12 @@ void Player::MakeArrow()
 
 	uint64 id = GetObjectID();
 
+	auto arrows = info.arrows();
+	info.set_arrows(arrows - 1);
+	
 	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Fire(arrow->info, id);
 	session->Send(sendBuffer);
+	room->Broadcast(sendBuffer, id);
 }
 
 void Player::Teleport()
@@ -352,6 +388,104 @@ void Player::QuestProgress(int questid)
 		}
 	}
 	return;
+}
+
+void Player::KillQuestProgress(Protocol::MONSTER_TYPE monsterType)
+{
+	// 플레이어 본인의 퀘스트 상태를 가져옴
+	auto questsStates = room->GetQuestsStates(info.objectid());
+
+	int questsSize = room->GetQuestsSize();
+
+	for (int i = 0; i < questsSize; i++)
+	{
+		// 수주받지 않은 퀘스트면 스킵
+		Protocol::QUEST_STATE state = questsStates[i].state;
+		if (state != Protocol::QUEST_STATE_ACCEPT)
+			continue;
+
+		// 수주받은 퀘스트이며 해당하는 몬스터 타입일 경우 진행
+		Protocol::QuestInfo questInfo = room->GetQuest(i);
+		if (questInfo.targettype() == Protocol::OBJECT_TYPE_MONSTER
+			&& questInfo.targetid() == monsterType)
+		{
+			auto questState = room->GetQuestsStates(info.objectid(), i);
+
+			int targetNums = questInfo.targetnums();
+			int newProgress = questState.progress + 1;
+
+			if (state == Protocol::QUEST_STATE_FINISHED || state == Protocol::QUEST_STATE_COMPLETED)
+				return;
+
+			if (state == Protocol::QUEST_STATE_ACCEPT)
+			{
+				// 몬스터 처치 카운트 
+				{
+					room->SetQuestStateProgress(GetObjectID(), i, newProgress);
+					// newProgress ++
+					{
+						SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), i, newProgress);
+						session->Send(sendBuffer);
+					}
+
+					if (newProgress >= targetNums)
+					{
+						SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), i, newProgress);
+						session->Send(sendBuffer);
+						room->SetQuestStates(GetObjectID(), i, Protocol::QUEST_STATE_COMPLETED);
+					}
+				}
+			}
+		}
+	}
+}
+
+void Player::ItemQuestProgress(int itemID)
+{
+	// 플레이어 본인의 퀘스트 상태를 가져옴
+	auto questsStates = room->GetQuestsStates(info.objectid());
+
+	int questsSize = room->GetQuestsSize();
+
+	for (int i = 0; i < questsSize; i++)
+	{
+		// 수주받지 않은 퀘스트면 스킵
+		Protocol::QUEST_STATE state = questsStates[i].state;
+		if (state != Protocol::QUEST_STATE_ACCEPT)
+			continue;
+
+		// 수주받은 퀘스트이며 해당하는 아이템 일 경우 진행
+		Protocol::QuestInfo questInfo = room->GetQuest(i);
+		if (questInfo.targettype() == Protocol::OBJECT_TYPE_ITEM
+			&& questInfo.targetid() == itemID)
+		{
+			auto questState = room->GetQuestsStates(info.objectid(), i);
+
+			int targetNums = questInfo.targetnums();
+			int itemCount = GET_SINGLE(ItemManager)->FindItemCountFromInventory(info.objectid(), itemID);
+			int newProgress = itemCount;
+
+			if (state == Protocol::QUEST_STATE_FINISHED || state == Protocol::QUEST_STATE_COMPLETED)
+				return;
+
+			if (state == Protocol::QUEST_STATE_ACCEPT)
+			{
+				room->SetQuestStateProgress(GetObjectID(), i, newProgress);
+				// newProgress ++
+				{
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestProcess(GetObjectID(), i, newProgress);
+					session->Send(sendBuffer);
+				}
+
+				if (newProgress >= targetNums)
+				{
+					SendBufferRef sendBuffer = ServerPacketHandler::Make_S_QuestComplete(GetObjectID(), i, newProgress);
+					session->Send(sendBuffer);
+					room->SetQuestStates(GetObjectID(), i, Protocol::QUEST_STATE_COMPLETED);
+				}
+			}
+		}
+	}
 }
 
 map<int, PlayerQuestState> Player::GetAcceptedQuests()

@@ -21,12 +21,16 @@ public:
 public:
 	void SetPressedButton();
 
+private:
+	// 소모품 사용
+	void UseConsumableItem();
+
 protected:
 	vector<ITEM> _slots;
 	shared_ptr<Sprite> _slotBackground = nullptr;
 	shared_ptr<Sprite> _slotSelectedSprite = nullptr;
 	shared_ptr<ITEM> _selectedItem = nullptr;
-	int _selectedIndex = 0;
+	int _selectedIndex = 1;
 	wstring _selectedItemSubType = L"";
 
 private:

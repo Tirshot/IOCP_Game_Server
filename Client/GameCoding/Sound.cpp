@@ -9,8 +9,7 @@ Sound::Sound()
 
 Sound::~Sound()
 {
-	if (_soundBuffer)
-		_soundBuffer->Release();
+
 }
 
 bool Sound::LoadWave(fs::path fullPath)
@@ -76,23 +75,40 @@ bool Sound::LoadWave(fs::path fullPath)
 
 void Sound::Play(bool loop)
 {
-	_soundBuffer->SetCurrentPosition(0);
+	if (_soundBuffer)
+	{
+		_soundBuffer->SetCurrentPosition(0);
 
-	if (loop)
-		_soundBuffer->Play(0, 0, DSBPLAY_LOOPING);
-	else
-		_soundBuffer->Play(0, 0, 0);
+		if (loop)
+			_soundBuffer->Play(0, 0, DSBPLAY_LOOPING);
+		else
+			_soundBuffer->Play(0, 0, 0);
+	}
 }
 
 void Sound::Stop(bool reset)
 {
-	_soundBuffer->Stop();
+	if (_soundBuffer)
+	{
+		_soundBuffer->Stop();
 
-	if (reset)
-		_soundBuffer->SetCurrentPosition(0);
+		if (reset)
+			_soundBuffer->SetCurrentPosition(0);
+	}
 }
 
 void Sound::SetVolume(long vol)
 {
-	_soundBuffer->SetVolume(vol);
+	if (_soundBuffer)
+		_soundBuffer->SetVolume(vol);
+}
+
+void Sound::Clear()
+{
+	if (_soundBuffer)
+	{
+		_soundBuffer->Release();
+		_soundBuffer = nullptr;
+		delete _soundBuffer;
+	}
 }

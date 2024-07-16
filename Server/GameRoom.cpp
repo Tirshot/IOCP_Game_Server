@@ -29,6 +29,8 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
+	srand(time(0));
+
 	filesystem::path currentPath = filesystem::current_path();
 	filesystem::path tilemapDirectory = currentPath / ".." / "Client" / "Resources" / "Tilemap" / "Tilemap01.txt";
 	filesystem::path relativePath = filesystem::relative(tilemapDirectory, currentPath);
@@ -64,15 +66,59 @@ void GameRoom::Init()
 		npc3->info.set_name("Merchant_Sign");
 		AddObject(npc3);
 	}
+	// 튜토리얼
+	{
+		NPCRef npc4 = GameObject::CreateNPC();
+		npc4->info.set_posx(18);
+		npc4->info.set_posy(4);
+		npc4->info.set_defence(9999);
+		npc4->info.set_name("Tutorial");
+		// npc 종류 입력
+		npc4->info.set_npctype(Protocol::NPC_TYPE_TUTORIAL);
+		AddObject(npc4);
+	}
 	{
 		GET_SINGLE(Quest)->CreateQuest();
+	}
+
+	for (auto& item : _players)
+	{
+		item.second->Init();
+	}
+
+	for (auto& item : _monsters)
+	{
+		item.second->Init();
+	}
+
+	for (auto& item : _npcs)
+	{
+		item.second->BeginPlay();
+	}
+
+	for (auto& item : _items)
+	{
+		item.second->BeginPlay();
+	}
+
+	for (auto& item : _triggers)
+	{
+		item.second->BeginPlay();
+	}
+
+	for (auto& inven : _inventorys)
+	{
+		inven.second->BeginPlay();
+	}
+
+	for (auto& item : _projectiles)
+	{
+		item.second->BeginPlay();
 	}
 }
 
 void GameRoom::Update()
 {
-	srand(time(0));
-
 	RandomMonsterSpawn();
 
 	for (auto& item : _players)
@@ -106,10 +152,7 @@ void GameRoom::Update()
 		if (item.second->IsGet())
 		{
 			_deleteObjects[id] = item.second;
-
-			int itemID = item.second.get()->GetItemInfo().itemid();
-
-			wstring itemStr = to_wstring(itemID);
+			wstring itemStr = to_wstring(id);
 
 			// 제거 후 로그
 			GChat->AddText(L"ItemID : " + itemStr + L" 아이템 서버에서 제거.");
@@ -126,7 +169,7 @@ void GameRoom::Update()
 		inven.second->Update();
 	}
 
-	for (auto& item : _arrows)
+	for (auto& item : _projectiles)
 	{
 		item.second->Tick();
 
@@ -141,7 +184,7 @@ void GameRoom::Update()
 	for (const auto& del : _deleteObjects)
 	{
 		if (del.second->GetType() == Protocol::OBJECT_TYPE_PROJECTILE)
-			_arrows.erase(del.first);
+			_projectiles.erase(del.first);
 
 		if (del.second->GetType() == Protocol::OBJECT_TYPE_ITEM)
 			_items.erase(del.first);
@@ -201,7 +244,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 			*info = item.second->info;
 		}
 
-		for (auto& item : _arrows)
+		for (auto& item : _projectiles)
 		{
 			Protocol::ObjectInfo* info = pkt.add_objects();
 			*info = item.second->info;
@@ -245,8 +288,8 @@ GameObjectRef GameRoom::FindObject(uint64 id)
 			return findIt->second;
 	}
 	{
-		auto findIt = _arrows.find(id);
-		if (findIt != _arrows.end())
+		auto findIt = _projectiles.find(id);
+		if (findIt != _projectiles.end())
 			return findIt->second;
 	}
 	{
@@ -298,7 +341,7 @@ void GameRoom::AddObject(GameObjectRef gameObject)
 		break;
 
 	case Protocol::OBJECT_TYPE_PROJECTILE:
-		_arrows[id] = static_pointer_cast<Arrow>(gameObject);
+		_projectiles[id] = static_pointer_cast<Projectile>(gameObject);
 		return;
 
 	case Protocol::OBJECT_TYPE_ITEM:
@@ -339,6 +382,22 @@ void GameRoom::RemoveObject(uint64 id)
 	if (gameObject == nullptr)
 		return;
 
+	// 몬스터 생성 비율에 따른 개체수 조절
+	switch (gameObject->info.monstertype())
+	{
+	case Protocol::MONSTER_TYPE_SNAKE:
+		_snakeCount--;
+		break;
+
+	case Protocol::MONSTER_TYPE_MOBLIN:
+		_moblinCount--;
+		break;
+
+	case Protocol::MONSTER_TYPE_OCTOROC:
+		_octorocCount--;
+		break;
+	}
+
 	switch (gameObject->info.objecttype())
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
@@ -356,11 +415,11 @@ void GameRoom::RemoveObject(uint64 id)
 		break;
 
 	case Protocol::OBJECT_TYPE_PROJECTILE:
-		_arrows.erase(id);
+		_deleteObjects[id] = gameObject;
 		break;
 
 	case Protocol::OBJECT_TYPE_ITEM:
-		_items.erase(id);
+		_deleteObjects[id] = gameObject;
 		break;
 
 	default:
@@ -390,8 +449,21 @@ void GameRoom::RemoveTemp(uint64 id)
 
 void GameRoom::Broadcast(SendBufferRef& sendBuffer)
 {
+	// 자기 자신을 포함한 모든 플레이어를 대상으로 Broadcast
 	for (auto& item : _players)
 	{
+		item.second->session->Send(sendBuffer);
+	}
+}
+
+void GameRoom::Broadcast(SendBufferRef& sendBuffer, uint64 objectId)
+{
+	// 특정 ID를 제외한 Broadcast
+	for (auto& item : _players)
+	{
+		if (item.second->GetObjectID() == objectId)
+			continue;
+
 		item.second->session->Send(sendBuffer);
 	}
 }
@@ -406,8 +478,20 @@ PlayerRef GameRoom::FindClosestPlayer(Vec2Int cellPos)
 		const auto& player = item.second;
 		if (player)
 		{
+			// 플레이어가 안전 구역에 있으면 타겟팅하지 않음
+			if (player->IsInSafeZone())
+				continue;
+
 			Vec2Int dir = cellPos - player->GetCellPos();
-			float dist = dir.LengthSquared();
+			float dist = dir.Length();
+
+			// 거리가 너무 멀어지면 타겟팅하지 않음
+			if (dist >= 10)
+			{
+				ret = nullptr;
+				continue;
+			}
+
 			if (dist < best)
 			{
 				best = dist;
@@ -568,6 +652,18 @@ bool GameRoom::MonsterCanGo(Vec2Int cellPos)
 	return tile->value == 0;
 }
 
+bool GameRoom::IsSafeZone(Vec2Int cellPos)
+{
+	Tile* tile = _tilemap.GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	if (tile->value != 2)
+		return false;
+
+	return tile->value == 2;
+}
+
 Vec2Int GameRoom::GetRandomEmptyCellPos()
 {
 	Vec2Int ret = { -1,-1 };
@@ -632,37 +728,135 @@ CreatureRef GameRoom::GetCreatureAt(Vec2Int cellPos)
 	}
 	return nullptr;
 }
+
+bool GameRoom::IsOtherMonstersAround(MonsterRef monster)
+{
+	// 해당 몬스터 주위 3칸 거리에 다른 몬스터가 존재하는가
+	for (auto& item : _monsters)
+	{
+		// 자기 자신은 건너뛰기
+		if (item.second == monster)
+			continue;
+
+		auto other = item.second;
+		auto otherPos = other->GetCellPos();
+		auto pos = monster->GetCellPos();
+
+		auto vec = pos - otherPos;
+		if (vec.Length() <= 3)
+			return true;
+	}
+	return false;
+}
+
 void GameRoom::RandomMonsterSpawn()
 {
 	// 매 0.5초마다 정해진 숫자 만큼만 스폰
-	if (_monsterCount > DESIRED_MONSTER_COUNT)
+	if (_monsterCount >= DESIRED_MONSTER_COUNT)
 		return;
 
+	//// 인공지능 테스트
+	//{
+	//	auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
+	//	{
+	//		snake->SetCellPos({53, 24}, true);
+	//		snake->SetInitialPos({ 53, 24 });
+
+	//		AddObject(snake);
+	//		_monsterCount++;
+	//		GChat->AddText(::format(L"snake {0} ({1}, {2})에 생성.", snake->info.objectid(), 53, 24));
+	//	}
+	//}
+
 	Vec2Int randPos = GetRandomEmptyCellPos();
+	int randValue = rand() % 3 + 1;
+	int maxSnakeCounts = DESIRED_MONSTER_COUNT * (3.f / 6);
+	int maxMoblinCounts = DESIRED_MONSTER_COUNT * (1.f / 6);
+	int maxOctorocCounts = DESIRED_MONSTER_COUNT * (2.f / 6);
 
-	auto randValue = rand() % 2 + 1;
-
+	//  뱀(가중치 30), 모블린(10), 옥타록(20), 3:1:2 비율 생성
 	switch (randValue)
 	{
 	case 1:
+	{
+		if (_snakeCount >= maxSnakeCounts)
+			return;
+
+		auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
+		while (true)
 		{
-			auto snake = GameObject::CreateMonster(Protocol::MONSTER_TYPE_SNAKE);
 			snake->SetCellPos(randPos, true);
-			AddObject(snake);
-			_monsterCount++;
-			GChat->AddText(::format(L"snake {0} 생성.", snake->info.objectid()));
+			// 거리 3 이내에 다른 몬스터가 있으면 재배치
+			if (IsOtherMonstersAround(snake))
+			{
+				randPos = GetRandomEmptyCellPos();
+			}
+			else
+			{
+				snake->SetInitialPos(randPos);
+				break;
+			}
 		}
+		AddObject(snake);
+		_monsterCount++;
+		_snakeCount++;
+		GChat->AddText(::format(L"snake {0} ({1}, {2})에 생성.", snake->info.objectid(), randPos.x, randPos.y));
 		break;
+	}
 
 	case 2:
+	{
+		if (_moblinCount >= maxMoblinCounts)
+			return;
+
+		auto moblin = GameObject::CreateMonster(Protocol::MONSTER_TYPE_MOBLIN);
+		while (true)
 		{
-			auto moblin = GameObject::CreateMonster(Protocol::MONSTER_TYPE_MOBLIN);
 			moblin->SetCellPos(randPos, true);
-			AddObject(moblin);
-			_monsterCount++;
-			GChat->AddText(::format(L"moblin {0} 생성.", moblin->info.objectid()));
+			// 거리 3 이내에 다른 몬스터가 있으면 재배치
+			if (IsOtherMonstersAround(moblin))
+			{
+				randPos = GetRandomEmptyCellPos();
+			}
+			else
+			{
+				moblin->SetInitialPos(randPos);
+				break;
+			}
 		}
+		AddObject(moblin);
+		_monsterCount++;
+		_moblinCount++;
+		GChat->AddText(::format(L"moblin {0} ({1}, {2})에 생성.", moblin->info.objectid(), randPos.x, randPos.y));
 		break;
+	}
+
+	case 3:
+	{
+		if (_octorocCount >= maxOctorocCounts)
+			return;
+
+		auto octoroc = GameObject::CreateMonster(Protocol::MONSTER_TYPE_OCTOROC);
+		while (true)
+		{
+			octoroc->SetCellPos(randPos, true);
+			// 거리 3 이내에 다른 몬스터가 있으면 재배치
+			if (IsOtherMonstersAround(octoroc))
+			{
+				randPos = GetRandomEmptyCellPos();
+			}
+			else
+			{
+				octoroc->SetInitialPos(randPos);
+				break;
+			}
+		}
+		AddObject(octoroc);
+		_monsterCount++;
+		_octorocCount++;
+		GChat->AddText(::format(L"octoroc {0}  ({1}, {2})에 생성.", octoroc->info.objectid(), randPos.x, randPos.y));
+		break;
+	}
 	}
 }
 
@@ -683,8 +877,6 @@ void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
 	GameObjectRef gameObject = FindObject(id);
 	if (gameObject == nullptr)
 		return;
-
-	// set state, dir, pos + weaponType
 
 	gameObject->info = pkt.info();
 

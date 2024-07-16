@@ -4,6 +4,7 @@
 
 Projectile::Projectile()
 {
+	info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 }
 
 Projectile::~Projectile()

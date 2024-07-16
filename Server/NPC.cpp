@@ -3,6 +3,7 @@
 
 NPC::NPC()
 {
+	info.set_objecttype(Protocol::OBJECT_TYPE_NPC);
 
 }
 

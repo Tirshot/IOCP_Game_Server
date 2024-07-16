@@ -13,7 +13,7 @@ public:
 	virtual void Tick() override;
 
 	virtual void OnDamaged(CreatureRef attacker, bool debug = false);
-	void KnockBack(CreatureRef attacker);
+	virtual void KnockBack();
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
 	wstring GetName();
 

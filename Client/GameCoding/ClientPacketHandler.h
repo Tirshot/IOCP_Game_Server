@@ -43,6 +43,7 @@ enum
 	C_Heal = 49,
 	C_MPRecover = 50,
 	S_MPRecover = 51,
+	S_HealEffect = 52,
 
 	C_AddItem = 70,
 	C_EquipItem = 71,
@@ -53,8 +54,6 @@ enum
 	S_Gold = 81,
 
 	S_Reset = 99,
-
-	C_KillPlayer = 990,	// 디버그 전용 커맨드, 테스트 이후 제거 필요
 };
 class Creature;
 class ClientPacketHandler
@@ -83,6 +82,7 @@ public:
 	static void Handle_S_QuestState(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_ItemDrop(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_AddItem(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_HealEffect(ServerSessionRef session, BYTE* buffer, int32 len);
 
 	// 보내기
 	static SendBufferRef Make_C_Move();
@@ -103,10 +103,9 @@ public:
 		return sendBuffer;
 	}
 
-	static SendBufferRef Make_C_Fire(uint64 ownerid);
+	static SendBufferRef Make_C_Fire(uint64 objectId);
 	static SendBufferRef Make_C_Hit(uint64 objectId, uint64 attackerId);
 	static SendBufferRef Make_C_SendMessage(uint64 objectId, time_t time, string str, bool broadcast = true);
-	static SendBufferRef Make_C_RemoveObject(uint64 objectId);
 	static SendBufferRef Make_C_Revive(Protocol::ObjectInfo& objectInfo);
 	static SendBufferRef Make_C_Quest(uint64 objectId, uint64 questId);
 	static SendBufferRef Make_C_QuestFinish(uint64 objectId, uint64 questId);
@@ -115,7 +114,7 @@ public:
 	static SendBufferRef Make_C_AddItem(uint64 objectId, int itemId, int itemCounts, Protocol::ITEM_TYPE itemType, int index);
 	static SendBufferRef Make_C_EquipItem(uint64 objectId, int itemId, bool equip = true);
 	static SendBufferRef Make_C_SyncInventory(uint64 objectID);
-	static SendBufferRef Make_C_KillPlayer(uint64 objectID);
+	static SendBufferRef Make_C_LeaveGame(uint64 objectID);
 
 };
 

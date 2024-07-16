@@ -43,6 +43,7 @@ enum
 	C_Heal = 49,
 	C_MPRecover = 50,
 	S_MPRecover = 51,
+	S_HealEffect = 52,
 
 	C_AddItem = 70,
 	C_EquipItem = 71,
@@ -53,8 +54,6 @@ enum
 	S_Gold = 81,
 
 	S_Reset = 99,
-
-	C_KillPlayer = 990,	// 디버그 전용 커맨드, 테스트 이후 제거 필요
 };
 
 struct BuffData
@@ -69,6 +68,7 @@ public:
 	static void HandlePacket(GameSessionRef session, BYTE* buffer, int32 len);
 
 	// 받기
+	static void Handle_C_LeaveGame(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Hit(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_Fire(GameSessionRef session, BYTE* buffer, int32 len);
@@ -81,8 +81,7 @@ public:
 	static void Handle_C_AddItem(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_EquipItem(GameSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_C_SyncInventory(GameSessionRef session, BYTE* buffer, int32 len);
-	static void Handle_C_KillPlayer(GameSessionRef session, BYTE* buffer, int32 len);
-
+	
 	
 	// 보내기
 	static SendBufferRef Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs);
@@ -102,7 +101,7 @@ public:
 	static SendBufferRef Make_S_QuestList(uint64 objectid, const Protocol::QuestInfo& info);
 	static SendBufferRef Make_S_QuestState(const Protocol::QuestInfo& info);
 	static SendBufferRef Make_S_ItemDrop(const Protocol::ItemInfo& info);
-	static SendBufferRef Make_S_AddItem(uint64 objectID, int itemID, int itemCounts);
+	static SendBufferRef Make_S_AddItem(uint64 objectID, int itemID, int itemCounts, bool isEquipped = false);
 	static SendBufferRef Make_S_Fire(const Protocol::ObjectInfo& info, uint64 objectID);
 
 

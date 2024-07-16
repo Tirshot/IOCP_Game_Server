@@ -380,6 +380,12 @@
     <ClInclude Include="Snake.h">
       <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
     </ClInclude>
+    <ClInclude Include="Octoroc.h">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileRock.h">
+      <Filter>소스 파일\03. Objects\Game\Projectile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -656,6 +662,12 @@
     </ClCompile>
     <ClCompile Include="Snake.cpp">
       <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="Octoroc.cpp">
+      <Filter>소스 파일\03. Objects\Game\Creature\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileRock.cpp">
+      <Filter>소스 파일\03. Objects\Game\Projectile</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

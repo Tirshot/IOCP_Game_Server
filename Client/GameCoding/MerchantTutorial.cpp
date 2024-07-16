@@ -10,6 +10,7 @@ MerchantTutorial::MerchantTutorial()
 
 MerchantTutorial::~MerchantTutorial()
 {
+	_sprite = nullptr;
 }
 
 void MerchantTutorial::BeginPlay()

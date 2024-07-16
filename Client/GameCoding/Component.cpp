@@ -7,6 +7,7 @@ Component::Component()
 
 Component::~Component()
 {
+	_owner = nullptr;
 }
 
 void Component::BeginPlay()

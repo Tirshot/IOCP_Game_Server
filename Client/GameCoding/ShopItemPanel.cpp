@@ -54,62 +54,26 @@ ShopItemPanel::ShopItemPanel(ITEM item, int index, Vec2 initialPos)
 
 ShopItemPanel::~ShopItemPanel()
 {
+	_item.reset();
+	_rect = {};
+
+	_background = nullptr;
+	_goldImage = nullptr;
 }
 
 void ShopItemPanel::BeginPlay()
 {
-	// 아이템 이름
-	{
-		_itemName = make_shared<TextBox>();
-		_itemName->SetText(_item->KorName);
-		_itemName->SetSize(Vec2Int{ 160 , 30 });
-		_itemName->SetPadding(0, 10);
-		_itemName->AlignText(TextAlign::Center);
-		_itemName->SetVisible(false);
-		_itemName->SetPos(Vec2{ 503, 85 });
-		_itemName->SetInitialPos(Vec2{ 503, 85 });
-		AddChild(_itemName);
-	}
-
-	// 아이템 설명
-	{
-		_description = make_shared<TextBox>();
-		_description->SetText(_item->Description);
-		_description->SetSize(Vec2Int{ 160 , 250 });
-		_description->SetPadding(5, 5);
-		_description->SetVisible(false);
-		_description->SetPos(Vec2{ 503, 115 });
-		_description->SetInitialPos(Vec2{ 503, 115 });
-		AddChild(_description);
-	}
-
-	for (auto& child : _children)
-	{
-		child->BeginPlay();
-	}
+	Super::BeginPlay();
 }
 
 void ShopItemPanel::Tick()
 {
+	Super::Tick();
+
 	_rect.left = _pos.x;
 	_rect.top = _pos.y;
 	_rect.right = _pos.x + _size.x;
 	_rect.bottom = _pos.y + _size.y;
-
-	for (auto& child : _children)
-		child->Tick();
-	
-	// 아이템 설명
-	if (IsMouseInRect(_rect))
-	{
-		_itemName->SetVisible(true);
-		_description->SetVisible(true);
-	}
-	else
-	{
-		_itemName->SetVisible(false);
-		_description->SetVisible(false);
-	}
 }
 
 void ShopItemPanel::Render(HDC hdc)
@@ -128,18 +92,23 @@ void ShopItemPanel::Render(HDC hdc)
 		0,
 		SRCCOPY);
 
+
+	auto sprite = _item->Sprite;
+	if (sprite)
 	// 아이템 이미지
-	::TransparentBlt(hdc,
-		_pos.x + 10,
-		_pos.y + 10,
-		43,
-		43,
-		_item->Sprite->GetDC(),
-		_item->Sprite->GetPos().x,
-		_item->Sprite->GetPos().y,
-		_item->Sprite->GetSize().x,
-		_item->Sprite->GetSize().y,
-		_item->Sprite->GetTransparent());
+	{
+		::TransparentBlt(hdc,
+			_pos.x + 10,
+			_pos.y + 10,
+			43,
+			43,
+			sprite->GetDC(),
+			sprite->GetPos().x,
+			sprite->GetPos().y,
+			sprite->GetSize().x,
+			sprite->GetSize().y,
+			sprite->GetTransparent());
+	}
 
 	// 아이템 이름
 	{
@@ -169,9 +138,7 @@ void ShopItemPanel::Render(HDC hdc)
 		DrawTextW(hdc, itemCost.c_str(), -1, &_textRect, DT_CENTER);
 	}
 
-	for (auto& child : _children)
-		if (child->GetVisible() == true)
-			child->Render(hdc);
+	Super::Render(hdc);
 }
 
 void ShopItemPanel::OnPopClickAcceptDelegate()

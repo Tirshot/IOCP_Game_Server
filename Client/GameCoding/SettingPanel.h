@@ -16,6 +16,7 @@ public:
 
 private:
 	void OnClickCrossButton();
+	void OnClickExitButton();
 	void SetAllVolume();
 	void SetBGMVolume();
 	void SetSFXVolume();

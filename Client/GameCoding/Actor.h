@@ -18,13 +18,13 @@ public:
 	void SetLayer(LAYER_TYPE layer) { _layer = layer; }
 	LAYER_TYPE GetLayer() { return _layer; }
 
-	void AddComponent(Component* component);
-	void RemoveComponent(Component* component);
+	void AddComponent(shared_ptr<Component> component);
+	void RemoveComponent(shared_ptr<Component> component);
 
 protected:
 	Vec2 _pos = { 0, 0 };
 	Vec2 _destPos = { 0, 0 };
 	LAYER_TYPE _layer = LAYER_OBJECT;
-	vector<Component*> _components;
+	vector<shared_ptr<Component>> _components;
 };
 

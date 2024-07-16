@@ -5,9 +5,9 @@ Moblin::Moblin()
 {
 	info.set_name("Moblin");
 	info.set_monstertype(Protocol::MONSTER_TYPE_MOBLIN);
-	info.set_hp(80);
-	info.set_maxhp(80);
-	info.set_attack(2);
+	info.set_hp(50);
+	info.set_maxhp(50);
+	info.set_attack(20);
 	info.set_defence(0);
 	info.set_speed(150);
 }

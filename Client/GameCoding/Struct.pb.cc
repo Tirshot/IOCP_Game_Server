@@ -101,6 +101,8 @@ PROTOBUF_CONSTEXPR QuestInfo::QuestInfo(
   , /*decltype(_impl_.rewarditemnum_)*/0
   , /*decltype(_impl_.posx_)*/0
   , /*decltype(_impl_.posy_)*/0
+  , /*decltype(_impl_.islinkquest_)*/false
+  , /*decltype(_impl_.prevquestid_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct QuestInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR QuestInfoDefaultTypeInternal()
@@ -121,6 +123,7 @@ PROTOBUF_CONSTEXPR ItemInfo::ItemInfo(
   , /*decltype(_impl_.posy_)*/0
   , /*decltype(_impl_.itemsubtype_)*/0
   , /*decltype(_impl_.objectid_)*/uint64_t{0u}
+  , /*decltype(_impl_.removetime_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ItemInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ItemInfoDefaultTypeInternal()
@@ -202,6 +205,8 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.rewarditemnum_),
   PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.posx_),
   PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.posy_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.islinkquest_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::QuestInfo, _impl_.prevquestid_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::ItemInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -216,13 +221,14 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::ItemInfo, _impl_.posy_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ItemInfo, _impl_.itemsubtype_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ItemInfo, _impl_.objectid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ItemInfo, _impl_.removetime_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::BuffData)},
   { 9, -1, -1, sizeof(::Protocol::ObjectInfo)},
   { 37, -1, -1, sizeof(::Protocol::Text)},
   { 47, -1, -1, sizeof(::Protocol::QuestInfo)},
-  { 65, -1, -1, sizeof(::Protocol::ItemInfo)},
+  { 67, -1, -1, sizeof(::Protocol::ItemInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -251,26 +257,28 @@ const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(
   "YPE\022\016\n\006potion\030\025 \001(\005\022+\n\013monsterType\030\026 \001(\016"
   "2\026.Protocol.MONSTER_TYPE\"F\n\004Text\022\020\n\010obje"
   "ctId\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\013\n\003str\030\003 \001(\t\022\021\n"
-  "\tbroadcast\030\004 \001(\010\"\226\002\n\tQuestInfo\022\017\n\007questi"
+  "\tbroadcast\030\004 \001(\010\"\300\002\n\tQuestInfo\022\017\n\007questi"
   "d\030\001 \001(\005\022\020\n\010objectid\030\002 \001(\004\022\020\n\010targetid\030\003 "
   "\001(\005\022)\n\ntargettype\030\004 \001(\0162\025.Protocol.OBJEC"
   "T_TYPE\022\022\n\ntargetnums\030\005 \001(\005\022\017\n\007process\030\006 "
   "\001(\005\022)\n\nqueststate\030\007 \001(\0162\025.Protocol.QUEST"
   "_STATE\022\022\n\nrewardGold\030\010 \001(\005\022\022\n\nrewardItem"
   "\030\t \001(\005\022\025\n\rrewardItemNum\030\n \001(\005\022\014\n\004posX\030\013 "
-  "\001(\005\022\014\n\004posY\030\014 \001(\005\"\301\001\n\010ItemInfo\022\016\n\006ItemId"
-  "\030\001 \001(\004\022\021\n\tItemCount\030\002 \001(\004\022%\n\010itemType\030\003 "
-  "\001(\0162\023.Protocol.ITEM_TYPE\022\020\n\010ItemName\030\004 \001"
-  "(\t\022\014\n\004posX\030\005 \001(\005\022\014\n\004posY\030\006 \001(\005\022+\n\013itemSu"
-  "bType\030\007 \001(\0162\026.Protocol.ITEM_SUBTYPE\022\020\n\010o"
-  "bjectId\030\010 \001(\004b\006proto3"
+  "\001(\005\022\014\n\004posY\030\014 \001(\005\022\023\n\013isLinkQuest\030\r \001(\010\022\023"
+  "\n\013prevQuestid\030\016 \001(\005\"\325\001\n\010ItemInfo\022\016\n\006Item"
+  "Id\030\001 \001(\004\022\021\n\tItemCount\030\002 \001(\004\022%\n\010itemType\030"
+  "\003 \001(\0162\023.Protocol.ITEM_TYPE\022\020\n\010ItemName\030\004"
+  " \001(\t\022\014\n\004posX\030\005 \001(\005\022\014\n\004posY\030\006 \001(\005\022+\n\013item"
+  "SubType\030\007 \001(\0162\026.Protocol.ITEM_SUBTYPE\022\020\n"
+  "\010objectId\030\010 \001(\004\022\022\n\nremoveTime\030\t \001(\005b\006pro"
+  "to3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 1181, descriptor_table_protodef_Struct_2eproto,
+    false, false, 1243, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 5,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -1613,12 +1621,14 @@ QuestInfo::QuestInfo(const QuestInfo& from)
     , decltype(_impl_.rewarditemnum_){}
     , decltype(_impl_.posx_){}
     , decltype(_impl_.posy_){}
+    , decltype(_impl_.islinkquest_){}
+    , decltype(_impl_.prevquestid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.posy_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.posy_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.prevquestid_) -
+    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.prevquestid_));
   // @@protoc_insertion_point(copy_constructor:Protocol.QuestInfo)
 }
 
@@ -1639,6 +1649,8 @@ inline void QuestInfo::SharedCtor(
     , decltype(_impl_.rewarditemnum_){0}
     , decltype(_impl_.posx_){0}
     , decltype(_impl_.posy_){0}
+    , decltype(_impl_.islinkquest_){false}
+    , decltype(_impl_.prevquestid_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1667,8 +1679,8 @@ void QuestInfo::Clear() {
   (void) cached_has_bits;
 
   ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.posy_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.posy_));
+      reinterpret_cast<char*>(&_impl_.prevquestid_) -
+      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.prevquestid_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1776,6 +1788,22 @@ const char* QuestInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
+      // bool isLinkQuest = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 104)) {
+          _impl_.islinkquest_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 prevQuestid = 14;
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 112)) {
+          _impl_.prevquestid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -1879,6 +1907,18 @@ uint8_t* QuestInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(12, this->_internal_posy(), target);
   }
 
+  // bool isLinkQuest = 13;
+  if (this->_internal_islinkquest() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(13, this->_internal_islinkquest(), target);
+  }
+
+  // int32 prevQuestid = 14;
+  if (this->_internal_prevquestid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(14, this->_internal_prevquestid(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1957,6 +1997,16 @@ size_t QuestInfo::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_posy());
   }
 
+  // bool isLinkQuest = 13;
+  if (this->_internal_islinkquest() != 0) {
+    total_size += 1 + 1;
+  }
+
+  // int32 prevQuestid = 14;
+  if (this->_internal_prevquestid() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_prevquestid());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -2011,6 +2061,12 @@ void QuestInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   if (from._internal_posy() != 0) {
     _this->_internal_set_posy(from._internal_posy());
   }
+  if (from._internal_islinkquest() != 0) {
+    _this->_internal_set_islinkquest(from._internal_islinkquest());
+  }
+  if (from._internal_prevquestid() != 0) {
+    _this->_internal_set_prevquestid(from._internal_prevquestid());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -2029,8 +2085,8 @@ void QuestInfo::InternalSwap(QuestInfo* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(QuestInfo, _impl_.posy_)
-      + sizeof(QuestInfo::_impl_.posy_)
+      PROTOBUF_FIELD_OFFSET(QuestInfo, _impl_.prevquestid_)
+      + sizeof(QuestInfo::_impl_.prevquestid_)
       - PROTOBUF_FIELD_OFFSET(QuestInfo, _impl_.objectid_)>(
           reinterpret_cast<char*>(&_impl_.objectid_),
           reinterpret_cast<char*>(&other->_impl_.objectid_));
@@ -2066,6 +2122,7 @@ ItemInfo::ItemInfo(const ItemInfo& from)
     , decltype(_impl_.posy_){}
     , decltype(_impl_.itemsubtype_){}
     , decltype(_impl_.objectid_){}
+    , decltype(_impl_.removetime_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -2078,8 +2135,8 @@ ItemInfo::ItemInfo(const ItemInfo& from)
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.itemid_, &from._impl_.itemid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.objectid_) -
-    reinterpret_cast<char*>(&_impl_.itemid_)) + sizeof(_impl_.objectid_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.removetime_) -
+    reinterpret_cast<char*>(&_impl_.itemid_)) + sizeof(_impl_.removetime_));
   // @@protoc_insertion_point(copy_constructor:Protocol.ItemInfo)
 }
 
@@ -2096,6 +2153,7 @@ inline void ItemInfo::SharedCtor(
     , decltype(_impl_.posy_){0}
     , decltype(_impl_.itemsubtype_){0}
     , decltype(_impl_.objectid_){uint64_t{0u}}
+    , decltype(_impl_.removetime_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.itemname_.InitDefault();
@@ -2130,8 +2188,8 @@ void ItemInfo::Clear() {
 
   _impl_.itemname_.ClearToEmpty();
   ::memset(&_impl_.itemid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.objectid_) -
-      reinterpret_cast<char*>(&_impl_.itemid_)) + sizeof(_impl_.objectid_));
+      reinterpret_cast<char*>(&_impl_.removetime_) -
+      reinterpret_cast<char*>(&_impl_.itemid_)) + sizeof(_impl_.removetime_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2205,6 +2263,14 @@ const char* ItemInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
       case 8:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
           _impl_.objectid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 removeTime = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 72)) {
+          _impl_.removetime_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2292,6 +2358,12 @@ uint8_t* ItemInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteUInt64ToArray(8, this->_internal_objectid(), target);
   }
 
+  // int32 removeTime = 9;
+  if (this->_internal_removetime() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(9, this->_internal_removetime(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -2352,6 +2424,11 @@ size_t ItemInfo::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objectid());
   }
 
+  // int32 removeTime = 9;
+  if (this->_internal_removetime() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_removetime());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -2394,6 +2471,9 @@ void ItemInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   if (from._internal_objectid() != 0) {
     _this->_internal_set_objectid(from._internal_objectid());
   }
+  if (from._internal_removetime() != 0) {
+    _this->_internal_set_removetime(from._internal_removetime());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -2418,8 +2498,8 @@ void ItemInfo::InternalSwap(ItemInfo* other) {
       &other->_impl_.itemname_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ItemInfo, _impl_.objectid_)
-      + sizeof(ItemInfo::_impl_.objectid_)
+      PROTOBUF_FIELD_OFFSET(ItemInfo, _impl_.removetime_)
+      + sizeof(ItemInfo::_impl_.removetime_)
       - PROTOBUF_FIELD_OFFSET(ItemInfo, _impl_.itemid_)>(
           reinterpret_cast<char*>(&_impl_.itemid_),
           reinterpret_cast<char*>(&other->_impl_.itemid_));

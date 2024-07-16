@@ -43,15 +43,19 @@ public:
 	void RemoveObject(uint64 id);
 	void RemoveTemp(uint64 id);
 	void Broadcast(SendBufferRef& sendBuffer);
+	void Broadcast(SendBufferRef& sendBuffer, uint64 objectId);
 
 public:
 	PlayerRef FindClosestPlayer(Vec2Int cellPos);
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 	bool CanGo(Vec2Int cellPos);
 	bool MonsterCanGo(Vec2Int cellPos);
+	bool IsSafeZone(Vec2Int cellPos);
+
 	Vec2Int GetRandomEmptyCellPos();
 	Vec2Int GetRandomEmptySpawnCellPos();
 	CreatureRef GetCreatureAt(Vec2Int cellPos);
+	bool IsOtherMonstersAround(MonsterRef monster);
 
 	void RandomMonsterSpawn();
 
@@ -62,6 +66,9 @@ private:
 	// 몬스터 스폰 숫자
 	const int32 DESIRED_MONSTER_COUNT = 12;
 	int32 _monsterCount = 0;
+	int _snakeCount = 0;
+	int _moblinCount = 0;
+	int _octorocCount = 0;
 
 public:
 	void Handle_C_Move(Protocol::C_Move& pkt);
@@ -75,7 +82,7 @@ public:
 	map<uint64, weak_ptr<Player>> GetTemps() { return _temps; }
 	map<uint64, MonsterRef> GetMonsters() { return _monsters; }
 	map<uint64, NPCRef> GetNPCs() { return _npcs; }
-	map<uint64, ArrowRef> GetArrows() { return _arrows; }
+	map<uint64, ProjectileRef> GetProjectiles() { return _projectiles; }
 	map<uint64, Protocol::QuestInfo> GetQuests() { return _quests; }
 	map<uint64, InventoryRef> GetInventorys() { return _inventorys; }
 	map<uint64, ItemRef> GetItems() { return _items; }
@@ -97,7 +104,7 @@ private:
 	map<uint64, weak_ptr<Player>> _temps;
 	map<uint64, MonsterRef> _monsters;
 	map<uint64, NPCRef> _npcs;
-	map<uint64, ArrowRef> _arrows;
+	map<uint64, ProjectileRef> _projectiles;
 	map<uint64, ItemRef> _items;
 	map<uint64, Protocol::QuestInfo> _quests;		// 퀘스트 관리
 	map<uint64, map<int, PlayerQuestState>> _questsStates;	// 플레이어 별 퀘스트 상태 관리

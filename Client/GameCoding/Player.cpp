@@ -64,7 +64,13 @@ Player::Player()
 
 Player::~Player()
 {
-
+	_flipbookIdle->reset();
+	_flipbookMove->reset();
+	_flipbookAttack->reset();
+	_flipbookSpin->reset();
+	_flipbookSpinReady->reset();
+	_flipbookBow->reset();
+	_flipbookStaff->reset();
 }
 
 void Player::BeginPlay()
@@ -135,13 +141,21 @@ void Player::TickSkill()
 	if (_flipbook == nullptr)
 		return;
 
+	auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	if (scene == nullptr)
+		return;
+
+	if (GetWeaponType() != Protocol::WEAPON_TYPE_STAFF)
+	{
+		if (IsSafeZone(GetCellPos()))
+		{
+			SetState(IDLE);
+			return;
+		}
+	}
+
 	if (IsAnimationEnded())
 	{
-		// 공격 판정
-		auto scene = dynamic_pointer_cast<DevScene>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		if (scene == nullptr)
-			return;
-
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
 			// 내 앞에 있는 좌표
@@ -153,19 +167,36 @@ void Player::TickSkill()
 				if (monster->info.hp() <=0)
 				{
 					monster->SetState(HIT);
+
+					// 공격 판정
+					scene->SpawnObject<HitEffect>(monster->GetCellPos());
 					return;
 				}
 
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster->GetCellPos());
+
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack(shared_from_this());
+				monster->KnockBack();
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
-		{
-			uint64 objectID = GET_SINGLE(SceneManager)->GetMyPlayerId();
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(objectID);
-			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+		{	
+			if (info.arrows() <= 0)
+			{
+				SetState(IDLE);
+				return;
+			}
+
+			auto myPlayer = dynamic_pointer_cast<MyPlayer>(shared_from_this());
+
+			// 화살 버그 수정 - 패킷 생성시 플레이어 수 만큼 나감 주의!!
+			if (myPlayer)
+			{
+				SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Fire(info.objectid());
+				GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
 		{
@@ -176,10 +207,26 @@ void Player::TickSkill()
 	}
 }
 
+void Player::TickHit()
+{
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		scene->SpawnObject<HitEffect>(GetCellPos());
+	}
+	SetState(IDLE);
+}
+
 void Player::TickSpin()
 {
 	if (_flipbook == nullptr)
 		return;
+
+	if (IsSafeZone(GetCellPos()))
+	{
+		SetState(IDLE);
+		return;
+	}
 
 	if (IsAnimationEnded())
 	{
@@ -203,9 +250,13 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster->GetCellPos());
+
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack(shared_from_this());
+				monster->KnockBack();
 			}
 
 			if (monster2)
@@ -215,9 +266,13 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster2->GetCellPos());
+
 				monster2->SetWait(50);
 				monster2->SetState(HIT);
-				monster2->KnockBack(shared_from_this());
+				monster2->KnockBack();
 			}
 
 			if (monster3)
@@ -227,9 +282,13 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster3->GetCellPos());
+
 				monster3->SetWait(50);
 				monster3->SetState(HIT);
-				monster3->KnockBack(shared_from_this());
+				monster3->KnockBack();
 			}
 
 			if (monster4)
@@ -239,9 +298,13 @@ void Player::TickSpin()
 					SetState(IDLE);
 					return;
 				}
+
+				// 공격 판정
+				scene->SpawnObject<HitEffect>(monster4->GetCellPos());
+
 				monster4->SetWait(50);
 				monster4->SetState(HIT);
-				monster4->KnockBack(shared_from_this());
+				monster4->KnockBack();
 			}
 		}
 		SetState(MOVE);
@@ -271,6 +334,25 @@ void Player::UpdateAnimation()
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 
+	case SKILL:
+		if (GetWeaponType() == Protocol::WEAPON_TYPE_STAFF)
+		{
+			GET_SINGLE(SoundManager)->Play(L"Teleport");
+			SetFlipbook(_flipbookStaff[info.dir()]);
+			break;
+		}
+
+	default:
+		break;
+	}
+
+	if (IsSafeZone(GetCellPos()))
+	{
+		return;
+	}
+
+	switch (info.state())
+	{
 	case SKILL:
 		if (GetWeaponType() == Protocol::WEAPON_TYPE_SWORD)
 		{
@@ -313,23 +395,21 @@ void Player::UpdateAnimation()
 	}
 }
 
-void Player::Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id)
+void Player::MakeArrow()
 {
-	// 화살 BroadCast로 인해 2발씩 생성되는 버그 수정, 서버에서는 50ms 이후 화살 생성
-	_now = GetTickCount64();
-
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (_now - _prev >= 50)
-	{
-		if (this->info.arrows() <= 0)
-			return;
 
-		auto arrow = scene->SpawnObject<Arrow>(Vec2Int{ info.posx(),info.posy() });
-		arrow->info = info;
+	if (scene)
+	{
+		auto arrow = scene->SpawnObject<Arrow>({ info.posx(), info.posy() });
+		arrow->info.set_dir(info.dir());
 		arrow->SetOwner(shared_from_this());
-		this->info.set_arrows(this->info.arrows() - 1);
+
+		auto arrows = info.arrows();
+		info.set_arrows(arrows - 1);
+
+		GET_SINGLE(ItemManager)->SyncUseableItem();
 	}
-	_prev = _now;
 }
 
 void Player::SyncToServer()

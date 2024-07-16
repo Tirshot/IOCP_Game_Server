@@ -19,6 +19,8 @@ ArrowUI::ArrowUI()
 
 ArrowUI::~ArrowUI()
 {
+	_myPlayer = nullptr;
+	_arrows = nullptr;
 }
 
 void ArrowUI::BeginPlay()

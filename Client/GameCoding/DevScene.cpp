@@ -27,6 +27,7 @@
 #include "Monster.h"
 #include "Snake.h"
 #include "Moblin.h"
+#include "Octoroc.h"
 #include "MyPlayer.h"
 #include "Item.h"
 #include "StatusPanel.h"
@@ -60,7 +61,8 @@ DevScene::DevScene()
 
 DevScene::~DevScene()
 {
-
+	_quests.clear();
+	ClearActors();
 }
 
 void DevScene::Init()
@@ -75,6 +77,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Tile", L"Sprite\\Map\\Tile.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Potion", L"Sprite\\Item\\Potion.bmp");
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MPPotion", L"Sprite\\Item\\MPPotion.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Heart", L"Sprite\\UI\\Heart.bmp", RGB(128,128,128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"PlayerUp", L"Sprite\\Player\\PlayerUp.bmp", RGB(128, 128, 128));
@@ -83,6 +86,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Buttons", L"Sprite\\UI\\Buttons.bmp");
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Snake", L"Sprite\\Monster\\Snake.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Moblin", L"Sprite\\Monster\\Moblin.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"Octoroc", L"Sprite\\Monster\\Octoroc.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Hit", L"Sprite\\Effect\\Hit.bmp", RGB(0,0,0));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Teleport", L"Sprite\\Effect\\Teleport.bmp", RGB(0,0,0));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"Death", L"Sprite\\Effect\\Death.bmp", RGB(255,0,255));
@@ -100,6 +104,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->LoadTexture(L"ArrowItem", L"Sprite\\Item\\ArrowItem.bmp", RGB(255, 0, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"EquipItem", L"Sprite\\Item\\Equips.bmp", RGB(255, 0, 255));
 	GET_SINGLE(ResourceManager)->LoadTexture(L"SnakeSkin", L"Sprite\\Item\\SnakeSkin.bmp", RGB(128, 128, 128));
+	GET_SINGLE(ResourceManager)->LoadTexture(L"MoblinSpear", L"Sprite\\Item\\MoblinSpear.bmp", RGB(128, 128, 128));
 
 	// UI 텍스쳐
 	GET_SINGLE(ResourceManager)->LoadTexture(L"BlackMp", L"Sprite\\UI\\BlackMp.bmp");
@@ -136,6 +141,7 @@ void DevScene::Init()
 	// Item 스프라이트
 	// 	GET_SINGLE(ResourceManager)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Potion", GET_SINGLE(ResourceManager)->GetTexture(L"Potion"), 0, 0, 32, 32);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"MPPotion", GET_SINGLE(ResourceManager)->GetTexture(L"MPPotion"), 0, 0, 32, 32);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"HeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"HeartItem"), 0, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"FullHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"FullHeartItem"), 50, 0, 25, 21);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"MaxHeartItem", GET_SINGLE(ResourceManager)->GetTexture(L"MaxHeartItem"), 0, 0, 48, 20);
@@ -160,6 +166,7 @@ void DevScene::Init()
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots02", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 83, 90, 30, 30);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"Boots03", GET_SINGLE(ResourceManager)->GetTexture(L"EquipItem"), 127, 90, 30, 30);
 	GET_SINGLE(ResourceManager)->CreateSprite(L"SnakeSkin", GET_SINGLE(ResourceManager)->GetTexture(L"SnakeSkin"), 0, 0, 64, 62);
+	GET_SINGLE(ResourceManager)->CreateSprite(L"MoblinSpear", GET_SINGLE(ResourceManager)->GetTexture(L"MoblinSpear"), 0, 0, 64, 64);
 
 
 	// UI 스프라이트
@@ -243,6 +250,16 @@ void DevScene::Init()
 void DevScene::Update()
 {
 	Super::Update();
+
+	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::ESC))
+	{
+		if (IsAnyPopUpVisible() == false)
+		{
+			auto setting = FindUI<SettingPanel>(_uis);
+			if (setting)
+				setting->SetVisible(true);
+		}
+	}
 }
 
 void DevScene::Render(HDC hdc)
@@ -301,10 +318,12 @@ void DevScene::RemoveActor(shared_ptr<Actor> actor)
 	}
 
 	// 사망시 메세지 및 UI 출력
-	shared_ptr<MyPlayer> player = dynamic_pointer_cast<MyPlayer>(actor);
-	if (player)
+	shared_ptr<MyPlayer> myPlayer = dynamic_pointer_cast<MyPlayer>(actor);
+	shared_ptr<Player> player = dynamic_pointer_cast<Player>(actor);
+
+	if (myPlayer)
 	{
-		SpawnObject<DeathEffect>(player->GetCellPos());
+		SpawnObject<DeathEffect>(myPlayer->GetCellPos());
 
 		GET_SINGLE(SoundManager)->Play(L"GameOver");
 
@@ -317,6 +336,11 @@ void DevScene::RemoveActor(shared_ptr<Actor> actor)
 			if (go)
 				go->SetVisible(true);
 		}
+	}
+	else if (player)
+	{
+		// 다른 플레이어의 이펙트 출력
+		SpawnObject<DeathEffect>(player->GetCellPos());
 	}
 }
 
@@ -535,7 +559,32 @@ void DevScene::LoadPlayer()
 }
 
 void DevScene::LoadMonster()
-{
+{	
+	// Snake Idle
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeIdleUp");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeIdleUp", { 100, 100}, 0, 0, 3, 0.6f, true });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeIdleDown");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeIdleDown", { 100, 100}, 0, 0, 0, 0.6f, true });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeIdleLeft");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeIdleLeft", { 100, 100}, 0, 0, 2, 0.6f, true });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_SnakeIdleRight");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_SnakeIdleRight", { 100, 100}, 0, 0, 1, 0.6f, true });
+	}
 	// Snake Move
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Snake");
@@ -593,25 +642,25 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinUp", { 300, 300}, 0, 0, 6, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinUp", { 300, 300}, 0, 0, 6, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinDown", { 300, 300}, 0, 0, 0, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinDown", { 300, 300}, 0, 0, 0, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinLeft", { 300, 300}, 0, 0, 2, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinLeft", { 300, 300}, 0, 0, 2, 0.6f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinRight", { 300, 300}, 0, 0, 4, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinRight", { 300, 300}, 0, 0, 4, 0.6f, true });
 	}
 
 	// Moblin Move
@@ -619,25 +668,25 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveUp", { 300, 300}, 0, 3, 6, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveUp", { 300, 300}, 0, 3, 6, 0.4f});
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveDown", { 300, 300}, 0, 3, 0, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveDown", { 300, 300}, 0, 3, 0, 0.4f});
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveLeft", { 300, 300}, 0, 3, 2, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveLeft", { 300, 300}, 0, 3, 2, 0.4f});
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinMoveRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinMoveRight", { 300, 300}, 0, 3, 4, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinMoveRight", { 300, 300}, 0, 3, 4, 0.4f});
 	}
 
 	// Moblin Attack
@@ -645,25 +694,25 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackUp", { 300, 300}, 0, 3, 6, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackUp", { 300, 300}, 0, 1, 6, 0.2f });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackDown", { 300, 300}, 0, 3, 1, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackDown", { 300, 300}, 0, 1, 1, 0.2f });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackLeft", { 300, 300}, 0, 3, 3, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackLeft", { 300, 300}, 0, 1, 3, 0.2f });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinAttackRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinAttackRight", { 300, 300}, 0, 3, 5, 0.8f });
+		fb->SetInfo({ texture, L"FB_MoblinAttackRight", { 300, 300}, 0, 1, 5, 0.2f });
 	}
 
 	// Moblin Hit
@@ -671,25 +720,102 @@ void DevScene::LoadMonster()
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitUp");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitUp", { 300, 300}, 0, 0, 10, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitUp", { 300, 300}, 0, 0, 10, 1.f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitDown");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitDown", { 300, 300}, 0, 0, 7, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitDown", { 300, 300}, 0, 0, 7, 1.f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitLeft");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitLeft", { 300, 300}, 0, 0, 8, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitLeft", { 300, 300}, 0, 0, 8, 1.f, true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Moblin");
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_MoblinHitRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
-		fb->SetInfo({ texture, L"FB_MoblinHitRight", { 300, 300}, 0, 0, 9, 0.6f });
+		fb->SetInfo({ texture, L"FB_MoblinHitRight", { 300, 300}, 0, 0, 9, 1.f, true });
+	}
+	// Octoroc Idle
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocIdleUp");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocIdleUp", { 100, 100}, 2, 2, 6, 0.6f, true });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocIdleDown");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocIdleDown", { 100, 100}, 2, 2, 0, 0.6f, true });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocIdleLeft");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocIdleLeft", { 100, 100}, 1, 1, 2, 0.6f, true });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocIdleRight");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocIdleRight", { 100, 100}, 1, 1, 4, 0.6f, true });
+	}
+
+	// Octoroc Move
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocMoveUp");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocMoveUp", { 100, 100}, 0, 1, 6, 0.4f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocMoveDown");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocMoveDown", { 100, 100}, 0, 1, 0, 0.4f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocMoveLeft");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocMoveLeft", { 100, 100}, 0, 1, 2, 0.4f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocMoveRight");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocMoveRight", { 100, 100}, 0, 1, 4, 0.4f });
+	}
+
+	// Octoroc Attack
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocAttackUp");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocAttackUp", { 100, 100}, 0, 1, 7, 0.2f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocAttackDown");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocAttackDown", { 100, 100}, 0, 1, 1, 0.2f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocAttackLeft");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocAttackLeft", { 100, 100}, 0, 1, 3, 0.2f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_OctorocAttackRight");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_OctorocAttackRight", { 100, 100}, 0, 1, 5, 0.2f });
 	}
 }
 
@@ -795,6 +921,31 @@ void DevScene::LoadProjectile()
 		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ArrowRight");
 		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
 		fb->SetInfo({ texture, L"FB_ArrowRight", { 100, 100}, 0, 0, 2, 0.5f });
+	}
+	// Rock Move
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ProjectileRockUp");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_ProjectileRockUp", { 100, 100}, 0, 2, 9, 0.5f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ProjectileRockDown");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_ProjectileRockDown", { 100, 100}, 0, 2, 9, 0.5f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ProjectileRockLeft");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_ProjectileRockLeft", { 100, 100}, 0, 2, 9, 0.5f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(ResourceManager)->GetTexture(L"Octoroc");
+		shared_ptr<Flipbook> fb = GET_SINGLE(ResourceManager)->CreateFlipbook(L"FB_ProjectileRockRight");
+		// SetInfo({텍스쳐, 이름, {한 개의 사이즈}, 시작, 끝, 줄, 시간});
+		fb->SetInfo({ texture, L"FB_ProjectileRockRight", { 100, 100}, 0, 2, 9, 0.5f });
 	}
 }
 
@@ -965,17 +1116,21 @@ void DevScene::LoadUI()
 			GET_SINGLE(ItemManager)->Init();
 		}
 	}
-	{	// 설정 패널
+	{
+		// 설정 패널
 		shared_ptr<SettingPanel> settings = make_shared<SettingPanel>();
-		settings->SetVisible(false);
-		AddUI(settings);
+		if (settings)
+		{
+			settings->SetVisible(false);
+			AddUI(settings);
+		}
 	}
 }
 
 void DevScene::LoadSound()
 {
-	/*GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav");
-	GET_SINGLE(SoundManager)->Play(L"BGM", true, SoundType::BGM);*/
+	GET_SINGLE(ResourceManager)->LoadSound(L"BGM", L"Sound\\BGM.wav", SoundType::BGM);
+	/*GET_SINGLE(SoundManager)->Play(L"BGM", true);*/
 	GET_SINGLE(ResourceManager)->LoadSound(L"Land", L"Sound\\Land.wav", SoundType::Effect);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Button", L"Sound\\Button.wav", SoundType::UI);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Sword", L"Sound\\Sword.wav", SoundType::Effect);
@@ -991,7 +1146,7 @@ void DevScene::LoadSound()
 	GET_SINGLE(ResourceManager)->LoadSound(L"QuestFinished", L"Sound\\QuestFinished.wav", SoundType::UI);
 	GET_SINGLE(ResourceManager)->LoadSound(L"MonsterOnDamaged", L"Sound\\MonsterOnDamaged.wav", SoundType::Effect);
 	GET_SINGLE(ResourceManager)->LoadSound(L"PlayerOnDamaged", L"Sound\\PlayerOnDamaged.wav", SoundType::Effect);
-	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav", SoundType::UI);
+	GET_SINGLE(ResourceManager)->LoadSound(L"GameOver", L"Sound\\GameOver.wav", SoundType::Effect);
 	GET_SINGLE(ResourceManager)->LoadSound(L"Merchant", L"Sound\\Merchant.wav", SoundType::UI);
 }
 
@@ -1004,6 +1159,37 @@ void DevScene::LoadQuest()
 	_questInitialized = true;
 }
 
+bool DevScene::IsAnyPopUpVisible()
+{
+	auto visibleUIs = GetVisibleUIs();
+	if (visibleUIs.empty() == false)
+	{
+		for (auto& ui : visibleUIs)
+		{
+			auto panel = dynamic_pointer_cast<Panel>(ui);
+			if (panel == nullptr)
+				continue;
+
+			auto& children = panel->GetChildren();
+
+			if (children.empty())
+				continue;
+
+			for (auto& child : children)
+			{
+				auto popUp = dynamic_pointer_cast<PopUp>(child);
+
+				if (popUp == nullptr)
+					continue;
+
+				if (popUp->GetVisible())
+					return true;
+			}
+		}
+	}
+	return false;
+}
+
 void DevScene::SpawnItem(Protocol::ItemInfo info)
 {
 	shared_ptr<Item> ret = make_shared<Item>();
@@ -1011,6 +1197,7 @@ void DevScene::SpawnItem(Protocol::ItemInfo info)
 	ret->SetItemInfo(info);
 
 	ret->SetCellPos({info.posx(), info.posy()}, true);
+	ret->info.set_objectid(info.objectid());
 	ret->SetState(IDLE);
 	AddActor(ret);
 
@@ -1022,8 +1209,26 @@ shared_ptr<GameObject> DevScene::GetObjects(uint64 id)
 	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
 	{
 		shared_ptr<GameObject> gameObject = dynamic_pointer_cast<GameObject>(actor);
-		if (gameObject && gameObject->info.objectid() == id)
+		if (gameObject == nullptr)
+			continue;
+
+		if (gameObject->info.objectid() == id)
 			return gameObject;
+	}
+
+	return nullptr;
+}
+
+shared_ptr<Item> DevScene::GetItem(uint64 id)
+{
+	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
+	{
+		shared_ptr<Item> item = dynamic_pointer_cast<Item>(actor);
+		if (item == nullptr)
+			continue;
+
+		if (item->info.objectid() == id)
+			return item;
 	}
 
 	return nullptr;
@@ -1089,7 +1294,17 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 				moblin->SetState(info.state());
 				break;
 			}
+			case Protocol::MONSTER_TYPE_OCTOROC:
+			{
+				// 모블린
+				shared_ptr<Octoroc> octoroc = SpawnObject<Octoroc>(Vec2Int{ info.posx(), info.posy() });
 
+				// 애니메이션을 위해
+				octoroc->info = info;
+				octoroc->SetDir(info.dir());
+				octoroc->SetState(info.state());
+				break;
+			}
 			}
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_NPC)
@@ -1116,6 +1331,16 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			}
 				break;
 
+			case Protocol::NPC_TYPE_TUTORIAL:
+			{
+				auto npc = SpawnObject<Merchant>(Vec2Int{ info.posx(), info.posy() });
+
+				npc->info = info;
+				npc->SetDir(DIR_DOWN);
+				npc->SetState(info.state());
+			}
+			break;
+
 			default:
 				return;
 			}
@@ -1132,7 +1357,16 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 
 		shared_ptr<GameObject> object = GetObjects(id);
 		if (object)
+		{
+			auto creature = dynamic_pointer_cast<Creature>(object);
+			if (creature)
+			{
+				auto pos = creature->GetCellPos();
+
+			}
 			RemoveActor(object);
+
+		}
 	}
 }
 
@@ -1322,6 +1556,25 @@ bool DevScene::MonsterCanGo(Vec2Int cellPos)
 
 	// 1이면 갈 수 없는 지형
 	return tile->value == 0;
+}
+
+bool DevScene::IsSafeZone(Vec2Int cellPos)
+{
+	if (_tilemapActor == nullptr)
+		return false;
+
+	shared_ptr<Tilemap> tm = _tilemapActor->GetTilemap();
+	if (tm == nullptr)
+		return false;
+
+	auto tile = tm->GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	if (tile->value != 2)
+		return false;
+
+	return tile->value == 2;
 }
 
 Vec2 DevScene::ConvertPos(Vec2Int cellPos)

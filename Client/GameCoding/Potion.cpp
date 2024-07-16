@@ -18,6 +18,8 @@ Potion::Potion()
 
 Potion::~Potion()
 {
+	_myPlayer = nullptr;
+	_potion = nullptr;
 }
 
 void Potion::BeginPlay()

@@ -17,7 +17,13 @@ public:
 	int GetSelectedSlot();
 
 	void UsePotion();
+	void UseConsumableItem(int itemID);
 	int GetPotionNums() { return info.potion(); }
+	int GetPotionMaxCount() { return _potionMaxCount; }
+	int GetPotionEffect() { return _potionEffect; }
+
+	void SetPotionMaxCount(int count) { _potionMaxCount = count; }
+	void SetPotionEffect(int effect) { _potionEffect = effect; }
 
 private:
 	void TickInput();
@@ -33,8 +39,6 @@ private:
 	virtual void TickTeleport() override;
 
 public:
-	void Handle_S_Fire(const Protocol::ObjectInfo& info, uint64 id);
-	//void MakeArrow(uint64 ownerID);
 	void SyncToServer();
 
 public:
@@ -56,5 +60,7 @@ private:
 	float _sumTimes = 0.f;
 	int _selectedSlot = 0;
 	int _potionNums = 0;
+	int _potionMaxCount = 5;
+	int _potionEffect = 1;	// 포션 효과 배율
 };
 

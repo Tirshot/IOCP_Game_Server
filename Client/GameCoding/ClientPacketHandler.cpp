@@ -7,8 +7,10 @@
 #include "QuestManager.h"
 #include "Game.h"
 #include "Monster.h"
+#include "Octoroc.h"
 #include "HitEffect.h"
 #include "TeleportEffect.h"
+#include "HealEffect.h"
 #include "Creature.h"
 #include "Player.h"
 #include "MyPlayer.h"
@@ -103,6 +105,10 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, i
 
 		case S_AddItem:
 			Handle_S_AddItem(session, buffer, len);
+			break;
+
+		case S_HealEffect:
+			Handle_S_HealEffect(session, buffer, len);
 			break;
 	}
 }
@@ -236,10 +242,7 @@ void ClientPacketHandler::Handle_S_Move(ServerSessionRef session, BYTE* buffer, 
 
 		if (myPlayerId == info.objectid())
 		{
-			//gameObject->info.set_arrows(info.arrows());
-			gameObject->info.set_hp(info.hp());
-			//gameObject->info.set_mp(info.mp());
-			//gameObject->info.set_gold(info.gold());
+			return;
 		}
 		else
 		{
@@ -275,17 +278,19 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	if (creature == nullptr)
 		return;
 
+	if (creature->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
 	{
-		shared_ptr<Player> player = dynamic_pointer_cast<Player>(creature);
-
-		if (player)
-			GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
-		else
-			GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
-
+		GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
 	}
-	scene->SpawnObject<HitEffect>(creature->GetCellPos());
-	creature->info.set_hp(clamp(creature->info.hp() - damage, 0, creature->info.maxhp()));
+	else if (creature->info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+	{
+		GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
+	}
+
+	auto hp = creature->info.hp();
+	auto maxhp = creature->info.maxhp();
+
+	creature->info.set_hp(clamp(hp - damage, 0, maxhp));
 }
 
 void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len)
@@ -296,18 +301,28 @@ void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, 
 
 	Protocol::S_Fire pkt;
 	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
-
+	
 	//
 	const Protocol::ObjectInfo& info = pkt.info();
 
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	// 화살의 주인 플레이어를 가져옴
+	// 투사체의 주인에 따라 발사
 	if (scene)
 	{
-		auto player = GET_SINGLE(SceneManager)->GetPlayerByID(pkt.ownerid());
+		auto gameObject = scene->GetObjects(pkt.ownerid());
+
+		auto player = dynamic_pointer_cast<Player>(gameObject);
 		if (player)
 		{
-			player->Handle_S_Fire(info, pkt.ownerid());
+			player->MakeArrow();
+			return;
+		}
+
+		auto octoroc = dynamic_pointer_cast<Octoroc>(gameObject);
+		if (octoroc)
+		{
+			octoroc->MakeRock();
+			return;
 		}
 	}
 }
@@ -467,9 +482,6 @@ void ClientPacketHandler::Handle_S_QuestComplete(ServerSessionRef session, BYTE*
 	if (player)
 	{
 		player->SetQuestState(questId, Protocol::QUEST_STATE_COMPLETED, process);
-		GET_SINGLE(ChatManager)->AddMessage(L"QUEST COMPLETE!!");
-		GET_SINGLE(ChatManager)->AddMessage(L"상인에게 돌아가서 보상을 받으세요.");
-		GET_SINGLE(SoundManager)->Play(L"QuestComplete");
 	}
 }
 
@@ -555,8 +567,37 @@ void ClientPacketHandler::Handle_S_AddItem(ServerSessionRef session, BYTE* buffe
 	if (myPlayer && inventory)
 	{
 		GET_SINGLE(ItemManager)->SetItemToInventory(itemID, itemCounts);
+
+		bool isEquipped = pkt.isequipped();
+		if (isEquipped)
+		{
+			auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(itemID);
+			
+			if (item)
+				GET_SINGLE(ItemManager)->EquipItem(item);
+		}
 	}
 
+}
+
+void ClientPacketHandler::Handle_S_HealEffect(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_HealEffect pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	int objectID = pkt.objectid();
+	int posX = pkt.posx();
+	int posY = pkt.posy();
+
+	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
+	if (scene)
+	{
+		scene->SpawnObject<HealEffect>({ posX, posY });
+	}
 }
 
 // 패킷 보내기
@@ -574,12 +615,12 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 	return MakeSendBuffer(pkt, C_Move);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 ownerid)
+SendBufferRef ClientPacketHandler::Make_C_Fire(uint64 objectId)
 {
 	// 패킷 생성
 	Protocol::C_Fire pkt;
 
-	pkt.set_ownerid(ownerid);
+	pkt.set_ownerid(objectId);
 
 	return MakeSendBuffer(pkt, C_Fire);
 }
@@ -694,11 +735,11 @@ SendBufferRef ClientPacketHandler::Make_C_SyncInventory(uint64 objectID)
 	return MakeSendBuffer(pkt, C_SyncInventory);
 }
 
-SendBufferRef ClientPacketHandler::Make_C_KillPlayer(uint64 objectID)
+SendBufferRef ClientPacketHandler::Make_C_LeaveGame(uint64 objectID)
 {
-	Protocol::C_KillPlayer pkt;
+	Protocol::C_LeaveGame pkt;
 
-	pkt.set_objectid(objectID);
+	pkt.set_accountid(objectID);
 
-	return MakeSendBuffer(pkt, C_KillPlayer);
+	return MakeSendBuffer(pkt, C_LeaveGame);
 }

@@ -11,7 +11,7 @@
 Monster::Monster()
 {
 	info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
-	info.set_monstertype(Protocol::MONSTER_TYPE_SNAKE);
+	info.set_monstertype(Protocol::MONSTER_TYPE_NONE);
 	info.set_hp(50);
 	info.set_maxhp(50);
 	info.set_attack(1);
@@ -20,15 +20,20 @@ Monster::Monster()
 
 Monster::~Monster()
 {
+	_target.reset();
 }
 
 void Monster::Init()
 {
+	Super::BeginPlay();
 
+	_initialPos = GetCellPos();
 }
 
 void Monster::Update()
 {
+	Super::Tick();
+
 	switch (info.state())
 	{
 	case IDLE:
@@ -51,6 +56,8 @@ void Monster::Update()
 
 void Monster::UpdateIdle()
 {
+	Super::TickIdle();
+
 	// GameObject가 들고 있는 게임 룸을 체크
 	if (room == nullptr)
 		return;
@@ -63,23 +70,32 @@ void Monster::UpdateIdle()
 
 	if (target)
 	{
+		// 플레이어가 안전 구역 내에 있을 경우 타겟 해제
+		if (target->IsInSafeZone())
+		{
+			_target.reset();
+			return;
+		}
+
 		// 공격 판단
 		Vec2Int dir = target->GetCellPos() - GetCellPos();
 		int32 dist = abs(dir.x) + abs(dir.y);
 		if (dist == 1)
 		{
-			// 공격하기
 			SetDir(GetLookAtDir(target->GetCellPos()));
+
+			// 주변의 클라이언트에 알림
+			SetState(SKILL, true);
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
+			// 공격하기
 			target->OnDamaged(shared_from_this());
+			target->SetState(HIT, true);
 			{
 				int32 damage = info.attack() - target->info.defence();
 				SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(target->info.objectid(), info.objectid(), damage);
 				target->session->Send(sendBuffer);
 			}
-
-			// 주변의 클라이언트에 알림
-			SetState(SKILL, true);
-			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
 		}
 		else
 		{
@@ -114,10 +130,80 @@ void Monster::UpdateIdle()
 			}
 		}
 	}
+	else
+	{
+		// 타겟이 없을 경우 랜덤한 방향으로 움직임
+		int randValue = rand() % 4 + 1;
+		switch (randValue)
+		{
+		case 1:
+			SetDir(DIR_UP, true);
+			break;
+
+		case 2:
+			SetDir(DIR_DOWN, true);
+			break;
+
+		case 3:
+			SetDir(DIR_LEFT, true);
+			break;
+
+		case 4:
+			SetDir(DIR_RIGHT, true);
+			break;
+		}
+
+		if (room->MonsterCanGo(GetFrontCellPos()))
+		{
+			SetCellPos(GetFrontCellPos());
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
+			// 주위의 클라이언트에 알림
+			SetState(MOVE, true);
+		}
+
+		// 타겟이 사라졌고 최초 소환 위치와 거리가 너무 멀어지면 복귀
+		{
+			auto pos = GetCellPos();
+
+			auto dist = _initialPos - pos;
+			auto len = dist.Length();
+
+			if (len >= 10)
+			{
+				// 좌표 찾기
+				vector<Vec2Int> path;
+				// 최초 위치로 되돌아가는 길을 찾음
+				if (room->FindPath(GetCellPos(), _initialPos, OUT path))
+				{
+					if (path.size() > 1)
+					{
+						// 한 칸만 이동
+						Vec2Int nextPos = path[1];
+						if (room->MonsterCanGo(nextPos))
+						{
+							SetDir(GetLookAtDir(nextPos));
+							SetCellPos(nextPos);
+							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+
+							SetState(MOVE);
+						}
+					}
+					else
+						// 길을 못 찾았으면 정지
+					{
+						SetCellPos(path[0]);
+					}
+				}
+			}
+		}
+	}
 }
 
 void Monster::UpdateMove()
 {
+	Super::TickMove();
+
 	uint64 now = GetTickCount64();
 
 	if (_waitUntil > now)
@@ -128,6 +214,8 @@ void Monster::UpdateMove()
 
 void Monster::UpdateSkill()
 {
+	Super::TickSkill();
+
 	uint64 now = GetTickCount64();
 
 	if (_waitUntil > now)
@@ -138,6 +226,8 @@ void Monster::UpdateSkill()
 
 void Monster::UpdateHit()
 {
+	Super::TickHit();
+
 	uint64 now = GetTickCount64();
 
 	if (_waitHit > now)
@@ -191,8 +281,14 @@ void Monster::ItemDrop(CreatureRef owner)
 		return;
 	}
 
+	if (group.size() == 0)
+	{
+		GChat->AddText(L"<ERROR> 드랍 테이블을 찾을 수 없음. 몬스터 별 전리품(ETC)이 있는지 확인.");
+		return;
+	}
+
 	// 아이템 생성, 패킷 전송
-	GET_SINGLE(ItemManager)->MakeItem(group, owner, {GetCellPos().x, GetCellPos().y});
+	auto item = GET_SINGLE(ItemManager)->MakeItem(group, owner, {GetCellPos().x, GetCellPos().y});
 }
 
 void Monster::GoldDrop(CreatureRef owner)
@@ -208,20 +304,47 @@ void Monster::GoldDrop(CreatureRef owner)
 	// 최소 ~ 최대 사이의 값을 추출
 	int randValue = rand() % step + 1;
 
+	int gold = minGold + randValue;
+
 	// 골드 생성 후 패킷 전송
-	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Gold(owner->GetObjectID(), randValue);
+	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Gold(owner->GetObjectID(), gold);
 	PlayerRef player = static_pointer_cast<Player>(GRoom->FindObject(owner->GetObjectID()));
 
 	if (player)
 	{
 		player->session->Send(sendBuffer);
-		GChat->AddText(format(L"Player{0}, {1} gold 획득.", owner->GetObjectID(), randValue));
+		GChat->AddText(format(L"Player{0}, {1} gold 획득.", owner->GetObjectID(), gold));
 	}
 }
 
 void Monster::OnDamaged(CreatureRef attacker, bool debug)
 {
 	Super::OnDamaged(attacker);
+
+	// 피격 후 타겟 전환
+
+	// 타겟이 없는 경우
+	if (_target.expired())
+	{
+		auto player = dynamic_pointer_cast<Player>(attacker);
+		if (player)
+		{
+			_target = player;
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+		}
+
+	}
+	else if (_target.lock() != attacker)
+	{
+		_target.reset();
+
+		auto player = dynamic_pointer_cast<Player>(attacker);
+		if (player)
+		{
+			_target = player;
+			_waitUntil = GetTickCount64() + 1000; // 1초 기다림
+		}
+	}
 
 	// 인 게임 디버그 커맨드로 몬스터가 처치당했을 때
 	if (debug)
@@ -233,7 +356,9 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 
 			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
 			if (player)
-				player->QuestProgress(0);
+			{
+				MonsterQuestProgress(player);
+			}
 
 			// 채팅 출력
 			GChat->AddText(format(L"debug : {0} {1}이(가) {2}에 의해 처치됨.",
@@ -249,7 +374,7 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 		}
 	}
 
-	if (info.hp() == 0)
+	if (info.hp() <= 0)
 	{
 		// 사망 처리
 		if (room)
@@ -258,7 +383,9 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 
 			PlayerRef player = dynamic_pointer_cast<Player>(attacker);
 			if (player)
-				player->QuestProgress(0);
+			{
+				MonsterQuestProgress(player);
+			}
 
 			// 채팅 출력
 			GChat->AddText(format(L"{0} {1}이(가) {2}에 의해 처치됨.",
@@ -276,4 +403,17 @@ void Monster::OnDamaged(CreatureRef attacker, bool debug)
 wstring Monster::GetName()
 {
 	return GET_SINGLE(ItemManager)->StringToWString(info.name());
+}
+
+void Monster::KnockBack()
+{
+	Super::KnockBack();
+
+	// 몬스터의 경우 넉백당하면 타겟을 리셋
+	_target.reset();
+}
+
+void Monster::MonsterQuestProgress(PlayerRef player)
+{
+	player->KillQuestProgress(info.monstertype());
 }

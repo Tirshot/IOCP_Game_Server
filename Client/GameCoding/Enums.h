@@ -109,12 +109,17 @@ struct ITEM
 {
 	int ItemId = 0;
 	int ItemCount = 0;
+	int MaxCount = 0;
 	wstring Name = L"";
 	wstring KorName = L"";
 	wstring Type = L"";
 	wstring SubType = L"";
 	wstring Description = L"";
 	int Price = 0;
+	int Attack = 0;
+	int Defence = 0;
+	int PotionEffect = 0;
+	int PotionMaxCount = 0;
 	shared_ptr<class Sprite> Sprite = nullptr;
 	RECT Rect = {};
 	int index = 0;
@@ -132,14 +137,9 @@ struct ITEM
 
 	void Reset()
 	{
-		this->ItemId = 0;
-		this->ItemCount = 0;
-		this->KorName = L"";
-		this->Name = L"";
-		this->Description = L"";
-		this->Price = 0;
-		this->Sprite = nullptr;
-		this->SubType = L"";
-		this->Type = L"";
+		auto temp = Rect;
+		*this = ITEM();
+		Rect = temp;
+		temp = {};
 	}
 };

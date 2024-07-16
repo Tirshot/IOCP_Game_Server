@@ -960,6 +960,8 @@ class QuestInfo final :
     kRewardItemNumFieldNumber = 10,
     kPosXFieldNumber = 11,
     kPosYFieldNumber = 12,
+    kIsLinkQuestFieldNumber = 13,
+    kPrevQuestidFieldNumber = 14,
   };
   // uint64 objectid = 2;
   void clear_objectid();
@@ -1069,6 +1071,24 @@ class QuestInfo final :
   void _internal_set_posy(int32_t value);
   public:
 
+  // bool isLinkQuest = 13;
+  void clear_islinkquest();
+  bool islinkquest() const;
+  void set_islinkquest(bool value);
+  private:
+  bool _internal_islinkquest() const;
+  void _internal_set_islinkquest(bool value);
+  public:
+
+  // int32 prevQuestid = 14;
+  void clear_prevquestid();
+  int32_t prevquestid() const;
+  void set_prevquestid(int32_t value);
+  private:
+  int32_t _internal_prevquestid() const;
+  void _internal_set_prevquestid(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.QuestInfo)
  private:
   class _Internal;
@@ -1089,6 +1109,8 @@ class QuestInfo final :
     int32_t rewarditemnum_;
     int32_t posx_;
     int32_t posy_;
+    bool islinkquest_;
+    int32_t prevquestid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1225,6 +1247,7 @@ class ItemInfo final :
     kPosYFieldNumber = 6,
     kItemSubTypeFieldNumber = 7,
     kObjectIdFieldNumber = 8,
+    kRemoveTimeFieldNumber = 9,
   };
   // string ItemName = 4;
   void clear_itemname();
@@ -1303,6 +1326,15 @@ class ItemInfo final :
   void _internal_set_objectid(uint64_t value);
   public:
 
+  // int32 removeTime = 9;
+  void clear_removetime();
+  int32_t removetime() const;
+  void set_removetime(int32_t value);
+  private:
+  int32_t _internal_removetime() const;
+  void _internal_set_removetime(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ItemInfo)
  private:
   class _Internal;
@@ -1319,6 +1351,7 @@ class ItemInfo final :
     int32_t posy_;
     int itemsubtype_;
     uint64_t objectid_;
+    int32_t removetime_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2254,6 +2287,46 @@ inline void QuestInfo::set_posy(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.QuestInfo.posY)
 }
 
+// bool isLinkQuest = 13;
+inline void QuestInfo::clear_islinkquest() {
+  _impl_.islinkquest_ = false;
+}
+inline bool QuestInfo::_internal_islinkquest() const {
+  return _impl_.islinkquest_;
+}
+inline bool QuestInfo::islinkquest() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.isLinkQuest)
+  return _internal_islinkquest();
+}
+inline void QuestInfo::_internal_set_islinkquest(bool value) {
+  
+  _impl_.islinkquest_ = value;
+}
+inline void QuestInfo::set_islinkquest(bool value) {
+  _internal_set_islinkquest(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.isLinkQuest)
+}
+
+// int32 prevQuestid = 14;
+inline void QuestInfo::clear_prevquestid() {
+  _impl_.prevquestid_ = 0;
+}
+inline int32_t QuestInfo::_internal_prevquestid() const {
+  return _impl_.prevquestid_;
+}
+inline int32_t QuestInfo::prevquestid() const {
+  // @@protoc_insertion_point(field_get:Protocol.QuestInfo.prevQuestid)
+  return _internal_prevquestid();
+}
+inline void QuestInfo::_internal_set_prevquestid(int32_t value) {
+  
+  _impl_.prevquestid_ = value;
+}
+inline void QuestInfo::set_prevquestid(int32_t value) {
+  _internal_set_prevquestid(value);
+  // @@protoc_insertion_point(field_set:Protocol.QuestInfo.prevQuestid)
+}
+
 // -------------------------------------------------------------------
 
 // ItemInfo
@@ -2446,6 +2519,26 @@ inline void ItemInfo::_internal_set_objectid(uint64_t value) {
 inline void ItemInfo::set_objectid(uint64_t value) {
   _internal_set_objectid(value);
   // @@protoc_insertion_point(field_set:Protocol.ItemInfo.objectId)
+}
+
+// int32 removeTime = 9;
+inline void ItemInfo::clear_removetime() {
+  _impl_.removetime_ = 0;
+}
+inline int32_t ItemInfo::_internal_removetime() const {
+  return _impl_.removetime_;
+}
+inline int32_t ItemInfo::removetime() const {
+  // @@protoc_insertion_point(field_get:Protocol.ItemInfo.removeTime)
+  return _internal_removetime();
+}
+inline void ItemInfo::_internal_set_removetime(int32_t value) {
+  
+  _impl_.removetime_ = value;
+}
+inline void ItemInfo::set_removetime(int32_t value) {
+  _internal_set_removetime(value);
+  // @@protoc_insertion_point(field_set:Protocol.ItemInfo.removeTime)
 }
 
 #ifdef __GNUC__

@@ -11,6 +11,8 @@
 #include "Trigger.h"
 #include "Snake.h"
 #include "Moblin.h"
+#include "Octoroc.h"
+#include "ProjectileRock.h"
 #include "Quest1Trigger.h"
 
 atomic<uint64> GameObject::s_idGenerator = 1;
@@ -64,6 +66,14 @@ MonsterRef GameObject::CreateMonster(Protocol::MONSTER_TYPE monsterType)
 		return moblin;
 	}
 
+	case Protocol::MONSTER_TYPE_OCTOROC:
+	{
+		OctorocRef octoroc = make_shared<Octoroc>();
+		octoroc->info.set_objectid(s_idGenerator++);
+		octoroc->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
+		return octoroc;
+	}
+
 	default:
 		return nullptr;
 	}
@@ -104,6 +114,15 @@ ArrowRef GameObject::CreateArrow()
 	arrow->info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 
 	return arrow->weak_from_this().lock();
+}
+
+ProjectileRockRef GameObject::CreateRock()
+{
+	ProjectileRockRef rock = make_shared<ProjectileRock>();
+	rock->info.set_objectid(s_idGenerator++);
+	rock->info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
+
+	return rock->weak_from_this().lock();
 }
 
 InventoryRef GameObject::CreateInventory(PlayerRef player)
@@ -161,8 +180,9 @@ bool GameObject::CanGo(Vec2Int cellPos)
 	if (room == nullptr)
 		return false;
 
-	// 몬스터와 충돌
-	if (this->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+	// 몬스터와 충돌, 또는 안전 구역에서의 투사체 판정 제거
+	if (this->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER
+		|| this->info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
 		return room->MonsterCanGo(cellPos);
 
 	return room->CanGo(cellPos);
@@ -179,6 +199,16 @@ Dir GameObject::GetLookAtDir(Vec2Int cellPos)
 		return DIR_DOWN;
 	else
 		return DIR_UP;
+}
+
+bool GameObject::IsInSafeZone()
+{
+	auto cellPos = GetCellPos();
+
+	if (room->IsSafeZone(cellPos))
+		return true;
+
+	return false;
 }
 
 void GameObject::SetCellPos(Vec2Int cellPos, bool broadcast)
@@ -204,6 +234,25 @@ Vec2Int GameObject::GetFrontCellPos()
 		return pos + Vec2Int{ 1,0 };
 	case DIR_UP:
 		return pos + Vec2Int{ 0,-1 };
+	}
+
+	return pos;
+}
+
+Vec2Int GameObject::GetBackCellPos()
+{
+	Vec2Int pos = GetCellPos();
+
+	switch (info.dir())
+	{
+	case DIR_DOWN:
+		return pos + Vec2Int{ 0,-1 };
+	case DIR_LEFT:
+		return pos + Vec2Int{ 1,0 };
+	case DIR_RIGHT:
+		return pos + Vec2Int{ -1,0 };
+	case DIR_UP:
+		return pos + Vec2Int{ 0,1 };
 	}
 
 	return pos;

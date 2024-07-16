@@ -20,7 +20,11 @@ protected:
 public:
 	void SetOwner(CreatureRef owner) { _owner = owner; }
 	CreatureRef& GetOwner() { return _owner; }
+	bool IsHit() { return _hit; }
 
 protected:
 	CreatureRef _owner = nullptr;
+
+	// 삭제를 위한 적중 여부
+	bool _hit = false;
 };

@@ -80,37 +80,17 @@ void Creature::OnDamaged(CreatureRef attacker, bool debug)
 	// 사망 로직은 자식 클래스에서 수행
 }
 
-void Creature::KnockBack(CreatureRef attacker)
+void Creature::KnockBack()
 {
 	// 플레이어가 몬스터를 바라보는 방향
-	auto dir = attacker->GetLookAtDir(shared_from_this()->GetCellPos());
-	Vec2Int backPos = {};
-
-	switch (dir)
-	{
-	case DIR_UP:
-		backPos = GetCellPos() + Vec2Int{ 0, -1 };
-		break;
-
-	case DIR_DOWN:
-		backPos = GetCellPos() + Vec2Int{ 0, 1 };
-		break;
-
-	case DIR_LEFT:
-		backPos = GetCellPos() + Vec2Int{ -1, 0 };
-		break;
-
-	case DIR_RIGHT:
-		backPos = GetCellPos() + Vec2Int{ 1, 0 };
-		break;
-
-	default:
-		return;
-	}
+	Vec2Int backPos = GetBackCellPos();
 
 	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
 	if (CanGo(backPos))
+	{
 		SetCellPos(backPos);
+		_waitUntil = GetTickCount64() + 1000;
+	}
 }
 
 wstring Creature::GetName()

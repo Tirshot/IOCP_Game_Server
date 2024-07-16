@@ -7,6 +7,7 @@
 
 Inventory::Inventory()
 {
+    info.set_objecttype(Protocol::OBJECT_TYPE_INVENTORY);
 }
 
 Inventory::~Inventory()
@@ -31,6 +32,7 @@ void Inventory::Update()
         if (slot.itemCounts <= 0)
         {
             slot = {};
+            continue;
         }
     }
 }
@@ -49,6 +51,11 @@ void Inventory::AddItemToInventory(int itemID, int itemCounts, Protocol::ITEM_TY
             found = true;
             slot.itemID = itemID;
             slot.itemCounts = itemCounts;
+            auto player = dynamic_pointer_cast<Player>(GRoom->FindObject(_ownerId));
+            if (player)
+            {
+                player->ItemQuestProgress(itemID);
+            }
             return;
         }
     }
@@ -73,15 +80,23 @@ void Inventory::EquipItem(int itemID, bool equip)
         return;
 
     auto subType = GET_SINGLE(ItemManager)->GetItemSubType(itemID);
-
-    // 무기는 info로 관리
-    PlayerRef player = static_pointer_cast<Player>(GRoom->FindObject(_ownerId));
-
-    if (player)
-        _equips[0].itemID = player->info.weapontype();
-
+    
     switch (subType)
     {
+    case Protocol::WEARABLE_TYPE_WEAPON:
+    {
+        if (equip)
+        {
+            _equips[0].itemID = itemID;
+            _equips[0].itemCounts = 1;
+        }
+        else
+        {
+            _equips[0].itemID = itemID;
+            _equips[0].itemCounts = 0;
+        }
+        break;
+    }
     case Protocol::WEARABLE_TYPE_HELMET:
     {
         if (equip)
@@ -157,8 +172,36 @@ void Inventory::SyncToClient(uint64 objectID)
             PlayerRef player = GRoom->GetPlayer(objectID);
 
             if (player)
-                 player->session->Send(sendBuffer);
+                player->session->Send(sendBuffer);
+        }
+    }
+
+    for (const auto& slot : _equips)
+    {
+        int itemID = slot.itemID;
+        int itemCounts = slot.itemCounts;
+
+        {
+            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddItem(objectID, itemID, itemCounts, true);
+            PlayerRef player = GRoom->GetPlayer(objectID);
+
+            if (player)
+                player->session->Send(sendBuffer);
         }
     }
 }
 
+int Inventory::FindItemCountFromInventory(int itemID)
+{
+    // 슬롯을 순회하여 클라이언트와 연동
+    for (const auto& slot : _slots)
+    {
+        int itemid = slot.itemID;
+        if (itemid == itemID)
+        {
+            int itemcounts = slot.itemCounts;
+            return itemcounts;
+        }
+    }
+    return 0;
+}

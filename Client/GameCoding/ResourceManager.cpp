@@ -12,7 +12,6 @@
 
 ResourceManager::~ResourceManager()
 {
-
 }
 
 void ResourceManager::Init(HWND hwnd, fs::path resourcePath)
@@ -31,10 +30,9 @@ void ResourceManager::Clear()
 	_tilemaps.clear();
 
 	for (auto& sound : _sounds)
-		SAFE_DELETE(sound.second);
+		sound.second->Clear();
 
 	_sounds.clear();
-
 }
 
 shared_ptr<Texture> ResourceManager::LoadTexture(const wstring& key, const wstring& path, uint32 transparent)
@@ -124,7 +122,7 @@ shared_ptr<Tilemap> ResourceManager::LoadTilemap(const wstring& key, const wstri
 	return tm;
 }
 
-Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path, SoundType type)
+shared_ptr<Sound> ResourceManager::LoadSound(const wstring& key, const wstring& path, SoundType type)
 {
 	// 이미 존재하면 찾아서 반환
 	if (_sounds.find(key) != _sounds.end())
@@ -133,7 +131,7 @@ Sound* ResourceManager::LoadSound(const wstring& key, const wstring& path, Sound
 	// 없으면 새로 생성
 	fs::path fullPath = _resourcePath / path;
 
-	Sound* sound = new Sound();
+	shared_ptr<Sound> sound = make_shared<Sound>();
 	sound->LoadWave(fullPath);
 	sound->SetType(type);
 	_sounds[key] = sound;
@@ -181,5 +179,38 @@ vector<vector<wstring>> ResourceManager::GetDataFromCSV(const string& filename)
 	file.close();
 
 	return data;
+}
+
+void ResourceManager::DrawImage(HDC hdc, shared_ptr<Sprite> sprite)
+{
+	if (sprite == nullptr)
+		return;
+
+	auto pos = sprite->GetPos();
+	auto size = sprite->GetSize();
+	auto width = size.x;
+	auto height = size.y;
+
+	RECT rect = { pos.x, pos.y, pos.x + width, pos.y + height };
+
+	// 현재 뷰포트 크기 가져오기
+	RECT window = { 0, 0, GWinSizeX, GWinSizeY };
+
+	// 겹치기 영역 확인
+	RECT intersection;
+	if (IntersectRect(&intersection, &window, &rect))
+	{
+		TransparentBlt(hdc,
+			pos.x,
+			pos.y,
+			width,
+			height,
+			sprite->GetDC(),
+			0,
+			0,
+			width,
+			height,
+			sprite->GetTransparent());
+	}
 }
 

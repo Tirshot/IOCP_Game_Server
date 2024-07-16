@@ -15,6 +15,7 @@ private:
 	virtual void UpdateIdle();
 	virtual void UpdateMove();
 	virtual void UpdateSkill();
+	virtual void UpdateHit();
 	virtual void UpdateSpin();
 	virtual void UpdateTeleport();
 
@@ -25,6 +26,8 @@ public:
 	void MakeArrow();
 	void Teleport();
 	void QuestProgress(int questid);
+	void KillQuestProgress(Protocol::MONSTER_TYPE monsterType);
+	void ItemQuestProgress(int itemID);
 
 public:
 	map<int, class PlayerQuestState> GetAcceptedQuests();

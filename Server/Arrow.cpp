@@ -10,12 +10,13 @@
 
 Arrow::Arrow()
 {
-	info.set_attack(20);
+	info.set_attack(10);
+	info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
 }
 
 Arrow::~Arrow()
 {
-	cout << "~Arrow" << endl;
+
 }
 
 void Arrow::BeginPlay()
@@ -103,7 +104,6 @@ void Arrow::TickHit()
 		int damage = _owner->info.attack() - _target->info.defence();
 
 		_target->OnDamaged(_owner);
-
 		{
 			int32 damage = info.attack() - _target->info.defence();
 			SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Hit(_target->info.objectid(), _owner->info.objectid(), damage);

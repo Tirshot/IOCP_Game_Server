@@ -14,7 +14,7 @@
 
 Game::Game()
 {
-	
+
 }
 
 Game::~Game()
@@ -49,11 +49,14 @@ void Game::Init(HWND hwnd)
 
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::TitleScene);
 	GET_SINGLE(SceneManager)->Init();
+
+	srand(unsigned(time(0)));
 }
 
 void Game::Update()
 {
-	srand(unsigned(time(0)));
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	GET_SINGLE(TimeManager)->Update();
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(SceneManager)->Update();
@@ -67,7 +70,6 @@ void Game::Update()
 		{
 			if (_first)
 			{
-				GET_SINGLE(NetworkManager)->Init();
 				_first = false;
 			}
 			GET_SINGLE(ItemManager)->Init();

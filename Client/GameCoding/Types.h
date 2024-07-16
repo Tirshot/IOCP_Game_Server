@@ -185,12 +185,3 @@ struct VectorInt
 using Pos = Vector;
 using Vec2 = Vector;
 using Vec2Int = VectorInt;
-
-struct Stat
-{
-	int32 hp = 0;
-	int32 maxHp = 0;
-	int32 attack = 0;
-	int32 defence = 0;
-	float speed = 0.f;
-};

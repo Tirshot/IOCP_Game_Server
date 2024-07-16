@@ -14,13 +14,7 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc);
 
-private:
-	void OnClickAcceptButton();
-	void OnClickDenyButton();
-
 public:
-	shared_ptr<Button> MakeAcceptButton();
-	shared_ptr<Button> MakeDenyButton();
 	void SetIcon(wstring wstr);
 	void SetText(wstring wstr);
 
@@ -31,6 +25,5 @@ private:
 	RECT _rect = {};
 	Vec2 _initialPos = {};
 	bool _result = false;
-	int _buttonsCount = 0;
 };
 

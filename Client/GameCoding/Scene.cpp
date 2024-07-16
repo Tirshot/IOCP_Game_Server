@@ -21,7 +21,9 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-	
+	_uis.clear();
+	_visibleUIs.clear();
+	_actors->clear();
 }
 
 void Scene::Init()

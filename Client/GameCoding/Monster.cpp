@@ -25,7 +25,7 @@ Monster::Monster()
 
 Monster::~Monster()
 {
-	GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
+	
 }
 
 void Monster::BeginPlay()
@@ -75,24 +75,20 @@ void Monster::TickSkill()
 	if (_flipbook == nullptr)
 		return;
 
-	if (_waitSeconds > 0)
-	{
-		float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-		_waitSeconds = max(0, _waitSeconds - deltaTime);
+	if (_isEffectSpawned)
 		return;
-	}
 
-	// 공격 판정
 	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	if (scene == nullptr)
-		return;
-
-	auto player = dynamic_pointer_cast<Player>(scene->GetCreatureAt(GetFrontCellPos()));
-	
-	// Player에 피격 이펙트 출력
-	scene->SpawnObject<HitEffect>(GetFrontCellPos());
-	GET_SINGLE(SoundManager)->Play(L"PlayerOnDamaged");
-	SetState(IDLE);
+	if (scene)
+	{
+		auto pos = GetFrontCellPos();
+		auto creature = scene->GetCreatureAt(pos);
+		if (creature)
+		{
+			scene->SpawnObject<HitEffect>(pos);
+			_isEffectSpawned = true;
+		}
+	}
 }
 
 void Monster::TickHit()

@@ -27,7 +27,13 @@ ShopUI::ShopUI()
 
 ShopUI::~ShopUI()
 {
+	_children.clear();
+	_items.clear();
 
+	_sellItem.reset();
+	_sellToShop.reset();
+
+	_background.reset();
 }
 
 void ShopUI::BeginPlay()
@@ -92,94 +98,86 @@ void ShopUI::BeginPlay()
 		plus->SetInitialPos(plus->GetPos());
 		AddChild(plus);
 	}
+
+	// 아이템 이름
+	{
+		_itemName = make_shared<TextBox>();
+		_itemName->SetText(L"");
+		_itemName->SetSize(Vec2Int{ 160 , 30 });
+		_itemName->SetPadding(0, 10);
+		_itemName->AlignText(TextAlign::Center);
+		_itemName->SetVisible(false);
+		_itemName->SetPos(Vec2{ 503, 85 });
+		_itemName->SetInitialPos(Vec2{ 503, 85 });
+		AddChild(_itemName);
+	}
+
+	// 아이템 설명
+	{
+		_description = make_shared<TextBox>();
+		_description->SetText(L"");
+		_description->SetSize(Vec2Int{ 160 , 250 });
+		_description->SetPadding(5, 5);
+		_description->SetVisible(false);
+		_description->SetPos(Vec2{ 503, 115 });
+		_description->SetInitialPos(Vec2{ 503, 115 });
+		AddChild(_description);
+	}
 	{ 
 		// Arrow
 		AddSellItem(4);
+
 		// MaxHP+
 		AddSellItem(6);
+
 		// 포션
 		AddSellItem(5);
-		// 투구00
+		AddSellItem(8);
+
+		// 장비
+		AddSellItem(10);
+		AddSellItem(11);
 		AddSellItem(12);
-		// 투구01
 		AddSellItem(13);
-		// 투구01
+
 		AddSellItem(14);
-		// 투구01
 		AddSellItem(15);
-		// 투구01
 		AddSellItem(16);
-		// 투구01
 		AddSellItem(17);
+
 		AddSellItem(18);
 		AddSellItem(19);
 		AddSellItem(20);
 		AddSellItem(21);
+
 		AddSellItem(22);
 		AddSellItem(23);
+		AddSellItem(24);
 		AddSellItem(25);
+
+		// 기타
 		AddSellItem(26);
-		AddSellItem(1);
-		AddSellItem(2);
-		AddSellItem(3);
-	}
-
-	// 아이템 수량 확인 창
-	{
-		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-		if (scene)
-		{
-			_countsPopUp = make_shared<ItemCountsPopUp>();
-
-			if (_countsPopUp)
-			{
-				_countsPopUp->SetSize({ 300, 180 });
-				_countsPopUp->SetPos({ 400, 300 });
-				_countsPopUp->AddParentDelegate(this, &ShopUI::OnPopClickAcceptDelegate);
-				_countsPopUp->SetVisible(false);
-				AddChild(_countsPopUp);
-				scene->AddUI(_countsPopUp);
-			}
-		}
-	}
-
-	{
-		auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-		if (scene)
-		{
-			// 팝업
-			_alert = make_shared<AlertBox>();
-			_alert->SetSize({ 250,150 });
-			_alert->SetPos({ 400,300 });
-			_alert->AddParentDelegate(this, &ShopUI::OnPopClickAlertAcceptDelegate);
-			_alert->SetVisible(false);
-			AddChild(_alert);
-			scene->AddUI(_alert);
-		}
+		AddSellItem(27);
 	}
 
 	_initialPos = _pos;
 
-	for (auto& child : _children)
-		child->BeginPlay();
+	Super::BeginPlay();
 }
 
 void ShopUI::Tick()
 {
-	_counts = _countsPopUp->GetCounts();
 	_allCost = _counts * _price;
 
 	if (_visible)
 	{
-		for (auto& child : _children)
-			if (child)
-				child->Tick();
-
-		auto deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
-		_initializeTime += deltaTime;
+		Super::Tick();
 
 		if (_pause)
 			return;
+
+		auto deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+		_initializeTime += deltaTime;
 
 		if (IsAnyPopUpVisible())
 			return;
@@ -187,7 +185,7 @@ void ShopUI::Tick()
 		if (IsChildPopUpVisible())
 			return;
 
-		if (_initializeTime <= 1.f)
+		if (_initializeTime <= 0.5f)
 			return;
 
 		{
@@ -213,6 +211,26 @@ void ShopUI::Tick()
 
 			if (IsMouseInRect(ItemRect))
 			{
+				// 이름 및 설명 노출
+				auto itemPanel = dynamic_pointer_cast<ShopItemPanel>(child);
+				if (itemPanel)
+				{
+					auto item = itemPanel->GetItem();
+					if (item)
+					{
+						auto name = item->KorName;
+						auto description = item->Description;
+						_itemName->SetText(name);
+						_description->SetText(description);
+					}
+				}
+				else
+				{
+					_itemName->SetText(L"");
+					_description->SetText(L"");
+				}
+
+				// 구매 로직
 				auto inventory = GET_SINGLE(ItemManager)->GetInventory();
 				if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::LeftMouse))
 				{
@@ -226,10 +244,45 @@ void ShopUI::Tick()
 
 					_sellItem = Item->GetItem();
 					_price = _sellItem->Price;
-					_countsPopUp->SetText(_sellItem->KorName + L"을(를) 몇 개 구입하시겠습니까?");
-					_countsPopUp->SetPrice(_price);
-					_countsPopUp->SetMaxCounts(99);
-					_countsPopUp->SetVisible(true);
+
+					auto counts = MakeCountsBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 180 }, _sellItem->ItemId, &ShopUI::OnPopClickAcceptDelegate);
+					counts->SetText(_sellItem->KorName + L"을(를) 몇 개 구입하시겠습니까?");
+					counts->SetPrice(_price);
+
+					auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+					if (myPlayer)
+					{
+						int potionMaxCount = myPlayer->GetPotionMaxCount();
+
+						auto item = GET_SINGLE(ItemManager)->FindItemFromInventory(_sellItem->ItemId);
+						if (item)
+						{
+							int maxCount = _sellItem->MaxCount - item->ItemCount;
+
+							// Pants 효과 적용
+							if (_sellItem->SubType == L"Potion")
+								maxCount = potionMaxCount - item->ItemCount;
+
+							if (maxCount <= 0)
+								maxCount = 0;
+
+							counts->SetMaxCounts(maxCount);
+						}
+						else
+						{
+							int maxCount = _sellItem->MaxCount;
+
+							// Pants 효과 적용
+							if (_sellItem->SubType == L"Potion")
+								maxCount = potionMaxCount;
+
+							if (maxCount <= 0)
+								maxCount = 0;
+
+							counts->SetMaxCounts(maxCount);
+						}
+					}
+
 					SetPause(true);
 					_initializeTime = 0.f;
 					return;
@@ -324,7 +377,6 @@ shared_ptr<AlertBox> ShopUI::MakeAlertBox(Vec2 pos, Vec2Int size, void(ShopUI::*
 		// AlertBox 초기화
 		alert->SetSize(size);
 		alert->SetPos({ pos.x, pos.y });
-		alert->SetVisible(true);
 		alert->SetInitialPos(alert->GetPos());
 		alert->MakeAcceptButton();
 
@@ -333,6 +385,7 @@ shared_ptr<AlertBox> ShopUI::MakeAlertBox(Vec2 pos, Vec2Int size, void(ShopUI::*
 
 		alert->AddParentDelegate(this, func);
 		alert->BeginPlay();
+		alert->SetVisible(true);
 	}
 
 	AddChild(alert);
@@ -340,119 +393,30 @@ shared_ptr<AlertBox> ShopUI::MakeAlertBox(Vec2 pos, Vec2Int size, void(ShopUI::*
 	return alert;
 }
 
+shared_ptr<ItemCountsPopUp> ShopUI::MakeCountsBox(Vec2 pos, Vec2Int size, int itemID, void(ShopUI::* func)())
+{
+	shared_ptr<ItemCountsPopUp> counts = make_shared<ItemCountsPopUp>();
+	if (counts)
+	{
+		// AlertBox 초기화
+		counts->SetSize(size);
+		counts->SetPos({ pos.x, pos.y });
+		counts->SetInitialPos(counts->GetPos());
+		counts->MakeAcceptButton();
+		counts->MakeDenyButton();
+		counts->SetItemID(itemID);
+		counts->AddParentDelegate(this, func);
+		counts->BeginPlay();
+		counts->SetVisible(true);
+	}
+
+	AddChild(counts);
+
+	return counts;
+}
+
 void ShopUI::OnPopClickAcceptDelegate()
 {
-	bool found = false;
-	// 구매 확인
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
-	auto inventory = GET_SINGLE(ItemManager)->GetInventory();
-
-	if (!myPlayer)
-		return;
-
-	int gold = myPlayer->info.gold();
-	int arrows = myPlayer->info.arrows();
-	int maxHP = myPlayer->info.maxhp();
-	int myPotion = myPlayer->GetPotionNums();
-
-	if (gold < _allCost)
-	{
-		auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
-		alert->SetIcon(L"Warning");
-		alert->SetText(L"골드가 부족합니다.");
-		return;
-	}
-
-	// 맥스 하트
-	if (_sellItem->ItemId == 6)
-	{
-		if (maxHP + _counts > 10)
-			return;
-
-		if (gold < _allCost)
-			return;
-
-		myPlayer->info.set_maxhp(clamp(maxHP + _counts, 0, 10));
-		myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);
-
-		// 골드 소모 정보 전송 - objectinfo 내에 골드 정보가 저장되어있음
-		{
-			SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
-			GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-			return;
-		}
-	}
-
-	// IsInventoryFull을 사용하여 모든 슬롯이 꽉찼는지 확인
-	if (GET_SINGLE(ItemManager)->IsInventoryFull() == true)
-	{
-		for (auto& slot : inventory->GetSlots())
-		{
-			// 구매하려는 아이템이 인벤토리에 이미 있는지 확인
-			if (slot->ItemId == _sellItem->ItemId)
-			{
-				found = true;
-				break;
-			}
-		}
-
-		// 인벤토리에 이미 있다면
-		if (found)
-		{
-			// 중첩이 불가능한 타입
-			if (_sellItem->Type == L"Wearable")
-			{
-				auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
-				alert->SetIcon(L"Warning");
-				alert->SetText(L"인벤토리가 가득 찼습니다.");
-				return;
-			}
-			// 인벤토리가 꽉 찼으며, 중첩이 가능한 타입 -> if문 탈출
-		}
-		else
-		{
-			auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
-			alert->SetIcon(L"Warning");
-			alert->SetText(L"인벤토리가 가득 찼습니다.");
-			return;	// 인벤토리가 꽉 찼는데 해당 아이템이 슬롯에 없다면 리턴
-		}
-	}
-	else // 인벤토리가 아직 꽉차지 않았을 때
-	{
-		// 아이템을 추가하면 인벤토리가 가득 차게 되는지 확인
-		for (auto& slot : inventory->GetSlots())
-		{
-			// 구매하려는 아이템이 인벤토리에 이미 있는지 확인
-			if (slot->ItemId == _sellItem->ItemId)
-			{
-				found = true;
-				break;
-			}
-		}
-
-		if (found)
-		{
-			// 갑옷 등 중첩이 불가능한 아이템 갯수가 남은 슬롯보다 많으면 리턴
-			if (_sellItem->Type == L"Wearable" && GET_SINGLE(ItemManager)->GetEmptySlots() < _counts)
-			{
-				auto alert = MakeAlertBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 150 }, nullptr, false);
-				alert->SetIcon(L"Warning");
-				alert->SetText(L"인벤토리에 빈 슬롯이 부족합니다.");
-				return;
-			}
-		}
-	}
-
-	myPlayer->info.set_gold(myPlayer->info.gold() - _allCost);
-
-	// 골드 소모 정보 전송 - objectinfo 내에 골드 정보가 저장되어있음
-	{
-		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
-		GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
-	}
-
-	GET_SINGLE(ItemManager)->AddItemToInventory(_sellItem->ItemId, _counts);
 	SetPause(false);
 }
 
@@ -491,11 +455,10 @@ void ShopUI::OnPopClickAlertAcceptDelegate()
 	}
 	else
 	{
-		_countsPopUp->SetText(sellingItem->KorName + L"을(를) 몇 개 판매하시겠습니까?");
-		_countsPopUp->SetPrice(gold);
-		_countsPopUp->SetMaxCounts(counts);
-		_countsPopUp->AddParentDelegate(this, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate);
-		_countsPopUp->SetVisible(true);
+		auto countBox = MakeCountsBox({ GWinSizeX / 2, GWinSizeY / 2 }, { 300, 180 }, itemID, &ShopUI::OnClickSellItemToShopAlertAcceptDelegate);
+		countBox->SetText(sellingItem->KorName + L"을(를) 몇 개 판매하시겠습니까?");
+		countBox->SetPrice(gold);
+		countBox->SetMaxCounts(counts);
 	}
 
 	SetPause(false);
@@ -506,7 +469,7 @@ void ShopUI::OnClickSellItemToShopAlertAcceptDelegate()
 	if (_sellToShop == nullptr)
 		return;
 
-	int gold = _sellToShop->Price / 5;
+	int gold = _sellToShop->Price / _buyPriceDivider;
 	int counts = _sellToShop->ItemCount;
 
 	auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
@@ -517,8 +480,6 @@ void ShopUI::OnClickSellItemToShopAlertAcceptDelegate()
 	inventory->RemoveItem(sellingItem, counts);
 	myPlayer->info.set_gold(myPlayer->info.gold() + (gold * counts));
 	_sellToShop = nullptr;
-
-	_countsPopUp->AddParentDelegate(this, &ShopUI::OnPopClickAcceptDelegate);
 
 	SetPause(false);
 }

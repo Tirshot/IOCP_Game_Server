@@ -15,10 +15,14 @@ QuestTrackerUI::QuestTrackerUI()
 
 QuestTrackerUI::~QuestTrackerUI()
 {
+	_quests.clear();
+	_background.reset();
 }
 
 void QuestTrackerUI::BeginPlay()
 {
+	Super::BeginPlay();
+
 	_size = { 150, 150 };
 	_pos.x = 800 - (int)_size.x;
 	_pos.y = 150;
@@ -34,6 +38,8 @@ void QuestTrackerUI::BeginPlay()
 float _sumTime = 0.f;
 void QuestTrackerUI::Tick()
 {
+	Super::Tick();
+
 	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
 
 	_sumTime += deltaTime;
@@ -56,7 +62,7 @@ void QuestTrackerUI::Tick()
 			auto prevRect = prevBox->GetRect();
 
 			// 현재 TextBox를 이전 TextBox의 아래에 배치
-			box->SetPos({ _pos.x, (float)prevRect.bottom });
+			box->SetPos({ _pos.x, (float)prevRect.bottom + 10 });
 		}
 
 		if (_quests[i]->target <= 0)
@@ -81,11 +87,7 @@ void QuestTrackerUI::Tick()
 
 void QuestTrackerUI::Render(HDC hdc)
 {
-	if (_visible)
-	{
-		for (auto& child : _children)
-			child->Render(hdc);
-	}
+	Super::Render(hdc);
 }
 
 void QuestTrackerUI::AddQuestToTracking(int questID, wstring name, wstring description, int target)
@@ -113,7 +115,6 @@ void QuestTrackerUI::AddQuestToTracking(int questID, wstring name, wstring descr
 	list->SetText(str);
 	list->SetSize({ _size.x, 20 * 3 });
 	list->SetPos({ (float)_pos.x, _pos.y + ((float)_quests.size() * (float)list->GetSize().y) });
-
 	AddChild(list);
 	quest->textBox = list;
 	_quests.push_back(quest);

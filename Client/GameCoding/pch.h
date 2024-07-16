@@ -29,6 +29,14 @@ namespace fs = std::filesystem;
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "dsound.lib")
 
+#define _CRTDBG_MAP_ALLOC
+#include <cstdlib>
+#include <crtdbg.h>
+#if _DEBUG
+#define DBG_NEW new( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define malloc(s) _malloc_dbg(s,_NORMAL_BLOCK,__FILE__,__LINE__)
+#endif
+
 #ifdef _DEBUG
 #pragma comment(lib, "ServerCore\\Debug\\ServerCore.lib")
 #pragma comment(lib, "Protobuf\\Debug\\libprotobufd.lib")

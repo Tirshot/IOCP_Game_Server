@@ -20,6 +20,8 @@ AlertBox::~AlertBox()
 
 void AlertBox::BeginPlay()
 {
+	Super::BeginPlay();
+
 	// 기즈모 위치를 중앙에 위치시키기 위해서는 Size 설정을 Pos 설정보다 먼저!!
 	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
 	_initialPos = _pos;
@@ -33,13 +35,12 @@ void AlertBox::BeginPlay()
 		_text->SetInitialPos(_text->GetPos());
 		AddChild(_text);
 	}
-
-	for (auto& child : _children)
-		child->BeginPlay();
 }
 
 void AlertBox::Tick()
 {
+	Super::Tick();
+
 	// 기즈모 위치를 중앙에 위치시키기 위해서는 Size 설정을 Pos 설정보다 먼저!!
 	_rect = { (int)_pos.x , (int)_pos.y, (int)_pos.x + (_size.x), (int)_pos.y + (_size.y) };
 
@@ -47,9 +48,6 @@ void AlertBox::Tick()
 
 	for (auto& child : _children)
 	{
-		if (_visible == true)
-			child->Tick();
-
 		auto button = dynamic_pointer_cast<Button>(child);
 		if (button)
 		{
@@ -94,10 +92,6 @@ void AlertBox::Render(HDC hdc)
 		_background->GetSize().y,
 		_background->GetTransparent());
 
-	for (auto& child : _children)
-		if (child->GetVisible() == true)
-			child->Render(hdc);
-
 	if (_icon == nullptr)
 		return;
 
@@ -113,42 +107,8 @@ void AlertBox::Render(HDC hdc)
 		_icon->GetSize().x,
 		_icon->GetSize().y,
 		_icon->GetTransparent());
-}
 
-shared_ptr<Button> AlertBox::MakeAcceptButton()
-{
-	shared_ptr<Button> accept = make_shared<Button>();
-	_buttonsCount++;
-
-	accept->SetPos({ _pos.x + (_size.x / 2) - 40, _pos.y + _size.y - 35 });
-	accept->SetSize({ 50,30 });
-	accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Default);
-	accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Hovered);
-	accept->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopAcceptButton"), ButtonState::BS_Clicked);
-	accept->AddOnClickDelegate(this, &AlertBox::OnClickAcceptButton);
-	accept->SetInitialPos(accept->GetPos());
-	accept->SetButtonName(L"accept");
-	AddChild(accept);
-
-	return accept;
-}
-
-shared_ptr<Button> AlertBox::MakeDenyButton()
-{
-	shared_ptr<Button> deny = make_shared<Button>();
-	_buttonsCount++;
-	
-	deny->SetPos({ _pos.x + (_size.x / 2) + 40, _pos.y + _size.y - 35 });
-	deny->SetSize({ 50,30 });
-	deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Default);
-	deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Hovered);
-	deny->SetSprite(GET_SINGLE(ResourceManager)->GetSprite(L"PopDenyButton"), ButtonState::BS_Clicked);
-	deny->AddOnClickDelegate(this, &AlertBox::OnClickDenyButton);
-	deny->SetInitialPos(deny->GetPos());
-	deny->SetButtonName(L"deny");
-	AddChild(deny);
-
-	return deny;
+	Super::Render(hdc);
 }
 
 void AlertBox::SetIcon(wstring wstr)
@@ -165,40 +125,6 @@ void AlertBox::SetIcon(wstring wstr)
 	else
 	{
 		_icon = GET_SINGLE(ResourceManager)->GetSprite(L"InformationIcon");
-	}
-}
-
-void AlertBox::OnClickAcceptButton()
-{
-	_parent->SetPause(false);
-
-	// 부모 UI에서 작동할 콜백 함수가 있으면 기능 수행
-	if (_parentCallback != nullptr)
-	{
-		_parentCallback();
-	}
-
-	auto panel = static_pointer_cast<Panel>(_parent);
-	if (panel)
-	{
-		auto ui = dynamic_pointer_cast<UI>(shared_from_this());
-
-		if (ui)
-			panel->RemoveChild(ui);
-	}
-}
-
-void AlertBox::OnClickDenyButton()
-{
-	_parent->SetPause(false);
-
-	auto panel = static_pointer_cast<Panel>(_parent);
-	if (panel)
-	{
-		auto ui = dynamic_pointer_cast<UI>(shared_from_this());
-
-		if (ui)
-			panel->RemoveChild(ui);
 	}
 }
 

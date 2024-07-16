@@ -54,6 +54,8 @@ public:
 	void LoadSound();
 	void LoadQuest();
 
+	bool IsAnyPopUpVisible();
+
 	template<typename T>
 	shared_ptr<T> SpawnObject(Vec2Int pos)
 	{
@@ -81,6 +83,7 @@ public:
 
 public:
 	shared_ptr<GameObject> GetObjects(uint64 id);
+	shared_ptr<Item> GetItem(uint64 id);
 	shared_ptr<class Monster> GetMonster();
 
 	// 패킷 핸들
@@ -92,6 +95,7 @@ public:
 
 	bool CanGo(Vec2Int cellPos);
 	bool MonsterCanGo(Vec2Int cellPos);
+	bool IsSafeZone(Vec2Int cellPos);
 	Vec2 ConvertPos(Vec2Int cellPos);
 	Vec2Int GetRandomEmptyCellPos();
 

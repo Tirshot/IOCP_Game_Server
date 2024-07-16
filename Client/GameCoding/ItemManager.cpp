@@ -75,21 +75,40 @@ ITEM ItemManager::GetItem(int itemID)
     vector<wstring> ItemInfo = FindItemInfo(itemID);
 
     // ITEM 객체를 동적으로 할당
-    auto item = make_shared<ITEM>();
+    auto item = ITEM();
 
     // 아이템 정보 할당
-    item->ItemId = itemID;
-    item->ItemCount = 1;
-    item->Name = GetName(ItemInfo);
-    item->KorName = GetKorName(ItemInfo);
-    item->Description = GetDescription(ItemInfo);
-    item->Price = GetPrice(ItemInfo);
-    item->Type = GetType(ItemInfo);
-    item->SubType = GetSubType(ItemInfo);
-    item->Sprite = GetSprite(item->Name);
+    item.ItemId = itemID;
+    item.ItemCount = 1;
+    item.MaxCount = GetMaxCounts(ItemInfo);
+    item.Name = GetName(ItemInfo);
+    item.KorName = GetKorName(ItemInfo);
+    item.Description = GetDescription(ItemInfo);
+    item.Price = GetPrice(ItemInfo);
+    item.Type = GetType(ItemInfo);
+    item.SubType = GetSubType(ItemInfo);
+    item.Sprite = GetSprite(item.Name);
 
-    // 동적으로 할당한 ITEM 객체의 참조를 반환
-    return *item;
+    if (item.Type == L"Wearable")
+    {
+        item.Attack = GetAttack(ItemInfo);
+        item.Defence = GetDefence(ItemInfo);
+    }
+
+    if (item.SubType == L"Pants")
+    {
+        item.PotionEffect = GetPotionMultiplier(ItemInfo);
+        item.PotionMaxCount = GetPotionMaxCount(ItemInfo);
+    }
+
+    if (item.SubType == L"Potion")
+    {
+        auto myPlayer = GET_SINGLE(SceneManager)->GetMyPlayer();
+        if (myPlayer)
+            item.MaxCount = myPlayer->GetPotionMaxCount();
+    }
+
+    return item;
 }
 
 bool ItemManager::AddItemToInventory(int itemId)
@@ -189,7 +208,11 @@ void ItemManager::SyncToServer()
             slot->ItemCount;
         }
     }
+}
 
+void ItemManager::SyncUseableItem()
+{
+    _inventory->SyncUseableItem();
 }
 
 void ItemManager::OpenInventory()
@@ -213,35 +236,153 @@ void ItemManager::ResetInventory()
 
 wstring ItemManager::GetName(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[1] == L"")
+        return L"";
+
     return row[1];
 }
 
 wstring ItemManager::GetKorName(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[2] == L"")
+        return L"";
+
     return row[2];
 }
 
 wstring ItemManager::GetType(vector<wstring> row)
 {
-    if (!row.empty())
-        return row[3];
+    if (row.empty())
+        return L"";
 
-    return L"";
+    if (row[3] == L"")
+        return L"";
+
+   return row[3];
 }
 
 wstring ItemManager::GetSubType(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[4] == L"")
+        return L"";
+
     return row[4];
 }
 
 wstring ItemManager::GetDescription(vector<wstring> row)
 {
+    if (row.empty())
+        return L"";
+
+    if (row[5] == L"")
+        return L"";
+
     return row[5];
+}
+
+int ItemManager::GetMaxCounts(vector<wstring> row)
+{
+    if (row.empty())
+        return 0;
+
+    if (row[7] == L"")
+        return 0;
+
+    return stoi(row[7]);
 }
 
 int ItemManager::GetPrice(vector<wstring> row)
 {
+    if (row.empty())
+        return 0;
+
+    if (row[6] == L"")
+        return 0;
+
     return stoi(row[6]);
+}
+
+int ItemManager::GetAttack(vector<wstring> row)
+{
+    if (row.empty())
+        return 0;
+
+    if (row[8] == L"")
+        return 0;
+
+    return stoi(row[8]);
+}
+
+int ItemManager::GetAttack(int objectID)
+{
+    auto item = GetItem(objectID);
+    if (item == nullptr)
+        return -1;
+
+    if (item.Type == L"Wearable")
+    {
+        return item.Attack;
+    }
+
+    return -1;
+}
+
+int ItemManager::GetDefence(int objectID)
+{
+    auto item = GetItem(objectID);
+    if (item == nullptr)
+        return -1;
+
+    if (item.Type == L"Wearable")
+    {
+        return item.Defence;
+    }
+
+    return -1;
+}
+
+int ItemManager::GetDefence(vector<wstring> row)
+{
+    if (row.empty())
+        return 0;
+
+    if (row[9] == L"")
+        return 0;
+
+    return stoi(row[9]);
+}
+
+int ItemManager::GetPotionMultiplier(vector<wstring> row)
+{
+    if (row.empty())
+        return 0;
+
+    // 아이템의 서브 타입을 점검해서 바지(가방)인지 체크
+    if (row[4] != L"Pants")
+        return 0;
+
+    return stoi(row[10]);
+}
+
+int ItemManager::GetPotionMaxCount(vector<wstring> row)
+{
+    if (row.empty())
+        return 0;
+
+    // 아이템의 서브 타입을 점검해서 바지(가방)인지 체크
+    if (row[4] != L"Pants")
+        return 0;
+
+    return stoi(row[11]);
 }
 
 shared_ptr<Sprite> ItemManager::GetSprite(wstring wstr)
