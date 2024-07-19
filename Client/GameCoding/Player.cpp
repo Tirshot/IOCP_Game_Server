@@ -84,13 +84,6 @@ void Player::BeginPlay()
 void Player::Tick()
 {
 	Super::Tick();
-
-	auto scene = GET_SINGLE(SceneManager)->GetDevScene();
-
-	if (info.hp() <= 0)
-	{
-		scene->RemoveActor(shared_from_this());
-	}
 }
 
 void Player::Render(HDC hdc)
@@ -178,7 +171,7 @@ void Player::TickSkill()
 
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack();
+				monster->KnockBack(info.dir());
 			}
 		}
 		else if (GetWeaponType() == Protocol::WEAPON_TYPE_BOW)
@@ -256,7 +249,7 @@ void Player::TickSpin()
 
 				monster->SetWait(50);
 				monster->SetState(HIT);
-				monster->KnockBack();
+				monster->KnockBack(info.dir());
 			}
 
 			if (monster2)
@@ -272,7 +265,7 @@ void Player::TickSpin()
 
 				monster2->SetWait(50);
 				monster2->SetState(HIT);
-				monster2->KnockBack();
+				monster2->KnockBack(info.dir());
 			}
 
 			if (monster3)
@@ -288,7 +281,7 @@ void Player::TickSpin()
 
 				monster3->SetWait(50);
 				monster3->SetState(HIT);
-				monster3->KnockBack();
+				monster3->KnockBack(info.dir());
 			}
 
 			if (monster4)
@@ -304,7 +297,7 @@ void Player::TickSpin()
 
 				monster4->SetWait(50);
 				monster4->SetState(HIT);
-				monster4->KnockBack();
+				monster4->KnockBack(info.dir());
 			}
 		}
 		SetState(MOVE);

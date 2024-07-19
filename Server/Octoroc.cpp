@@ -108,19 +108,19 @@ void Octoroc::UpdateIdle()
 		switch (randValue)
 		{
 		case 1:
-			SetDir(DIR_UP, true);
+			SetDir(DIR_UP);
 			break;
 
 		case 2:
-			SetDir(DIR_DOWN, true);
+			SetDir(DIR_DOWN);
 			break;
 
 		case 3:
-			SetDir(DIR_LEFT, true);
+			SetDir(DIR_LEFT);
 			break;
 
 		case 4:
-			SetDir(DIR_RIGHT, true);
+			SetDir(DIR_RIGHT);
 			break;
 		}
 
@@ -157,7 +157,7 @@ void Octoroc::UpdateIdle()
 							SetCellPos(nextPos);
 							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
 
-							SetState(MOVE);
+							SetState(MOVE, true);
 						}
 					}
 					else

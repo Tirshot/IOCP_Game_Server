@@ -137,19 +137,19 @@ void Monster::UpdateIdle()
 		switch (randValue)
 		{
 		case 1:
-			SetDir(DIR_UP, true);
+			SetDir(DIR_UP);
 			break;
 
 		case 2:
-			SetDir(DIR_DOWN, true);
+			SetDir(DIR_DOWN);
 			break;
 
 		case 3:
-			SetDir(DIR_LEFT, true);
+			SetDir(DIR_LEFT);
 			break;
 
 		case 4:
-			SetDir(DIR_RIGHT, true);
+			SetDir(DIR_RIGHT);
 			break;
 		}
 
@@ -186,7 +186,7 @@ void Monster::UpdateIdle()
 							SetCellPos(nextPos);
 							_waitUntil = GetTickCount64() + 1000; // 1초 기다림
 
-							SetState(MOVE);
+							SetState(MOVE, true);
 						}
 					}
 					else
@@ -405,12 +405,9 @@ wstring Monster::GetName()
 	return GET_SINGLE(ItemManager)->StringToWString(info.name());
 }
 
-void Monster::KnockBack()
+void Monster::KnockBack(Protocol::DIR_TYPE dir)
 {
-	Super::KnockBack();
-
-	// 몬스터의 경우 넉백당하면 타겟을 리셋
-	_target.reset();
+	Super::KnockBack(dir);
 }
 
 void Monster::MonsterQuestProgress(PlayerRef player)

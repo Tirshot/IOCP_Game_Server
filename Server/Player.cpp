@@ -136,7 +136,7 @@ void Player::UpdateSkill()
 				return;
 
 			creature->SetWait(50);
-			creature->KnockBack();
+			creature->KnockBack(info.dir());
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
@@ -181,7 +181,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature->SetWait(50);
-			creature->KnockBack();
+			creature->KnockBack(info.dir());
 		}
 
 		if (creature2)
@@ -200,7 +200,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature2->SetWait(50);
-			creature2->KnockBack();
+			creature2->KnockBack(info.dir());
 		}
 
 		if (creature3)
@@ -219,7 +219,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature3->SetWait(50);
-			creature3->KnockBack();
+			creature3->KnockBack(info.dir());
 		}
 
 		if (creature4)
@@ -239,7 +239,7 @@ void Player::UpdateSpin()
 				session->Send(sendBuffer);
 			}
 			creature4->SetWait(50);
-			creature4->KnockBack();
+			creature4->KnockBack(info.dir());
 		}
 	}
 	SetState(MOVE);

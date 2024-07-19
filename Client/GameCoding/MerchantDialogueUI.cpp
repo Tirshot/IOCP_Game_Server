@@ -389,7 +389,7 @@ void MerchantDialogueUI::OnClickConfirmButton()
 						if (GET_SINGLE(ItemManager)->IsInventoryFull()
 							|| itemCount > maxCount)
 						{
-							// 인벤토리가 가득 차(찰 예정이라)서 퀘스트 완료 불가 -> 추후 코드 수정필요
+							// 인벤토리가 가득 차(찰 예정이라)서 퀘스트 완료 불가
 							return;
 						}
 					}
@@ -413,6 +413,16 @@ void MerchantDialogueUI::OnClickConfirmButton()
 				{
 					SendBufferRef sendBuffer = ClientPacketHandler::Make_C_QuestFinish(myPlayerId, _questID);
 					GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
+				}
+
+				// 아이템 퀘스트 완료 후 아이템 제거
+				auto quest = scene->GetQuest(_questID);
+				auto targetType = quest.targettype();
+				auto targetID = quest.targetid();
+				auto targetNums = quest.targetnums();
+				if (targetType == Protocol::OBJECT_TYPE_ITEM)
+				{
+					GET_SINGLE(ItemManager)->RemoveItemFromInventory(targetID, targetNums);
 				}
 			}
 		}

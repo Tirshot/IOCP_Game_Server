@@ -347,9 +347,6 @@
     <ClInclude Include="QuestManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
-    <ClInclude Include="MerchantDialogueUI.h">
-      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
-    </ClInclude>
     <ClInclude Include="PopUp.h">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClInclude>
@@ -385,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="ProjectileRock.h">
       <Filter>소스 파일\03. Objects\Game\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="MerchantDialogueUI.h">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -621,9 +621,6 @@
     <ClCompile Include="QuestManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
     </ClCompile>
-    <ClCompile Include="MerchantDialogueUI.cpp">
-      <Filter>소스 파일\06. UI\InGame\NPC</Filter>
-    </ClCompile>
     <ClCompile Include="PopUp.cpp">
       <Filter>소스 파일\06. UI\Base</Filter>
     </ClCompile>
@@ -668,6 +665,9 @@
     </ClCompile>
     <ClCompile Include="ProjectileRock.cpp">
       <Filter>소스 파일\03. Objects\Game\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="MerchantDialogueUI.cpp">
+      <Filter>소스 파일\06. UI\InGame\Quest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

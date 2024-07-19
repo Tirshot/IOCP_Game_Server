@@ -13,7 +13,7 @@ public:
 	virtual void Tick() override;
 
 	virtual void OnDamaged(CreatureRef attacker, bool debug = false);
-	virtual void KnockBack();
+	virtual void KnockBack(Protocol::DIR_TYPE dir);
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
 	wstring GetName();
 

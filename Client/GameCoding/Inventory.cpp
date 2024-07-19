@@ -43,8 +43,6 @@ Inventory::~Inventory()
 
 void Inventory::BeginPlay()
 {
-    Super::BeginPlay();
-
     _invenRect = {};        // 485, 160, 770, 460
     {
         _invenRect.left = (int)_pos.x + 5;
@@ -114,6 +112,8 @@ void Inventory::BeginPlay()
         }
     }
 
+    Super::BeginPlay();
+
     // 기본 무기 지급
     for (int i = 1; i < 4; i++)
         AddItem(i);
@@ -137,11 +137,12 @@ void Inventory::Tick()
             shared_ptr<ITEM> item1 = FindItemFromInventory(1);
             EquipItem(item1);
             ApplyStatus();
-            SyncUseableItem();
 
             _initialized = false;
         }
     }
+
+    SyncUseableItem();
 
     // Rect 위치 초기화
     {
@@ -432,9 +433,9 @@ void Inventory::Tick()
                     if (slot.second.ItemId <= 3)
                         break;
 
+                    SyncEquips(slot.second.ItemId, false);
                     AddItem(slot.second.ItemId);
                     slot.second.Reset();
-                    SyncEquips(slot.second.ItemId, false);
                 }
 
                 // 드래그 시작
@@ -473,9 +474,9 @@ void Inventory::Tick()
                     if (equip.second.ItemId == _selectedItem->ItemId)
                     {
                         equip.second.Reset();
+                        SyncEquips(equip.second.ItemId, false);
                     }
                 }
-                SyncEquips(_selectedItem->ItemId, false);
                 _isEquipedItem = false;
                 _selectedItem = nullptr;
             }
@@ -847,6 +848,10 @@ void Inventory::ApplyStatus()
         // 기본 공격력은 무기에 포함됨 + 아이템 공격력
         myPlayer->info.set_attack(itemAttack);
         myPlayer->info.set_defence(itemDefence);
+
+        // 서버와 스탯 동기화
+        SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+        GET_SINGLE(NetworkManager)->SendPacket(sendBuffer);
     }
 }
 

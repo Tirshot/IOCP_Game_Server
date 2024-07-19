@@ -106,7 +106,7 @@ void Inventory::EquipItem(int itemID, bool equip)
         }
         else
         {
-            _equips[1].itemID = itemID;
+            _equips[1].itemID = 0;
             _equips[1].itemCounts = 0;
         }
         break;
@@ -120,7 +120,7 @@ void Inventory::EquipItem(int itemID, bool equip)
         }
         else
         {
-            _equips[2].itemID = itemID;
+            _equips[2].itemID = 0;
             _equips[2].itemCounts = 0;
         }
         break;
@@ -134,7 +134,7 @@ void Inventory::EquipItem(int itemID, bool equip)
         }
         else
         {
-            _equips[3].itemID = itemID;
+            _equips[3].itemID = 0;
             _equips[3].itemCounts = 0;
         }
         break;
@@ -148,7 +148,7 @@ void Inventory::EquipItem(int itemID, bool equip)
         }
         else
         {
-            _equips[4].itemID = itemID;
+            _equips[4].itemID = 0;
             _equips[4].itemCounts = 0;
         }
         break;

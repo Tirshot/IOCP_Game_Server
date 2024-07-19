@@ -126,7 +126,7 @@ void GameRoom::Update()
 		item.second->Update();
 
 		auto id = item.second->GetObjectID();
-		// 어딘가에 적중시 제거
+		
 		if (item.second->info.hp() <= 0)
 		{
 			_temps[id] = item.second;

@@ -278,6 +278,9 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	if (creature == nullptr)
 		return;
 
+	if (damage <= 0)
+		return;
+
 	if (creature->info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
 	{
 		GET_SINGLE(SoundManager)->Play(L"MonsterOnDamaged");
@@ -291,6 +294,10 @@ void ClientPacketHandler::Handle_S_Hit(ServerSessionRef session, BYTE* buffer, i
 	auto maxhp = creature->info.maxhp();
 
 	creature->info.set_hp(clamp(hp - damage, 0, maxhp));
+	if (creature->info.hp() <= 0)
+	{
+		scene->RemoveActor(creature);
+	}
 }
 
 void ClientPacketHandler::Handle_S_Fire(ServerSessionRef session, BYTE* buffer, int32 len)

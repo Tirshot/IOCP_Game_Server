@@ -25,7 +25,7 @@ public:
 	virtual void OnDamaged(CreatureRef attacker, bool debug = false) override;
 	uint64 SetWait(uint64 time) { return _waitHit = GetTickCount64() + time; }
 	wstring GetName();
-	virtual void KnockBack() override;
+	virtual void KnockBack(Protocol::DIR_TYPE dir) override;
 	void MonsterQuestProgress(PlayerRef player);
 
 	void SetInitialPos(Vec2Int pos) { _initialPos = pos; }

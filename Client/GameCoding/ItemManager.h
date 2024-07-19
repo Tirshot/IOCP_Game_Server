@@ -23,6 +23,7 @@ public:
 	bool AddItemToInventory(int itemId, int counts);
 	bool SetItemToInventory(int itemId, int counts);
 	bool RemoveItemFromInventory(int itemId);
+	bool RemoveItemFromInventory(int itemId, int counts);
 
 	shared_ptr<class QuickSlot> GetQuickSlot() { return _quickSlot; }
 	void SetItemToQuickSlot(struct shared_ptr<ITEM> item, int index);
