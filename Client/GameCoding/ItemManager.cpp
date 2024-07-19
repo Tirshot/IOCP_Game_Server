@@ -139,6 +139,11 @@ bool ItemManager::RemoveItemFromInventory(int itemId)
     return GetInventory()->RemoveItem(itemId);
 }
 
+bool ItemManager::RemoveItemFromInventory(int itemId, int counts)
+{
+    return GetInventory()->RemoveItem(itemId, counts);
+}
+
 void ItemManager::SetItemToQuickSlot(shared_ptr<ITEM> item, int index)
 {
     GetQuickSlot()->SetQuickSlot(item, index);
@@ -219,6 +224,7 @@ void ItemManager::OpenInventory()
 {
     if (_inventory->GetVisible())
     {
+        _inventory->ResetPos();
         _inventory->SetVisible(false);
     }
     else

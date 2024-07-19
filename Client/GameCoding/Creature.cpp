@@ -32,13 +32,40 @@ void Creature::Render(HDC hdc)
 	Super::Render(hdc);
 }
 
-void Creature::KnockBack()
+void Creature::KnockBack(Protocol::DIR_TYPE dir)
 {
-	Vec2Int backPos = GetBehindCellPos();
+	Vec2Int cellPos = {};
 
-	// 캐릭터가 몬스터를 때릴때 몬스터만 넉백됨
-	if (CanGo(backPos))
-		SetCellPos(backPos, true);
+	// 상대가 바라보는 방향으로 넉백 당함
+	switch (dir)
+	{
+	case DIR_UP:
+		cellPos = { 0, -1 };
+		break;
+
+	case DIR_DOWN:
+		cellPos = { 0, 1 };
+		break;
+
+	case DIR_LEFT:
+		cellPos = { -1, 0 };
+		break;
+
+	case DIR_RIGHT:
+		cellPos = { 1, 0 };
+		break;
+
+	default:
+		cellPos = { 0, 0 };
+		break;
+	}
+
+	Vec2Int newPos = GetCellPos() + cellPos;
+
+	if (CanGo(newPos))
+	{
+		SetCellPos(newPos, true);
+	}
 }
 
 bool Creature::IsSafeZone(Vec2Int cellPos)

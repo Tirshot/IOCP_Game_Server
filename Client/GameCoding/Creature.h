@@ -17,7 +17,7 @@ public:
 	virtual void TickSkill()  override {};
 	virtual void UpdateAnimation()  override {};
 	
-	virtual void KnockBack();
+	virtual void KnockBack(Protocol::DIR_TYPE dir);
 	uint64 SetWait(uint64 time) { return _wait = GetTickCount64() + time; }
 
 	virtual bool IsSafeZone(Vec2Int cellPos);
